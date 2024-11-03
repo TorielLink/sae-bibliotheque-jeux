@@ -15,7 +15,7 @@ Avant de commencer, assurez-vous d'avoir les outils suivants installés :
 
 1. **Naviguer dans le répertoire du serveur** :
     ```bash
-    cd BibliothequeJeux/server
+    cd ./server
     ```
 2. **Installer les dépendances** du serveur :
     ```bash
@@ -31,7 +31,7 @@ Avant de commencer, assurez-vous d'avoir les outils suivants installés :
 
 1. **Naviguer dans le répertoire du client** :
     ```bash
-    cd BibliothequeJeux/client
+    cd ./client
     ```
 2. **Installer les dépendances** du client :
     ```bash
