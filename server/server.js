@@ -1,39 +1,33 @@
 const express = require('express');
+const cors = require('cors'); // Importez CORS
 const app = express();
-const bodyParser = require('body-parser')
-require("dotenv").config();
-const path = require('path')
+require('dotenv').config();
 
-const PORT = process.env.PORT_APP
-const SECRET = process.env.SECRET
-
-//Middlewares chain
-app.use('/static', express.static(path.join(__dirname, 'public')))
-    .use(bodyParser.json())
-    .use(express.urlencoded({ extended: true }))
-    .use(express.json());
-
-const gameGenreRoute = require('./routes/gameGenreRoute');
-app.use("/gameGenres", gameGenreRoute);
-
-app.use(({res}) => {
-    const message = 'Resource not found'
-    res.status(404).json({message})
-})
-
-
-const cors = require('cors');
+// Configuration de CORS
 const corsOptions = {
-    origin: ["http://localhost:5173"],
+    origin: 'http://localhost:5175', // URL de votre frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes autorisées
+    credentials: true // Si des cookies ou des autorisations sont utilisés
 };
 
+// Activez le middleware CORS
 app.use(cors(corsOptions));
 
-app.get('/api', (req, res) => {
-    res.send({"fruits": ["apple", "banana", "cherry"]});
+// Autres middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Importez les routes
+const gameGenreRoute = require('./routes/gameGenreRoute');
+app.use('/gameGenres', gameGenreRoute);
+
+// Gestion des erreurs 404
+app.use(({ res }) => {
+    res.status(404).json({ message: 'Resource not found' });
 });
 
-
-app.listen(8080, () => {
-    console.log('Server running on port 8080');
+// Lancer le serveur
+const PORT = process.env.PORT_APP || 8080;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
