@@ -12,7 +12,7 @@ function HomePage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Fetch games from the server with pagination
+  // Récupération des jeux depuis le serveur avec pagination
   const fetchGames = async () => {
     setLoading(true);
     try {
@@ -22,8 +22,8 @@ function HomePage() {
       }
 
       const data = await response.json();
-        console.log(data);
-      // Format the data for GameCard
+      console.log(data);
+      // Formatage des données pour GameCard
       const formattedGames = data.map((game) => ({
         id: game.id,
         image: game.cover || 'https://via.placeholder.com/250x350',
@@ -33,10 +33,10 @@ function HomePage() {
         categories: game.genres || ['Non spécifié'],
       }));
 
-      // Append the new games to the existing list and avoid duplicates
+      // Ajout des nouveaux jeux à la liste existante en évitant les doublons
       setGames((prevGames) => {
         const newGames = [...prevGames, ...formattedGames];
-        // Remove duplicates by game id
+        // Suppression des doublons par ID de jeu
         const uniqueGames = Array.from(new Map(newGames.map((game) => [game.id, game])).values());
         return uniqueGames;
       });
@@ -47,7 +47,7 @@ function HomePage() {
     }
   };
 
-  // Initial load and whenever the page changes
+  // Chargement initial et à chaque changement de page
   useEffect(() => {
     fetchGames();
   }, [page]);
@@ -71,18 +71,37 @@ function HomePage() {
     <GameSorter games={games} sortBy={sortBy} order="desc">
       {(sortedGames) =>
         isMobileView ? (
-          <Grid container spacing={0.2}>
+          <Grid container spacing={2} justifyContent="center">
             {sortedGames.map((game) => (
-              <Grid item xs={6} key={game.id}>
-                <GameCard image={game.image} title={game.title} rating={game.rating} categories={game.categories} />
+              <Grid item xs={6} sm={4} key={game.id} sx={{ padding: 0, display: 'flex', justifyContent: 'center' }}>
+                <GameCard
+                  image={game.image}
+                  title={game.title}
+                  rating={game.rating}
+                  categories={game.categories}
+                />
               </Grid>
             ))}
           </Grid>
         ) : (
-          <Box sx={{ display: 'flex', overflowX: 'auto', gap: '8px', padding: '10px 20px' }}> {/* Réduit le gap de 16px à 8px */}
+          <Box
+            sx={{
+              display: 'flex',
+              overflowX: 'auto',
+              gap: '30px',
+              padding: '0px 10px',
+              scrollbarWidth: 'none', // Masque la barre de défilement dans Firefox
+              '&::-webkit-scrollbar': { display: 'none' }, // Masque la barre de défilement dans Chrome, Safari et Edge
+            }}
+          >
             {sortedGames.map((game) => (
-              <Box key={game.id} sx={{ flex: '0 0 auto', width: '250px' }}>
-                <GameCard image={game.image} title={game.title} rating={game.rating} categories={game.categories} />
+              <Box key={game.id} sx={{ flex: '0 0 auto' }}>
+                <GameCard
+                  image={game.image}
+                  title={game.title}
+                  rating={game.rating}
+                  categories={game.categories}
+                />
               </Box>
             ))}
           </Box>
@@ -92,13 +111,28 @@ function HomePage() {
   );
 
   return (
-    <Box sx={{ padding: isMobile ? '10px' : '20px' }}>
-      {/* Header */}
+    <Box sx={{ padding: isMobile ? '10px' : '10px 0px' }}>
+      {/* En-tête */}
       <Box sx={{ display: 'inline-block', marginBottom: '8px' }}>
-        <Typography variant="subtitle2" sx={{ color: theme.palette.text.secondary, fontSize: isMobile ? '0.9rem' : '1rem', display: 'inline' }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: theme.palette.text.secondary,
+            fontSize: isMobile ? '0.9rem' : '1rem',
+            display: 'inline',
+          }}
+        >
           Accueil &gt;
         </Typography>
-        <Typography variant="subtitle2" sx={{ color: isMobile ? theme.palette.red.main : theme.palette.text.primary, fontWeight: 'bold', display: 'inline', marginLeft: '8px' }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            color: isMobile ? theme.palette.red.main : theme.palette.text.primary,
+            fontWeight: 'bold',
+            display: 'inline',
+            marginLeft: '8px',
+          }}
+        >
           {isMobile ? tabTitles[selectedTab] : ''}
         </Typography>
       </Box>
@@ -136,7 +170,10 @@ function HomePage() {
           {selectedTab === 0 && renderGames('releaseDate', true)}
           {selectedTab === 1 && renderGames('rating', true)}
           {selectedTab === 2 && (
-            <Typography variant="body2" sx={{ color: theme.palette.text.secondary, padding: '20px', textAlign: 'center' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: theme.palette.text.secondary, padding: '20px', textAlign: 'center' }}
+            >
               Section "Avis récents" à venir...
             </Typography>
           )}
@@ -156,12 +193,6 @@ function HomePage() {
         </>
       )}
 
-      {/* Load more button */}
-      <Box sx={{ textAlign: 'center', marginTop: '20px' }}>
-        <Button variant="contained" color="primary" onClick={() => setPage((prevPage) => prevPage + 1)} disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : 'Charger plus'}
-        </Button>
-      </Box>
     </Box>
   );
 }

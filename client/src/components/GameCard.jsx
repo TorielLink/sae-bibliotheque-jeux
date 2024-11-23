@@ -1,27 +1,36 @@
 import React from 'react';
-import { Card, CardMedia, CardContent, Typography, Chip, Box } from '@mui/material';
+import { Card, CardMedia, Typography, Chip, Box, useMediaQuery } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { useTheme } from '@mui/material/styles';
 
 function GameCard({ image, title, rating, categories }) {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Limiter le nombre de catégories affichées sur mobile
+  const displayedCategories = isMobile ? categories.slice(0, 2) : categories;
 
   return (
     <Card
       sx={{
         position: 'relative',
-        width: '150px', // Largeur définie
-        height: '225px', // Hauteur définie
-        backgroundImage: 'url(Checker.png)', // L'image de fond
-        backgroundSize: 'cover', // Assurer que l'image couvre toute la carte
-        boxShadow: '0px 0px 7px #000000', // Ombre autour de la carte
-        borderRadius: '5px', // Bordure arrondie
+        width: '184px',
+        height: '276px',
+        backgroundImage: 'url(Checker.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        boxShadow: '0px 0px 7px #000000',
+        borderRadius: '5px',
         overflow: 'hidden',
+        marginLeft: '0px', // Supprimer la marge gauche
+        marginTop: '0px',
         '&:hover': {
-          boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.3)', // Ombre plus grande au survol
-          '& .categories': {
-            opacity: 1, // Afficher les catégories au survol
-          },
+          boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.3)',
+          ...(!isMobile && {
+            '& .categories': {
+              opacity: 1, // Afficher les catégories au survol sur desktop
+            },
+          }),
         },
       }}
     >
@@ -30,7 +39,7 @@ function GameCard({ image, title, rating, categories }) {
         sx={{
           position: 'relative',
           width: '100%',
-          height: '70%', // Réduit la hauteur de l'image
+          height: '241px', // Hauteur ajustée pour correspondre à la position du titre
           overflow: 'hidden',
         }}
       >
@@ -39,7 +48,7 @@ function GameCard({ image, title, rating, categories }) {
           image={image}
           alt={title || 'Image non disponible'}
           sx={{
-            objectFit: 'cover', // Assure que l'image remplit l'espace
+            objectFit: 'cover',
             width: '100%',
             height: '100%',
           }}
@@ -83,12 +92,12 @@ function GameCard({ image, title, rating, categories }) {
             display: 'flex',
             flexWrap: 'wrap',
             gap: '4px',
-            opacity: 0,
+            opacity: isMobile ? 1 : 0,
             transition: 'opacity 0.3s',
-            pointerEvents: 'none',
+            pointerEvents: isMobile ? 'auto' : 'none',
           }}
         >
-          {categories.map((category, index) => (
+          {displayedCategories.map((category, index) => (
             <Chip
               key={index}
               label={category}
@@ -104,24 +113,35 @@ function GameCard({ image, title, rating, categories }) {
         </Box>
       </Box>
 
-      {/* Titre du jeu */}
-      <CardContent
+      {/* Zone du titre */}
+      <Box
         sx={{
-          textAlign: 'center',
-          padding: '4px 8px', // Espacement ajusté
+          position: 'absolute',
+          width: '184px',
+          height: '35px',
+          left: '0px',
+          top: '241px',
+          backgroundColor: theme.palette.background.default,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 8px',
         }}
       >
         <Typography
           variant="h6"
           sx={{
-            fontSize: '0.875rem', // Réduit la taille de la police
+            fontSize: '1rem',
             fontWeight: 'bold',
             color: theme.palette.text.primary,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
           {title || 'Titre non disponible'}
         </Typography>
-      </CardContent>
+      </Box>
     </Card>
   );
 }
