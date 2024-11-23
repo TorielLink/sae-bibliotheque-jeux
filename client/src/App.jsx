@@ -24,17 +24,6 @@ function App() {
           <Route path="/avis" element={<OpinionPage />} />  {/* Route pour la page "Avis" */}
           <Route path="/login" element={<LoginPage />} />  {/* Route pour la page "Se connecter" */}
         </Routes>
-
-        {/* le bouton pour changer de thème */}
-        <Grid item sx={{ textAlign: 'center', padding: '20px' }}>
-          <Button
-            onClick={toggleTheme}
-            variant="contained"
-            sx={{ backgroundColor: theme.palette.text.primary, color: theme.palette.background.default }}
-          >
-            Changer de thème
-          </Button>
-        </Grid>
       </Router>
     </ThemeProvider>
   );

@@ -1,33 +1,43 @@
+// server.js
 const express = require('express');
-const cors = require('cors'); // Importez CORS
-const app = express();
+const cors = require('cors');
 require('dotenv').config();
 
-// Configuration de CORS
-const corsOptions = {
-    origin: 'http://localhost:5175', // URL de votre frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes autorisées
-    credentials: true // Si des cookies ou des autorisations sont utilisés
-};
+const gameRoutes = require('./routes/gamesRoute');        // Your game routes
+const gameGenreRoutes = require('./routes/gameGenreRoute');  // Your game genre routes
 
-// Activez le middleware CORS
-app.use(cors(corsOptions));
+const app = express();
 
-// Autres middlewares
+// Middleware for CORS
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'http://localhost:5175'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
+
+// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Importez les routes
-const gameGenreRoute = require('./routes/gameGenreRoute');
-app.use('/gameGenres', gameGenreRoute);
+// Routes
+app.use('/games', gameRoutes);           // Route for games
+app.use('/gameGenres', gameGenreRoutes); // Route for game genres
 
-// Gestion des erreurs 404
-app.use(({ res }) => {
-    res.status(404).json({ message: 'Resource not found' });
+// Error Handling for Undefined Routes
+app.use((req, res) => {
+  res.status(404).json({ message: 'Resource not found.' });
 });
 
-// Lancer le serveur
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.stack);
+  res.status(500).json({ message: 'Internal server error.', error: err.message });
+});
+
+// Start the Server
 const PORT = process.env.PORT_APP || 8080;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

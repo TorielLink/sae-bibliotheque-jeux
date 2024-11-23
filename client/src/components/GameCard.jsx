@@ -1,50 +1,81 @@
 import React from 'react';
 import { Card, CardMedia, CardContent, Typography, Chip, Box } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
+import { useTheme } from '@mui/material/styles';
 
 function GameCard({ image, title, rating, categories }) {
-  return (
-    <Card sx={{
-      maxWidth: 250,
-      position: 'relative',
-      backgroundColor: '#fff',
-      color: '#333',
-      borderRadius: '10px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-      overflow: 'hidden',
-    }}>
+  const theme = useTheme();
 
-      {/* Image du jeu avec l'évaluation en haut à droite */}
-      <Box sx={{ position: 'relative' }}>
+  return (
+    <Card
+      sx={{
+        position: 'relative',
+        width: '150px', // Largeur définie
+        height: '225px', // Hauteur définie
+        backgroundImage: 'url(Checker.png)', // L'image de fond
+        backgroundSize: 'cover', // Assurer que l'image couvre toute la carte
+        boxShadow: '0px 0px 7px #000000', // Ombre autour de la carte
+        borderRadius: '5px', // Bordure arrondie
+        overflow: 'hidden',
+        '&:hover': {
+          boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.3)', // Ombre plus grande au survol
+          '& .categories': {
+            opacity: 1, // Afficher les catégories au survol
+          },
+        },
+      }}
+    >
+      {/* Conteneur de l'image */}
+      <Box
+        sx={{
+          position: 'relative',
+          width: '100%',
+          height: '70%', // Réduit la hauteur de l'image
+          overflow: 'hidden',
+        }}
+      >
         <CardMedia
           component="img"
-          height="180"
           image={image}
-          alt={title}
-          sx={{ objectFit: 'cover' }}
-        />
-        <Box
+          alt={title || 'Image non disponible'}
           sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            color: '#ffc107',
-            borderRadius: '12px',
-            padding: '2px 6px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
+            objectFit: 'cover', // Assure que l'image remplit l'espace
+            width: '100%',
+            height: '100%',
           }}
-        >
-          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-            {rating}
-          </Typography>
-          <StarIcon sx={{ fontSize: '1rem', color: '#ffc107' }} />
-        </Box>
+        />
 
-        {/* Catégories en bas de l'image */}
+        {/* Badge de la note */}
+        {rating !== 'N/A' && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              backgroundColor: theme.palette.background.default,
+              borderRadius: '12px',
+              padding: '2px 6px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 'bold',
+                color: theme.palette.text.primary,
+              }}
+            >
+              {rating}
+            </Typography>
+            <StarIcon sx={{ fontSize: '0.875rem', color: theme.palette.jaune.main }} />
+          </Box>
+        )}
+
+        {/* Liste des catégories */}
         <Box
+          className="categories"
           sx={{
             position: 'absolute',
             bottom: 8,
@@ -52,6 +83,9 @@ function GameCard({ image, title, rating, categories }) {
             display: 'flex',
             flexWrap: 'wrap',
             gap: '4px',
+            opacity: 0,
+            transition: 'opacity 0.3s',
+            pointerEvents: 'none',
           }}
         >
           {categories.map((category, index) => (
@@ -60,8 +94,8 @@ function GameCard({ image, title, rating, categories }) {
               label={category}
               size="small"
               sx={{
-                backgroundColor: '#e91e63',
-                color: '#fff',
+                backgroundColor: theme.palette.red.main,
+                color: theme.palette.white.main,
                 fontSize: '0.75rem',
                 fontWeight: 'bold',
               }}
@@ -70,10 +104,22 @@ function GameCard({ image, title, rating, categories }) {
         </Box>
       </Box>
 
-      {/* Titre du jeu en bas */}
-      <CardContent sx={{ textAlign: 'center', padding: '8px 12px' }}>
-        <Typography variant="h6" component="div" sx={{ fontSize: '1rem', fontWeight: 'bold', color: '#333' }}>
-          {title}
+      {/* Titre du jeu */}
+      <CardContent
+        sx={{
+          textAlign: 'center',
+          padding: '4px 8px', // Espacement ajusté
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontSize: '0.875rem', // Réduit la taille de la police
+            fontWeight: 'bold',
+            color: theme.palette.text.primary,
+          }}
+        >
+          {title || 'Titre non disponible'}
         </Typography>
       </CardContent>
     </Card>
