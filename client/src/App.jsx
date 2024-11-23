@@ -3,6 +3,7 @@ import { CssBaseline, Button, Grid } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { ThemeContext } from './theme/ThemeContext.jsx';
 import Navbar from './components/Navbar.jsx';
+import Footer from "./components/Footer.jsx";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage.jsx';
 import CataloguePage from './pages/CataloguePage.jsx';
@@ -36,6 +37,7 @@ function App() {
           </Button>
         </Grid>
       </Router>
+      <Footer/>
     </ThemeProvider>
   );
 }
