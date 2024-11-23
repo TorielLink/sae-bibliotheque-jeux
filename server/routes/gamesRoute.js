@@ -16,8 +16,8 @@ const dataRetriever = new DataRetriever(clientId, accessToken);
 // Route to fetch games
 router.get('/', async (req, res) => {
     try {
-        const fields = "id, name, aggregated_rating, first_release_date, cover.image_id, genres.name";
-        const filters = "where first_release_date != null;";
+   const fields = "id, name, aggregated_rating, created_at, cover.image_id, genres.name";
+        const filters = "where created_at != null;";
         const options = "sort created_at desc; limit 20;";
 
         const games = await dataRetriever.getGameData(fields, filters, options);
@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
                 ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
                 : "https://via.placeholder.com/150",
             aggregatedRating: game.aggregated_rating || 0,
-            releaseDate: game.first_release_date || null,
+            releaseDate: new Date(game.created_at * 1000) || null,
             genres: game.genres?.map(genre => genre.name) || [],
         }));
         res.json(transformedGames);
