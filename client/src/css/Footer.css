@@ -1,20 +1,24 @@
 .footer{
     border-top: 2%;
     margin-top: 5%;
-    margin-left: 7%;
-    margin-right: 7%;
+    margin-left: 3%;
+    margin-right: 3%;
     background-color: E6E6E6;
     display: flex;
+    
 }
 
 .footer-left, .footer-left-middle, .footer-right, .footer-right-middle{
     flex: 1;
+    margin-left: 7%;
 }
 
 .footer-line{
-   margin-left: 5%;
-   margin-right: 5%;
-   margin-bottom: 2%;
+   margin-left: 2%;
+   margin-right: 2%;
+   margin-bottom: 3%;
+   align-items:center;
+   justify-content: center;
 }
 
 .footer-bottom{
