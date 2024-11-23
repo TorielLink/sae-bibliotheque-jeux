@@ -25,7 +25,7 @@ function Footer(){
                     <p> Politique & confidentialité</p>
                 </div>
 
-                <div classNAme="footer-right">
+                <div className="footer-right">
                     <h3>Contact</h3>
                     <p>GitHub</p>
                     <p>Adresse mail</p>
