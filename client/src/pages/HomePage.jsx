@@ -21,8 +21,42 @@ function HomePage() {
 
   // Récupération des jeux depuis le serveur avec pagination
   const fetchGames = async () => {
-    // ... (code inchangé)
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8080/games`);
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des données');
+      }
+
+      const data = await response.json();
+      console.log('Données reçues du serveur :', data);
+
+      // Vérifiez que les données sont au bon format
+      const formattedGames = data.map((game) => ({
+        id: game.id,
+        image: game.cover || 'https://via.placeholder.com/250x350',
+        title: game.name,
+        rating: game.aggregatedRating || (Math.random() * 10).toFixed(1),
+        releaseDate: new Date(game.releaseDate * 1000),
+        categories: game.genres || ['Non spécifié'],
+      }));
+
+      setGames(formattedGames);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des jeux :', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Chargement initial
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
+  useEffect(() => {
+    console.log('Jeux chargés :', games);
+  }, [games]);
 
   // Chargement initial et à chaque changement de page
   useEffect(() => {
