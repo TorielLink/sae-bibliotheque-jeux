@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
             return {
                 id: game.id,
                 name: game.name,
-                cover: cover,  // Inclut la couverture uniquement si elle existe
+                cover: cover,
                 aggregatedRating: game.aggregated_rating || 0,
                 releaseDate: new Date(game.created_at * 1000) || null,
                 genres: game.genres?.map(genre => genre.name) || [],
@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
         });
 
         // Filtre les jeux qui n'ont pas de couverture
-        const filteredGames = transformedGames.filter(game => game.cover !== null);  // Supprime les jeux sans couverture
+        const filteredGames = transformedGames.filter(game => game.cover !== null);
 
         res.json(filteredGames);
     } catch (error) {
