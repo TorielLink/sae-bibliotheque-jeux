@@ -169,11 +169,11 @@ function Navbar() {
             to="/login"
             variant="contained"
             sx={{
-              fontSize: isMobile ? '0.75rem' : '1rem',
-              padding: isMobile ? '4px 8px' : '8px 16px',
-              backgroundColor: theme.palette.green.main,
-              color: theme.palette.white.main,
-              marginLeft: '16px',
+                fontSize: isMobile ? '0.5rem' : '1rem', // Smaller text for mobile
+                padding: isMobile ? '2px 4px' : '8px 16px',
+                minWidth: isMobile ? '60px' : '130px',
+                backgroundColor: theme.palette.green.main,
+                color: theme.palette.white.main,
             }}
           >
             Se connecter
