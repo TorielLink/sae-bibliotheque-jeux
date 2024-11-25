@@ -1,43 +1,55 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const gameRoutes = require('./routes/gamesRoute');        // Your game routes
-const gameGenreRoutes = require('./routes/gameGenreRoute');  // Your game genre routes
+// Importation des routes
+const gameRoutes = require('./routes/gamesRoute');
+const gameGenreRoutes = require('./routes/gameGenreRoute');
+const searchRoutes = require('./routes/searchRoute'); // Route pour la recherche
 
+// Création de l'application Express
 const app = express();
 
-// Middleware for CORS
-app.use(
-  cors({
-    origin: ['http://localhost:5173', 'http://localhost:5175'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  })
-);
+// Configuration CORS
+const configureCors = () => {
+    const allowedOrigins = process.env.NODE_ENV === 'production'
+        ? ['https://votre-domaine-production.com']
+        : ['http://localhost:5173', 'http://localhost:5175'];
 
-// Middleware to parse JSON and URL-encoded data
+    return cors({
+        origin: allowedOrigins,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        credentials: true,
+    });
+};
+app.use(configureCors());
+
+// Middleware pour parser les données JSON et URL-encodées
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/games', gameRoutes);           // Route for games
-app.use('/gameGenres', gameGenreRoutes); // Route for game genres
+// Gestion des routes
+app.use('/games', gameRoutes); // Routes pour les jeux
+app.use('/gameGenres', gameGenreRoutes); // Routes pour les genres
+app.use('/search', searchRoutes); // Routes pour la recherche
 
-// Error Handling for Undefined Routes
+// Gestion des erreurs pour les routes non définies
 app.use((req, res) => {
-  res.status(404).json({ message: 'Resource not found.' });
+    res.status(404).json({ message: 'Ressource non trouvée.' });
 });
 
-// Global Error Handler
+// Gestionnaire global des erreurs
 app.use((err, req, res, next) => {
-  console.error('Server Error:', err.stack);
-  res.status(500).json({ message: 'Internal server error.', error: err.message });
+    console.error('Erreur du serveur :', err.stack);
+    res.status(500).json({ message: 'Erreur interne du serveur.', error: err.message });
 });
 
-// Start the Server
-const PORT = process.env.PORT_APP || 8080;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Démarrage du serveur
+const startServer = () => {
+    const PORT = process.env.PORT_APP || 8080;
+    app.listen(PORT, () => {
+        console.log(`Le serveur fonctionne sur le port ${PORT}`);
+    });
+};
+
+startServer();

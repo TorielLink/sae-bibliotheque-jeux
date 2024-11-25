@@ -13,7 +13,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeContext } from '../theme/ThemeContext';
-import SearchBar from './SearchBar'; // Assurez-vous que le chemin est correct
+import SearchBar from './SearchBar';
 
 function Navbar() {
   const theme = useTheme();
@@ -24,20 +24,27 @@ function Navbar() {
   const isCatalogue = location.pathname === '/catalogue';
   const isAvis = location.pathname === '/avis';
 
-  // État pour la zone de recherche
   const [isSearchActive, setSearchActive] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [selectedGame, setSelectedGame] = useState(null);
 
   const handleSearchBack = () => {
-    setSearchActive(false); // Désactive la recherche
-    setSearchText(''); // Réinitialise le texte de recherche
+    setSearchActive(false);
+    setSearchText('');
+    setSelectedGame(null);
   };
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    console.log('Recherche:', searchText);
-    setSearchActive(false); // Ferme la boîte de recherche après la soumission
-    setSearchText(''); // Réinitialise le champ après la recherche
+    console.log('Recherche soumise :', searchText);
+    setSearchActive(false);
+    setSearchText('');
+  };
+
+  const handleGameSelect = (game) => {
+    console.log('Jeu sélectionné :', game.name, game.id);
+    setSelectedGame(game);
+    setSearchActive(false);
   };
 
   return (
@@ -91,12 +98,10 @@ function Navbar() {
                 fontFamily: '"Roboto", sans-serif',
                 fontWeight: 700,
                 color: theme.palette.text.primary,
-                letterSpacing: '1px',
                 fontSize: isMobile ? '1rem' : '1.8rem',
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
                 textDecoration: 'none',
-                marginRight: '16px', // Add spacing after the site name
               }}
             >
               SCRIB
@@ -109,15 +114,13 @@ function Navbar() {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            flexGrow: 1,
             justifyContent: isMobile && isSearchActive ? 'flex-start' : 'flex-end',
-            transition: 'all 0.3s ease',
+            flexGrow: 1,
           }}
         >
           {!isSearchActive || !isMobile ? (
             <>
               <Typography
-                variant="body2"
                 component={Link}
                 to="/catalogue"
                 sx={{
@@ -126,15 +129,12 @@ function Navbar() {
                     ? theme.palette.jaune.main
                     : theme.palette.text.primary,
                   fontSize: isMobile ? '0.75rem' : '1.1rem',
-                  fontWeight: isCatalogue ? '700' : '600',
-                  whiteSpace: 'nowrap',
-                  marginRight: '16px', // Space between Catalogue and Avis
+                  marginRight: '16px',
                 }}
               >
                 Catalogue
               </Typography>
               <Typography
-                variant="body2"
                 component={Link}
                 to="/avis"
                 sx={{
@@ -143,8 +143,6 @@ function Navbar() {
                     ? theme.palette.info.main
                     : theme.palette.text.primary,
                   fontSize: isMobile ? '0.75rem' : '1.1rem',
-                  fontWeight: isAvis ? '700' : '600',
-                  whiteSpace: 'nowrap',
                 }}
               >
                 Avis
@@ -152,45 +150,35 @@ function Navbar() {
             </>
           ) : null}
 
-          {/* Search Bar */}
-          <Box
+          <SearchBar
+            searchText={searchText}
+            setSearchText={setSearchText}
+            handleSearchBack={handleSearchBack}
+            handleSearchSubmit={handleSearchSubmit}
+            isSearchActive={isSearchActive}
+            setSearchActive={setSearchActive}
+            isMobile={isMobile}
+            onGameSelect={handleGameSelect} // Ajout de la fonction ici
+          />
+        </Box>
+
+        {/* Bouton de connexion */}
+        {!isSearchActive || !isMobile ? (
+          <Button
+            component={Link}
+            to="/login"
+            variant="contained"
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              marginRight: isSearchActive && !isMobile ? '8px' : 0,
-              flexGrow: isSearchActive && isMobile ? 1 : 0,
-              transition: 'all 0.3s ease',
+              fontSize: isMobile ? '0.75rem' : '1rem',
+              padding: isMobile ? '4px 8px' : '8px 16px',
+              backgroundColor: theme.palette.green.main,
+              color: theme.palette.white.main,
+              marginLeft: '16px',
             }}
           >
-            <SearchBar
-              searchText={searchText}
-              setSearchText={setSearchText}
-              handleSearchBack={handleSearchBack}
-              handleSearchSubmit={handleSearchSubmit}
-              isSearchActive={isSearchActive}
-              setSearchActive={setSearchActive}
-              isMobile={isMobile}
-            />
-          </Box>
-
-          {/* Bouton de connexion */}
-          {!isSearchActive || !isMobile ? (
-            <Button
-              component={Link}
-              to="/login"
-              variant="contained"
-              sx={{
-                fontSize: isMobile ? '0.5rem' : '1rem', // Smaller text for mobile
-                padding: isMobile ? '2px 4px' : '8px 16px',
-                minWidth: isMobile ? '60px' : '130px',
-                backgroundColor: theme.palette.green.main,
-                color: theme.palette.white.main,
-              }}
-            >
-              Se connecter
-            </Button>
-          ) : null}
-        </Box>
+            Se connecter
+          </Button>
+        ) : null}
 
         {/* Bouton de bascule de thème */}
         <IconButton

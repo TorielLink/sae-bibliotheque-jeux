@@ -1,17 +1,15 @@
 const DataRetriever = require('./DataRetriever.js');
 
 class CatalogDataRetriever extends DataRetriever {
-    static #DEFAULT_OFFSET = 0;
-    static #DEFAULT_LIMIT = 50;
-    static #FIELDS = `
-        id,
-        name,
+    static #DEFAULT_OFFSET = 0
+    static #DEFAULT_LIMIT = 50
+    static #fields = `
         aggregated_rating,
-        created_at,
-        genres.id,
-        genres.name,
-        cover.image_id
-    `;
+        cover,
+        first_release_date,
+        genres,
+        name
+        `
 
     requestList(coversIds, genresIds) {
         return [
@@ -21,53 +19,49 @@ class CatalogDataRetriever extends DataRetriever {
     }
 
     async #getCatalog(sortingOption, paginationOption) {
-        const games = await this.getGameData(
-            CatalogDataRetriever.#FIELDS,
-            "",
-            `${sortingOption} ${paginationOption}`
-        );
+        const games = await this.getGameData(CatalogDataRetriever.#fields, "", `${sortingOption}${paginationOption}`)
+        let coversIds = [...new Set(games.filter(el => el.cover).map(el => el.cover))]
+        let genresIds = [...new Set(games.flatMap(el => el.genres?.length > 0 ? el.genres : []))]
 
-        // Collect all unique cover and genre IDs
-        const coverIds = [...new Set(games.filter(game => game.cover?.image_id).map(game => game.cover.image_id))];
-        const genreIds = [...new Set(games.flatMap(game => game.genres?.map(genre => genre.id) || []))];
+        let requests = this.requestList(coversIds, genresIds)
+        let coverGenresData = {
+            ...await this.makeRequests(requests)
+        }
+        let genresMap = new Map()
+        const coversMap = coverGenresData.coverMap;
+        const genres = coverGenresData.genres.map(el => genresMap.set(el.id, el))
+        console.log(genresMap)
+        let result = []
+        games.map(el => {
+            let game = {
+                ...el
+            }
+            game.cover = game.cover == undefined ? undefined : coversMap.get(game.cover)
+            if (game.genres != undefined){
 
-        // Request cover and genre data
-        const requests = this.requestList(coverIds, genreIds);
-        const { coverMap, genres } = await this.makeRequests(requests);
+            let genres = []
+                el.genres.map(genreId => {
+                    genres.push(genresMap.get(genreId))
+                })
+                game.genres = genres
+            }
+            result.push(game)
+        })
 
-        // Create a map for genres
-        const genresMap = new Map();
-        genres?.forEach(genre => genresMap.set(genre.id, genre));
-
-        // Map the games with the necessary details
-        return games.map(game => {
-            const coverUrl = game.cover?.image_id
-                ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
-                : 'https://via.placeholder.com/150';
-
-            // Return the transformed game object
-            return {
-                id: game.id,
-                name: game.name,
-                cover: { url: coverUrl },
-                aggregatedRating: game.aggregated_rating || 0,
-                releaseDate: game.created_at || null,
-                genres: game.genres?.map(genre => genresMap.get(genre.id) || genre) || [],
-            };
-        });
+        return result
     }
 
     async getCatalogByDate(limit = CatalogDataRetriever.#DEFAULT_LIMIT, offset = CatalogDataRetriever.#DEFAULT_OFFSET) {
-        const dateSortingOption = `where created_at < ${Math.floor(Date.now() / 1000)}; sort created_at desc;`;
-        const paginationOption = `limit ${limit}; offset ${offset};`; // Pagination logic for date sorting
+        const dateSortingOption = `where first_release_date < ${Math.floor(Date.now() / 1000)};sort first_release_date desc;`
+        const paginationOption = `limit ${limit};offset ${offset};`;
         return await this.#getCatalog(dateSortingOption, paginationOption);
     }
 
     async getCatalogByPopularity(limit = CatalogDataRetriever.#DEFAULT_LIMIT, offset = CatalogDataRetriever.#DEFAULT_OFFSET) {
-        const popularitySortingOption = `sort aggregated_rating desc;`; // Sort by popularity
-        const paginationOption = `limit ${limit}; offset ${offset};`; // Pagination logic for popularity sorting
-        return await this.#getCatalog(popularitySortingOption, paginationOption);
+        const popuaritySortingOption = `sort aggregated_rating desc;`
+        const paginationOption = `limit ${limit};offset ${offset};`;
+        return await this.#getCatalog(popuaritySortingOption, paginationOption)
     }
 }
 
-module.exports = CatalogDataRetriever;
+module.exports = CatalogDataRetriever

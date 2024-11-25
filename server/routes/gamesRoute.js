@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const DataRetriever = require('../services/DataRetriever');
+const CatalogDataRetriever = require('../services/CatalogDataRetriever');
+const GameDataRetriever = require('../services/GameDataRetriever');
 
-// Setup environment variables for IGDB API
+// Chargement des variables d'environnement pour l'API IGDB
 const clientId = process.env.CLIENT_ID;
 const accessToken = process.env.ACCESS_TOKEN;
 
@@ -11,46 +12,79 @@ if (!clientId || !accessToken) {
     process.exit(1);
 }
 
-const dataRetriever = new DataRetriever(clientId, accessToken);
+const catalogRetriever = new CatalogDataRetriever(clientId, accessToken);
+const gameRetriever = new GameDataRetriever(clientId, accessToken);
 
-// Route to fetch games
-router.get('/', async (req, res) => {
+// Route pour récupérer les jeux récents
+router.get('/by-date', async (req, res) => {
+    const { limit = 20, offset = 0 } = req.query;
     try {
-        const fields = "id, name, aggregated_rating, created_at, cover.image_id, genres.name";
-        const filters = "where created_at != null;";
-        const options = "sort created_at desc; limit 20;";
-
-        const games = await dataRetriever.getGameData(fields, filters, options);
-        console.log("games", games);
-
-        // Transforme les jeux
-        const transformedGames = games.map(game => {
-            // Vérifie si le jeu a une image de couverture
-            const cover = game.cover?.image_id
-                ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
-                : null;  // Si pas de couverture, mets null
-
-            // Retourne l'objet jeu, sans la clé `cover` si pas de couverture
-            return {
-                id: game.id,
-                name: game.name,
-                cover: cover,  // Inclut la couverture uniquement si elle existe
-                aggregatedRating: game.aggregated_rating || 0,
-                releaseDate: new Date(game.created_at * 1000) || null,
-                genres: game.genres?.map(genre => genre.name) || [],
-            };
-        });
-
-        // Filtre les jeux qui n'ont pas de couverture
-        const filteredGames = transformedGames.filter(game => game.cover !== null);  // Supprime les jeux sans couverture
-
-        res.json(filteredGames);
+        const catalog = await catalogRetriever.getCatalogByDate(limit, offset);
+        res.json(catalog);
     } catch (error) {
-        console.error("Error fetching games:", error.message);
-        res.status(500).json({ message: "Failed to fetch games." });
+        console.error("Erreur lors de la récupération des jeux par date :", error.message);
+        res.status(500).json({ message: "Échec de la récupération des jeux par date." });
     }
 });
 
+// Route pour récupérer les jeux populaires
+router.get('/by-popularity', async (req, res) => {
+    const { limit = 20, offset = 0 } = req.query;
+    try {
+        const catalog = await catalogRetriever.getCatalogByPopularity(limit, offset);
+        res.json(catalog);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des jeux populaires :", error.message);
+        res.status(500).json({ message: "Échec de la récupération des jeux populaires." });
+    }
+});
 
+// Route pour récupérer les détails d’un jeu spécifique
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const gameDetails = await gameRetriever.getGameInfo(id);
+        res.json(gameDetails);
+    } catch (error) {
+        console.error(`Erreur lors de la récupération des détails du jeu ${id} :`, error.message);
+        res.status(500).json({ message: "Échec de la récupération des détails du jeu.", error: error.message });
+    }
+});
+
+// Route pour récupérer une liste de jeux avec filtres
+router.get('/', async (req, res) => {
+    const { limit = 200, offset = 0, sort = 'first_release_date desc', recent = false } = req.query;
+    try {
+        const fields = "id, name, aggregated_rating, first_release_date, cover.image_id, genres.name";
+
+        const now = Math.floor(Date.now() / 1000);
+        const sixMonthsAgo = now - 6 * 30 * 24 * 60 * 60;
+        const recentFilter = recent === 'true'
+            ? `where first_release_date >= ${sixMonthsAgo} & first_release_date <= ${now};`
+            : `where first_release_date <= ${now};`;
+
+        const options = `sort ${sort}; limit ${limit}; offset ${offset};`;
+
+        const games = await catalogRetriever.getGameData(fields, recentFilter, options);
+
+        const transformedGames = games.map(game => ({
+            id: game.id,
+            name: game.name || "Titre inconnu",
+            cover: game.cover?.image_id
+                ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
+                : 'https://via.placeholder.com/250x350',
+            aggregatedRating: game.aggregated_rating || 0,
+            releaseDate: game.first_release_date
+                ? new Date(game.first_release_date * 1000).toISOString()
+                : null,
+            genres: game.genres?.map(genre => genre.name) || ["Non spécifié"],
+        }));
+
+        res.json(transformedGames);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des jeux :", error.message);
+        res.status(500).json({ message: "Échec de la récupération des jeux.", error: error.message });
+    }
+});
 
 module.exports = router;
