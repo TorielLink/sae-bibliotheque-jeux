@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const DataRetriever = require('../services/DataRetriever'); // Assurez-vous que ce service existe et est configuré
+const DataRetriever = require('../services/APIRequests'); // Assurez-vous que ce service existe et est configuré
 
 // Chargez les variables d'environnement
 const clientId = process.env.CLIENT_ID;
