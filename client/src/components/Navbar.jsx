@@ -1,3 +1,4 @@
+// Navbar.jsx
 import React, { useState, useContext } from 'react';
 import {
   AppBar,
@@ -78,7 +79,7 @@ function Navbar() {
             aria-label="logo"
             component={Link}
             to="/"
-            sx={{ marginRight: 1 }}
+            sx={{ marginRight: isMobile ? 0.5 : 1 }}
           >
             <img
               src="/logo.png"
@@ -89,35 +90,38 @@ function Navbar() {
               }}
             />
           </IconButton>
-          {!isSearchActive && (
-            <Typography
-              variant="h6"
-              component={Link}
-              to="/"
-              sx={{
-                fontFamily: '"Roboto", sans-serif',
-                fontWeight: 700,
-                color: theme.palette.text.primary,
-                fontSize: isMobile ? '1rem' : '1.8rem',
-                textTransform: 'uppercase',
-                whiteSpace: 'nowrap',
-                textDecoration: 'none',
-              }}
-            >
-              SCRIB
-            </Typography>
-          )}
+          <Typography
+            variant="h6"
+            component={Link}
+            to="/"
+            sx={{
+              fontFamily: '"Roboto", sans-serif',
+              fontWeight: 700,
+              color: theme.palette.text.primary,
+              fontSize: isMobile ? '1rem' : '1.8rem',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap',
+              textDecoration: 'none',
+              display: 'block',
+              marginLeft: isMobile ? '-2px' : '8px', // Optionnel : ajuster la marge si nécessaire
+            }}
+          >
+            SCRIB
+          </Typography>
         </Box>
 
-        {/* Navigation links and Search Bar */}
+        {/* Spacer pour pousser les éléments suivants à droite */}
+        <Box sx={{ flexGrow: 1 }} />
+
+        {/* Navigation links, Search Bar, Se connecter Button, and Theme Toggle */}
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: isMobile && isSearchActive ? 'flex-start' : 'flex-end',
-            flexGrow: 1,
+            gap: isMobile ? '8px' : '16px', // Espacement entre les éléments
           }}
         >
+          {/* Navigation Links */}
           {!isSearchActive || !isMobile ? (
             <>
               <Typography
@@ -129,7 +133,6 @@ function Navbar() {
                     ? theme.palette.jaune.main
                     : theme.palette.text.primary,
                   fontSize: isMobile ? '0.75rem' : '1.1rem',
-                  marginRight: '16px',
                 }}
               >
                 Catalogue
@@ -150,6 +153,7 @@ function Navbar() {
             </>
           ) : null}
 
+          {/* Barre de recherche */}
           <SearchBar
             searchText={searchText}
             setSearchText={setSearchText}
@@ -158,53 +162,56 @@ function Navbar() {
             isSearchActive={isSearchActive}
             setSearchActive={setSearchActive}
             isMobile={isMobile}
-            onGameSelect={handleGameSelect} // Ajout de la fonction ici
+            onGameSelect={handleGameSelect}
           />
-        </Box>
 
-        {/* Bouton de connexion */}
-        {!isSearchActive || !isMobile ? (
+          {/* Bouton de connexion */}
           <Button
             component={Link}
             to="/login"
             variant="contained"
             sx={{
-                fontSize: isMobile ? '0.5rem' : '1rem', // Smaller text for mobile
-                padding: isMobile ? '2px 4px' : '8px 16px',
-                minWidth: isMobile ? '60px' : '130px',
-                backgroundColor: theme.palette.green.main,
-                color: theme.palette.white.main,
+              fontSize: isMobile ? '0.5rem' : '1rem', // Taille plus petite en mobile
+              padding: isMobile ? '2px 4px' : '8px 16px',
+              minWidth: isMobile ? '60px' : '130px', // Largeur fixe pour mobile et desktop
+              backgroundColor: theme.palette.green.main,
+              color: theme.palette.white.main,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              flexShrink: 0,
             }}
           >
             Se connecter
           </Button>
-        ) : null}
 
-        {/* Bouton de bascule de thème */}
-        <IconButton
-          onClick={toggleTheme}
-          color="inherit"
-          sx={{
-            padding: isMobile ? '4px' : '8px',
-            ml: isMobile ? '4px' : '8px',
-          }}
-        >
-          {mode === 'light' ? (
-            <DarkModeIcon
-              sx={{
-                fontSize: isMobile ? '20px' : '32px',
-                color: theme.palette.text.primary,
-              }}
-            />
-          ) : (
-            <LightModeIcon
-              sx={{
-                fontSize: isMobile ? '20px' : '32px',
-                color: theme.palette.text.primary,
-              }}
-            />
-          )}
-        </IconButton>
+          {/* Bouton de bascule de thème */}
+          <IconButton
+            onClick={toggleTheme}
+            color="inherit"
+            sx={{
+              padding: isMobile ? '0px' : '8px',
+              ml: isMobile ? '6px' : '8px',
+            }}
+          >
+            {mode === 'light' ? (
+              <DarkModeIcon
+                sx={{
+                  fontSize: isMobile ? '20px' : '32px',
+                  color: theme.palette.text.primary,
+                }}
+              />
+            ) : (
+              <LightModeIcon
+                sx={{
+                  fontSize: isMobile ? '20px' : '32px',
+                  color: theme.palette.text.primary,
+                }}
+              />
+            )}
+          </IconButton>
+        </Box>
       </Toolbar>
     </AppBar>
   );
