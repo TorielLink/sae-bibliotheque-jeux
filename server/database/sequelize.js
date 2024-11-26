@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const gameGenreModel = require('../models/gameGenre.js');
+const usersModel = require('../models/users.js');
 require('dotenv').config();
 
 let sequelize;
@@ -23,7 +24,9 @@ sequelize = new Sequelize(
 
 // Initialize the GameGenre model
 const gameGenre = gameGenreModel(sequelize, DataTypes);
+const users = usersModel(sequelize, DataTypes);
 
 module.exports = {
   gameGenre,  // Export the initialized model
+    users,  // Export the initialized model
 };

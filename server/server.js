@@ -8,6 +8,8 @@ const gameGenreRoutes = require('./routes/gameGenreRoute');
 // Route pour la recherche, test avec http://localhost:8080/search?query=mario
  const searchRoutes = require('./routes/searchRoute');
 
+ const usersRoutes = require('./routes/usersRoutes');
+
 // Création de l'application Express
 const app = express();
 
@@ -33,6 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/games', gameRoutes); // Routes pour les jeux
 app.use('/gameGenres', gameGenreRoutes); // Routes pour les genres
 app.use('/search', searchRoutes); // Routes pour la recherche
+app.use('/users', usersRoutes); // Routes pour les utilisateurs
 
 // Gestion des erreurs pour les routes non définies
 app.use((req, res) => {
