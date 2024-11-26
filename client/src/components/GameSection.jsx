@@ -50,11 +50,12 @@ function GameSection({ title, games, sortBy, order, isMobileView }) {
               {sortedGames.map((game) => (
                 <Box key={game.id} sx={{ flex: '0 0 auto' }}>
                   <GameCard
-                    image={game.image}
-                    title={game.title}
-                    rating={game.rating}
-                    categories={game.categories}
-                  />
+                      id={game.id}
+                      image={game.image}
+                      title={game.title}
+                      rating={game.rating}
+                      categories={game.categories}
+                    />
                 </Box>
               ))}
             </Box>

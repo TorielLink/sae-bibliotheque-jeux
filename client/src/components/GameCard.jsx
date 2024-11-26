@@ -2,13 +2,20 @@ import React from 'react';
 import { Card, CardMedia, Typography, Chip, Box, useMediaQuery } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
-function GameCard({ image, title, rating, categories }) {
+function GameCard({ id, image, title, rating, categories }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
 
   // Limiter le nombre de catégories affichées sur mobile
   const displayedCategories = isMobile ? categories.slice(0, 2) : categories;
+
+  // Fonction pour gérer le clic et rediriger vers la page de détails
+  const handleCardClick = () => {
+    navigate(`/details/${title}`, { state: { id } }); // Redirection avec titre comme paramètre et id dans `state`
+  };
 
   return (
     <Card
@@ -24,22 +31,23 @@ function GameCard({ image, title, rating, categories }) {
         overflow: 'hidden',
         marginLeft: '0px',
         marginTop: '0px',
+        cursor: 'pointer', // Curseur pour indiquer que la carte est cliquable
         '&:hover': {
           boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.3)',
           ...(!isMobile && {
             '& .categories': {
-              opacity: 1, // Afficher les catégories au survol sur desktop
+              opacity: 1,
             },
           }),
         },
       }}
+      onClick={handleCardClick} // Ajout de l'action au clic
     >
-      {/* Conteneur de l'image */}
       <Box
         sx={{
           position: 'relative',
           width: '100%',
-          height: '241px', // Hauteur ajustée pour correspondre à la position du titre
+          height: '241px',
           overflow: 'hidden',
         }}
       >
