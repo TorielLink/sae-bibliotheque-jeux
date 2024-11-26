@@ -3,9 +3,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Importation des routes
-const gameRoutes = require('./routes/gamesRoute');
+const gameRoutes = require('./routes/gamesRoute'); // accès aux jeux http://localhost:8080/games
 const gameGenreRoutes = require('./routes/gameGenreRoute');
-const searchRoutes = require('./routes/searchRoute'); // Route pour la recherche
+// Route pour la recherche, test avec http://localhost:8080/search?query=mario
+ const searchRoutes = require('./routes/searchRoute');
 
 // Création de l'application Express
 const app = express();

@@ -42,7 +42,7 @@ function GameSection({ title, games, sortBy, order, isMobileView }) {
                 display: 'flex',
                 overflowX: 'auto',
                 gap: '30px',
-                padding: '0px 10px',
+                padding: '0px 0px',
                 scrollbarWidth: 'none',
                 '&::-webkit-scrollbar': { display: 'none' },
               }}

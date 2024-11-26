@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
             releaseDate: game.first_release_date
                 ? new Date(game.first_release_date * 1000).toISOString()
                 : null,
-            genres: game.genres?.map(genre => genre.name) || ["Non spécifié"],
+            genres: game.genres?.map(genre => genre.name) || [],
         }));
 
         res.json(transformedGames);

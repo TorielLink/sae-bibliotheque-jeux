@@ -7,7 +7,7 @@ const SectionTitle = ({ title }) => {
   const theme = useTheme();
 
   return (
-    <Box sx={{ marginBottom: '20px', paddingLeft: '20px', paddingRight: '20px' }}>
+    <Box sx={{ marginBottom: '20px', paddingLeft: '0px', paddingRight: '20px' }}>
       <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
         {/* Rectangle autour du titre */}
         <Box
