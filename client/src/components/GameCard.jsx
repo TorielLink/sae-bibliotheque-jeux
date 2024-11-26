@@ -20,9 +20,9 @@ function GameCard({ image, title, rating, categories }) {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         boxShadow: '0px 0px 7px #000000',
-        borderRadius: '5px',
+        borderRadius: '15px',
         overflow: 'hidden',
-        marginLeft: '0px', // Supprimer la marge gauche
+        marginLeft: '0px',
         marginTop: '0px',
         '&:hover': {
           boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.3)',
