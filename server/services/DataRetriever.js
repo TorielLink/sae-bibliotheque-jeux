@@ -50,6 +50,7 @@ class DataRetriever extends APIRequests {
             [this.getGameAgeRatingsData, game.age_ratings, 2],
             [this.getGameCover, game.cover, 1],
             [this.getGameGenres, game.genres, 1],
+            [this.getGameFranchises, game.franchises, 1],
 
             [this.getGameScreenshots, game.screenshots, 1],
             [this.getGameVideos, game.videos, 1],
@@ -71,38 +72,12 @@ class DataRetriever extends APIRequests {
     async getGameInfo(id) {
         const game = (await this.getGameData(DataRetriever.#gamePageFields, `where id=${id};`))[0]
         let requests = this.gamePageRequests(game)
+        const apiData = {
+            ...await this.makeRequests(requests)
+        }
 
-        const relatedContentIds = [
-            ...(game.bundles || []),
-            ...(game.collections || []),
-            ...(game.dlcs || []),
-            ...(game.expansions || []),
-            ...(game.franchises || []),
-            ...(game.game_modes || []),
-            ...(game.remakes || []),
-            ...(game.remasters || []),
-            ...(game.similar_games || []),
-            ...(game.standalone_expansions || []),
-            ...(game.parent_game || [])
-        ].filter(Boolean);
-        const relatedContentData = await this.#getRelatedContent(relatedContentIds)
-        let relatedContentMap = new Map()
-        relatedContentData.map(el => {
-            relatedContentMap.set(el.id, el);
-        })
-        /*
-        [this.getGameParentGame, game.parent_game, 1],
-        */
-        const bundles = this.#setRelatedContent("bundles", game.bundles || [], relatedContentMap);
-        const collections = this.#setRelatedContent("collections", game.collections || [], relatedContentMap);
-        const dlcs = this.#setRelatedContent("dlcs", game.dlcs || [], relatedContentMap);
-        const expansions = this.#setRelatedContent("expansions", game.expansions || [], relatedContentMap);
-        //Vérifier les données de franchise
-        const franchises = this.#setRelatedContent("franchises", game.franchises || [], relatedContentMap);
-        const remakes = this.#setRelatedContent("remakes", game.remakes || [], relatedContentMap);
-        const remasters = this.#setRelatedContent("remasters", game.remasters || [], relatedContentMap);
-        const similar_games = this.#setRelatedContent("similar_games", game.similar_games || [], relatedContentMap);
-        const standalone_expansions = this.#setRelatedContent("standalone_expansions", game.standalone_expansions || [], relatedContentMap);
+        const [bundles, collections, dlcs, expansions, remakes,
+            remasters, similar_games, standalone_expansions, franchises, parentGame] = await this.#getRelatedContent(game, apiData)
 
         let result
         result = {
@@ -122,9 +97,65 @@ class DataRetriever extends APIRequests {
             remasters: remasters,
             similarGames: similar_games,
             standaloneExpansions: standalone_expansions,
-            ...await this.makeRequests(requests)
+            parentGame: parentGame
         }
         return result
+    }
+
+    async #getRelatedContent(game, apiData) {
+
+        let franchisesIds = []
+        apiData.franchises.map(el => {
+            franchisesIds.push(...el.games)
+        })
+
+
+        const relatedContentIds = [
+            ...(game.bundles || []),
+            ...(game.collections || []),
+            ...(game.dlcs || []),
+            ...(game.expansions || []),
+            ...(game.franchises || []),
+            ...(game.game_modes || []),
+            ...(game.remakes || []),
+            ...(game.remasters || []),
+            ...(game.similar_games || []),
+            ...(game.standalone_expansions || []),
+            ...(franchisesIds || [])
+        ].filter(Boolean);
+
+        if (game.parent_game !== undefined) {
+            relatedContentIds.push(game.parent_game);
+        }
+
+        const relatedContentData = await this.#getRelatedContentList(relatedContentIds)
+        let relatedContentMap = new Map()
+        relatedContentData.map(el => {
+            relatedContentMap.set(el.id, el);
+        })
+
+
+        const bundles = this.#setRelatedContent("bundles", game.bundles || [], relatedContentMap);
+        const collections = this.#setRelatedContent("collections", game.collections || [], relatedContentMap);
+        const dlcs = this.#setRelatedContent("dlcs", game.dlcs || [], relatedContentMap);
+        const expansions = this.#setRelatedContent("expansions", game.expansions || [], relatedContentMap);
+        const remakes = this.#setRelatedContent("remakes", game.remakes || [], relatedContentMap);
+        const remasters = this.#setRelatedContent("remasters", game.remasters || [], relatedContentMap);
+        const similar_games = this.#setRelatedContent("similar_games", game.similar_games || [], relatedContentMap);
+        const standalone_expansions = this.#setRelatedContent("standalone_expansions", game.standalone_expansions || [], relatedContentMap);
+
+        apiData.franchises.map(franchise => {
+            const gameIds = franchise.games
+            franchise.games = []
+            gameIds.forEach(id => {
+                franchise.games.push(relatedContentMap.get(id))
+            })
+        })
+
+        const parent_game = game.parent_game ? relatedContentMap.get(game.parent_game) : null
+
+        return [bundles, collections, dlcs, expansions, remakes, remasters, similar_games,
+            standalone_expansions, apiData.franchises, parent_game]
     }
 
     #setRelatedContent(name, contentIds, contentMap) {
@@ -133,6 +164,12 @@ class DataRetriever extends APIRequests {
             list.push(contentMap.get(el));
         })
         return list
+    }
+
+    async #getRelatedContentList(gamesIds) {
+        const sortingOptions = `where id = (${gamesIds.join(",")});`
+        const paginationOption = `limit ${gamesIds.length};`;
+        return await this.#getGameList(sortingOptions, paginationOption);
     }
 
     async #getGameList(sortingOption, paginationOption) {
@@ -167,12 +204,6 @@ class DataRetriever extends APIRequests {
         })
 
         return result
-    }
-
-    async #getRelatedContent(gamesIds) {
-        const sortingOptions = `where id = (${gamesIds.join(",")});`
-        const paginationOption = `limit ${gamesIds.length};`;
-        return await this.#getGameList(sortingOptions, paginationOption);
     }
 
     async getCatalogByDate(limit = DataRetriever.#DEFAULT_LIMIT, offset = DataRetriever.#DEFAULT_OFFSET) {
