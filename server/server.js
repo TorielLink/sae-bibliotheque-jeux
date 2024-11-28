@@ -1,14 +1,14 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path'); // Import du module path
 require('dotenv').config();
 
 // Importation des routes
 const gameRoutes = require('./routes/gamesRoute'); // accès aux jeux http://localhost:8080/games
 const gameGenreRoutes = require('./routes/gameGenreRoute');
 // Route pour la recherche, test avec http://localhost:8080/search?query=mario
- const searchRoutes = require('./routes/searchRoute');
-
- const usersRoutes = require('./routes/usersRoutes');
+const searchRoutes = require('./routes/searchRoute');
+const usersRoutes = require('./routes/usersRoutes');
 
 // Création de l'application Express
 const app = express();
@@ -36,6 +36,7 @@ app.use('/games', gameRoutes); // Routes pour les jeux
 app.use('/gameGenres', gameGenreRoutes); // Routes pour les genres
 app.use('/search', searchRoutes); // Routes pour la recherche
 app.use('/users', usersRoutes); // Routes pour les utilisateurs
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Routes pour les fichiers téléchargés
 
 // Gestion des erreurs pour les routes non définies
 app.use((req, res) => {
