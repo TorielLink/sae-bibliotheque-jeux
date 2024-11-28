@@ -1,5 +1,5 @@
-const { users } = require('../database/sequelize'); // Modèle Sequelize pour les utilisateurs
-const { Op } = require('sequelize'); // Import Sequelize Opérateurs
+const { users } = require('../database/sequelize');
+const { Op } = require('sequelize');
 
 const controller = {};
 
@@ -7,7 +7,7 @@ const controller = {};
 controller.getAll = async (req, res) => {
     try {
         const usersData = await users.findAll({
-            where: { isDeleted: false }, // Filtre pour exclure les utilisateurs supprimés
+            where: { isDeleted: false },
         });
         res.status(200).json({ message: 'User data fetched successfully', data: usersData });
     } catch (error) {
@@ -23,7 +23,7 @@ controller.create = async (req, res) => {
     }
 
     try {
-        const { username, mail, password, isDeleted, deleted_at } = req.body;
+        const { username, mail, password, isDeleted, deleted_at, privacySettings } = req.body;
 
         // Vérification des champs requis
         if (!username || !mail || !password) {
@@ -58,6 +58,7 @@ controller.create = async (req, res) => {
             profile_picture: profilePicturePath,
             isDeleted: isDeleted || false,
             deleted_at: deleted_at || null,
+            privacySettings: privacySettings || 1,
         });
 
         // Création de l'utilisateur
@@ -68,6 +69,7 @@ controller.create = async (req, res) => {
             profile_picture: profilePicturePath,
             isDeleted: isDeleted || false,
             deleted_at: deleted_at || null,
+            privacySettings: privacySettings || 1,
         });
 
         res.status(201).json({ message: 'Utilisateur créé avec succès', data: newUser });

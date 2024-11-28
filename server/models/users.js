@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             unique: true
         },
-
         isDeleted: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
@@ -33,8 +32,17 @@ module.exports = (sequelize, DataTypes) => {
         deleted_at: {
             type: DataTypes.DATE,
             allowNull: true
-        }
+        },
+        privacySettings: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'PrivacySettings',
+                key: 'privacy_setting_id'
+            }
+        },
     },
+
         {
         freezeTableName: true,
         timestamps: false,
