@@ -5,7 +5,6 @@ require('dotenv').config();
 
 // Importation des routes
 const gameRoutes = require('./routes/gamesRoute'); // accès aux jeux http://localhost:8080/games
-const gameGenreRoutes = require('./routes/gameGenreRoute');
 // Route pour la recherche, test avec http://localhost:8080/search?query=mario
 const searchRoutes = require('./routes/searchRoute');
 const usersRoutes = require('./routes/usersRoutes');
@@ -33,7 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Gestion des routes
 app.use('/games', gameRoutes); // Routes pour les jeux
-app.use('/gameGenres', gameGenreRoutes); // Routes pour les genres
 app.use('/search', searchRoutes); // Routes pour la recherche
 app.use('/users', usersRoutes); // Routes pour les utilisateurs
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Routes pour les fichiers téléchargés

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('PrivacySettings', {
+    return sequelize.define('privacy_settings', {
         privacy_setting_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,

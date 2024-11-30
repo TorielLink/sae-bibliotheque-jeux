@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Users', {
+    return sequelize.define('users', {
         user_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -29,15 +29,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
-        deleted_at: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        privacySettings: {
+        privacy_settings: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'PrivacySettings',
+                model: 'privacy_settings',
                 key: 'privacy_setting_id'
             }
         },

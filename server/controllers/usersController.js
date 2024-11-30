@@ -23,7 +23,7 @@ controller.create = async (req, res) => {
     }
 
     try {
-        const { username, mail, password, isDeleted, deleted_at, privacySettings } = req.body;
+        const { username, mail, password, isDeleted, deleted_at, privacy_settings } = req.body;
 
         // Vérification des champs requis
         if (!username || !mail || !password) {
@@ -58,7 +58,7 @@ controller.create = async (req, res) => {
             profile_picture: profilePicturePath,
             isDeleted: isDeleted || false,
             deleted_at: deleted_at || null,
-            privacySettings: privacySettings || 1,
+            privacy_settings: privacy_settings || 1,
         });
 
         // Création de l'utilisateur
@@ -69,7 +69,7 @@ controller.create = async (req, res) => {
             profile_picture: profilePicturePath,
             isDeleted: isDeleted || false,
             deleted_at: deleted_at || null,
-            privacySettings: privacySettings || 1,
+            privacy_settings: privacy_settings || 1,
         });
 
         res.status(201).json({ message: 'Utilisateur créé avec succès', data: newUser });

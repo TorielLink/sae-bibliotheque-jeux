@@ -7,7 +7,7 @@ function LoginPage() {
     mail: '',
     password: '',
     profilePicture: null,
-    privacySettings: 1,
+    privacy_settings: 1,
   });
   const [signupError, setSignupError] = useState(''); // Stocker les erreurs d'inscription
 
@@ -30,7 +30,7 @@ function LoginPage() {
     formData.append('username', signupData.username);
     formData.append('mail', signupData.mail);
     formData.append('password', signupData.password);
-    formData.append('privacySettings', signupData.privacySettings);
+    formData.append('privacy_settings', signupData.privacy_settings);
     if (signupData.profilePicture) {
       formData.append('profile_picture', signupData.profilePicture);
     }
