@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
-        privacy_settings: {
+        privacy_setting_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {

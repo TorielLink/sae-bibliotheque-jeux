@@ -7,7 +7,15 @@ const controller = {};
 controller.getAll = async (req, res) => {
     try {
         const usersData = await users.findAll({
-            where: { isDeleted: false },
+            attributes: [
+                'user_id',
+                'username',
+                'mail',
+                'profile_picture',
+                'isDeleted',
+                'privacy_setting_id' // Remplacement par le bon champ
+            ],
+            where: { isDeleted: false }
         });
         res.status(200).json({ message: 'User data fetched successfully', data: usersData });
     } catch (error) {
@@ -16,26 +24,21 @@ controller.getAll = async (req, res) => {
     }
 };
 
+// Création d'un utilisateur (désactivé temporairement si non nécessaire)
 controller.create = async (req, res) => {
-    console.log('Requête reçue pour créer un utilisateur :', req.body);
-    if (req.file) {
-        console.log('Fichier téléchargé :', req.file);
-    }
-
     try {
-        const { username, mail, password, isDeleted, deleted_at, privacy_settings } = req.body;
+        const { username, mail, password, isDeleted, privacy_setting_id } = req.body;
 
         // Vérification des champs requis
         if (!username || !mail || !password) {
-            console.log('Champs requis manquants');
             return res.status(400).json({ message: 'Champs requis : username, mail et password' });
         }
 
         // Vérification de l'existence d'un utilisateur avec le même username ou email
         const existingUser = await users.findOne({
             where: {
-                [Op.or]: [{ username }, { mail }],
-            },
+                [Op.or]: [{ username }, { mail }]
+            }
         });
 
         if (existingUser) {
@@ -45,21 +48,11 @@ controller.create = async (req, res) => {
             });
         }
 
-        // Gestion de l'image de profil
+        // Gestion de l'image de profil (optionnel)
         let profilePicturePath = null;
         if (req.file) {
             profilePicturePath = `/uploads/profile_pictures/${req.file.filename}`;
         }
-
-        console.log('Données à insérer :', {
-            username,
-            mail,
-            password,
-            profile_picture: profilePicturePath,
-            isDeleted: isDeleted || false,
-            deleted_at: deleted_at || null,
-            privacy_settings: privacy_settings || 1,
-        });
 
         // Création de l'utilisateur
         const newUser = await users.create({
@@ -68,9 +61,9 @@ controller.create = async (req, res) => {
             password,
             profile_picture: profilePicturePath,
             isDeleted: isDeleted || false,
-            deleted_at: deleted_at || null,
-            privacy_settings: privacy_settings || 1,
+            privacy_setting_id: privacy_setting_id || 1 // Attention à utiliser privacy_setting_id
         });
+
 
         res.status(201).json({ message: 'Utilisateur créé avec succès', data: newUser });
     } catch (error) {
@@ -78,7 +71,5 @@ controller.create = async (req, res) => {
         res.status(500).json({ message: 'Erreur interne lors de la création de l’utilisateur', error: error.message });
     }
 };
-
-
 
 module.exports = controller;

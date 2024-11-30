@@ -8,9 +8,16 @@ const gameRoutes = require('./routes/gamesRoute'); // accès aux jeux http://loc
 // Route pour la recherche, test avec http://localhost:8080/search?query=mario
 const searchRoutes = require('./routes/searchRoute');
 const usersRoutes = require('./routes/usersRoutes');
+const statusRoutes = require('./routes/statusRoutes');
+const gamePlatformsRoutes = require('./routes/gamePlatformsRoutes');
+const gameLogsRoutes = require('./routes/gameLogsRoutes');
+
 
 // Création de l'application Express
 const app = express();
+const gameListRoutes = require('./routes/gameListRoutes');
+const listContentRoutes = require('./routes/listContentRoutes');
+
 
 // Configuration CORS
 const configureCors = () => {
@@ -35,6 +42,12 @@ app.use('/games', gameRoutes); // Routes pour les jeux
 app.use('/search', searchRoutes); // Routes pour la recherche
 app.use('/users', usersRoutes); // Routes pour les utilisateurs
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Routes pour les fichiers téléchargés
+app.use('/status', statusRoutes); // Ajout des routes pour les statuts
+app.use('/game-platforms', gamePlatformsRoutes); // Ajout des routes pour les plateformes de jeu
+app.use('/game-lists', gameListRoutes); // Ajout des routes pour les listes de jeux
+app.use('/list-content', listContentRoutes);
+app.use('/game-logs', gameLogsRoutes);
+
 
 // Gestion des erreurs pour les routes non définies
 app.use((req, res) => {

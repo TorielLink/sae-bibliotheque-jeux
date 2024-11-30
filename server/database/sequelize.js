@@ -1,6 +1,17 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const usersModel = require('../models/users.js');
 const privacySettingsModel = require('../models/privacySettings.js');
+const statusModel = require('../models/status.js');
+const gamePlatformsModel = require('../models/gamePlatforms.js');
+const gameListModel = require('../models/gameList.js');
+const listContentModel = require('../models/listContent.js');
+const gameLogsModel = require('../models/gameLogs.js');
+//const gameSessionModel = require('../models/gameSession.js');
+//const gameReviewModel = require('../models/gameReview.js');
+// gameRatingsModel = require('../models/gameRatings.js');
+//const gameStatusModel = require('../models/gameStatus.js');
+//const friendsModel = require('../models/friends.js');
+//const userListsModel = require('../models/userLists.js');
 require('dotenv').config();
 
 let sequelize;
@@ -25,8 +36,25 @@ sequelize = new Sequelize(
 // Initialize the GameGenre model
 const users = usersModel(sequelize, DataTypes);
 const privacySettings = privacySettingsModel(sequelize, DataTypes);
+const status = statusModel(sequelize, DataTypes);
+const gamePlatforms = gamePlatformsModel(sequelize, DataTypes);
+const gameList = gameListModel(sequelize, DataTypes);
+const listContent = listContentModel(sequelize, DataTypes);
+const gameLogs = gameLogsModel(sequelize, DataTypes);
+//const gameSession = gameSessionModel(sequelize, DataTypes);
+//const gameReview = gameReviewModel(sequelize, DataTypes);
+//const gameRatings = gameRatingsModel(sequelize, DataTypes);
+//const gameStatus = gameStatusModel(sequelize, DataTypes);
+//const friends = friendsModel(sequelize, DataTypes);
+//const userLists = userListsModel(sequelize, DataTypes);
+
 
 module.exports = {
     users,  // Export the initialized model
     privacySettings,  // Export the initialized model
+    status,  // Export the initialized model
+    gamePlatforms,  // Export the initialized model
+    gameList,  // Export the initialized model
+    listContent,  // Export the initialized model
+    gameLogs,  // Export the initialized model
 };
