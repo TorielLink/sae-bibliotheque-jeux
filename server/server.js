@@ -11,11 +11,17 @@ const usersRoutes = require('./routes/usersRoutes');
 const statusRoutes = require('./routes/statusRoutes');
 const gamePlatformsRoutes = require('./routes/gamePlatformsRoutes');
 const gameLogsRoutes = require('./routes/gameLogsRoutes');
+const gameSessionRoutes = require('./routes/gameSessionsRoutes');
+const gameReviewRoutes = require('./routes/gameReviewsRoutes');
+const gameRatingsRoutes = require('./routes/gameRatingsRoutes');
+const gameStatusRoutes = require('./routes/gameStatusRoutes');
+const friendsRoutes = require('./routes/friendsRoutes');
+const userListsRoutes = require('./routes/userListsRoutes');
 
 
 // Création de l'application Express
 const app = express();
-const gameListRoutes = require('./routes/gameListRoutes');
+const gameListRoutes = require('./routes/gameListsRoutes');
 const listContentRoutes = require('./routes/listContentRoutes');
 
 
@@ -47,6 +53,12 @@ app.use('/game-platforms', gamePlatformsRoutes); // Ajout des routes pour les pl
 app.use('/game-lists', gameListRoutes); // Ajout des routes pour les listes de jeux
 app.use('/list-content', listContentRoutes);
 app.use('/game-logs', gameLogsRoutes);
+app.use('/game-sessions', gameSessionRoutes);
+app.use('/game-reviews', gameReviewRoutes);
+app.use('/game-ratings', gameRatingsRoutes);
+app.use('/game-status', gameStatusRoutes);
+app.use('/friends', friendsRoutes);
+app.use('/user-lists', userListsRoutes);
 
 
 // Gestion des erreurs pour les routes non définies

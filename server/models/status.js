@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        freezeTableName: true,
-        timestamps: false
+        freezeTableName: true, // Utilise exactement le nom `status`
+        timestamps: false // Pas de colonnes createdAt/updatedAt
     });
 };

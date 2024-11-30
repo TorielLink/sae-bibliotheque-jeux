@@ -64,7 +64,6 @@ controller.create = async (req, res) => {
             privacy_setting_id: privacy_setting_id || 1 // Attention à utiliser privacy_setting_id
         });
 
-
         res.status(201).json({ message: 'Utilisateur créé avec succès', data: newUser });
     } catch (error) {
         console.error('Erreur interne lors de la création de l’utilisateur :', error);
