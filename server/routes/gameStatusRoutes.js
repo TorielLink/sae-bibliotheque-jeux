@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/gameStatusController');
+const gameStatusController = require('../controllers/gameStatusController');
 
 // Récupérer tous les statuts de jeu
-router.get('/', controller.getAllStatuses);
+router.get('/', gameStatusController.getAllGameStatuses);
 
-// Récupérer tous les statuts de jeu pour un utilisateur spécifique
-router.get('/user/:id', controller.getStatusesByUserId);
+// Récupérer les statuts de jeu pour un utilisateur spécifique
+router.get('/user/:userId', gameStatusController.getGameStatusesByUser);
+
+// Récupérer les statuts de jeu pour un jeu spécifique
+router.get('/game/:igdb_game_id', gameStatusController.getGameStatusesByGame);
 
 module.exports = router;
