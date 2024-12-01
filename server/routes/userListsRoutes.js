@@ -1,8 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const userListsController = require('../controllers/userListsController');
+const controller = require('../controllers/userListsController');
 
-// Récupérer toutes les relations entre utilisateurs et listes
-router.get('/', userListsController.getAll);
+// Récupérer tous les listes
+router.get('/',controller.getAllAssociations);
+
+// Récupérer toutes les listes associées à un utilisateur
+router.get('/users/:id/lists', controller.getUserLists);
+
+// Récupérer tous les utilisateurs associés à une liste
+router.get('/lists/:id/users', controller.getListUsers);
 
 module.exports = router;

@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const listContentController = require('../controllers/listContentController');
+const controller = require('../controllers/listContentController'); // Chemin correct vers le contrôleur
 
-// Récupérer tout le contenu des listes
-router.get('/', listContentController.getAll);
+// Récupérer tous les contenus de listes
+router.get('/', controller.getAllContents);
+
+// Récupérer les contenus d’une liste spécifique par ID
+router.get('/:id', controller.getContentsByListId);
 
 module.exports = router;

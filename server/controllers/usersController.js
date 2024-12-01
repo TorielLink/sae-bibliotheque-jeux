@@ -1,4 +1,4 @@
-const { users } = require('../database/sequelize');
+const { users, privacySettings} = require('../database/sequelize');
 const { Op } = require('sequelize');
 
 const controller = {};
@@ -7,15 +7,13 @@ const controller = {};
 controller.getAll = async (req, res) => {
     try {
         const usersData = await users.findAll({
-            attributes: [
-                'user_id',
-                'username',
-                'mail',
-                'profile_picture',
-                'isDeleted',
-                'privacy_setting_id' // Remplacement par le bon champ
-            ],
-            where: { isDeleted: false }
+            attributes: ['user_id', 'username', 'mail', 'profile_picture', 'isDeleted'], // Champs spécifiques
+            where: { isDeleted: false },
+            include: {
+                model: privacySettings, // Modèle lié
+                as: 'default_privacy', // Alias défini dans Sequelize
+                attributes: ['name'], // Champs spécifiques de privacy_settings
+            },
         });
         res.status(200).json({ message: 'User data fetched successfully', data: usersData });
     } catch (error) {
@@ -23,6 +21,7 @@ controller.getAll = async (req, res) => {
         res.status(500).json({ message: 'Error fetching users', error: error.message });
     }
 };
+
 
 // Création d'un utilisateur (désactivé temporairement si non nécessaire)
 controller.create = async (req, res) => {
