@@ -1,54 +1,70 @@
-const { gameRatings } = require('../database/sequelize');
+const { gameRatings, privacySettings } = require('../database/sequelize');
 
 const controller = {};
 
-// Récupérer toutes les évaluations
-controller.getAll = async (req, res) => {
+// Récupérer toutes les évaluations avec leurs paramètres de confidentialité
+controller.getAllRatings = async (req, res) => {
     try {
-        const ratings = await gameRatings.findAll();
-        res.status(200).json({ message: 'Game ratings fetched successfully', data: ratings });
-    } catch (error) {
-        console.error('Error fetching game ratings:', error);
-        res.status(500).json({ message: 'Error fetching game ratings', error: error.message });
-    }
-};
-// TODO : vérifié le fonctionnement de la fonction Création et suppression
-// Ajouter une nouvelle évaluation
-controller.create = async (req, res) => {
-    try {
-        const { user_id, igdb_game_id, rating_value, privacy_setting_id } = req.body;
-
-        const newRating = await gameRatings.create({
-            user_id,
-            igdb_game_id,
-            rating_value,
-            privacy_setting_id
+        const ratings = await gameRatings.findAll({
+            include: {
+                model: privacySettings,
+                as: 'rating_privacy',
+                attributes: ['name'], // Champs spécifiques de privacy_settings
+            },
         });
 
-        res.status(201).json({ message: 'Game rating created successfully', data: newRating });
+        res.status(200).json({ message: 'Ratings fetched successfully', data: ratings });
     } catch (error) {
-        console.error('Error creating game rating:', error);
-        res.status(500).json({ message: 'Error creating game rating', error: error.message });
+        console.error('Error fetching ratings:', error);
+        res.status(500).json({ message: 'Error fetching ratings', error: error.message });
     }
 };
 
-// Supprimer une évaluation
-controller.delete = async (req, res) => {
+// Récupérer les évaluations pour un jeu spécifique
+controller.getRatingsByGameId = async (req, res) => {
     try {
-        const { user_id, igdb_game_id } = req.params;
-
-        const deletedCount = await gameRatings.destroy({
-            where: { user_id, igdb_game_id }
+        const { id } = req.params; // ID du jeu (igdb_game_id)
+        const ratings = await gameRatings.findAll({
+            where: { igdb_game_id: id },
+            include: {
+                model: privacySettings,
+                as: 'rating_privacy',
+                attributes: ['name'], // Champs spécifiques de privacy_settings
+            },
         });
 
-        if (deletedCount === 0) {
-            return res.status(404).json({ message: 'Game rating not found' });
+        if (!ratings || ratings.length === 0) {
+            return res.status(404).json({ message: 'No ratings found for this game' });
         }
 
-        res.status(200).json({ message: 'Game rating deleted successfully' });
+        res.status(200).json({ message: 'Game ratings fetched successfully', data: ratings });
     } catch (error) {
-        console.error('Error deleting game rating:', error);
-        res.status(500).json({ message: 'Error deleting game rating', error: error.message });
+        console.error('Error fetching ratings by game ID:', error);
+        res.status(500).json({ message: 'Error fetching ratings by game ID', error: error.message });
+    }
+};
+
+// Récupérer les évaluations pour un utilisateur spécifique
+controller.getRatingsByUserId = async (req, res) => {
+    try {
+        const { id } = req.params; // ID de l'utilisateur
+        const ratings = await gameRatings.findAll({
+            where: { user_id: id },
+            include: {
+                model: privacySettings,
+                as: 'rating_privacy',
+                attributes: ['name'], // Champs spécifiques de privacy_settings
+            },
+        });
+
+        if (!ratings || ratings.length === 0) {
+            return res.status(404).json({ message: 'No ratings found for this user' });
+        }
+
+        res.status(200).json({ message: 'User ratings fetched successfully', data: ratings });
+    } catch (error) {
+        console.error('Error fetching ratings by user ID:', error);
+        res.status(500).json({ message: 'Error fetching ratings by user ID', error: error.message });
     }
 };
 
