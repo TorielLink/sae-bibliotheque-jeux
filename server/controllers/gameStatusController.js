@@ -1,54 +1,46 @@
-const { gameStatus } = require('../database/sequelize');
+const { gameStatus, users } = require('../database/sequelize');
 
 const controller = {};
 
-// Récupérer tous les statuts des jeux
-controller.getAll = async (req, res) => {
+// Récupérer tous les statuts de jeu avec les informations des utilisateurs
+controller.getAllStatuses = async (req, res) => {
     try {
-        const statuses = await gameStatus.findAll();
-        res.status(200).json({ message: 'Game statuses fetched successfully', data: statuses });
-    } catch (error) {
-        console.error('Error fetching game statuses:', error);
-        res.status(500).json({ message: 'Error fetching game statuses', error: error.message });
-    }
-};
-// TODO : vérifié le fonctionnement de la fonction Création et suppression
-
-// Ajouter un statut de jeu
-controller.create = async (req, res) => {
-    try {
-        const { user_id, igdb_game_id, game_status_id } = req.body;
-
-        const newStatus = await gameStatus.create({
-            user_id,
-            igdb_game_id,
-            game_status_id
+        const statuses = await gameStatus.findAll({
+            include: {
+                model: users,
+                as: 'user_status', // Alias défini dans Sequelize
+                attributes: ['user_id', 'username', 'mail'], // Champs spécifiques pour `users`
+            },
         });
 
-        res.status(201).json({ message: 'Game status created successfully', data: newStatus });
+        res.status(200).json({ message: 'Statuses fetched successfully', data: statuses });
     } catch (error) {
-        console.error('Error creating game status:', error);
-        res.status(500).json({ message: 'Error creating game status', error: error.message });
+        console.error('Error fetching statuses:', error);
+        res.status(500).json({ message: 'Error fetching statuses', error: error.message });
     }
 };
 
-// Supprimer un statut de jeu
-controller.delete = async (req, res) => {
+// Récupérer tous les statuts de jeu pour un utilisateur spécifique
+controller.getStatusesByUserId = async (req, res) => {
     try {
-        const { user_id, igdb_game_id } = req.params;
-
-        const deletedCount = await gameStatus.destroy({
-            where: { user_id, igdb_game_id }
+        const { id } = req.params; // ID de l'utilisateur
+        const statuses = await gameStatus.findAll({
+            where: { user_id: id },
+            include: {
+                model: users,
+                as: 'user_status', // Alias défini dans Sequelize
+                attributes: ['user_id', 'username', 'mail'], // Champs spécifiques pour `users`
+            },
         });
 
-        if (deletedCount === 0) {
-            return res.status(404).json({ message: 'Game status not found' });
+        if (!statuses || statuses.length === 0) {
+            return res.status(404).json({ message: 'No statuses found for this user' });
         }
 
-        res.status(200).json({ message: 'Game status deleted successfully' });
+        res.status(200).json({ message: 'User statuses fetched successfully', data: statuses });
     } catch (error) {
-        console.error('Error deleting game status:', error);
-        res.status(500).json({ message: 'Error deleting game status', error: error.message });
+        console.error('Error fetching statuses by user ID:', error);
+        res.status(500).json({ message: 'Error fetching statuses by user ID', error: error.message });
     }
 };
 

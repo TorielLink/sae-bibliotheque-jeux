@@ -1,15 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const gameStatusController = require('../controllers/gameStatusController');
+const controller = require('../controllers/gameStatusController');
 
-// Récupérer tous les statuts des jeux
-router.get('/', gameStatusController.getAll);
+// Récupérer tous les statuts de jeu
+router.get('/', controller.getAllStatuses);
 
-// TODO : vérifié le fonctionnement de la fonction Création et suppression
-// Ajouter un nouveau statut de jeu
-router.post('/', gameStatusController.create);
-
-// Supprimer un statut de jeu spécifique
-router.delete('/:user_id/:igdb_game_id', gameStatusController.delete);
+// Récupérer tous les statuts de jeu pour un utilisateur spécifique
+router.get('/user/:id', controller.getStatusesByUserId);
 
 module.exports = router;
