@@ -3,7 +3,7 @@ import GameDetails from "../components/GameDetails.jsx";
 import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
 // import GameLogs from '../components/GameLogs.jsx';
-const GameDataRetriever = require('../../../server/services/GameDataRetriever');
+//const GameDataRetriever = require('../../../server/services/GameDataRetriever');
 
 export default function GamesDetailsPage(gameId) {
     const [gameData, setGameData] = useState(null);
@@ -12,7 +12,7 @@ export default function GamesDetailsPage(gameId) {
     useEffect(() => {
         const fetchGameData = async () => {
             try {
-                const retriever = new GameDataRetriever();
+              //  const retriever = new GameDataRetriever();
                 const data = await retriever.getGameInfo(gameId);
                 setGameData(data);
                 setLoading(false); // Arrêter le chargement
