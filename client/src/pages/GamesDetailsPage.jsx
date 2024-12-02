@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import GameDetails from '../components/GameDetails';
-import GameReviews from '../components/GameReviews.jsx';
+import GameDetails from "../components/GameDetails.jsx";
+import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
-// import GameLogs from '../components/GameLogs';
+// import GameLogs from '../components/GameLogs.jsx';
 const GameDataRetriever = require('../../../server/services/GameDataRetriever');
 
 export default function GamesDetailsPage(gameId) {
