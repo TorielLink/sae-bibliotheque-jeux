@@ -17,6 +17,7 @@ const gameRatingsRoutes = require('./routes/gameRatingsRoutes');
 const gameStatusRoutes = require('./routes/gameStatusRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
 const userListsRoutes = require('./routes/userListsRoutes');
+const { swaggerUi, swaggerDocs } = require('./middleware/swagger'); // Importez la configuration
 
 
 // Création de l'application Express
@@ -59,6 +60,7 @@ app.use('/game-ratings', gameRatingsRoutes);
 app.use('/game-status', gameStatusRoutes);
 app.use('/friends', friendsRoutes);
 app.use('/user-lists', userListsRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 // Gestion des erreurs pour les routes non définies
