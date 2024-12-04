@@ -41,9 +41,9 @@ router.get('/by-popularity', async (req, res) => {
 
 // Route pour récupérer les détails d’un jeu spécifique
 router.get('/:id', async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // Récupère l'ID depuis l'URL
     try {
-        const gameDetails = await gameRetriever.getGameInfo(id);
+        const gameDetails = await gameRetriever.getGameInfo(id); // Appel à l'API IGDB via GameDataRetriever
         res.json(gameDetails);
     } catch (error) {
         console.error(`Erreur lors de la récupération des détails du jeu ${id} :`, error.message);

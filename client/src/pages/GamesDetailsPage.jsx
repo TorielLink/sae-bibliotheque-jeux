@@ -1,16 +1,14 @@
 import React from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const GameDetailsPage = () => {
-  const { gameName } = useParams(); // Récupère le nom du jeu depuis l'URL
-  const location = useLocation();
-  const { id } = location.state || {}; // Récupère l'ID du jeu depuis `state`
+  const { id } = useParams(); // Récupère directement l'ID du jeu depuis l'URL
 
   return (
     <div>
-      <h1>Détails du jeu : {gameName}</h1>
+      <h1>Détails du jeu</h1>
       <p>ID du jeu : {id}</p>
-      {/* Vous pouvez ajouter d'autres informations ici */}
+      {/* Ajoutez d'autres informations ici */}
     </div>
   );
 };
