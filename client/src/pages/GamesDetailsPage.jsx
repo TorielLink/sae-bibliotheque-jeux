@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom"; // Import de useParams pour récupérer les paramètres de l'URL
+import { useParams } from "react-router-dom"; // pour récupérer les paramètres de l'URL
 import GameDetails from "../components/GameDetails.jsx";
 import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
+// import GameLogs from '../components/GameLogs.jsx';
+//const GameDataRetriever = require('../../../server/services/GameDataRetriever');
+
 export default function GamesDetailsPage() {
     const { id } = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);
@@ -14,9 +17,8 @@ export default function GamesDetailsPage() {
             try {
                 console.log(`Fetching game data for ID: ${id}`); // Log ID
                 const response = await fetch(`http://localhost:8080/games/${id}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
+
                 const data = await response.json();
                 setGameData(data);
             } catch (err) {
@@ -26,7 +28,6 @@ export default function GamesDetailsPage() {
                 setLoading(false);
             }
         };
-
         fetchGameData();
     }, [id]);
 
@@ -40,14 +41,14 @@ export default function GamesDetailsPage() {
                 description={gameData.summary}
                 releaseDate={gameData.releaseDate}
                 ageRating={gameData.ageRating || "Non précisé"}
-                rating={gameData.aggregated_rating}
+                rating={gameData.aggregatedRating}
                 detailedSynopsis={gameData.storyline}
                 platforms={gameData.platforms}
                 genres={gameData.genres}
                 coverImage={gameData.cover?.url || 'https://via.placeholder.com/300x400'}
             />
             <GameReviews />
-            {/* TODO: if user connected : show "GameLogs" */}
+            {/* TODO: si l'utilisateur est connecté : montrer "GameLogs" */}
             <GameMedias
                 videos={gameData.videos}
                 screenshots={gameData.screenshots}
