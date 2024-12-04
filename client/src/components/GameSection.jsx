@@ -1,14 +1,13 @@
-// GameSection.jsx
-import React from 'react';
-import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
-import GameSorter from './GameSorter.jsx';
-import GameCard from './GameCard.jsx';
-import SectionTitle from './SectionTitle.jsx';
-import { useTheme } from '@mui/material/styles';
+import React from "react";
+import { Box, Grid, Typography, useMediaQuery } from "@mui/material";
+import GameSorter from "../components/GameSorter.jsx";
+import GameCard from "../components/GameCard.jsx";
+import SectionTitle from "../components/SectionTitle.jsx";
+import { useTheme } from "@mui/material/styles";
 
 function GameSection({ title, games, sortBy, order, isMobileView }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <>
@@ -25,9 +24,11 @@ function GameSection({ title, games, sortBy, order, isMobileView }) {
                   xs={6}
                   sm={4}
                   key={game.id}
-                  sx={{ padding: 0, display: 'flex', justifyContent: 'center' }}
+                  sx={{ padding: 0, display: "flex", justifyContent: "center" }}
                 >
+                  {/* Ajout de l'ID ici */}
                   <GameCard
+                    id={game.id} // Transmettez l'ID à GameCard
                     image={game.image}
                     title={game.title}
                     rating={game.rating}
@@ -39,23 +40,23 @@ function GameSection({ title, games, sortBy, order, isMobileView }) {
           ) : (
             <Box
               sx={{
-                display: 'flex',
-                overflowX: 'auto',
-                gap: '30px',
-                padding: '0px 0px',
-                scrollbarWidth: 'none',
-                '&::-webkit-scrollbar': { display: 'none' },
+                display: "flex",
+                overflowX: "auto",
+                gap: "30px",
+                padding: "0px 0px",
+                scrollbarWidth: "none",
+                "&::-webkit-scrollbar": { display: "none" },
               }}
             >
               {sortedGames.map((game) => (
-                <Box key={game.id} sx={{ flex: '0 0 auto' }}>
+                <Box key={game.id} sx={{ flex: "0 0 auto" }}>
                   <GameCard
-                      id={game.id}
-                      image={game.image}
-                      title={game.title}
-                      rating={game.rating}
-                      categories={game.categories}
-                    />
+                    id={game.id} // Transmettez également l'ID ici
+                    image={game.image}
+                    title={game.title}
+                    rating={game.rating}
+                    categories={game.categories}
+                  />
                 </Box>
               ))}
             </Box>

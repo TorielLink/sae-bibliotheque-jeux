@@ -1,32 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from "react-router-dom"; // Import de useParams pour récupérer les paramètres de l'URL
 import GameDetails from "../components/GameDetails.jsx";
 import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
-// import GameLogs from '../components/GameLogs.jsx';
-//const GameDataRetriever = require('../../../server/services/GameDataRetriever');
-
-export default function GamesDetailsPage(gameId) {
+export default function GamesDetailsPage() {
+    const { id } = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchGameData = async () => {
             try {
-              //  const retriever = new GameDataRetriever();
-                const data = await retriever.getGameInfo(gameId);
+                console.log(`Fetching game data for ID: ${id}`); // Log ID
+                const response = await fetch(`http://localhost:8080/games/${id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
+                }
+                const data = await response.json();
                 setGameData(data);
-                setLoading(false); // Arrêter le chargement
-            } catch (error) {
-                console.error('Erreur lors de la récupération des données du jeu :', error);
-                setLoading(false); // Arrêter le chargement même en cas d'erreur
+            } catch (err) {
+                console.error('Erreur lors de la récupération des données du jeu :', err);
+                setError('Impossible de charger les données du jeu.');
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchGameData().then(() => {} );
-    }, [gameId]); // lorsque `gameId` change
+        fetchGameData();
+    }, [id]);
 
     if (loading) return <div>Chargement des données...</div>;
-    if (!gameData) return <div>Impossible de charger les données du jeu.</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <>
@@ -34,7 +39,7 @@ export default function GamesDetailsPage(gameId) {
                 name={gameData.name}
                 description={gameData.summary}
                 releaseDate={gameData.releaseDate}
-                ageRating={gameData.age_ratings?.[0]?.rating || "Non précisé"}
+                ageRating={gameData.ageRating || "Non précisé"}
                 rating={gameData.aggregated_rating}
                 detailedSynopsis={gameData.storyline}
                 platforms={gameData.platforms}
@@ -49,4 +54,4 @@ export default function GamesDetailsPage(gameId) {
             />
         </>
     );
-};
+}

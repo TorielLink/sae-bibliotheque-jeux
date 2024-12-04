@@ -1,153 +1,79 @@
-import React from 'react';
-import { Card, CardMedia, Typography, Chip, Box, useMediaQuery } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
-import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Card, CardMedia, Typography, Chip, Box, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 function GameCard({ id, image, title, rating, categories }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
 
-  // Limiter le nombre de catégories affichées sur mobile
   const displayedCategories = isMobile ? categories.slice(0, 2) : categories;
 
-  // Fonction pour gérer le clic et rediriger vers la page de détails
   const handleCardClick = () => {
-    navigate(`/details/${title}`, { state: { id } }); // Redirection avec titre comme paramètre et id dans `state`
+    console.log("Navigating to details with ID:", id); // Log pour vérifier l'ID
+    navigate(`/details/${id}`); // Passe l'ID dans l'URL
   };
 
   return (
     <Card
       sx={{
-        position: 'relative',
-        width: '184px',
-        height: '276px',
-        backgroundImage: 'url(Checker.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        boxShadow: '0px 0px 7px #000000',
-        borderRadius: '15px',
-        overflow: 'hidden',
-        marginLeft: '0px',
-        marginTop: '0px',
-        cursor: 'pointer', // Curseur pour indiquer que la carte est cliquable
-        '&:hover': {
-          boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.3)',
-          ...(!isMobile && {
-            '& .categories': {
-              opacity: 1,
-            },
-          }),
+        position: "relative",
+        width: "184px",
+        height: "276px",
+        cursor: "pointer",
+        "&:hover": {
+          boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.3)",
         },
       }}
-      onClick={handleCardClick} // Ajout de l'action au clic
+      onClick={handleCardClick}
     >
-      <Box
-        sx={{
-          position: 'relative',
-          width: '100%',
-          height: '241px',
-          overflow: 'hidden',
-        }}
-      >
+      <Box sx={{ position: "relative", width: "100%", height: "241px", overflow: "hidden" }}>
         <CardMedia
           component="img"
-          image={image}
-          alt={title || 'Image non disponible'}
-          sx={{
-            objectFit: 'cover',
-            width: '100%',
-            height: '100%',
-          }}
+          image={image || "https://via.placeholder.com/184x241"}
+          alt={title || "Image non disponible"}
+          sx={{ objectFit: "cover", width: "100%", height: "100%" }}
         />
-
-        {/* Badge de la note */}
-        {rating !== 'N/A' && (
+        {rating !== "N/A" && (
           <Box
             sx={{
-              position: 'absolute',
+              position: "absolute",
               top: 8,
               right: 8,
               backgroundColor: theme.palette.background.default,
-              borderRadius: '12px',
-              padding: '2px 6px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
+              borderRadius: "12px",
+              padding: "2px 6px",
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 'bold',
-                color: theme.palette.text.primary,
-              }}
-            >
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
               {rating}
             </Typography>
-            <StarIcon sx={{ fontSize: '0.875rem', color: theme.palette.jaune.main }} />
           </Box>
         )}
-
-        {/* Liste des catégories */}
-        <Box
-          className="categories"
-          sx={{
-            position: 'absolute',
-            bottom: 8,
-            left: 8,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '4px',
-            opacity: isMobile ? 1 : 0,
-            transition: 'opacity 0.3s',
-            pointerEvents: isMobile ? 'auto' : 'none',
-          }}
-        >
+        <Box sx={{ position: "absolute", bottom: 8, left: 8, display: "flex", gap: "4px" }}>
           {displayedCategories.map((category, index) => (
-            <Chip
-              key={index}
-              label={category}
-              size="small"
-              sx={{
-                backgroundColor: theme.palette.red.main,
-                color: theme.palette.white.main,
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-              }}
-            />
+            <Chip key={index} label={category} size="small" />
           ))}
         </Box>
       </Box>
-
-      {/* Zone du titre */}
       <Box
         sx={{
-          position: 'absolute',
-          width: '184px',
-          height: '35px',
-          left: '0px',
-          top: '241px',
+          position: "absolute",
+          width: "184px",
+          height: "35px",
+          left: "0px",
+          top: "241px",
           backgroundColor: theme.palette.background.default,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '0 8px',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            color: theme.palette.text.primary,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {title || 'Titre non disponible'}
+        <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: "bold" }}>
+          {title || "Titre non disponible"}
         </Typography>
       </Box>
     </Card>
