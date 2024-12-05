@@ -1,4 +1,5 @@
 import React from 'react';
+import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
 const GameDetails = ({
                          name,
@@ -13,113 +14,264 @@ const GameDetails = ({
                      }) => {
     return (
         <div style={styles.container}>
-            {/* Header avec le titre et la jaquette */}
-            <div style={styles.header}>
+            {/* Section gauche : Image et Détails principaux */}
+            <div style={styles.leftSection}>
                 <img
                     src={coverImage || 'https://via.placeholder.com/300x400'}
                     alt={`${name} cover`}
                     style={styles.coverImage}
                 />
-                <h1 style={styles.title}>{name}</h1>
             </div>
 
-            {/* Description */}
-            <p style={styles.description}><strong>Description :</strong> {description || "Aucune description disponible."}</p>
+            {/* Section droite : Détails, Notes, Description, Plateformes, Genres  */}
+            <div style={styles.rightSection}>
+                <GameDetailsNavBar />
 
-            {/* Informations principales */}
-            <div style={styles.detailsContainer}>
-                <div style={styles.detailItem}>
-                    <strong>Date de sortie :</strong> {releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() : "Non disponible"}
-                </div>
-                <div style={styles.detailItem}>
-                    <strong>Restriction d'âge :</strong> {ageRating || "Non précisé"}
-                </div>
-                <div style={styles.detailItem}>
-                    <strong>Note :</strong> {rating ? `${rating} / 100` : "Pas encore évalué"}
+                <div style={styles.mainContainer}>
+                    <div style={styles.mainContent}>
+                        {/* Détails et Notes côte à côte */}
+                        <div style={styles.detailsAndNotes}>
+                            {/* Détails */}
+                            <div style={styles.detailsBox}>
+                                <h2 style={styles.detailsHeader}>Détails</h2>
+                                <ul style={styles.detailsList}>
+                                    <li><strong>Nom :</strong> {name || "Non disponible"}</li>
+                                    <li><strong>Date de sortie :</strong> {releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() : "Non disponible"}</li>
+                                    <li><strong>Restriction d'âge :</strong> {ageRating || "Non précisé"}</li>
+                                </ul>
+                            </div>
+
+                            {/* Notes */}
+                            <div style={styles.noteBox}>
+                                <h2 style={styles.noteHeader}>Note</h2>
+                                <div style={styles.ratings}>
+                                    <div style={styles.ratingItem}>
+                                        <strong>Ma Note</strong>
+                                        <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
+                                    </div>
+                                    <div style={styles.ratingItem}>
+                                        <strong>Note des joueurs</strong>
+                                        <div style={styles.ratingValue}>8.2</div> {/* Exemple de valeur */}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Synopsis ou Description */}
+                        {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
+                            <div style={styles.synopsisBox}>
+                                <h2 style={styles.synopsisHeader}>Synopsis</h2>
+                                <p style={styles.synopsisText}>{detailedSynopsis}</p>
+                            </div>
+                        ) : (
+                            description && (
+                                <div style={styles.synopsisBox}>
+                                    <h2 style={styles.synopsisHeader}>Résumé</h2>
+                                    <p style={styles.synopsisText}>{description}</p>
+                                </div>
+                            )
+                        )}
+                    </div>
+
+                    {/* Container pour Plateformes et Genres */}
+                    <div style={styles.platformsAndGenres}>
+                        {/* Plateformes */}
+                        {platforms && platforms.length > 0 && (
+                            <div style={styles.platformBox}>
+                                <h2 style={styles.platformHeader}>Plateformes</h2>
+                                <ul style={styles.platformList}>
+                                    {platforms.map((platform) => (
+                                        <li key={platform.id} style={styles.platformItem}>
+                                            {platform.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* Genres */}
+                        {genres && genres.length > 0 && (
+                            <div style={styles.genreBox}>
+                                <h2 style={styles.genreHeader}>Genres</h2>
+                                <ul style={styles.genreList}>
+                                    {genres.map((genre) => (
+                                        <li key={genre.id} style={styles.genreItem}>
+                                            {genre.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-
-            {/* Synopsis détaillé */}
-            {detailedSynopsis && (
-                <div style={styles.synopsis}>
-                    <h2>Synopsis détaillé</h2>
-                    <p>{detailedSynopsis}</p>
-                </div>
-            )}
-
-            {/* Plateformes */}
-            {platforms && platforms.length > 0 && (
-                <div style={styles.listSection}>
-                    <h2>Plateformes disponibles</h2>
-                    <ul>
-                        {platforms.map((platform) => (
-                            <li key={platform.id}>{platform.name}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-            {/* Genres */}
-            {genres && genres.length > 0 && (
-                <div style={styles.listSection}>
-                    <h2>Genres</h2>
-                    <ul>
-                        {genres.map((genre) => (
-                            <li key={genre.id}>{genre.name}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
         </div>
     );
 };
 
-// Styles inline pour une présentation simple
+// Styles adaptés à la maquette
 const styles = {
     container: {
-        padding: '20px',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'stretch',
+        gap: '20px',
         fontFamily: 'Arial, sans-serif',
-        lineHeight: '1.6',
         color: '#333',
-        maxWidth: '800px',
-        margin: '0 auto',
-        border: '1px solid #ddd',
-        borderRadius: '10px',
-        backgroundColor: '#f9f9f9',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        paddingBlock: '80px',
+        paddingInline: '50px',
     },
-    header: {
-        textAlign: 'center',
-        marginBottom: '20px',
+    leftSection: {
+        display: 'flex',
+        flex: '1',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     coverImage: {
-        width: '300px',
+        width: '100%',
         borderRadius: '10px',
-        marginBottom: '15px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     },
-    title: {
-        fontSize: '24px',
-        fontWeight: 'bold',
-    },
-    description: {
-        fontSize: '16px',
-        marginBottom: '20px',
-    },
-    detailsContainer: {
+    rightSection: {
         display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        marginBottom: '20px',
+        flexDirection: 'column',
+        width: '100%',
+        gap: '40px',
+        height: '100%',
+        flex: '2',
+        alignItems: 'flex-start',
     },
-    detailItem: {
-        flex: '0 0 48%',
+    mainContainer: {
+        display: 'flex',
+        flex: '2',
+        gap: '20px',
+        alignItems: 'flex-start',
+    },
+    mainContent: {
+        flex: '3',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+    },
+    detailsAndNotes: {
+        display: 'flex',
+        gap: '20px',
+        flexWrap: 'wrap',
+    },
+    detailsBox: {
+        flex: '1',
+        backgroundColor: '#9534D580', // canal alpha : 80=50% de transparence
+        padding: '15px',
+        borderRadius: '10px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    detailsHeader: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        color: '#333',
         marginBottom: '10px',
     },
-    synopsis: {
-        marginBottom: '20px',
+    detailsList: {
+        listStyle: 'none',
+        padding: 0,
+        margin: 0,
+        lineHeight: '1.6',
     },
-    listSection: {
-        marginBottom: '20px',
+    noteBox: {
+        flex: '1',
+        backgroundColor: '#FE4A4980',
+        padding: '15px',
+        borderRadius: '10px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    noteHeader: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: '10px',
+    },
+    ratings: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: '10px',
+    },
+    ratingItem: {
+        flex: '1',
+        backgroundColor: '#ffffff',
+        textAlign: 'center',
+        borderRadius: '5px',
+        padding: '10px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    },
+    ratingValue: {
+        fontSize: '24px',
+        fontWeight: 'bold',
+        color: '#ff7043',
+    },
+    synopsisBox: {
+        backgroundColor: '#FFBB3380',
+        padding: '15px',
+        borderRadius: '10px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    synopsisHeader: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: '10px',
+    },
+    synopsisText: {
+        fontSize: '14px',
+        lineHeight: '1.6',
+    },
+    platformsAndGenres: {
+        height: 'auto',
+        gap: '20px',
+        display: 'flex',
+        flex: '1',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+    },
+    platformBox: {
+        backgroundColor: '#2FC75A80',
+        flex: '0 0 66%',  // 2/3 de la hauteur totale
+        padding: '15px',
+        borderRadius: '10px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    platformHeader: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: '10px',
+    },
+    platformList: {
+        listStyle: 'none',
+        padding: 0,
+        margin: 0,
+    },
+    platformItem: {
+        padding: '5px 0',
+    },
+    genreBox: {
+        flex: '0 0 33%',  // 1/3 de la hauteur totale
+        backgroundColor: '#36A0FC80',
+        padding: '15px',
+        borderRadius: '10px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    genreHeader: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginBottom: '10px',
+    },
+    genreList: {
+        listStyleType: 'none',
+        padding: 0,
+    },
+    genreItem: {
+        marginBottom: '8px',
     },
 };
 
