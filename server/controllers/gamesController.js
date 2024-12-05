@@ -1,49 +1,90 @@
-const GameDataRetriever = require('../services/GameDataRetriever'); // Lien direct vers la classe
-const CatalogDataRetriever = require('../services/CatalogDataRetriever'); // Pour le catalogue
-require('dotenv').config();
+const CatalogDataRetriever = require('../services/CatalogDataRetriever');
+const GameDataRetriever = require('../services/GameDataRetriever');
 
-// Instanciation des classes avec les variables d'environnement
+// Chargement des variables d'environnement pour l'API IGDB
 const clientId = process.env.CLIENT_ID;
 const accessToken = process.env.ACCESS_TOKEN;
-const gameDataRetriever = new GameDataRetriever(clientId, accessToken);
-const catalogDataRetriever = new CatalogDataRetriever(clientId, accessToken);
 
-// Contrôleur pour obtenir les détails d'un jeu
-async function getGameDetails(req, res) {
-    try {
-        const gameId = req.params.id;
-        const gameData = await gameDataRetriever.getGameInfo(gameId); // Appel direct de la méthode
-        res.json(gameData);
-    } catch (error) {
-        console.error('Erreur lors de la récupération des détails du jeu :', error);
-        res.status(500).json({ error: 'Impossible de récupérer les détails du jeu.' });
-    }
+if (!clientId || !accessToken) {
+    console.error("CLIENT_ID or ACCESS_TOKEN missing in .env");
+    process.exit(1);
 }
 
-// Contrôleur pour obtenir les jeux populaires
-async function getPopularGames(req, res) {
-    try {
-        const limit = req.query.limit || 10;
-        const offset = req.query.offset || 0;
-        const popularGames = await catalogDataRetriever.getCatalogByPopularity(limit, offset);
-        res.json(popularGames);
-    } catch (error) {
-        console.error('Erreur lors de la récupération des jeux populaires :', error);
-        res.status(500).json({ error: 'Impossible de récupérer les jeux populaires.' });
-    }
-}
+const catalogRetriever = new CatalogDataRetriever(clientId, accessToken);
+const gameRetriever = new GameDataRetriever(clientId, accessToken);
 
-// Contrôleur pour obtenir les jeux récents
-async function getRecentGames(req, res) {
-    try {
-        const limit = req.query.limit || 10;
-        const offset = req.query.offset || 0;
-        const recentGames = await catalogDataRetriever.getCatalogByDate(limit, offset);
-        res.json(recentGames);
-    } catch (error) {
-        console.error('Erreur lors de la récupération des jeux récents :', error);
-        res.status(500).json({ error: 'Impossible de récupérer les jeux récents.' });
-    }
-}
+const gamesController = {
+    // Obtenir les jeux populaires
+    async getGamesByPopularity(req, res) {
+        const { limit = 20, offset = 0 } = req.query;
+        try {
+            const catalog = await catalogRetriever.getCatalogByPopularity(limit, offset);
+            res.json(catalog);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des jeux populaires :", error.message);
+            res.status(500).json({ message: "Échec de la récupération des jeux populaires." });
+        }
+    },
 
-module.exports
+    // Obtenir les jeux récents
+    async getGamesByDate(req, res) {
+        const { limit = 20, offset = 0 } = req.query;
+        try {
+            const catalog = await catalogRetriever.getCatalogByDate(limit, offset);
+            res.json(catalog);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des jeux récents :", error.message);
+            res.status(500).json({ message: "Échec de la récupération des jeux récents." });
+        }
+    },
+
+    // Obtenir les détails d’un jeu spécifique
+    async getGameDetails(req, res) {
+        const { id } = req.params;
+        try {
+            const gameDetails = await gameRetriever.getGameInfo(id); // Appel à l'API IGDB via GameDataRetriever
+            res.json(gameDetails);
+        } catch (error) {
+            console.error(`Erreur lors de la récupération des détails du jeu ${id} :`, error.message);
+            res.status(500).json({ message: "Échec de la récupération des détails du jeu.", error: error.message });
+        }
+    },
+
+    // Obtenir une liste de jeux avec filtres
+    async getFilteredGames(req, res) {
+        const { limit = 200, offset = 0, sort = 'first_release_date desc', recent = false } = req.query;
+        try {
+            const fields = "id, name, aggregated_rating, first_release_date, cover.image_id, genres.name";
+
+            const now = Math.floor(Date.now() / 1000);
+            const sixMonthsAgo = now - 6 * 30 * 24 * 60 * 60;
+            const recentFilter = recent === 'true'
+                ? `where first_release_date >= ${sixMonthsAgo} & first_release_date <= ${now};`
+                : `where first_release_date <= ${now};`;
+
+            const options = `sort ${sort}; limit ${limit}; offset ${offset};`;
+
+            const games = await catalogRetriever.getGameData(fields, recentFilter, options);
+
+            const transformedGames = games.map(game => ({
+                id: game.id,
+                name: game.name || "Titre inconnu",
+                cover: game.cover?.image_id
+                    ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
+                    : 'https://via.placeholder.com/250x350',
+                aggregatedRating: game.aggregated_rating || 0,
+                releaseDate: game.first_release_date
+                    ? new Date(game.first_release_date * 1000).toISOString()
+                    : null,
+                genres: game.genres?.map(genre => genre.name) || [],
+            }));
+
+            res.json(transformedGames);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des jeux :", error.message);
+            res.status(500).json({ message: "Échec de la récupération des jeux.", error: error.message });
+        }
+    },
+};
+
+module.exports = gamesController;

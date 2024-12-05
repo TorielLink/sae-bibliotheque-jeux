@@ -4,8 +4,6 @@ const path = require('path'); // Import du module path
 require('dotenv').config();
 
 // Importation des routes
-const gameRoutes = require('./routes/gamesRoutes'); // accès aux jeux http://localhost:8080/games
-// Route pour la recherche, test avec http://localhost:8080/search?query=mario
 const searchRoutes = require('./routes/searchRoute');
 const usersRoutes = require('./routes/usersRoutes');
 const statusRoutes = require('./routes/statusRoutes');
@@ -18,7 +16,7 @@ const gameStatusRoutes = require('./routes/gameStatusRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
 const userListsRoutes = require('./routes/userListsRoutes');
 const { swaggerUi, swaggerDocs } = require('./middleware/swagger'); // Importez la configuration
-
+const gamesRoutes = require('./routes/gamesRoutes');
 
 // Création de l'application Express
 const app = express();
@@ -45,7 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Gestion des routes
-app.use('/games', gameRoutes); // Routes pour les jeux
+app.use('/games', gamesRoutes);
 app.use('/search', searchRoutes); // Routes pour la recherche
 app.use('/users', usersRoutes); // Routes pour les utilisateurs
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Routes pour les fichiers téléchargés

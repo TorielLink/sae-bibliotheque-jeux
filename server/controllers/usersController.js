@@ -1,4 +1,4 @@
-const { users, privacySettings} = require('../database/sequelize');
+const { users, privacySettings } = require('../database/sequelize');
 const { Op } = require('sequelize');
 
 const controller = {};
@@ -7,30 +7,29 @@ const controller = {};
 controller.getAll = async (req, res) => {
     try {
         const usersData = await users.findAll({
-            attributes: ['user_id', 'username', 'mail', 'profile_picture', 'isDeleted'], // Champs spécifiques
+            attributes: ['user_id', 'username', 'mail', 'profile_picture', 'isDeleted'],
             where: { isDeleted: false },
             include: {
-                model: privacySettings, // Modèle lié
-                as: 'default_privacy', // Alias défini dans Sequelize
-                attributes: ['name'], // Champs spécifiques de privacy_settings
+                model: privacySettings,
+                as: 'default_privacy',
+                attributes: ['name'],
             },
         });
-        res.status(200).json({ message: 'User data fetched successfully', data: usersData });
+        res.status(200).json({ message: 'Données des utilisateurs récupérées avec succès', data: usersData });
     } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).json({ message: 'Error fetching users', error: error.message });
+        console.error('Erreur lors de la récupération des utilisateurs:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs', error: error.message });
     }
 };
 
-
-// Création d'un utilisateur (désactivé temporairement si non nécessaire)
+// Création d'un utilisateur
 controller.create = async (req, res) => {
     try {
         const { username, mail, password, isDeleted, privacy_setting_id } = req.body;
 
         // Vérification des champs requis
         if (!username || !mail || !password) {
-            return res.status(400).json({ message: 'Champs requis : username, mail et password' });
+            return res.status(400).json({ message: 'Les champs username, mail et password sont requis.' });
         }
 
         // Vérification de l'existence d'un utilisateur avec le même username ou email
@@ -47,7 +46,7 @@ controller.create = async (req, res) => {
             });
         }
 
-        // Gestion de l'image de profil (optionnel)
+        // Vérification du fichier image (si présent)
         let profilePicturePath = null;
         if (req.file) {
             profilePicturePath = `/uploads/profile_pictures/${req.file.filename}`;
@@ -60,7 +59,7 @@ controller.create = async (req, res) => {
             password,
             profile_picture: profilePicturePath,
             isDeleted: isDeleted || false,
-            privacy_setting_id: privacy_setting_id || 1 // Attention à utiliser privacy_setting_id
+            privacy_setting_id: privacy_setting_id || 1 // Default value for privacy_setting_id
         });
 
         res.status(201).json({ message: 'Utilisateur créé avec succès', data: newUser });
