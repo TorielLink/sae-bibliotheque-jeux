@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"; // pour récupérer les paramètre
 import GameDetails from "../components/GameDetails.jsx";
 import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
+import {Typography} from "@mui/material";
 // import GameLogs from '../components/GameLogs.jsx';
 //const GameDataRetriever = require('../../../server/services/GameDataRetriever');
 
@@ -36,23 +37,58 @@ export default function GamesDetailsPage() {
 
     return (
         <>
-            <GameDetails
-                name={gameData.name}
-                description={gameData.summary}
-                releaseDate={gameData.releaseDate}
-                ageRating={gameData.ageRating || "Non précisé"}
-                rating={gameData.aggregatedRating}
-                detailedSynopsis={gameData.storyline}
-                platforms={gameData.platforms}
-                genres={gameData.genres}
-                coverImage={gameData.cover?.url || 'https://via.placeholder.com/300x400'}
-            />
-            <GameReviews />
+            <Typography variant="subtitle2">
+                Accueil &gt; {gameData.name}
+            </Typography>
+            <div id="details">
+                <GameDetails
+                    name={gameData.name}
+                    description={gameData.summary}
+                    releaseDate={gameData.releaseDate}
+                    ageRating={gameData.ageRating || "Non précisé"}
+                    rating={gameData.aggregatedRating}
+                    detailedSynopsis={gameData.storyline}
+                    platforms={gameData.platforms}
+                    genres={gameData.genres}
+                    coverImage={gameData.cover?.url || 'https://via.placeholder.com/300x400'}
+                />
+                <div style={styles.separatorContainerR}>
+                    <div style={styles.separator}></div>
+                </div>
+            </div>
+            <div id="reviews">
+                <GameReviews/>
+                <div style={styles.separatorContainerL}>
+                    <div style={styles.separator}></div>
+                </div>
+            </div>
             {/* TODO: si l'utilisateur est connecté : montrer "GameLogs" */}
-            <GameMedias
-                videos={gameData.videos}
-                screenshots={gameData.screenshots}
-            />
+            <div id="medias">
+                <GameMedias
+                    videos={gameData.videos}
+                    screenshots={gameData.screenshots}
+                />
+            </div>
         </>
     );
 }
+
+const styles = {
+    separatorContainerR: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        width: '100%',
+        marginBlock: '80px',
+    },
+    separatorContainerL: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        width: '100%',
+        marginBlock: '80px',
+    },
+    separator: {
+        width: '85%',
+        height: '2px',
+        backgroundColor: '#2FC75A',
+    },
+};
