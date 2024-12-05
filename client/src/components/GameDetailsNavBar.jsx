@@ -1,5 +1,9 @@
 import React from 'react';
 
+/*TODO: Barre de navigation
+ *    - Changer le style (correspondre à la maquette)
+ *    - Passer en paramètre l'onglet sélectionné pour mettre la couleur correspondante
+ */
 export default function GameDetailsNavBar() {
     return (
         <div style={styles.navbar}>

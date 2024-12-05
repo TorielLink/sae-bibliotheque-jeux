@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
+/*TODO: Barre de navigation
+ *    - Changer le style (mieux correspondre à la maquette)
+ *    - Gèrer le problème de jeux sans vidéo (=> plus rien ne fonctionne à cause de 'map')
+ *    - Permettre de passer au média suivant/précédent avec des flèches droite/gauche visibles
+ *     au survol du média principal
+ */
 const GameMedias = ({ videos, screenshots }) => {
-    const [mainMedia, setMainMedia] = useState(null); // pour suivre le média principal sélectionné
+    const [mainMediaIndex, setMainMediaIndex] = useState(0); // pour suivre le média principal sélectionné
 
     // Fusionner les vidéos et les captures d'écran dans une seule liste de miniatures
     const allMedia = [
@@ -21,24 +27,44 @@ const GameMedias = ({ videos, screenshots }) => {
         }))
     ];
 
-    // Si aucun média principal n'est sélectionné, utiliser le premier élément de la liste
-    const initialMainMedia = mainMedia || allMedia[0];
-
-    const handleMediaClick = (media) => {
-        setMainMedia(media);
+    // Gestion du clic sur une miniature
+    const handleThumbnailClick = (index) => {
+        setMainMediaIndex(index);
     };
+
+    // Gestion des flèches directionnelles pour changer le média principal
+    const handleKeyDown = (e) => {
+        if (e.key === 'ArrowRight') {
+            setMainMediaIndex((prevIndex) => (prevIndex + 1) % allMedia.length); // Passer au média suivant
+        } else if (e.key === 'ArrowLeft') {
+            setMainMediaIndex((prevIndex) =>
+                (prevIndex - 1 + allMedia.length) % allMedia.length // Passer au média précédent
+            );
+        }
+    };
+
+    useEffect(() => {
+        // Ajouter un écouteur d'événement clavier
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            // Nettoyer l'écouteur lors du démontage du composant
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [allMedia.length]);
+
+    const mainMedia = allMedia[mainMediaIndex];
 
     return (
         <>
             <GameDetailsNavBar />
             <div style={styles.container}>
                 {/* Afficher le média principal (le premier élément de la liste ou celui sélectionné) */}
-                {initialMainMedia && initialMainMedia.type === 'video' ? (
+                {mainMedia && mainMedia.type === 'video' ? (
                     <div style={styles.mainMedia}>
                         <iframe
-                            key={initialMainMedia.id}
-                            src={`https://www.youtube.com/embed/${initialMainMedia.videoId}?autoplay=0`} // La vidéo commence à jouer ici
-                            title={initialMainMedia.title}
+                            key={mainMedia.id}
+                            src={`https://www.youtube.com/embed/${mainMedia.videoId}?autoplay=0`} // La vidéo commence à jouer ici
+                            title={mainMedia.title}
                             style={styles.videoMain}
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -47,8 +73,8 @@ const GameMedias = ({ videos, screenshots }) => {
                 ) : (
                     <div style={styles.mainMedia}>
                         <img
-                            src={initialMainMedia.url}
-                            alt={initialMainMedia.title}
+                            src={mainMedia.url}
+                            alt={mainMedia.title}
                             style={styles.screenshotMain}
                         />
                     </div>
@@ -56,14 +82,14 @@ const GameMedias = ({ videos, screenshots }) => {
 
                 {/* Miniatures des vidéos et captures d'écran */}
                 <div style={styles.mediaGrid}>
-                    {allMedia.map((media) => (
+                    {allMedia.map((media, index) => (
                         <div
                             key={media.id}
                             style={{
                                 ...styles.mediaThumbnail,
                                 ...(mainMedia?.id === media?.id ? styles.activeThumbnail : {}),
                             }}
-                            onClick={() => setMainMedia(media)}
+                            onClick={() => handleThumbnailClick(index)}
                         >
                             <img
                                 src={media.type === 'video' ? media.thumbnail : media.url}
@@ -101,47 +127,42 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '70%',
-        height: '360px',
-        borderRadius: '10px',
+        width: '63%',
+        height: '470px',
         position: 'relative',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
     },
     mediaGrid: {
+        width: "63%",
         display: 'flex',
         gap: '8px',
         padding: '0',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         overflowX: 'auto',
     },
     mediaThumbnail: {
         flex: '0 0 auto',
-        width: '90px',
-        height: '50px',
+        width: '135px',
+        height: '77px',
         cursor: 'pointer',
-        borderRadius: '5px',
         overflow: 'hidden',
         position: 'relative',
     },
     activeThumbnail: {
-        border: '2px solid #007BFF',
-        borderRadius: '5px',
+        border: '2px solid #0055FF',
     },
     videoMain: {
         width: '100%',
         height: '100%',
-        borderRadius: '10px',
     },
     videoThumbnail: {
         width: '100%',
         height: '150px',
-        borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     },
     screenshotMain: {
         width: '100%',
         height: '100%',
-        borderRadius: '10px',
         objectFit: 'cover',
     },
     screenshotThumbnail: {
