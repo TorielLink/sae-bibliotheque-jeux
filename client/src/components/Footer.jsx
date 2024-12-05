@@ -1,10 +1,15 @@
 import React from "react";
 import "../css/Footer.css";
+import { useTheme } from '@mui/material/styles';
 
 function Footer(){
+    const footerStyle = useTheme();
 
     return (
-        <section>
+        <section style={{
+            backgroundColor : footerStyle.palette.background.footer,
+            color: footerStyle.palette.text.primary,
+        }}>
             <div className="footer">
                 <div className="footer-left">
                 <h3>À propos de nous</h3>

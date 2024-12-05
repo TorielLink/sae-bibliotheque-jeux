@@ -1,16 +1,17 @@
+
 .footer{
     border-top: 2%;
     margin-top: 5%;
-    margin-left: 3%;
-    margin-right: 3%;
-    background-color: E6E6E6;
+    margin-left: 7%;
+    padding-top: 2%;
     display: flex;
+    flex-wrap: wrap;
     
 }
 
 .footer-left, .footer-left-middle, .footer-right, .footer-right-middle{
-    flex: 1;
-    margin-left: 7%;
+    flex-grow:1;
+    flex-wrap: wrap;
 }
 
 .footer-line{
@@ -22,7 +23,7 @@
 }
 
 .footer-bottom{
-    margin-bottom: 2%;
+    padding-bottom: 2%;
     align-content: center;
     text-align: center;
 }

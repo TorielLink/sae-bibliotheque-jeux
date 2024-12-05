@@ -15,6 +15,7 @@ export const lightTheme = createTheme({
     background: {
       default: '#ffffff',
       paper: '#f4f6f8',
+      footer: '#E6E6E6', // Fond footer
     },
     text: {
       primary: '#333333', // Obligatoire si vous utilisez text.primary
@@ -38,6 +39,7 @@ export const darkTheme = createTheme({
     background: {
       default: '#121212', // Fond sombre
       paper: '#1d1d1d',
+      footer:'#404040', // Fond footer
     },
     text: {
       primary: '#ffffff', // Obligatoire si vous utilisez text.primary
