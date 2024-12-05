@@ -8,7 +8,7 @@ export default function GameDetailsNavBar() {
                     <a href="#details" style={styles.navLink}>Détails</a>
                 </li>
                 <li style={styles.navItem}>
-                    <a href="#avis" style={styles.navLink}>Avis</a>
+                    <a href="#reviews" style={styles.navLink}>Avis</a>
                 </li>
                 <li style={styles.navItem}>
                     <a href="#medias" style={styles.navLink}>Médias</a>

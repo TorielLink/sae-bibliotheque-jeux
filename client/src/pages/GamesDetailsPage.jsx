@@ -5,7 +5,6 @@ import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
 import {Typography} from "@mui/material";
 // import GameLogs from '../components/GameLogs.jsx';
-//const GameDataRetriever = require('../../../server/services/GameDataRetriever');
 
 export default function GamesDetailsPage() {
     const { id } = useParams(); // Récupère l'ID depuis l'URL
