@@ -2,5 +2,9 @@
 //TODO: utiliser les composants avis de Mya
 
 export default function () {
-    return (<h1>OSEF</h1>)
+    return (
+        <h3 style={{ textAlign: 'center', marginTop: '20px' }}>
+            La section avis sur le jeu arrive bientôt ! ^^
+        </h3>
+    )
 }
