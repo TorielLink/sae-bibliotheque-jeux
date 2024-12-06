@@ -3,24 +3,17 @@ import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
 
 /**TODO :
- - Ajouter les boutons d'actions rapides
- - Mettre en forme les informations dans les blocs
- - Ajouter les différentes listes supplémentaires (jeux similaires, DLC, Suites, etc.)
+ * - Ajouter les boutons d'actions rapides
+ * - Mettre en forme les informations dans les blocs
+ * - Limiter la taille des blocs (overflow: hidden)
+ * - Ajouter les différentes listes supplémentaires (jeux similaires, DLC, Suites, etc.)
  */
-const GameDetails = ({
-                         name,
-                         description,
-                         releaseDate,
-                         ageRating,
-                         rating,
-                         detailedSynopsis,
-                         platforms,
-                         genres,
-                         coverImage,
-                     }) => {
+const GameDetails = ({name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
+                         coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
+                         parentGame, similarGames}) => {
     return (
         <div style={styles.container}>
-            {/* Section gauche : Image et Détails principaux */}
+            {/* Section gauche : Couverture du jeu */}
             <div style={styles.leftSection}>
                 <img
                     src={coverImage || 'https://via.placeholder.com/300x400'}
@@ -29,13 +22,13 @@ const GameDetails = ({
                 />
             </div>
 
-            {/* Section droite : Détails, Notes, Description, Plateformes, Genres  */}
+            {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
             <div style={styles.rightSection}>
                 <GameDetailsNavBar activeSection={"details"} />
 
                 <div style={styles.mainContainer}>
                     <div style={styles.mainContent}>
-                        {/* Détails et Notes côte à côte */}
+                        {/* Détails et Notes */}
                         <div style={styles.detailsAndNotes}>
                             {/* Détails */}
                             <div style={styles.detailsBox}>
@@ -79,7 +72,7 @@ const GameDetails = ({
                         )}
                     </div>
 
-                    {/* Container pour Plateformes et Genres */}
+                    {/* Plateformes et Genres */}
                     <div style={styles.platformsAndGenres}>
                         {/* Plateformes */}
                         {platforms && platforms.length > 0 && (
@@ -111,11 +104,12 @@ const GameDetails = ({
                     </div>
                 </div>
             </div>
+            {/*TODO: ajouter les listes de jeux DLC, extensions, jeux similaires, etc.
+               TODO: utiliser les composants avis de @Nicolas*/}
         </div>
     );
 };
 
-// Styles adaptés à la maquette
 const styles = {
     container: {
         height: '100%',
@@ -241,7 +235,7 @@ const styles = {
     },
     platformBox: {
         backgroundColor: '#2FC75A80',
-        flex: '0 0 66%',  // 2/3 de la hauteur totale
+        flex: '0 0 66%',
         padding: '15px',
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -261,7 +255,7 @@ const styles = {
         padding: '5px 0',
     },
     genreBox: {
-        flex: '0 0 33%',  // 1/3 de la hauteur totale
+        flex: '0 0 33%',
         backgroundColor: '#36A0FC80',
         padding: '15px',
         borderRadius: '10px',

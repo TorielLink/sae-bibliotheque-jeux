@@ -7,7 +7,7 @@ import {Typography} from "@mui/material";
 // import GameLogs from '../components/GameLogs.jsx';
 
 
-/**TODO :
+/** TODO :
  - Implémente les thèmes sur la page
  */
 export default function GamesDetailsPage() {
@@ -19,7 +19,7 @@ export default function GamesDetailsPage() {
     useEffect(() => {
         const fetchGameData = async () => {
             try {
-                console.log(`Fetching game data for ID: ${id}`); // Log ID
+                console.log(`Fetching game data for ID: ${id}`); // log ID
                 const response = await fetch(`http://localhost:8080/games/${id}`);
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
 
@@ -52,8 +52,17 @@ export default function GamesDetailsPage() {
                     rating={gameData.aggregatedRating}
                     detailedSynopsis={gameData.storyline}
                     platforms={gameData.platforms}
-                    genres={gameData.genres}
+                    genres={[...(gameData.genres || []), ...(gameData.themes || [])]}
                     coverImage={gameData.cover?.url || 'https://via.placeholder.com/300x400'}
+
+                    dlcs={gameData.dlcs}
+                    expansions={gameData.expansions}
+                    remakes={gameData.remakes}
+                    remasters={gameData.remasters}
+                    standaloneExpansions={gameData.standalones}
+                    franchises={gameData.franchises}
+                    parentGame={gameData.parentGame}
+                    similarGames={gameData.similarGames}
                 />
                 <div style={styles.separatorContainerR}>
                     <div style={styles.separator}></div>

@@ -25,7 +25,7 @@ export default function GameDetailsNavBar({ activeSection }) {
                     }}>
                     <a href={"#details"} style={{
                         ...styles.navLink,
-                        color: activeSection === "details" ? "#FFF" : "#333", // Détails en blanc si actif
+                        color: activeSection === "details" ? "#FFF" : "#333", // texte en blanc si actif
                     }}>Détails</a>
                 </li>
                 <li style={{

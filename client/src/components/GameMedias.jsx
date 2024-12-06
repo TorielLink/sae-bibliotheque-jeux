@@ -4,12 +4,13 @@ import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 /**TODO :
  *     - Permettre de passer au média suivant/précédent avec des flèches droite/gauche visibles
  *     au survol du média principal
+ *     - Gérer l'erreur "Uncaught TypeError: Cannot read properties of undefined (reading 'url')"
  */
 const GameMedias = ({ videos, screenshots }) => {
     const [mainMediaIndex, setMainMediaIndex] = useState(0); // pour suivre le média principal sélectionné
-    const mediaGridRef = useRef(null); // Référence pour la mediaGrid
-    const isDragging = useRef(false); // pour savoir si l'utilisateur est en train de glisser
-    const startX = useRef(0); // Position initiale de la souris
+    const mediaGridRef = useRef(null);
+    const isDragging = useRef(false);
+    const startX = useRef(0);
     const scrollLeft = useRef(0);
 
     // Fusionner les vidéos et les captures d'écran dans une seule liste de miniatures
@@ -19,12 +20,12 @@ const GameMedias = ({ videos, screenshots }) => {
             id: video.id,
             videoId: video.video_id,
             title: video.name,
-            thumbnail: `https://img.youtube.com/vi/${video.video_id}/0.jpg`, // ajout de la vignette
+            thumbnail: `https://img.youtube.com/vi/${video.video_id}/0.jpg`,
         })) || [],
         ...screenshots?.map((screenshot) => ({
             type: 'image',
             id: screenshot.id,
-            url: screenshot.url.replace('t_thumb', 't_screenshot_big'),
+            url: screenshot.url?.replace('t_thumb', 't_screenshot_big'),
             title: 'Capture d\'écran',
         })) || [],
     ];
@@ -34,7 +35,7 @@ const GameMedias = ({ videos, screenshots }) => {
         setMainMediaIndex(index);
     };
 
-    // Gérer le démarrage du drag
+    // Gestion du démarrage du glissement
     const handleMouseDown = (e) => {
         e.preventDefault();
         isDragging.current = true;
@@ -42,15 +43,15 @@ const GameMedias = ({ videos, screenshots }) => {
         scrollLeft.current = mediaGridRef.current.scrollLeft;
     };
 
-    // Gérer le mouvement de la souris pendant le drag
+    // Gestion du mouvement de la souris pendant le glissement
     const handleMouseMove = (e) => {
         if (!isDragging.current) return;
         const x = e.clientX;
-        const walk = (x - startX.current) * 2; // multiplier pour ajuster la vitesse du défilement
+        const walk = (x - startX.current) * 2; // multiplier pour ajuster la vitesse du glissement
         mediaGridRef.current.scrollLeft = scrollLeft.current - walk;
     };
 
-    // Gérer la fin du drag
+    // Gestion de la fin du glissement
     const handleMouseUp = () => {
         isDragging.current = false;
     };
@@ -68,16 +69,16 @@ const GameMedias = ({ videos, screenshots }) => {
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
-        // Ajouter les événements de souris pour le drag
+        // Ajout d'événements de souris pour le glissement
         const mediaGridElement = mediaGridRef.current;
         mediaGridElement.addEventListener('mousedown', handleMouseDown);
         mediaGridElement.addEventListener('mousemove', handleMouseMove);
         mediaGridElement.addEventListener('mouseup', handleMouseUp);
-        mediaGridElement.addEventListener('mouseleave', handleMouseUp); // Pour s'assurer que le drag s'arrête si la souris quitte l'élément
+        mediaGridElement.addEventListener('mouseleave', handleMouseUp);
 
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
-            // Nettoyer les événements de la souris
+            // Nettoyage des événements de la souris
             mediaGridElement.removeEventListener('mousedown', handleMouseDown);
             mediaGridElement.removeEventListener('mousemove', handleMouseMove);
             mediaGridElement.removeEventListener('mouseup', handleMouseUp);
@@ -98,7 +99,7 @@ const GameMedias = ({ videos, screenshots }) => {
                     <div style={styles.mainMedia}>
                         <iframe
                             key={mainMedia.id}
-                            src={`https://www.youtube.com/embed/${mainMedia.videoId}?autoplay=0`} // La vidéo commence à jouer ici
+                            src={`https://www.youtube.com/embed/${mainMedia.videoId}?autoplay=0`}
                             title={mainMedia.title}
                             style={styles.videoMain}
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -115,7 +116,7 @@ const GameMedias = ({ videos, screenshots }) => {
                     </div>
                 )}
 
-                {/* Miniatures des vidéos et captures d'écran */}
+                {/* Liste des miniatures des vidéos et captures d'écran */}
                 <div ref={mediaGridRef} style={styles.mediaGrid}>
                     {allMedia.map((media, index) => (
                         <div
@@ -127,7 +128,7 @@ const GameMedias = ({ videos, screenshots }) => {
                             onClick={() => handleThumbnailClick(index)}
                         >
                             <img
-                                src={media.type === 'video' ? media.thumbnail : media.url}
+                                src={media.type === 'video' ? media.thumbnail : media.url || media.thumbnail}
                                 alt={media.title}
                                 style={styles.screenshotThumbnail}
                             />
@@ -146,7 +147,8 @@ const GameMedias = ({ videos, screenshots }) => {
 
 const styles = {
     navContainer: {
-        marginLeft: '20%', // décalage de 100px pour la navbar
+        marginLeft: '15%',
+        marginBottom: '2%',
     },
     container: {
         padding: '20px',
