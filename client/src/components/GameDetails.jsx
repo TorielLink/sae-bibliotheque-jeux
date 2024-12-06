@@ -124,7 +124,7 @@ const styles = {
         gap: '20px',
         fontFamily: 'Arial, sans-serif',
         color: '#333',
-        paddingBlock: '80px',
+        paddingBlock: '60px 80px',
         paddingInline: '50px',
     },
     leftSection: {

@@ -8,7 +8,6 @@ import {Typography} from "@mui/material";
 
 
 /**TODO :
- - Changer la disposition et le style du fil d'Arianne
  - Implémente les thèmes sur la page
  */
 export default function GamesDetailsPage() {
@@ -41,7 +40,7 @@ export default function GamesDetailsPage() {
 
     return (
         <>
-            <Typography variant="subtitle2">
+            <Typography variant="subtitle2"  style={styles.breadcrumb}>
                 Accueil &gt; {gameData.name}
             </Typography>
             <div id="details">
@@ -78,6 +77,10 @@ export default function GamesDetailsPage() {
 }
 
 const styles = {
+    breadcrumb: {
+        color: '#FE4A49',
+        padding: '20px 0px 0px 50px',
+    },
     separatorContainerR: {
         display: 'flex',
         justifyContent: 'flex-end',

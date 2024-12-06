@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
 /**TODO :
- *    - Changer le style (mieux correspondre à la maquette)
  *    - Gèrer le problème de jeux sans vidéo (=> plus rien ne fonctionne à cause de 'map')
  *    - Permettre de passer au média suivant/précédent avec des flèches droite/gauche visibles
  *     au survol du média principal
@@ -44,11 +43,9 @@ const GameMedias = ({ videos, screenshots }) => {
     };
 
     useEffect(() => {
-        // Ajouter un écouteur d'événement clavier
         window.addEventListener('keydown', handleKeyDown);
         return () => {
-            // Nettoyer l'écouteur lors du démontage du composant
-            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keydown', handleKeyDown); // nettoyage
         };
     }, [allMedia.length]);
 
@@ -113,7 +110,7 @@ const GameMedias = ({ videos, screenshots }) => {
 
 const styles = {
     navContainer: {
-        marginLeft: '20%', // Décalage de 100px pour la navbar
+        marginLeft: '20%', // décalage de 100px pour la navbar
     },
     container: {
         padding: '20px',
