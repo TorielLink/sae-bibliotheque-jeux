@@ -13,12 +13,22 @@ const app = express();
 
 // Configuration CORS
 const configureCors = () => {
-    const allowedOrigins = process.env.NODE_ENV === 'production'
-        ? ['https://votre-domaine-production.com']
-        : ['http://localhost:5173', 'http://localhost:5175'];
+    const allowedOrigins = []; // On définira dynamiquement les origines autorisées
+
+    // Générer la liste des origines dans la plage
+    for (let port = 5173; port <= 5177; port++) {
+        allowedOrigins.push(`http://localhost:${port}`);
+    }
 
     return cors({
-        origin: allowedOrigins,
+        origin: (origin, callback) => {
+            // Si l'origine est dans la liste, on l'autorise
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Origine non autorisée par CORS'));
+            }
+        },
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         credentials: true,
     });
