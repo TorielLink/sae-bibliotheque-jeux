@@ -1,10 +1,11 @@
 import React from 'react';
+import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
 
 /**TODO :
- * - Ajouter les boutons d'actions rapides
- * - Mettre en forme les informations dans les blocs
+ * - Coder les actions des boutons d'actions rapides
+ * - Mettre en forme les informations dans les blocs (commencé)
  * - Limiter la taille des blocs (overflow: hidden)
  * - Ajouter les différentes listes supplémentaires (jeux similaires, DLC, Suites, etc.)
  */
@@ -26,23 +27,75 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
             <div style={styles.rightSection}>
                 <GameDetailsNavBar activeSection={"details"} />
 
+                {/* Boutons d'actions rapides */}
+                <div style={styles.quickActions}>
+                    <button
+                        style={{...styles.quickActionButton, ...styles.reviewButton}}
+                        onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#36A0FC';
+                            e.target.style.color = '#FFF';
+                            e.target.style.borderColor = 'transparent';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = '#FFF';
+                            e.target.style.color = '#000';
+                            e.target.style.borderColor = '#36A0FC';
+                        }}
+                    >
+                        Ajouter un avis
+                    </button>
+                    <button
+                        style={{...styles.quickActionButton, ...styles.noteButton}}
+                        onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#2FC75A';
+                            e.target.style.color = '#FFF';
+                            e.target.style.borderColor = 'transparent';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = '#FFF';
+                            e.target.style.color = '#000';
+                            e.target.style.borderColor = '#2FC75A';
+                        }}
+                    >
+                        Ajouter une note
+                    </button>
+                    <button
+                        style={{...styles.quickActionButton, ...styles.logButton}}
+                        onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#FFBB33';
+                            e.target.style.color = '#FFF';
+                            e.target.style.borderColor = 'transparent';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = '#FFF';
+                            e.target.style.color = '#000';
+                            e.target.style.borderColor = '#FFBB33';
+                        }}
+                    >
+                        Ajouter un journal
+                    </button>
+                </div>
+
                 <div style={styles.mainContainer}>
                     <div style={styles.mainContent}>
                         {/* Détails et Notes */}
                         <div style={styles.detailsAndNotes}>
                             {/* Détails */}
                             <div style={styles.detailsBox}>
-                                <h2 style={styles.detailsHeader}>Détails</h2>
+                                <h2 style={styles.categoryHeader}>Détails</h2>
                                 <ul style={styles.detailsList}>
-                                    <li><strong>Nom :</strong> {name || "Non disponible"}</li>
-                                    <li><strong>Date de sortie :</strong> {releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() : "Non disponible"}</li>
-                                    <li><strong>Restriction d'âge :</strong> {ageRating || "Non précisé"}</li>
+                                    <li><SportsEsports style={styles.icon}/> {name || "Non disponible"}</li>
+                                    <li><CalendarToday style={styles.icon}/> {
+                                        releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() :
+                                            "Non disponible"}</li>
+                                    {/* TODO : associer `ageRatingCategory` pour comprendre la valeur de `ageRating` */}
+                                    <li><ChildCare style={styles.icon} /> {ageRating || "Non précisé"}</li>
                                 </ul>
                             </div>
 
                             {/* Notes */}
                             <div style={styles.noteBox}>
-                                <h2 style={styles.noteHeader}>Note</h2>
+                                <h2 style={styles.categoryHeader}>Note</h2>
                                 <div style={styles.ratings}>
                                     <div style={styles.ratingItem}>
                                         <strong>Ma Note</strong>
@@ -59,7 +112,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         {/* Synopsis ou Description */}
                         {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
                             <div style={styles.synopsisBox}>
-                                <h2 style={styles.synopsisHeader}>Synopsis</h2>
+                                <h2 style={styles.categoryHeader}>Synopsis</h2>
                                 <p style={styles.synopsisText}>{detailedSynopsis}</p>
                             </div>
                         ) : (
@@ -77,7 +130,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         {/* Plateformes */}
                         {platforms && platforms.length > 0 && (
                             <div style={styles.platformBox}>
-                                <h2 style={styles.platformHeader}>Plateformes</h2>
+                                <h2 style={styles.categoryHeader}>Plateformes</h2>
                                 <ul style={styles.platformList}>
                                     {platforms.map((platform) => (
                                         <li key={platform.id} style={styles.platformItem}>
@@ -91,7 +144,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         {/* Genres */}
                         {genres && genres.length > 0 && (
                             <div style={styles.genreBox}>
-                                <h2 style={styles.genreHeader}>Genres</h2>
+                                <h2 style={styles.categoryHeader}>Genres</h2>
                                 <ul style={styles.genreList}>
                                     {genres.map((genre) => (
                                         <li key={genre.id} style={styles.genreItem}>
@@ -129,7 +182,8 @@ const styles = {
         alignItems: 'center',
     },
     coverImage: {
-        width: '100%',
+        width: '420px',
+        height: '650px',
         borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     },
@@ -142,17 +196,50 @@ const styles = {
         flex: '2',
         alignItems: 'flex-start',
     },
+    quickActions: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        gap: '20px',
+    },
+    quickActionButton: {
+        padding: '10px 5%',
+        border: 'none',
+        borderRadius: '10px',
+        backgroundColor: '#FFF',
+        fontSize: '12px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s, transform 0.2s',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    reviewButton: {
+        border: '1px solid #36A0FC',
+    },
+    noteButton: {
+        border: '1px solid #2FC75A',
+    },
+    logButton: {
+        border: '1px solid #FFBB33',
+    },
     mainContainer: {
         display: 'flex',
         flex: '2',
         gap: '20px',
-        alignItems: 'flex-start',
+        alignItems: 'stretch',
     },
     mainContent: {
         flex: '3',
         display: 'flex',
         flexDirection: 'column',
         gap: '20px',
+        overflowX: 'scroll',
+    },
+    categoryHeader: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: '10px',
     },
     detailsAndNotes: {
         display: 'flex',
@@ -160,23 +247,27 @@ const styles = {
         flexWrap: 'wrap',
     },
     detailsBox: {
+        display: 'block',
         flex: '1',
         backgroundColor: '#9534D580', // canal alpha : 80=50% de transparence
         padding: '15px',
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     },
-    detailsHeader: {
-        fontSize: '18px',
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: '10px',
-    },
     detailsList: {
         listStyle: 'none',
-        padding: 0,
+        paddingLeft: '15px',
         margin: 0,
-        lineHeight: '1.6',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        height: '67%',
+    },
+    icon: {
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        marginRight: '4px',
+        color: '#333',
     },
     noteBox: {
         flex: '1',
@@ -184,12 +275,6 @@ const styles = {
         padding: '15px',
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    },
-    noteHeader: {
-        fontSize: '18px',
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: '10px',
     },
     ratings: {
         display: 'flex',
@@ -215,13 +300,8 @@ const styles = {
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     },
-    synopsisHeader: {
-        fontSize: '18px',
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: '10px',
-    },
     synopsisText: {
+        paddingLeft: '20px',
         fontSize: '14px',
         lineHeight: '1.6',
     },
@@ -240,12 +320,6 @@ const styles = {
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     },
-    platformHeader: {
-        fontSize: '18px',
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: '10px',
-    },
     platformList: {
         listStyle: 'none',
         padding: 0,
@@ -260,11 +334,6 @@ const styles = {
         padding: '15px',
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    },
-    genreHeader: {
-        fontSize: '18px',
-        fontWeight: 'bold',
-        marginBottom: '10px',
     },
     genreList: {
         listStyleType: 'none',
