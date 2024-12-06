@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -6,63 +6,66 @@ import {
   Tab,
   CircularProgress,
   useMediaQuery,
-} from '@mui/material';
-import GameSection from '../components/GameSection.jsx';
-import { useTheme } from '@mui/material/styles';
-import SectionTitle from '../components/SectionTitle.jsx';
+} from "@mui/material";
+import GameSection from "../components/GameSection.jsx";
+import { useTheme } from "@mui/material/styles";
+import SectionTitle from "../components/SectionTitle.jsx";
 
 function HomePage() {
   const [recentGames, setRecentGames] = useState([]);
   const [popularGames, setPopularGames] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [selectedTab, setSelectedTab] = useState(0);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const tabTitles = ['Sorties récentes', 'Jeux populaires', 'Avis récents'];
+  const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
 
   // Fonction pour charger les jeux en fonction des filtres
   const fetchGamesByFilter = async (filter) => {
     const queryParams = new URLSearchParams(filter).toString();
     const response = await fetch(`http://localhost:8080/games?${queryParams}`);
     if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des données');
+      throw new Error("Erreur lors de la récupération des données");
     }
     return response.json();
   };
 
   // Chargement des données pour les sections
-  const fetchAllGames = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const [recent, popular] = await Promise.all([
-        fetchGamesByFilter({ limit: 20, sort: 'first_release_date desc' }),
-        fetchGamesByFilter({ limit: 20, sort: 'aggregated_rating desc' }),
-      ]);
+const fetchAllGames = async () => {
+  setLoading(true);
+  setError("");
+  try {
+    const [recent, popular] = await Promise.all([
+      fetchGamesByFilter({ limit: 20, sort: "first_release_date desc" }),
+      fetchGamesByFilter({ limit: 20, sort: "aggregated_rating desc" }),
+    ]);
 
-      const formatGameData = (games) =>
-        games.map((game) => ({
+    const formatGameData = (games) =>
+      games
+        .filter((game) => game.cover) // Exclure les jeux sans couverture
+        .map((game) => ({
           id: game.id,
-          image: game.cover  || null,
+          image: game.cover || null,
           title: game.name,
-            rating: game.aggregatedRating?.toFixed(1) || 'N/A',
+          rating: game.aggregatedRating?.toFixed(1) || "N/A",
           releaseDate: game.releaseDate
             ? new Date(game.releaseDate).toLocaleDateString()
-            : 'Date inconnue',
+            : "Date inconnue",
           categories: game.genres || [],
         }));
 
-      setRecentGames(formatGameData(recent));
-      setPopularGames(formatGameData(popular));
-    } catch (err) {
-      console.error('Erreur lors de la récupération des jeux :', err);
-      setError('Impossible de charger les jeux. Veuillez réessayer plus tard.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    setRecentGames(formatGameData(recent));
+    setPopularGames(formatGameData(popular));
+  } catch (err) {
+    console.error("Erreur lors de la récupération des jeux :", err);
+    setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchAllGames();
@@ -76,15 +79,15 @@ function HomePage() {
     selectedTab === 0 ? recentGames : selectedTab === 1 ? popularGames : [];
 
   return (
-    <Box sx={{ padding: isMobile ? '10px' : '10px 20px' }}>
+    <Box sx={{ padding: isMobile ? "10px" : "10px 20px" }}>
       {/* Breadcrumb */}
-      <Box sx={{ display: 'inline-block', marginBottom: '8px' }}>
+      <Box sx={{ display: "inline-block", marginBottom: "8px" }}>
         <Typography
           variant="subtitle2"
           sx={{
             color: theme.palette.text.secondary,
-            fontSize: isMobile ? '0.9rem' : '1rem',
-            display: 'inline',
+            fontSize: isMobile ? "0.9rem" : "1rem",
+            display: "inline",
           }}
         >
           Accueil &gt;
@@ -93,12 +96,12 @@ function HomePage() {
           variant="subtitle2"
           sx={{
             color: isMobile ? theme.palette.red.main : theme.palette.text.primary,
-            fontWeight: 'bold',
-            display: 'inline',
-            marginLeft: '8px',
+            fontWeight: "bold",
+            display: "inline",
+            marginLeft: "8px",
           }}
         >
-          {isMobile ? tabTitles[selectedTab] : ''}
+          {isMobile ? tabTitles[selectedTab] : ""}
         </Typography>
       </Box>
 
@@ -111,19 +114,19 @@ function HomePage() {
           textColor="primary"
           indicatorColor="primary"
           sx={{
-            marginBottom: '8px',
-            minHeight: '36px',
-            '& .MuiTab-root': {
-              textTransform: 'none',
-              fontWeight: 'bold',
-              fontSize: '0.8rem',
-              padding: '6px 8px',
-              minHeight: 'auto',
+            marginBottom: "8px",
+            minHeight: "36px",
+            "& .MuiTab-root": {
+              textTransform: "none",
+              fontWeight: "bold",
+              fontSize: "0.8rem",
+              padding: "6px 8px",
+              minHeight: "auto",
               color: theme.palette.text.primary,
             },
-            '& .Mui-selected': {
+            "& .Mui-selected": {
               color: theme.palette.red.main,
-              fontWeight: 'bold',
+              fontWeight: "bold",
             },
           }}
         >
@@ -137,10 +140,10 @@ function HomePage() {
       {loading ? (
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '50vh',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
           }}
         >
           <CircularProgress />
@@ -148,9 +151,9 @@ function HomePage() {
       ) : error ? (
         <Box
           sx={{
-            textAlign: 'center',
+            textAlign: "center",
             color: theme.palette.error.main,
-            marginTop: '20px',
+            marginTop: "20px",
           }}
         >
           <Typography variant="h6">{error}</Typography>
@@ -161,14 +164,14 @@ function HomePage() {
           {isMobile ? (
             <GameSection
               games={currentGames}
-              sortBy={selectedTab === 1 ? 'rating' : 'releaseDate'}
+              sortBy={selectedTab === 1 ? "rating" : "releaseDate"}
               order="desc"
               isMobileView={true}
             />
           ) : (
             /* Desktop View */
             <>
-              <Box sx={{ marginBottom: '40px' }}>
+              <Box sx={{ marginBottom: "40px" }}>
                 <GameSection
                   title="Sorties récentes"
                   games={recentGames}
@@ -178,7 +181,7 @@ function HomePage() {
                 />
               </Box>
 
-              <Box sx={{ marginBottom: '40px' }}>
+              <Box sx={{ marginBottom: "40px" }}>
                 <GameSection
                   title="Jeux populaires"
                   games={popularGames}
@@ -191,10 +194,10 @@ function HomePage() {
               <SectionTitle title="Avis récents" />
               <Box
                 sx={{
-                  textAlign: 'center',
+                  textAlign: "center",
                   color: theme.palette.text.secondary,
-                  marginTop: '20px',
-                  marginBottom: '40px',
+                  marginTop: "20px",
+                  marginBottom: "40px",
                 }}
               >
                 <Typography variant="body1">

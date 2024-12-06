@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, CardMedia, CardContent, Typography, Chip, Box, useMediaQuery } from "@mui/material";
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Chip,
+  Box,
+  useMediaQuery,
+} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
@@ -7,44 +15,46 @@ import { useNavigate } from "react-router-dom";
 function GameCard({ id, image, title, rating, categories }) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Vérifie si l'utilisateur est sur mobile
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleCardClick = () => {
     console.log("Navigating to details with ID:", id);
-    navigate(`/details/${id}`); // Passe l'ID dans l'URL pour la navigation
+    navigate(`/details/${id}`);
   };
 
   return (
     <Card
       sx={{
-        width: 180, // Largeur fixe
-        height: 280, // Hauteur ajustée
+        width: 150,
+        height: 225,
         position: "relative",
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
         borderRadius: "10px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.3)",
         overflow: "hidden",
-        cursor: "pointer", // Indicateur visuel d'élément cliquable
+        cursor: "pointer",
         "&:hover": {
-          boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)", // Effet d'ombre au survol
+          boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
           "& .categories": {
-            opacity: isMobile ? 1 : 1, // Pas d'effet sur mobile
+            opacity: isMobile ? 1 : 1,
           },
         },
       }}
-      onClick={handleCardClick} // Gestion du clic
+      onClick={handleCardClick}
     >
-      {/* Image du jeu avec l'évaluation en haut à droite */}
-      <Box sx={{ position: "relative", height: "85%" }}>
-        <CardMedia
-          component="img"
-          image={image || "https://via.placeholder.com/250x180"}
-          alt={title || "Image non disponible"}
-          sx={{ objectFit: "cover", width: "100%", height: "100%" }}
-        />
+      {/* Zone contenant l'image et l'évaluation */}
+      <Box sx={{ position: "relative", height: "85%"}}>
+        {/* Affiche l'image uniquement si elle existe */}
+        {image && (
+          <CardMedia
+            component="img"
+            image={image}
+            alt={title || "Image non disponible"}
+            sx={{ objectFit: "cover", width: "100%", height: "100%" }}
+          />
+        )}
 
-        {/* Évaluation (toujours visible) */}
         {rating && (
           <Box
             sx={{
@@ -64,7 +74,7 @@ function GameCard({ id, image, title, rating, categories }) {
               variant="body2"
               sx={{
                 fontWeight: "bold",
-                color: theme.palette.text.primary, // Texte en noir
+                color: theme.palette.text.primary,
               }}
             >
               {rating}
@@ -83,13 +93,13 @@ function GameCard({ id, image, title, rating, categories }) {
           className="categories"
           sx={{
             position: "absolute",
-            bottom: 8, // Positionné près du bas de l'image
+            bottom: 8,
             left: 8,
             display: "flex",
             flexWrap: "wrap",
-            gap: "4px", // Espacement entre les chips
-            opacity: isMobile ? 1 : 0, // Catégories toujours visibles sur mobile
-            transition: isMobile ? "none" : "opacity 0.3s ease-in-out", // Pas de transition sur mobile
+            gap: "4px",
+            opacity: isMobile ? 1 : 0,
+            transition: isMobile ? "none" : "opacity 0.3s ease-in-out",
           }}
         >
           {categories.map((category, index) => (
@@ -100,42 +110,44 @@ function GameCard({ id, image, title, rating, categories }) {
               sx={{
                 backgroundColor: theme.palette.red?.main || theme.palette.secondary.main,
                 color: theme.palette.white?.main || "#fff",
-                fontSize: "0.6rem", // Taille plus petite sur mobile
-                height: "20px", // Hauteur réduite des chips
-                borderRadius: "4px",
+                fontSize: "0.6rem",
+                height: "20px",
+                borderRadius: "6px",
               }}
             />
           ))}
         </Box>
       </Box>
 
-      {/* Titre du jeu en bas */}
+      {/* Titre du jeu */}
       <CardContent
         sx={{
-          height: "15%", // Zone de texte réduite
+          height: "15%",
           textAlign: "center",
-          padding: "4px 8px", // Réduction du padding
+          padding: "8px 8px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+            marginTop: "4px",
+
         }}
       >
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            fontSize: "0.85rem", // Taille de texte réduite pour correspondre à l'espace
-            fontWeight: "bold",
-            color: theme.palette.text.primary,
-            textAlign: "center",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            maxWidth: "100%", // Empêcher les débordements
-          }}
-        >
-          {title || "Titre non disponible"}
-        </Typography>
+  <Typography
+    variant="h6"
+    component="div"
+    sx={{
+      fontSize: "0.85rem",
+      fontWeight: "bold",
+      color: theme.palette.text.primary,
+      textAlign: "center",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      maxWidth: "100%",
+    }}
+  >
+    {title || "Titre non disponible"}
+  </Typography>
       </CardContent>
     </Card>
   );

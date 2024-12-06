@@ -51,27 +51,29 @@ const gamesController = {
     },
 
     // Obtenir une liste de jeux avec filtres
-    async getFilteredGames(req, res) {
-        const { limit = 200, offset = 0, sort = 'first_release_date desc', recent = false } = req.query;
-        try {
-            const fields = "id, name, aggregated_rating, first_release_date, cover.image_id, genres.name";
+// Obtenir une liste de jeux avec filtres
+async getFilteredGames(req, res) {
+    const { limit = 200, offset = 0, sort = 'first_release_date desc', recent = false } = req.query;
+    try {
+        const fields = "id, name, aggregated_rating, first_release_date, cover.image_id, genres.name";
 
-            const now = Math.floor(Date.now() / 1000);
-            const sixMonthsAgo = now - 6 * 30 * 24 * 60 * 60;
-            const recentFilter = recent === 'true'
-                ? `where first_release_date >= ${sixMonthsAgo} & first_release_date <= ${now};`
-                : `where first_release_date <= ${now};`;
+        const now = Math.floor(Date.now() / 1000);
+        const sixMonthsAgo = now - 6 * 30 * 24 * 60 * 60;
+        const recentFilter = recent === 'true'
+            ? `where first_release_date >= ${sixMonthsAgo} & first_release_date <= ${now};`
+            : `where first_release_date <= ${now};`;
 
-            const options = `sort ${sort}; limit ${limit}; offset ${offset};`;
+        const options = `sort ${sort}; limit ${limit}; offset ${offset};`;
 
-            const games = await catalogRetriever.getGameData(fields, recentFilter, options);
+        const games = await catalogRetriever.getGameData(fields, recentFilter, options);
 
-            const transformedGames = games.map(game => ({
+        // Transform and filter games to exclude those without a cover
+        const transformedGames = games
+            .filter(game => game.cover?.image_id) // Exclude games without a cover
+            .map(game => ({
                 id: game.id,
                 name: game.name || "Titre inconnu",
-                cover: game.cover?.image_id
-                    ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
-                    : 'https://via.placeholder.com/250x350',
+                cover: `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`,
                 aggregatedRating: game.aggregated_rating || 0,
                 releaseDate: game.first_release_date
                     ? new Date(game.first_release_date * 1000).toISOString()
@@ -79,12 +81,12 @@ const gamesController = {
                 genres: game.genres?.map(genre => genre.name) || [],
             }));
 
-            res.json(transformedGames);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des jeux :", error.message);
-            res.status(500).json({ message: "Échec de la récupération des jeux.", error: error.message });
-        }
-    },
+        res.json(transformedGames);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des jeux :", error.message);
+        res.status(500).json({ message: "Échec de la récupération des jeux.", error: error.message });
+    }
+},
 };
 
 module.exports = gamesController;
