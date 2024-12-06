@@ -6,6 +6,11 @@ import GameMedias from "../components/GameMedias.jsx";
 import {Typography} from "@mui/material";
 // import GameLogs from '../components/GameLogs.jsx';
 
+
+/**TODO :
+ - Changer la disposition et le style du fil d'Arianne
+ - Implémente les thèmes sur la page
+ */
 export default function GamesDetailsPage() {
     const { id } = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);

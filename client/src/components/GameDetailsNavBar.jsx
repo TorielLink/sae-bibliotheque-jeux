@@ -1,18 +1,16 @@
 import React from 'react';
 
-/*TODO:
- *    - Changer le style (correspondre à la maquette)
- */
+
 export default function GameDetailsNavBar({ activeSection }) {
     // Chaque section a une couleur différente
     const getActiveColor = () => {
         switch (activeSection) {
             case "details":
-                return "#800080"; // Violet
+                return "#9534D5B3"; // violet
             case "reviews":
-                return "#FFD700"; // Jaune
+                return "#FFBB33B3"; // jaune
             case "medias":
-                return "#1E90FF"; // Bleu
+                return "#36A0FCB3"; // bleu
             default:
                 return "transparent"; // Par défaut, aucune couleur
         }
@@ -27,7 +25,10 @@ export default function GameDetailsNavBar({ activeSection }) {
                         ...(activeSection === "details" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
                     }}
                 >
-                    <a href="#details" style={styles.navLink}>Détails</a>
+                    <a href="#details" style={{
+                        ...styles.navLink,
+                        color: activeSection === "details" ? "#FFF" : "#333", // Détails en blanc si actif
+                    }}>Détails</a>
                 </li>
                 <li
                     style={{
@@ -35,7 +36,9 @@ export default function GameDetailsNavBar({ activeSection }) {
                         ...(activeSection === "reviews" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
                     }}
                 >
-                    <a href="#reviews" style={styles.navLink}>Avis</a>
+                    <a href="#reviews" style={{
+                        ...styles.navLink,
+                    }}>Avis</a>
                 </li>
                 <li
                     style={{
@@ -43,7 +46,9 @@ export default function GameDetailsNavBar({ activeSection }) {
                         ...(activeSection === "medias" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
                     }}
                 >
-                    <a href="#medias" style={styles.navLink}>Médias</a>
+                    <a href="#medias" style={{
+                        ...styles.navLink,
+                    }}>Médias</a>
                 </li>
             </ul>
         </div>
@@ -52,9 +57,11 @@ export default function GameDetailsNavBar({ activeSection }) {
 
 const styles = {
     navbar: {
-        backgroundColor: '#333',
-        padding: '10px',
+        width: '35vw', // pour que ça ne s'adapte pas à la taille du parent
+        backgroundColor: '#F5F5F5',
+        borderRadius: '5px',
         fontFamily: 'Arial, sans-serif',
+        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
     },
     navList: {
         listStyleType: 'none',
@@ -64,20 +71,22 @@ const styles = {
         padding: 0,
     },
     navItem: {
-        padding: '5px 15px',
+        padding: '15px 30px',
+        transition: 'background-color 0.3s ease, transform 0.3s ease',
+        borderRadius: '5px',
+        flex: '1', // pour s'assurer que chaque onglet occupe un espace équivalent
+        textAlign: 'center',
+        cursor: 'pointer',
+        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
     },
     navLink: {
-        color: 'white',
+        color: '#333',
         textDecoration: 'none',
-        fontSize: '16px',
-        display: 'block',
-        padding: '5px 10px',
+        fontSize: '14px',
+        fontWeight: '500',
     },
-    navLinkHover: {
-        color: '#f4f4f4',
-    },
-    activeNavItem: {
-        borderRadius: '5px',
-        color: 'white',
+    activeNavLink: {
+        color: '#FFF',
+        fontWeight: 'bold',
     },
 };

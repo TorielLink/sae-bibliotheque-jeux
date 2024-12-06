@@ -1,6 +1,12 @@
 import React from 'react';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
+
+/**TODO :
+ - Ajouter les boutons d'actions rapides
+ - Mettre en forme les informations dans les blocs
+ - Ajouter les différentes listes supplémentaires (jeux similaires, DLC, Suites, etc.)
+ */
 const GameDetails = ({
                          name,
                          description,
@@ -137,8 +143,8 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        gap: '40px',
         height: '100%',
+        gap: '40px',
         flex: '2',
         alignItems: 'flex-start',
     },

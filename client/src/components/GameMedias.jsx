@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
-/*TODO: Barre de navigation
+/**TODO :
  *    - Changer le style (mieux correspondre à la maquette)
  *    - Gèrer le problème de jeux sans vidéo (=> plus rien ne fonctionne à cause de 'map')
  *    - Permettre de passer au média suivant/précédent avec des flèches droite/gauche visibles
@@ -35,10 +35,10 @@ const GameMedias = ({ videos, screenshots }) => {
     // Gestion des flèches directionnelles pour changer le média principal
     const handleKeyDown = (e) => {
         if (e.key === 'ArrowRight') {
-            setMainMediaIndex((prevIndex) => (prevIndex + 1) % allMedia.length); // Passer au média suivant
+            setMainMediaIndex((prevIndex) => (prevIndex + 1) % allMedia.length); // média suivant
         } else if (e.key === 'ArrowLeft') {
             setMainMediaIndex((prevIndex) =>
-                (prevIndex - 1 + allMedia.length) % allMedia.length // Passer au média précédent
+                (prevIndex - 1 + allMedia.length) % allMedia.length // média précédent
             );
         }
     };
