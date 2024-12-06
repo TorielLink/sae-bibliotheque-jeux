@@ -56,7 +56,7 @@ const GameMedias = ({ videos, screenshots }) => {
 
     return (
         <>
-            <GameDetailsNavBar />
+            <GameDetailsNavBar activeSection={"medias"} />
             <div style={styles.container}>
                 {/* Afficher le média principal (le premier élément de la liste ou celui sélectionné) */}
                 {mainMedia && mainMedia.type === 'video' ? (

@@ -1,20 +1,48 @@
 import React from 'react';
 
-/*TODO: Barre de navigation
+/*TODO:
  *    - Changer le style (correspondre à la maquette)
- *    - Passer en paramètre l'onglet sélectionné pour mettre la couleur correspondante
  */
-export default function GameDetailsNavBar() {
+export default function GameDetailsNavBar({ activeSection }) {
+    // Chaque section a une couleur différente
+    const getActiveColor = () => {
+        switch (activeSection) {
+            case "details":
+                return "#800080"; // Violet
+            case "reviews":
+                return "#FFD700"; // Jaune
+            case "medias":
+                return "#1E90FF"; // Bleu
+            default:
+                return "transparent"; // Par défaut, aucune couleur
+        }
+    };
+
     return (
         <div style={styles.navbar}>
             <ul style={styles.navList}>
-                <li style={styles.navItem}>
+                <li
+                    style={{
+                        ...styles.navItem,
+                        ...(activeSection === "details" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
+                    }}
+                >
                     <a href="#details" style={styles.navLink}>Détails</a>
                 </li>
-                <li style={styles.navItem}>
+                <li
+                    style={{
+                        ...styles.navItem,
+                        ...(activeSection === "reviews" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
+                    }}
+                >
                     <a href="#reviews" style={styles.navLink}>Avis</a>
                 </li>
-                <li style={styles.navItem}>
+                <li
+                    style={{
+                        ...styles.navItem,
+                        ...(activeSection === "medias" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
+                    }}
+                >
                     <a href="#medias" style={styles.navLink}>Médias</a>
                 </li>
             </ul>
@@ -47,5 +75,9 @@ const styles = {
     },
     navLinkHover: {
         color: '#f4f4f4',
+    },
+    activeNavItem: {
+        borderRadius: '5px',
+        color: 'white',
     },
 };

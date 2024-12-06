@@ -25,7 +25,7 @@ const GameDetails = ({
 
             {/* Section droite : Détails, Notes, Description, Plateformes, Genres  */}
             <div style={styles.rightSection}>
-                <GameDetailsNavBar />
+                <GameDetailsNavBar activeSection={"details"} />
 
                 <div style={styles.mainContainer}>
                     <div style={styles.mainContent}>
