@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
 /**TODO :
  *     - Permettre de passer au média suivant/précédent avec des flèches droite/gauche visibles
  *     au survol du média principal
- *     - Faire défiler les médias quand on dépasse la visibilité de la liste
  */
 const GameMedias = ({ videos, screenshots }) => {
     const [mainMediaIndex, setMainMediaIndex] = useState(0); // pour suivre le média principal sélectionné
+    const mediaGridRef = useRef(null); // Référence pour la mediaGrid
+    const isDragging = useRef(false); // pour savoir si l'utilisateur est en train de glisser
+    const startX = useRef(0); // Position initiale de la souris
+    const scrollLeft = useRef(0);
 
     // Fusionner les vidéos et les captures d'écran dans une seule liste de miniatures
     const allMedia = [
@@ -31,6 +34,27 @@ const GameMedias = ({ videos, screenshots }) => {
         setMainMediaIndex(index);
     };
 
+    // Gérer le démarrage du drag
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        isDragging.current = true;
+        startX.current = e.clientX;
+        scrollLeft.current = mediaGridRef.current.scrollLeft;
+    };
+
+    // Gérer le mouvement de la souris pendant le drag
+    const handleMouseMove = (e) => {
+        if (!isDragging.current) return;
+        const x = e.clientX;
+        const walk = (x - startX.current) * 2; // multiplier pour ajuster la vitesse du défilement
+        mediaGridRef.current.scrollLeft = scrollLeft.current - walk;
+    };
+
+    // Gérer la fin du drag
+    const handleMouseUp = () => {
+        isDragging.current = false;
+    };
+
     // Gestion des flèches directionnelles pour changer le média principal
     const handleKeyDown = (e) => {
         if (e.key === 'ArrowRight') {
@@ -44,10 +68,22 @@ const GameMedias = ({ videos, screenshots }) => {
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
+        // Ajouter les événements de souris pour le drag
+        const mediaGridElement = mediaGridRef.current;
+        mediaGridElement.addEventListener('mousedown', handleMouseDown);
+        mediaGridElement.addEventListener('mousemove', handleMouseMove);
+        mediaGridElement.addEventListener('mouseup', handleMouseUp);
+        mediaGridElement.addEventListener('mouseleave', handleMouseUp); // Pour s'assurer que le drag s'arrête si la souris quitte l'élément
+
         return () => {
-            window.removeEventListener('keydown', handleKeyDown); // nettoyage
+            window.removeEventListener('keydown', handleKeyDown);
+            // Nettoyer les événements de la souris
+            mediaGridElement.removeEventListener('mousedown', handleMouseDown);
+            mediaGridElement.removeEventListener('mousemove', handleMouseMove);
+            mediaGridElement.removeEventListener('mouseup', handleMouseUp);
+            mediaGridElement.removeEventListener('mouseleave', handleMouseUp);
         };
-    }, [allMedia.length]);
+    }, []);
 
     const mainMedia = allMedia[mainMediaIndex];
 
@@ -80,7 +116,7 @@ const GameMedias = ({ videos, screenshots }) => {
                 )}
 
                 {/* Miniatures des vidéos et captures d'écran */}
-                <div style={styles.mediaGrid}>
+                <div ref={mediaGridRef} style={styles.mediaGrid}>
                     {allMedia.map((media, index) => (
                         <div
                             key={media.id}
@@ -141,6 +177,8 @@ const styles = {
         padding: '0',
         justifyContent: 'flex-start',
         overflowX: 'auto',
+        scrollbarWidth: 'none',
+        '-ms-overflow-style': 'none',
     },
     mediaThumbnail: {
         flex: '0 0 auto',
