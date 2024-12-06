@@ -23,9 +23,6 @@ const app = express();
 const gameListRoutes = require('./routes/gameListsRoutes');
 const listContentRoutes = require('./routes/listContentRoutes');
 
-
-// Configuration CORS
-
 // Configuration CORS
 const configureCors = () => {
     const allowedOrigins = []; // On définira dynamiquement les origines autorisées
