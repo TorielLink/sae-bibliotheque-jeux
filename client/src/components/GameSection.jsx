@@ -1,6 +1,5 @@
 import React from "react";
 import {Box, Grid, Typography, useMediaQuery} from "@mui/material";
-import GameSorter from "../components/GameSorter.jsx";
 import GameCard from "../components/GameCard.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 import {useTheme} from "@mui/material/styles";
