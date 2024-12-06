@@ -27,7 +27,7 @@ const gamesController = require('../controllers/gamesController');
  *       500:
  *         description: Erreur serveur
  */
-router.get('/by-date', gamesController.getGamesByDate);
+router.get('/by-date', gamesController.getFilteredGames);
 
 /**
  * @swagger
@@ -42,7 +42,7 @@ router.get('/by-date', gamesController.getGamesByDate);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/by-popularity', gamesController.getGamesByPopularity);
+router.get('/by-popularity', gamesController.getPopularGames);
 
 /**
  * @swagger

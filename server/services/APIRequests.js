@@ -165,11 +165,13 @@ class APIRequests {
 
         const coverData = await this.getData(
             "covers",
-            `fields image_id,height,width,game; where id =(${coverIds.join(",")});limit ${coverIds.length};`
+            `fields image_id,height,width; where id =(${coverIds.join(",")});limit ${coverIds.length};`
         )
 
         let coverMap = new Map()
         coverData.map(el => {
+            el.url = `${coverUrl}${el.image_id}.png`
+            delete el.image_id
             coverMap.set(el.id, el)
         })
 

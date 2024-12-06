@@ -191,19 +191,31 @@ class DataRetriever extends APIRequests {
             let game = {
                 ...el
             }
-            game.cover = game.cover == undefined ? undefined : coversMap.get(game.cover)
-            if (game.genres != undefined) {
 
-                let genres = []
+            game.aggregated_rating = !game.aggregated_rating ? 0 : (game.aggregated_rating / 10).toFixed(1)
+
+            game.releaseDate = el.first_release_date
+                ? new Date(el.first_release_date * 1000).toISOString()
+                : null
+            delete game.first_release_date
+
+            game.cover = game.cover == undefined ? undefined : coversMap.get(game.cover).url
+            let genres = []
+            if (game.genres != undefined) {
                 el.genres.map(genreId => {
-                    genres.push(genresMap.get(genreId))
+                    genres.push(genresMap.get(genreId).name)
                 })
-                game.genres = genres
             }
+            game.genres = genres
             result.push(game)
         })
 
-        return result
+        let sortedResult = result
+            .filter(el => el.cover !== undefined)
+            .map(el => {
+                return el;
+            })
+        return sortedResult
     }
 
     async getCatalogByDate(limit = DataRetriever.#DEFAULT_LIMIT, offset = DataRetriever.#DEFAULT_OFFSET) {
