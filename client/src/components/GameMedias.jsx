@@ -2,28 +2,28 @@ import React, { useState, useEffect } from 'react';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
 /**TODO :
- *    - Gèrer le problème de jeux sans vidéo (=> plus rien ne fonctionne à cause de 'map')
- *    - Permettre de passer au média suivant/précédent avec des flèches droite/gauche visibles
+ *     - Permettre de passer au média suivant/précédent avec des flèches droite/gauche visibles
  *     au survol du média principal
+ *     - Faire défiler les médias quand on dépasse la visibilité de la liste
  */
 const GameMedias = ({ videos, screenshots }) => {
     const [mainMediaIndex, setMainMediaIndex] = useState(0); // pour suivre le média principal sélectionné
 
     // Fusionner les vidéos et les captures d'écran dans une seule liste de miniatures
     const allMedia = [
-        ...videos.map((video) => ({
+        ...videos?.map((video) => ({
             type: 'video',
             id: video.id,
             videoId: video.video_id,
             title: video.name,
             thumbnail: `https://img.youtube.com/vi/${video.video_id}/0.jpg`, // ajout de la vignette
-        })),
-        ...screenshots.map((screenshot) => ({
+        })) || [],
+        ...screenshots?.map((screenshot) => ({
             type: 'image',
             id: screenshot.id,
             url: screenshot.url.replace('t_thumb', 't_screenshot_big'),
             title: 'Capture d\'écran',
-        }))
+        })) || [],
     ];
 
     // Gestion du clic sur une miniature

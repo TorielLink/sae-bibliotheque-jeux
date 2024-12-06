@@ -80,6 +80,8 @@ const styles = {
     breadcrumb: {
         color: '#FE4A49',
         padding: '20px 0px 0px 50px',
+        font: 'Inter',
+        fontSize: '15px',
     },
     separatorContainerR: {
         display: 'flex',
