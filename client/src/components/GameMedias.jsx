@@ -56,7 +56,9 @@ const GameMedias = ({ videos, screenshots }) => {
 
     return (
         <>
-            <GameDetailsNavBar activeSection={"medias"} />
+            <div style={styles.navContainer}> {/* Conteneur pour décaler la navbar */}
+                <GameDetailsNavBar activeSection={"medias"}/>
+            </div>
             <div style={styles.container}>
                 {/* Afficher le média principal (le premier élément de la liste ou celui sélectionné) */}
                 {mainMedia && mainMedia.type === 'video' ? (
@@ -110,6 +112,9 @@ const GameMedias = ({ videos, screenshots }) => {
 };
 
 const styles = {
+    navContainer: {
+        marginLeft: '20%', // Décalage de 100px pour la navbar
+    },
     container: {
         padding: '20px',
         fontFamily: 'Arial, sans-serif',
