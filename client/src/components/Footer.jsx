@@ -3,14 +3,13 @@ import React from "react";
 const Footer = () => {
     return (
         <footer style={styles.footerContainer}>
-            {/* Conteneur principal */}
             <div style={styles.footerContent}>
                 {/* Section : À propos de nous */}
                 <div style={styles.column}>
                     <h3 style={styles.header}>À propos de nous</h3>
                     <ul style={styles.linkList}>
                         <li><a href="/team" style={styles.link}>L'équipe</a></li>
-                        <li><a href="/establishment" style={styles.link}>L'établissement</a></li>
+                        <li><a href="/institution" style={styles.link}>L'établissement</a></li>
                     </ul>
                 </div>
 
@@ -44,7 +43,6 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Ligne séparatrice */}
             <hr style={styles.separator} />
 
             {/* Bas de page */}
@@ -69,7 +67,7 @@ const styles = {
         display: 'flex',
         justifyContent: 'space-evenly',
         flexWrap: 'wrap',
-        gap: '100px',
+        gap: '60px',
         paddingInline: '12%',
     },
     column: {
