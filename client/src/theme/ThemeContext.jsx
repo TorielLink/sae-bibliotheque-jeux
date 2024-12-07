@@ -2,7 +2,7 @@ import React, { createContext, useMemo, useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles'; // Importer ThemeProvider de MUI
 import { lightTheme, darkTheme } from './themes'; // Import des thèmes
 
-export const ThemeContext = createContext();
+export const ThemeContext = createContext(undefined);
 
 export function ThemeContextProvider({ children }) {
   const [mode, setMode] = useState('light'); // État pour gérer le mode (clair ou sombre)
