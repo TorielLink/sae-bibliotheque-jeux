@@ -34,8 +34,7 @@ const TeamPage = () => {
             name: 'Clothilde Proux',
             role: 'Développeuse Frontend et UI/UX Designer',
             github: 'https://github.com/TorielLink',
-            linkedin: 'https://linkedin.com/in/emmaleroy',
-            twitter: 'https://twitter.com/emmaleroy',
+            linkedin: 'https://linkedin.com/in/clothilde-proux-0358a1250',
         },
         {
             name: 'Baanusha Sivasekaran',
@@ -57,17 +56,21 @@ const TeamPage = () => {
                         <h3 style={styles.memberName}>{member.name}</h3>
                         <p style={styles.memberRole}>{member.role}</p>
                         <div style={styles.socialLinks}>
-                            <a href={member.github} target="_blank" rel="noopener noreferrer" style={styles.socialIcon}>
-                                <img src="https://img.icons8.com/ios-glyphs/30/000000/github.png" alt="GitHub"/>
-                            </a>
-                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer"
-                               style={styles.socialIcon}>
-                                <img src="https://img.icons8.com/ios-filled/30/0077b5/linkedin.png" alt="LinkedIn"/>
-                            </a>
-                            <a href={member.twitter} target="_blank" rel="noopener noreferrer"
-                               style={styles.socialIcon}>
-                                <img src="https://img.icons8.com/ios-filled/30/1da1f2/twitter.png" alt="Twitter"/>
-                            </a>
+                            {member.github && (
+                                <a href={member.github} target="_blank" rel="noopener noreferrer" style={styles.socialIcon}>
+                                    <img src="https://img.icons8.com/ios-glyphs/30/000000/github.png" alt="GitHub" />
+                                </a>
+                            )}
+                            {member.linkedin && (
+                                <a href={member.linkedin} target="_blank" rel="noopener noreferrer" style={styles.socialIcon}>
+                                    <img src="https://img.icons8.com/ios-filled/30/0077b5/linkedin.png" alt="LinkedIn" />
+                                </a>
+                            )}
+                            {member.twitter && (
+                                <a href={member.twitter} target="_blank" rel="noopener noreferrer" style={styles.socialIcon}>
+                                    <img src="https://img.icons8.com/ios-filled/30/1da1f2/twitter.png" alt="Twitter" />
+                                </a>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -92,13 +95,12 @@ const styles = {
         marginBottom: '20px',
     },
     teamContainer: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         gap: '20px',
+        justifyContent: 'center',
     },
     card: {
-        width: '250px',
         padding: '20px',
         border: '1px solid #ddd',
         borderRadius: '8px',
@@ -106,10 +108,6 @@ const styles = {
         textAlign: 'center',
         backgroundColor: '#fff',
         transition: 'transform 0.3s, box-shadow 0.3s',
-    },
-    cardHover: {
-        transform: 'scale(1.05)',
-        boxShadow: '0 8px 12px rgba(0, 0, 0, 0.2)',
     },
     memberName: {
         fontSize: '18px',
@@ -129,9 +127,6 @@ const styles = {
     socialIcon: {
         display: 'inline-block',
         transition: 'opacity 0.3s',
-    },
-    socialIconHover: {
-        opacity: 0.8,
     },
 };
 

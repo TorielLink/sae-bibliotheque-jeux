@@ -19,7 +19,8 @@ const Footer = () => {
                     <ul style={styles.linkList}>
                         <li><a href="/project" style={styles.link}>Le projet</a></li>
                         <li><a href="/mentorship" style={styles.link}>L'encadrement</a></li>
-                        <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" style={styles.link}>Dépôt GitHub</a></li>
+                        <li><a href="https://github.com/TorielLink/BibliothequeJeuxIUT" target="_blank" 
+                               rel="noopener noreferrer" style={styles.link}>Dépôt GitHub</a></li>
                     </ul>
                 </div>
 
@@ -37,7 +38,7 @@ const Footer = () => {
                     <h3 style={styles.header}>Contact</h3>
                     <ul style={styles.linkList}>
                         <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" style={styles.link}>GitHub</a></li>
-                        <li><a href="mailto:contact@example.com" style={styles.link}>Adresse mail</a></li>
+                        <li><a href="mailto:contact-srcib@example.com" style={styles.link}>Adresse mail</a></li>
                         <li><a href="/discord" style={styles.link}>Discord</a></li>
                     </ul>
                 </div>
