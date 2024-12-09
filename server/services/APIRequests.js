@@ -1,11 +1,22 @@
 class APIRequests {
     static #apiUrl = "https://api.igdb.com/v4";
+    static #MAX_REQUESTS_PER_SECOND = 4;
+    static #REQUEST_INTERVAL = 1000 / this.#MAX_REQUESTS_PER_SECOND;
+
     #clientId
     #accessToken
+    #requestQueue = []
+    #isProcessing = false
+    #processedData = {}
+    #processingPromise = null
 
     constructor(clientId, accessToken,) {
         this.#clientId = clientId;
         this.#accessToken = accessToken;
+    }
+
+    async #delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async fetchAPI(endpoint, queryBody) {
@@ -24,14 +35,86 @@ class APIRequests {
             });
 
             if (!response.ok) {
-                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+                if (response.status === 429) {
+                    console.warn(`Rate limit exceeded for endpoint: ${endpoint}`);
+                    throw new Error('Rate limit exceeded');
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
             return data
         } catch (error) {
-            console.error("Error fetching data from IGDB:", error);
+            console.error(`Error fetching data from ${endpoint}:`, error.message);
+            throw error;
         }
+    }
+
+    async #processRequestQueue() {
+        if (this.#isProcessing) return this.#processingPromise;
+        this.#isProcessing = true;
+        this.#processedData = {};
+
+        this.#processingPromise = (async () => {
+            try {
+                while (this.#requestQueue.length > 0) {
+                    const batchProcessStart = performance.now();
+                    let cpt = 0;
+                    let requestBatch = [];
+                    let firstRequest = null;
+
+                    // Prepare batch of requests
+                    while (this.#requestQueue.length > 0 && cpt < 4) {
+                        const [func, args, requestCallNumber] = this.#requestQueue.shift();
+
+                        if (firstRequest && JSON.stringify([func, args, requestCallNumber]) === JSON.stringify(firstRequest)) {
+                            this.#requestQueue.push([func, args, requestCallNumber]);
+                            break;
+                        }
+
+                        if (cpt + requestCallNumber <= 4) {
+                            requestBatch.push({func, args});
+                            cpt += requestCallNumber;
+                        } else {
+                            firstRequest = firstRequest || [func, args, requestCallNumber];
+                            this.#requestQueue.push([func, args, requestCallNumber]);
+                            break;
+                        }
+                    }
+
+                    // Execute batch
+                    const results = await Promise.all(
+                        requestBatch.map(request =>
+                            request.func.call(this, request.args)
+                        )
+                    );
+
+                    // Merge results
+                    results.forEach(result => {
+                        this.#processedData = {
+                            ...this.#processedData,
+                            ...result
+                        };
+                    });
+
+                    // Calculate and enforce rate limit
+                    const batchProcessEnd = performance.now();
+                    const batchProcessTime = batchProcessEnd - batchProcessStart;
+                    const waitTime = batchProcessTime > 1000 ? 0 : 1000 - batchProcessTime;
+
+                    await this.#delay(waitTime);
+                }
+
+                return this.#processedData;
+            } catch (error) {
+                console.error('Error processing request queue:', error);
+                throw error;
+            } finally {
+                this.#isProcessing = false;
+            }
+        })();
+
+        return this.#processingPromise;
     }
 
     async getData(endpoint, queryBody) {
@@ -41,50 +124,16 @@ class APIRequests {
     }
 
     async makeRequests(requests) {
-        let data = {}
+        // Add requests to the queue
+        this.#requestQueue.push(...requests);
 
-        while (requests.length > 0) {
-
-            const batchProcessStart = performance.now();
-            let cpt = 0
-            let requestBatch = []
-            let firstRequest = null
-
-            while (requests.length > 0 && cpt < 4) {
-                const [func, args, requestCallNumber] = requests.shift()
-                if ([func, args, requestCallNumber] == firstRequest)
-                    break;
-                if (cpt + requestCallNumber <= 4) {
-                    requestBatch.push({
-                        func: func,
-                        args: args,
-                    })
-                    cpt += requestCallNumber
-                } else {
-                    firstRequest = !firstRequest ?? [func, args, requestCallNumber]
-                    requests.push([func, args, requestCallNumber])
-                }
-            }
-
-            const results = await Promise.all(
-                requestBatch.map(request =>
-                    request.func.call(this, request.args)
-                )
-            );
-
-            data = {
-                ...data,
-                ...results.reduce((acc, curr) => ({...acc, ...curr}), {})
-            }
-
-            const batchProcessEnd = performance.now();
-            const batchProcessTime = batchProcessEnd - batchProcessStart;
-            const waitTime = batchProcessTime > 1000 ? 0 : 1000 - batchProcessTime
-            await new Promise(resolve => setTimeout(resolve, waitTime));
-            // const endTime = performance.now();
-            // console.log(`Batch process time : ${(batchProcessTime / 1000).toFixed(2)} sec - Batch wait time : ${(waitTime / 1000).toFixed(2)} sec - Overall process time : ${((endTime - batchProcessStart) / 1000).toFixed(2)} sec`);
+        // If not already processing, start processing
+        if (!this.#isProcessing) {
+            return this.#processRequestQueue();
         }
-        return data
+
+        // If already processing, wait for the existing promise
+        return this.#processingPromise;
     }
 
     //-------------------------------------------Fonctions individuelles---------------------------------------------\\
