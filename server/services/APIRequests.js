@@ -44,6 +44,8 @@ class APIRequests {
         let data = {}
 
         while (requests.length > 0) {
+
+            const batchProcessStart = performance.now();
             let cpt = 0
             let requestBatch = []
             let firstRequest = null
@@ -74,6 +76,13 @@ class APIRequests {
                 ...data,
                 ...results.reduce((acc, curr) => ({...acc, ...curr}), {})
             }
+
+            const batchProcessEnd = performance.now();
+            const batchProcessTime = batchProcessEnd - batchProcessStart;
+            const waitTime = batchProcessTime > 1000 ? 0 : 1000 - batchProcessTime
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+            // const endTime = performance.now();
+            // console.log(`Batch process time : ${(batchProcessTime / 1000).toFixed(2)} sec - Batch wait time : ${(waitTime / 1000).toFixed(2)} sec - Overall process time : ${((endTime - batchProcessStart) / 1000).toFixed(2)} sec`);
         }
         return data
     }
