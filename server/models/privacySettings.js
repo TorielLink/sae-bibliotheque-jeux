@@ -1,17 +1,19 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('GameGenre', {
-        id: {
+    return sequelize.define('privacy_settings', {
+        privacy_setting_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        type: {
+        name: {
             type: DataTypes.STRING(100),
             allowNull: false,
             unique: true
-        }
-    }, {
+            }
+        },
+        {
         freezeTableName: true,
         timestamps: false,
-    })
+    }
+    )
 }

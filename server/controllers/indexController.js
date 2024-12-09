@@ -1,7 +1,8 @@
-const gameGenreController = require("./gameGenreController");
+const usersController = require("./usersController");
 
-var controllers = {};
-
-controllers.gameGenre = gameGenreController;
+// Organisation des contrôleurs
+const controllers = {
+    users: usersController,
+};
 
 module.exports = controllers;
