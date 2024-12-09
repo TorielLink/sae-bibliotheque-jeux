@@ -16,7 +16,7 @@ import JournalsPage from './pages/JournalsPage.jsx';
 import ReviewsPage from './pages/ReviewsPage.jsx';
 import CustomListsPage from './pages/CustomListsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
-import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ProtectedRoute from './utils/ProtectedRoute.jsx';
 
 function App() {
   const { theme } = useContext(ThemeContext);
