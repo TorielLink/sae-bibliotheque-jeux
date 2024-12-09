@@ -1,14 +1,27 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const InstitutionPage = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     return (
         <div style={styles.page}>
+            {isMobile && (
+                <div>
+                    <a href="/team" style={styles.mobileLink}>
+                        Rencontrez les membres de l'équipe
+                    </a>
+                </div>
+            )}
+
             <h1 style={styles.header}>L'établissement : IUT de Paris - Rives de Seine</h1>
             <p style={styles.text}>
-                Situé en plein cœur de Paris, l'IUT de Paris - Rives de Seine est une composante de l'Université Paris Cité.
-                Il offre une formation d'excellence dans des domaines variés tels que l'informatique, la gestion, le multimédia,
-                et bien d'autres. L'établissement est reconnu pour ses valeurs d'innovation, de rigueur académique et d'ouverture
-                vers le monde professionnel.
+                Situé à Paris, l'IUT de Paris - Rives de Seine est une composante de l'Université Paris Cité. Il offre
+                une formation d'excellence dans des domaines variés tels que l'informatique, la gestion, le multimédia,
+                et bien d'autres. L'établissement est reconnu pour ses valeurs d'innovation, de rigueur académique et
+                d'ouverture vers le monde professionnel.
             </p>
             <p style={styles.text}>
                 Avec ses partenariats solides et un corps enseignant passionné, l'IUT prépare ses étudiants à relever les défis
@@ -68,6 +81,16 @@ const styles = {
     },
     linkHover: {
         color: '#005580',
+    },
+    mobileLink: {
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: '#007BFF',
+        textDecoration: 'none',
+        border: '1px solid #007BFF',
+        padding: '4px 8px',
+        borderRadius: '5px',
+        transition: 'background-color 0.3s, color 0.3s',
     },
 };
 

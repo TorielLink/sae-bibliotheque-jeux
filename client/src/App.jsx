@@ -15,6 +15,7 @@ import Project from './pages/ProjectPage.jsx';
 import Mentorship from './pages/MentorshipPage.jsx';
 import Terms from './pages/TermsPage.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicyPage.jsx';
+import Contacts from './pages/ContactsPage.jsx';
 
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -38,6 +39,7 @@ function App() {
           <Route path="/mentorship" element={<Mentorship />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<Contacts />} />
         </Routes>
 
         {/* le bouton pour changer de thème */}

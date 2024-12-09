@@ -1,6 +1,11 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const TeamPage = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const teamMembers = [
         {
             name: 'Valentin Amoros',
@@ -47,6 +52,14 @@ const TeamPage = () => {
 
     return (
         <div style={styles.page}>
+            {isMobile && (
+                <div>
+                    <a href="/institution" style={styles.mobileLink}>
+                        Découvrez notre établissement
+                    </a>
+                </div>
+            )}
+
             <h1 style={styles.header}>L'équipe</h1>
             <p style={styles.text}>Découvrez les membres qui contribuent à ce projet.</p>
 
@@ -82,7 +95,7 @@ const TeamPage = () => {
 const styles = {
     page: {
         padding: '20px',
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: 'Inter, sans-serif',
     },
     header: {
         fontSize: '24px',
@@ -93,6 +106,16 @@ const styles = {
         fontSize: '16px',
         color: '#555',
         marginBottom: '20px',
+    },
+    mobileLink: {
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: '#007BFF',
+        textDecoration: 'none',
+        border: '1px solid #007BFF',
+        padding: '4px 8px',
+        borderRadius: '5px',
+        transition: 'background-color 0.3s, color 0.3s',
     },
     teamContainer: {
         display: 'grid',

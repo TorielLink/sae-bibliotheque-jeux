@@ -1,8 +1,21 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const MentorshipPage = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     return (
         <div style={styles.page}>
+            {isMobile && (
+                <div style={styles.linksContainer}>
+                    <a href="/project" style={styles.mobileLink}>
+                        Voir le projet
+                    </a>
+                </div>
+            )}
+
             <h1 style={styles.header}>L'encadrement</h1>
             <p style={styles.text}>
                 Ce projet bénéficie de l'accompagnement d'un mentor expérimenté et du soutien d'investisseurs engagés.
@@ -11,7 +24,7 @@ const MentorshipPage = () => {
             {/* Section : Mentor */}
             <div style={styles.section}>
                 <h2 style={{...styles.subHeader, borderBottom: '2px solid #FE4A49'}}>Notre professeur référent</h2>
-                <div style={styles.mentor}>
+                <div style={{ ...styles.mentor, flexDirection: isMobile ? 'column' : 'row' }}>
                     <img
                         src="https://via.placeholder.com/150"
                         alt="Jérôme FESSY"
@@ -145,6 +158,16 @@ const styles = {
         fontSize: '14px',
         color: '#777',
         margin: '3px 0 10px 0',
+    },
+    mobileLink: {
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: '#007BFF',
+        textDecoration: 'none',
+        border: '1px solid #007BFF',
+        padding: '4px 8px',
+        borderRadius: '5px',
+        transition: 'background-color 0.3s, color 0.3s',
     },
 };
 

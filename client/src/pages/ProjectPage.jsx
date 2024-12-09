@@ -1,8 +1,25 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const ProjectPage = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     return (
         <div style={styles.page}>
+            {isMobile && (
+                <div style={styles.linksContainer}>
+                    <a href="/mentorship" style={styles.mobileLink}>
+                        Découvrir l'encadrement
+                    </a>
+                    <a href="https://github.com/TorielLink/BibliothequeJeuxIUT" target="_blank"
+                       rel="noopener noreferrer" style={styles.mobileLink}>
+                        Voir le dépôt GitHub
+                    </a>
+                </div>
+            )}
+
             <h1 style={styles.header}>Le projet</h1>
             <p style={styles.text}>
                 Découvrez notre vision et les fonctionnalités ambitieuses que nous avons prévues pour cette application
@@ -81,6 +98,22 @@ const styles = {
         listStyleType: 'disc',
         paddingLeft: '20px',
         marginTop: '10px',
+    },
+    linksContainer: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        gap: '10px',
+    },
+    mobileLink: {
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: '#007BFF',
+        textDecoration: 'none',
+        border: '1px solid #007BFF',
+        padding: '4px 8px',
+        borderRadius: '5px',
+        transition: 'background-color 0.3s, color 0.3s',
+        flexShrink: 0,
     },
 };
 

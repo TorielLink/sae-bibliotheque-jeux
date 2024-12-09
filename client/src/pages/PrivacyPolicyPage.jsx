@@ -1,10 +1,22 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const PrivacyPolicy = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     return (
         <div style={styles.page}>
-            <h1 style={styles.header}>Politique & confidentialité</h1>
+            {isMobile && (
+                <div style={styles.linkContainer}>
+                    <a href="/terms" style={styles.mobileLink}>
+                        Voir les conditions d'utilisation
+                    </a>
+                </div>
+            )}
 
+            <h1 style={styles.header}>Politique & confidentialité</h1>
             <section style={styles.section}>
                 <h2 style={styles.subHeader}>1. Introduction</h2>
                 <p style={styles.text}>
@@ -115,6 +127,16 @@ const styles = {
     },
     linkHover: {
         color: '#005580',
+    },
+    mobileLink: {
+        fontSize: '12px',
+        fontWeight: 'bold',
+        color: '#007BFF',
+        textDecoration: 'none',
+        border: '1px solid #007BFF',
+        padding: '4px 8px',
+        borderRadius: '5px',
+        transition: 'background-color 0.3s, color 0.3s',
     },
 };
 
