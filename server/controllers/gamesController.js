@@ -37,7 +37,6 @@ const gamesController = {
     },
 
     // Obtenir une liste de jeux avec filtres
-    // Obtenir une liste de jeux avec filtres
     async getFilteredGames(req, res) {
         const {limit = 200, offset = 0, sort = 'first_release_date desc', recent = false} = req.query;
         try {
