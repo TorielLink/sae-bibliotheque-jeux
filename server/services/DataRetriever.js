@@ -71,8 +71,6 @@ class DataRetriever extends APIRequests {
     }
 
     async getGameInfo(id) {
-        console.log(`Retrieving game info for ID: ${id}`);
-        const processStart = performance.now();
         try {
             const gameData = await this.getGameData(DataRetriever.#gamePageFields, `where id=${id};`);
 
@@ -88,11 +86,6 @@ class DataRetriever extends APIRequests {
 
             const [bundles, collections, dlcs, expansions, remakes,
                 remasters, similar_games, standalone_expansions, franchises, parentGame] = await this.#getRelatedContent(game, apiData);
-
-            const processEnd = performance.now();
-            const processTime = processEnd - processStart;
-
-            console.log(`Process time: ${(processTime / 1000).toFixed(2)} sec`);
 
             return {
                 name: game.name,
