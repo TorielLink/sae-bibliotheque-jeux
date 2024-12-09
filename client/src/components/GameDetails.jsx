@@ -99,11 +99,11 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                                 <div style={styles.ratings}>
                                     <div style={styles.ratingItem}>
                                         <strong>Ma Note</strong>
-                                        <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
+                                        <div style={styles.ratingValue}>{"-"}</div>
                                     </div>
                                     <div style={styles.ratingItem}>
                                         <strong>Note des joueurs</strong>
-                                        <div style={styles.ratingValue}>8.2</div> {/* Exemple de valeur */}
+                                        <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
                                     </div>
                                 </div>
                             </div>

@@ -49,7 +49,7 @@ export default function GamesDetailsPage() {
                     description={gameData.summary}
                     releaseDate={gameData.releaseDate}
                     ageRating={gameData.ageRating || "Non précisé"}
-                    rating={gameData.aggregatedRating}
+                    rating={gameData.criticsAggregatedRating}
                     detailedSynopsis={gameData.storyline}
                     platforms={gameData.platforms}
                     genres={[...(gameData.genres || []), ...(gameData.themes || [])]}
