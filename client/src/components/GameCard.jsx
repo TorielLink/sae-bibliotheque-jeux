@@ -108,7 +108,7 @@ function GameCard({id, image, title, rating, categories}) {
                             size="small"
                             sx={{
                                 backgroundColor: theme.palette.colors.red,
-                                color: theme.palette.text.inverse,
+                                color: theme.palette.text.contrast,
                                 fontSize: "0.8em",
                                 height: "1.5em",
                                 borderRadius: "0.325em",

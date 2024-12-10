@@ -116,7 +116,7 @@ function HomePage() {
                                 margin: "0 0.5em",
                                 padding: '0.5em 0.75em',
                                 minHeight: "auto",
-                                background: theme.palette.background,
+                                background: theme.palette.background.default,
                                 color: theme.palette.text.primary,
                                 border: `0.2em solid ${theme.palette.colors.green}`,
                                 borderRadius: '0.5em 0.5em 0 0',

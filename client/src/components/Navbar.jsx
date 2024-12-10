@@ -175,7 +175,7 @@ function Navbar() {
               padding: isMobile ? '2px 4px' : '8px 16px',
               minWidth: isMobile ? '60px' : '130px', // Largeur fixe pour mobile et desktop
               backgroundColor: theme.palette.colors.green,
-              color: theme.palette.background,
+              color: theme.palette.background.default,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

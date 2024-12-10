@@ -1,6 +1,7 @@
 import React from 'react';
 import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
+import {useTheme} from "@mui/material/styles";
 
 
 /**TODO :
@@ -12,6 +13,9 @@ import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 const GameDetails = ({name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
                          parentGame, similarGames}) => {
+    const theme = useTheme();
+    const styles = getStyles(theme);
+
     return (
         <div style={styles.container}>
             {/* Section gauche : Couverture du jeu */}
@@ -32,14 +36,14 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                     <button
                         style={{...styles.quickActionButton, ...styles.reviewButton}}
                         onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#36A0FC';
-                            e.target.style.color = '#FFF';
+                            e.target.style.backgroundColor = theme.palette.colors.blue;
+                            e.target.style.color = theme.palette.text.contrast;
                             e.target.style.borderColor = 'transparent';
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = '#FFF';
-                            e.target.style.color = '#000';
-                            e.target.style.borderColor = '#36A0FC';
+                            e.target.style.backgroundColor = theme.palette.background.default;
+                            e.target.style.color = theme.palette.text.primary;
+                            e.target.style.borderColor = theme.palette.colors.blue;
                         }}
                     >
                         Ajouter un avis
@@ -47,14 +51,14 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                     <button
                         style={{...styles.quickActionButton, ...styles.noteButton}}
                         onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#2FC75A';
-                            e.target.style.color = '#FFF';
+                            e.target.style.backgroundColor = theme.palette.colors.green;
+                            e.target.style.color = theme.palette.text.contrast;
                             e.target.style.borderColor = 'transparent';
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = '#FFF';
-                            e.target.style.color = '#000';
-                            e.target.style.borderColor = '#2FC75A';
+                            e.target.style.backgroundColor = theme.palette.background.default;
+                            e.target.style.color = theme.palette.text.primary;
+                            e.target.style.borderColor = theme.palette.colors.green;
                         }}
                     >
                         Ajouter une note
@@ -62,14 +66,14 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                     <button
                         style={{...styles.quickActionButton, ...styles.logButton}}
                         onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#FFBB33';
-                            e.target.style.color = '#FFF';
+                            e.target.style.backgroundColor = theme.palette.colors.yellow;
+                            e.target.style.color = theme.palette.text.contrast;
                             e.target.style.borderColor = 'transparent';
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = '#FFF';
-                            e.target.style.color = '#000';
-                            e.target.style.borderColor = '#FFBB33';
+                            e.target.style.backgroundColor = theme.palette.background.default;
+                            e.target.style.color = theme.palette.text.primary;
+                            e.target.style.borderColor = theme.palette.colors.yellow;
                         }}
                     >
                         Ajouter un journal
@@ -163,16 +167,16 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
     );
 };
 
-const styles = {
+const getStyles = (theme) => ({
     container: {
         height: '100%',
         display: 'flex',
         alignItems: 'stretch',
-        gap: '20px',
-        fontFamily: 'Arial, sans-serif',
-        color: '#333',
-        paddingBlock: '60px 80px',
-        paddingInline: '50px',
+        gap: '1.25rem',
+        fontFamily: theme.typography.fontFamily,
+        color: theme.palette.text.primary,
+        paddingBlock: '3.75rem 5rem',
+        paddingInline: '3.125rem',
     },
     leftSection: {
         display: 'flex',
@@ -182,17 +186,17 @@ const styles = {
         alignItems: 'center',
     },
     coverImage: {
-        width: '420px',
-        height: '650px',
-        borderRadius: '10px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        width: '100%',
+        height: '40.625rem',
+        borderRadius: '0.625rem',
+        boxShadow: '0 0.25rem 0.5rem rgba(0, 0, 0, 0.1)',
     },
     rightSection: {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
         height: '100%',
-        gap: '40px',
+        gap: '2.5rem',
         flex: '2',
         alignItems: 'flex-start',
     },
@@ -201,62 +205,62 @@ const styles = {
         display: 'flex',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        gap: '20px',
+        gap: '2.5rem',
     },
     quickActionButton: {
-        padding: '10px 5%',
+        padding: '0.625rem 5%',
         border: 'none',
-        borderRadius: '10px',
-        backgroundColor: '#FFF',
-        fontSize: '12px',
+        borderRadius: '1rem',
+        backgroundColor: theme.palette.background.default,
+        fontSize: '0.75rem',
         cursor: 'pointer',
         transition: 'background-color 0.3s, transform 0.2s',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     reviewButton: {
-        border: '1px solid #36A0FC',
+        border: '1px solid ${theme.palette.colors.blue}',
     },
     noteButton: {
-        border: '1px solid #2FC75A',
+        border: '1px solid ${theme.palette.colors.green}',
     },
     logButton: {
-        border: '1px solid #FFBB33',
+        border: '1px solid ${theme.palette.colors.yellow}',
     },
     mainContainer: {
         display: 'flex',
         flex: '2',
-        gap: '20px',
+        gap: '1.25rem',
         alignItems: 'stretch',
     },
     mainContent: {
         flex: '3',
         display: 'flex',
         flexDirection: 'column',
-        gap: '20px',
+        gap: '1.25rem',
         overflowX: 'scroll',
     },
     categoryHeader: {
-        fontSize: '18px',
+        fontSize: '1.125rem',
         fontWeight: 'bold',
-        color: '#333',
-        marginBottom: '10px',
+        color: theme.palette.text.primary,
+        marginBottom: '0.625rem',
     },
     detailsAndNotes: {
         display: 'flex',
-        gap: '20px',
+        gap: '1.25rem',
         flexWrap: 'wrap',
     },
     detailsBox: {
         display: 'block',
         flex: '1',
-        backgroundColor: '#9534D580', // canal alpha : 80=50% de transparence
-        padding: '15px',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        backgroundColor: theme.palette.transparentColors['purple-50'],
+        padding: '0.9375rem',
+        borderRadius: '0.625rem', // TODO : Optimiser le style des boîtes
+        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     detailsList: {
         listStyle: 'none',
-        paddingLeft: '15px',
+        paddingLeft: '0.9375rem',
         margin: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -266,59 +270,59 @@ const styles = {
     icon: {
         display: 'inline-block',
         verticalAlign: 'middle',
-        marginRight: '4px',
-        color: '#333',
+        marginRight: '0.25rem',
+        color: theme.palette.text.primary,
     },
     noteBox: {
         flex: '1',
-        backgroundColor: '#FE4A4980',
-        padding: '15px',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        backgroundColor: theme.palette.transparentColors['red-50'],
+        padding: '0.9375rem',
+        borderRadius: '0.625rem',
+        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     ratings: {
         display: 'flex',
         justifyContent: 'space-between',
-        gap: '10px',
+        gap: '0.625rem',
     },
     ratingItem: {
         flex: '1',
-        backgroundColor: '#ffffff',
+        backgroundColor: theme.palette.background.paper,
         textAlign: 'center',
-        borderRadius: '5px',
-        padding: '10px',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        borderRadius: '0.3125rem',
+        padding: '0.625rem',
+        boxShadow: '0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1)',
     },
     ratingValue: {
-        fontSize: '24px',
+        fontSize: '1.5rem',
         fontWeight: 'bold',
-        color: '#ff7043',
+        color: theme.palette.colors.red,
     },
     synopsisBox: {
-        backgroundColor: '#FFBB3380',
-        padding: '15px',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        backgroundColor: theme.palette.transparentColors['yellow-50'],
+        padding: '0.9375rem',
+        borderRadius: '0.625rem',
+        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     synopsisText: {
-        paddingLeft: '20px',
-        fontSize: '14px',
+        paddingLeft: '1.25rem',
+        fontSize: '0.875rem',
         lineHeight: '1.6',
     },
     platformsAndGenres: {
         height: 'auto',
-        gap: '20px',
+        gap: '1.25rem',
         display: 'flex',
         flex: '1',
         flexDirection: 'column',
         justifyContent: 'flex-start',
     },
     platformBox: {
-        backgroundColor: '#2FC75A80',
+        backgroundColor: theme.palette.transparentColors['green-50'],
         flex: '0 0 66%',
-        padding: '15px',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        padding: '0.9375rem',
+        borderRadius: '0.625rem',
+        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     platformList: {
         listStyle: 'none',
@@ -326,22 +330,22 @@ const styles = {
         margin: 0,
     },
     platformItem: {
-        padding: '5px 0',
+        padding: '0.3125rem 0',
     },
     genreBox: {
         flex: '0 0 33%',
-        backgroundColor: '#36A0FC80',
-        padding: '15px',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        backgroundColor: theme.palette.transparentColors['blue-50'],
+        padding: '0.9375rem',
+        borderRadius: '0.625rem',
+        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     genreList: {
         listStyleType: 'none',
         padding: 0,
     },
     genreItem: {
-        marginBottom: '8px',
+        marginBottom: '0.5rem',
     },
-};
+});
 
 export default GameDetails;
