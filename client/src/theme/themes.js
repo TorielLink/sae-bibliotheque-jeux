@@ -27,6 +27,7 @@ export const baseTheme = {
   },
   typography: {
     fontFamily: 'Inter, Arial, sans-serif',
+    //TODO : mettre la police de Scrib
   },
 };
 
@@ -37,13 +38,13 @@ export const lightTheme = createTheme({
     ...baseTheme.palette,
     mode: 'light',
     background: {
-      default: '#ffffff',
-      paper: '#f4f6f8',
-      footer: '#E6E6E6', // Fond footer
+      default: '#F5F5F5',
+      paper: '#F4F6F8',
     },
     text: {
-      primary: '#000', // Texte principal noir
+      primary: '#222', // Texte principal noir
       secondary: '#666', // Texte secondaire gris
+      inverse: '#F5F5F5', // Texte blanc
     },
   },
 });
@@ -54,12 +55,11 @@ export const darkTheme = createTheme({
     ...baseTheme.palette,
     mode: 'dark',
     background: {
-      default: '#121212', // Fond sombre
-      paper: '#1d1d1d',
-      footer:'#404040', // Fond footer
+      default: '#222',
+      paper: '#333',
     },
     text: {
-      primary: '#FFF', // Texte principal blanc
+      primary: '#FFF',
       secondary: '#B3B3B3', // Texte secondaire gris clair
     },
   },

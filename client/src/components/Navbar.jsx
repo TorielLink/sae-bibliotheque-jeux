@@ -52,7 +52,7 @@ function Navbar() {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
         padding: isMobile ? '4px' : '8px',
       }}
     >
@@ -130,7 +130,7 @@ function Navbar() {
                 sx={{
                   textDecoration: 'none',
                   color: isCatalogue
-                    ? theme.palette.jaune.main
+                    ? theme.palette.colors.yellow
                     : theme.palette.text.primary,
                   fontSize: isMobile ? '0.75rem' : '1.1rem',
                 }}
@@ -174,8 +174,8 @@ function Navbar() {
               fontSize: isMobile ? '0.5rem' : '1rem', // Taille plus petite en mobile
               padding: isMobile ? '2px 4px' : '8px 16px',
               minWidth: isMobile ? '60px' : '130px', // Largeur fixe pour mobile et desktop
-              backgroundColor: theme.palette.green.main,
-              color: theme.palette.white.main,
+              backgroundColor: theme.palette.colors.green,
+              color: theme.palette.background,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

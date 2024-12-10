@@ -5,6 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 const Footer = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const styles = getStyles(theme);
 
     return (
         <footer style={styles.footerContainer}>
@@ -85,14 +86,14 @@ const Footer = () => {
     );
 };
 
-const styles = {
+const getStyles = (theme) => ({
     footerContainer: {
         width: '100%',
-        backgroundColor: '#F3F3F3',
-        color: '#333',
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text,
         padding: '40px 20px',
         marginTop: '20px',
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: theme.typography.fontFamily,
     },
     footerContent: {
         width: '100%',
@@ -124,18 +125,18 @@ const styles = {
     },
     link: {
         textDecoration: 'none',
-        color: '#333',
+        color: theme.palette.text.primary,
         fontSize: '14px',
         lineHeight: '1.8',
         transition: 'color 0.3s',
         cursor: 'pointer',
     },
     linkHover: {
-        color: '#222',
+        color: theme.palette.text.secondary,
     },
     separator: {
         border: 'none',
-        borderTop: '1px solid #CCC',
+        borderTop: '1px solid #CCC', // TODO : changer couleur ici
         margin: '20px auto',
         width: '90%',
     },
@@ -145,8 +146,8 @@ const styles = {
     bottomText: {
         fontSize: '14px',
         fontWeight: 'medium',
-        color: '#666',
+        color: theme.palette.text.secondary,
     },
-};
+});
 
 export default Footer;
