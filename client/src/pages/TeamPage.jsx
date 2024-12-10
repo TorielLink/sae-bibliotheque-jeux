@@ -32,8 +32,7 @@ const TeamPage = () => {
             name: 'Clément Séfrin',
             role: 'Gestionnaire API et UI/UX Designer',
             github: 'https://github.com/ClementSefrin',
-            linkedin: 'https://linkedin.com/in/davidlemoine',
-            twitter: 'https://twitter.com/davidlemoine',
+            linkedin: 'https://linkedin.com/in/clement-sefrin',
         },
         {
             name: 'Clothilde Proux',
