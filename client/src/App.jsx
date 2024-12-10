@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage.jsx';
 import CataloguePage from './pages/CataloguePage.jsx';
 import OpinionPage from './pages/OpinionPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import GameDetailsPage from "./pages/GamesDetailsPage.jsx";
 import Team from './pages/TeamPage.jsx';
 import Establishment from './pages/InstitutionPage.jsx';
 import Project from './pages/ProjectPage.jsx';
@@ -16,6 +17,7 @@ import Mentorship from './pages/MentorshipPage.jsx';
 import Terms from './pages/TermsPage.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicyPage.jsx';
 import Contacts from './pages/ContactsPage.jsx';
+
 
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -31,6 +33,8 @@ function App() {
           <Route path="/catalogue" element={<CataloguePage />} /> {/* Route pour la page "Catalogue" */}
           <Route path="/avis" element={<OpinionPage />} />  {/* Route pour la page "Avis" */}
           <Route path="/login" element={<LoginPage />} />  {/* Route pour la page "Se connecter" */}
+          <Route path="/details/:id" element={<GameDetailsPage />} /> {/* Route dynamique */}
+
 
           {/*-- Pages du pied de page --*/}
           <Route path="/team" element={<Team />} />
@@ -41,17 +45,6 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/contact" element={<Contacts />} />
         </Routes>
-
-        {/* le bouton pour changer de thème */}
-        <Grid item sx={{ textAlign: 'center', padding: '20px' }}>
-          <Button
-            onClick={toggleTheme}
-            variant="contained"
-            sx={{ backgroundColor: theme.palette.text.primary, color: theme.palette.background.default }}
-          >
-            Changer de thème
-          </Button>
-        </Grid>
       </Router>
       <Footer/>
     </ThemeProvider>

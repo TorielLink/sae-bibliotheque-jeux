@@ -1,84 +1,230 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid, useMediaQuery } from '@mui/material';
-import axios from 'axios';
-import GameCard from '../components/GameCard.jsx';
-import { useTheme } from '@mui/material/styles';
+import React, {useEffect, useState} from "react";
+import {
+    Box,
+    Typography,
+    Tabs,
+    Tab,
+    CircularProgress,
+    useMediaQuery,
+} from "@mui/material";
+import GameSection from "../components/GameSection.jsx";
+import {useTheme} from "@mui/material/styles";
+import SectionTitle from "../components/SectionTitle.jsx";
 
 function HomePage() {
-  const [games, setGames] = useState([]);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [recentGames, setRecentGames] = useState([]);
+    const [popularGames, setPopularGames] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [selectedTab, setSelectedTab] = useState(0);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const response = await axios.get('https://picsum.photos/v2/list?page=1&limit=10');
-        const gameData = response.data.map((item, index) => ({
-          id: item.id || index,  // Utilise l'id fourni par Picsum ou un id basé sur l'index
-          image: item.download_url,
-          title: item.author,
-          rating: (Math.random() * 2 + 3).toFixed(1),
-          categories: ["Action", "Aventure"]
-        }));
-        setGames(gameData);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données de jeux:", error);
-      }
+    const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
+
+    // Fonction pour charger les jeux en fonction des filtres
+    const fetchGamesByFilter = async (filter) => {
+        // const queryParams = new URLSearchParams(filter).toString();
+
+        const response = await fetch(`http://localhost:8080/games/${filter}`);
+        if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des données");
+        }
+        return response.json();
     };
 
-    fetchGames();
-  }, []);
+    // Chargement des données pour les sections
+    const fetchAllGames = async () => {
+        setLoading(true);
+        setError("");
+        try {
+            setRecentGames(await fetchGamesByFilter("by-date"));
+            setPopularGames(await fetchGamesByFilter("by-popularity"));
+        } catch (err) {
+            console.error("Erreur lors de la récupération des jeux :", err);
+            setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <Box sx={{ padding: '20px' }}>
-      <Typography variant="h4" sx={{ marginBottom: '20px' }}>Jeux populaires</Typography>
+    useEffect(() => {
+        fetchAllGames();
+    }, []);
 
-      {/* Mode Mobile : Grille de 2 cartes, Mode PC : Slider horizontal */}
-      {isMobile ? (
-        // Grille pour mobile
-        <Grid container spacing={2}>
-          {games.map((game) => (
-            <Grid
-              item
-              key={game.id}
-              xs={6} // 50% de largeur sur les écrans mobiles
-            >
-              <GameCard
-                image={game.image}
-                title={game.title}
-                rating={game.rating}
-                categories={game.categories}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        // Slider horizontal pour PC
-        <Box
-          sx={{
-            display: 'flex',
-            overflowX: 'auto',
-            gap: '16px', // Espacement entre les cartes
-            padding: '10px',
-            '&::-webkit-scrollbar': { height: '8px' }, // Personnalisation de la scrollbar pour WebKit
-            '&::-webkit-scrollbar-thumb': { backgroundColor: '#888', borderRadius: '4px' },
-            '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' },
-          }}
-        >
-          {games.map((game) => (
-            <Box key={game.id} sx={{ flex: '0 0 auto', width: '250px' }}> {/* Empêche le redimensionnement */}
-              <GameCard
-                image={game.image}
-                title={game.title}
-                rating={game.rating}
-                categories={game.categories}
-              />
+    const handleTabChange = (event, newValue) => {
+        setSelectedTab(newValue);
+    };
+
+    const currentGames =
+        selectedTab === 0 ? recentGames : selectedTab === 1 ? popularGames : [];
+
+    return (
+        <Box sx={{padding: "0"}}>
+            {/* Breadcrumb */}
+            <Box sx={{
+                display: "inline-block",
+                padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
+            }}>
+                <Typography
+                    variant="subtitle2"
+                    sx={{
+                        color: theme.palette.text.secondary,
+                        fontSize: isMobile ? "0.9em" : "1em",
+                        display: "inline",
+                    }}
+                >
+                    Accueil &gt;
+                </Typography>
+                <Typography
+                    variant="subtitle2"
+                    sx={{
+                        color: isMobile ? theme.palette.red.main : theme.palette.text.primary,
+                        fontWeight: "bold",
+                        display: "inline",
+                        marginLeft: "0.25em",
+                    }}
+                >
+                    {isMobile ? tabTitles[selectedTab] : ""}
+                </Typography>
             </Box>
-          ))}
+
+            {/* Mobile Tabs */}
+            {isMobile && (
+                <div style={{
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-end",
+                    height: "100%",
+                    margin: "0.5em 0 0.5em 0"
+                }}>
+                    <Tabs
+                        value={selectedTab}
+                        onChange={handleTabChange}
+                        centered
+                        textColor="primary"
+                        indicatorColor="blue"
+                        sx={{
+                            position: 'relative',
+                            minHeight: "2em",
+                            zIndex: 1,
+                            "& .MuiTab-root": {
+                                position: 'relative',
+                                textTransform: "none",
+                                fontWeight: "bold",
+                                fontSize: "0.8em",
+                                margin: "0 0.5em",
+                                padding: '0.5em 0.75em',
+                                minHeight: "auto",
+                                background: theme.palette.background.default,
+                                color: theme.palette.text.primary,
+                                border: `0.2em solid ${theme.palette.green.main}`,
+                                borderRadius: '0.5em 0.5em 0 0',
+                            },
+                            "& .Mui-selected": {
+                                color: theme.palette.red.primary,
+                                borderBottom: `0`,
+                                fontWeight: "bold",
+                            },
+                        }}
+                    >
+                        <Tab label="Sorties récentes"/>
+                        <Tab label="Jeux populaires"/>
+                        <Tab label="Avis récents"/>
+                    </Tabs>
+                    <hr
+                        style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            width: "100%",
+                            border: 'none',
+                            height: '0.15em',
+                            backgroundColor: theme.palette.green.main,
+                            margin: 0,
+                            zIndex: 0,
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Loading or Error */
+            }
+            {
+                loading ? (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "50vh",
+                        }}
+                    >
+                        <CircularProgress/>
+                    </Box>
+                ) : error ? (
+                    <Box
+                        sx={{
+                            textAlign: "center",
+                            color: theme.palette.error.main,
+                            marginTop: "20px",
+                        }}
+                    >
+                        <Typography variant="h6">{error}</Typography>
+                    </Box>
+                ) : (
+                    <>
+                        {/* Mobile View */}
+                        {isMobile ? (
+                            <GameSection
+                                games={currentGames}
+                                isMobileView={true}
+                            />
+                        ) : (
+                            /* Desktop View */
+                            <>
+                                <Box sx={{
+                                    marginTop: "2em"
+                                }}>
+                                    <GameSection
+                                        title="Sorties récentes"
+                                        games={recentGames}
+                                        isMobileView={false}
+                                    />
+                                </Box>
+                                {/*
+                            */}
+
+                                <Box sx={{}}>
+                                    <GameSection
+                                        title="Jeux populaires"
+                                        games={popularGames}
+                                        isMobileView={false}
+                                    />
+                                </Box>
+
+                                <SectionTitle title="Avis récents"/>
+                                <Box
+                                    sx={{
+                                        textAlign: "center",
+                                        color: theme.palette.text.secondary,
+                                        marginTop: "1.5em",
+                                        marginBottom: "2.5em",
+                                    }}
+                                >
+                                    <Typography variant="body1">
+                                        Les avis récents seront bientôt disponibles !
+                                    </Typography>
+                                </Box>
+                            </>
+                        )}
+                    </>
+                )
+            }
         </Box>
-      )}
-    </Box>
-  );
+    )
+        ;
 }
 
 export default HomePage;
