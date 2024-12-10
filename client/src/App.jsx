@@ -10,6 +10,14 @@ import CataloguePage from './pages/CataloguePage.jsx';
 import OpinionPage from './pages/OpinionPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import GameDetailsPage from "./pages/GamesDetailsPage.jsx";
+import Team from './pages/TeamPage.jsx';
+import Establishment from './pages/InstitutionPage.jsx';
+import Project from './pages/ProjectPage.jsx';
+import Mentorship from './pages/MentorshipPage.jsx';
+import Terms from './pages/TermsPage.jsx';
+import PrivacyPolicy from './pages/PrivacyPolicyPage.jsx';
+import Contacts from './pages/ContactsPage.jsx';
+
 
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -27,6 +35,15 @@ function App() {
           <Route path="/login" element={<LoginPage />} />  {/* Route pour la page "Se connecter" */}
           <Route path="/details/:id" element={<GameDetailsPage />} /> {/* Route dynamique */}
 
+
+          {/*-- Pages du pied de page --*/}
+          <Route path="/team" element={<Team />} />
+          <Route path="/institution" element={<Establishment />} />
+          <Route path="/project" element={<Project />} />
+          <Route path="/mentorship" element={<Mentorship />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<Contacts />} />
         </Routes>
       </Router>
       <Footer/>
