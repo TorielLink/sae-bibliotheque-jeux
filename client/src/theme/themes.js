@@ -37,8 +37,9 @@ export const lightTheme = createTheme({
     ...baseTheme.palette,
     mode: 'light',
     background: {
-      default: '#FFF', // Fond principal
-      paper: '#F5F5F5',   // Fond des cartes
+      default: '#ffffff',
+      paper: '#f4f6f8',
+      footer: '#E6E6E6', // Fond footer
     },
     text: {
       primary: '#000', // Texte principal noir
@@ -53,8 +54,9 @@ export const darkTheme = createTheme({
     ...baseTheme.palette,
     mode: 'dark',
     background: {
-      default: '#222222', // Fond principal
-      paper: '#2C2C2C',   // Fond des cartes
+      default: '#121212', // Fond sombre
+      paper: '#1d1d1d',
+      footer:'#404040', // Fond footer
     },
     text: {
       primary: '#FFF', // Texte principal blanc
