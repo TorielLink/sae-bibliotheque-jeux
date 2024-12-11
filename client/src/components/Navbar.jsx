@@ -14,12 +14,16 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeContext } from '../theme/ThemeContext';
 import SearchBar from './SearchBar';
+import { AuthContext } from './AuthContext';
+import UserMenu from "./UserMenu.jsx";
 
 function Navbar() {
   const theme = useTheme();
   const { toggleTheme, mode } = useContext(ThemeContext);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const location = useLocation();
+
+  const { isAuthenticated } = useContext(AuthContext); // AuthContext pour vérifier l'état de connexion
 
   const isCatalogue = location.pathname === '/catalogue';
   const isAvis = location.pathname === '/avis';
@@ -166,6 +170,7 @@ function Navbar() {
           />
 
           {/* Bouton de connexion */}
+            {!isAuthenticated ? (
           <Button
             component={Link}
             to="/login"
@@ -185,6 +190,9 @@ function Navbar() {
           >
             Se connecter
           </Button>
+                ) : (
+            <UserMenu /> // Affiche le menu utilisateur si connecté
+          )}
 
           {/* Bouton de bascule de thème */}
           <IconButton

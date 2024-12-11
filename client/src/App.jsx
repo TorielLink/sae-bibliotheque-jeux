@@ -17,8 +17,14 @@ import Mentorship from './pages/MentorshipPage.jsx';
 import Terms from './pages/TermsPage.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicyPage.jsx';
 import Contacts from './pages/ContactsPage.jsx';
-
-
+import ProtectedRoute from './utils/ProtectedRoute.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
+import StatsPage from './pages/StatsPage.jsx';
+import ListsPage from './pages/ListsPage.jsx';
+import JournalsPage from './pages/JournalsPage.jsx';
+import ReviewsPage from './pages/ReviewsPage.jsx';
+import CustomListsPage from './pages/CustomListsPage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -35,7 +41,6 @@ function App() {
           <Route path="/login" element={<LoginPage />} />  {/* Route pour la page "Se connecter" */}
           <Route path="/details/:id" element={<GameDetailsPage />} /> {/* Route dynamique */}
 
-
           {/*-- Pages du pied de page --*/}
           <Route path="/team" element={<Team />} />
           <Route path="/institution" element={<Establishment />} />
@@ -44,6 +49,63 @@ function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/contact" element={<Contacts />} />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/stats"
+            element={
+              <ProtectedRoute>
+                <StatsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/lists"
+            element={
+              <ProtectedRoute>
+                <ListsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/journals"
+            element={
+              <ProtectedRoute>
+                <JournalsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/reviews"
+            element={
+              <ProtectedRoute>
+                <ReviewsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/custom-lists"
+            element={
+              <ProtectedRoute>
+                <CustomListsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
       <Footer/>
