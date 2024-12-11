@@ -4,7 +4,7 @@ export const simulateLogin = () => {
     id: 15,
     username: 'testuser',
     email: 'testuser@example.com',
-    profile_picture: '/uploads/profile_pictures/profile_picture-1733753112111-210866192.png', // Ajout du chemin de l'image
+    profile_picture: '/uploads/profile_pictures/profile_picture-1733920048860-972297989.jpg', // Ajout du chemin de l'image
   };
 
   // Stockez le token et l'utilisateur dans localStorage
