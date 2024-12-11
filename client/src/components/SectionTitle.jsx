@@ -18,7 +18,7 @@ const SectionTitle = ({title}) => {
                     border: `0.15em solid ${theme.palette.colors.green}`,
                     borderRadius: '0.5em 0.5em 0 0',
                     padding: '0.25em 0.75em',
-                    backgroundColor: theme.palette.background.paper,
+                    backgroundColor: theme.palette.background,
                 }}
             >
                 <Typography variant="h6" sx={{

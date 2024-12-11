@@ -8,7 +8,7 @@ export default function () {
         <>
         {/*<GameDetailsNavBar activeSection={"reviews"} />*/}
 
-            <h3 style={{textAlign: 'center', marginTop: '20px'}}>
+            <h3 style={{textAlign: 'center', marginTop: '1.25rem'}}>
                 La section avis sur le jeu arrive bientôt ! ^^
             </h3>
         </>
