@@ -79,7 +79,7 @@ function HomePage() {
                 <Typography
                     variant="subtitle2"
                     sx={{
-                        color: isMobile ? theme.palette.red.main : theme.palette.text.primary,
+                        color: isMobile ? theme.palette.colors.red : theme.palette.text.primary,
                         fontWeight: "bold",
                         display: "inline",
                         marginLeft: "0.25em",
@@ -119,11 +119,11 @@ function HomePage() {
                                 minHeight: "auto",
                                 background: theme.palette.background.default,
                                 color: theme.palette.text.primary,
-                                border: `0.2em solid ${theme.palette.green.main}`,
+                                border: `0.2em solid ${theme.palette.colors.green}`,
                                 borderRadius: '0.5em 0.5em 0 0',
                             },
                             "& .Mui-selected": {
-                                color: theme.palette.red.primary,
+                                color: theme.palette.colors.red,
                                 borderBottom: `0`,
                                 fontWeight: "bold",
                             },
@@ -141,7 +141,7 @@ function HomePage() {
                             width: "100%",
                             border: 'none',
                             height: '0.15em',
-                            backgroundColor: theme.palette.green.main,
+                            backgroundColor: theme.palette.colors.green,
                             margin: 0,
                             zIndex: 0,
                         }}

@@ -1,4 +1,3 @@
-// Navbar.jsx
 import React, { useState, useContext } from 'react';
 import {
   AppBar,
@@ -54,6 +53,7 @@ function Navbar() {
       sx={{
         backgroundColor: theme.palette.background.default,
         padding: isMobile ? '4px' : '8px',
+        boxShadow: `0px 4px 8px ${theme.palette.colors['blue-50']}`, // Ombre bleue transparente
       }}
     >
       <Toolbar
@@ -103,7 +103,7 @@ function Navbar() {
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               display: 'block',
-              marginLeft: isMobile ? '-2px' : '8px', // Optionnel : ajuster la marge si nécessaire
+              marginLeft: isMobile ? '-2px' : '8px',
             }}
           >
             SCRIB
@@ -130,7 +130,7 @@ function Navbar() {
                 sx={{
                   textDecoration: 'none',
                   color: isCatalogue
-                    ? theme.palette.jaune.main
+                    ? theme.palette.colors.yellow
                     : theme.palette.text.primary,
                   fontSize: isMobile ? '0.75rem' : '1.1rem',
                 }}
@@ -143,7 +143,7 @@ function Navbar() {
                 sx={{
                   textDecoration: 'none',
                   color: isAvis
-                    ? theme.palette.info.main
+                    ? theme.palette.colors.green
                     : theme.palette.text.primary,
                   fontSize: isMobile ? '0.75rem' : '1.1rem',
                 }}
@@ -171,11 +171,11 @@ function Navbar() {
             to="/login"
             variant="contained"
             sx={{
-              fontSize: isMobile ? '0.5rem' : '1rem', // Taille plus petite en mobile
+              fontSize: isMobile ? '0.5rem' : '1rem',
               padding: isMobile ? '2px 4px' : '8px 16px',
-              minWidth: isMobile ? '60px' : '130px', // Largeur fixe pour mobile et desktop
-              backgroundColor: theme.palette.green.main,
-              color: theme.palette.white.main,
+              minWidth: isMobile ? '60px' : '130px',
+              backgroundColor: theme.palette.colors.green,
+              color: theme.palette.colors['blue-70'],
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -206,7 +206,7 @@ function Navbar() {
               <LightModeIcon
                 sx={{
                   fontSize: isMobile ? '20px' : '32px',
-                  color: theme.palette.text.primary,
+                  color: theme.palette.colors.yellow,
                 }}
               />
             )}

@@ -16,7 +16,7 @@ const SectionTitle = ({title}) => {
             {/* Rectangle autour du titre */}
             <Box
                 sx={{
-                    border: `0.2em solid ${theme.palette.green.main}`,
+                    border: `0.2em solid ${theme.palette.colors.green}`,
                     borderRadius: '0.5em 0.5em 0 0',
                     padding: '0.25em 0.75em',
                     backgroundColor: theme.palette.background.paper,
@@ -35,7 +35,7 @@ const SectionTitle = ({title}) => {
                 sx={{
                     flexGrow: 1,
                     height: '0.2em',
-                    backgroundColor: theme.palette.green.main,
+                    backgroundColor: theme.palette.colors.green,
                 }}
             />
         </Box>
