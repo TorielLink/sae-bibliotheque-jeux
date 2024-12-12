@@ -47,16 +47,18 @@ class DataRetriever extends APIRequests {
 
     gamePageRequests(game) {
         return [
+            /*
             [this.getGamePlatforms, game.platforms, 3],
             [this.getGameCover, game.cover, 1],
+             */
             [this.getGameAgeRatingsData, game.age_ratings, 2],
+            /*
             [this.getGameGenres, game.genres, 1],
             [this.getGameFranchises, game.franchises, 1],
-
             [this.getGameScreenshots, game.screenshots, 1],
             [this.getGameVideos, game.videos, 1],
 
-            [this.getGameExternalLinks, game.external_games, 1],
+            [this.getGameExternalLinks, game.external_games, 1],*/
             // A la toute fin
             // [this.getGamePlayerPerspectives, game.player_perspectives, 1],
             // [this.getGameThemes, game.themes, 1],
@@ -84,10 +86,12 @@ class DataRetriever extends APIRequests {
 
             const apiData = await this.makeRequests(requests);
 
+            /*
             const [bundles, collections, dlcs, expansions, remakes,
                 remasters, similar_games, standalone_expansions, franchises, parentGame] = await this.#getRelatedContent(game, apiData);
-
+            */
             return {
+                /*
                 name: game.name,
                 summary: game.summary,
                 storyline: game.storyline,
@@ -96,7 +100,10 @@ class DataRetriever extends APIRequests {
                 category: game.category,
                 releaseDate: game.first_release_date,
                 platforms: apiData.platforms,
-                ageRating: apiData.ageRatingSummary,
+                 */
+                ageRating: apiData.ageRating,
+                ageRatingSummary: apiData.ageRatingSummary,
+                /*
                 cover: apiData.cover,
                 genres: apiData.genres,
                 screenshots: apiData.screenshots,
@@ -112,6 +119,7 @@ class DataRetriever extends APIRequests {
                 similarGames: similar_games,
                 standaloneExpansions: standalone_expansions,
                 parentGame: parentGame
+                */
             };
         } catch (error) {
             console.error(`Failed to retrieve game info for ID ${id}:`, error);
@@ -150,7 +158,6 @@ class DataRetriever extends APIRequests {
             relatedContentData.map(el => {
                 relatedContentMap.set(el.id, el);
             })
-
 
             const bundles = this.#setRelatedContent("bundles", game.bundles || [], relatedContentMap);
             const collections = this.#setRelatedContent("collections", game.collections || [], relatedContentMap);

@@ -1,3 +1,5 @@
+const {category, categoryReversed, ESRB, PEGI, CERO, USK, GRAC, CLASS_IND, ACB} = require("./enums/ageRatings");
+
 class APIRequests {
     static #apiUrl = "https://api.igdb.com/v4";
     static #MAX_REQUESTS_PER_SECOND = 4;
@@ -151,32 +153,44 @@ class APIRequests {
             return {
                 ageRating: null,
                 ageRatingSummary: null,
-                ageRatingContentDescriptions: null,
-                ageRatingDetails: null,
             }
         }
 
         const ageRatingData = await this.getData(
             "age_ratings",
-            `fields id, rating, synopsis, content_descriptions, rating_cover_url;
-                        where id = (${ratings.join(",")}) & category = 2;
+            `fields id, rating, category, synopsis;
+                        where id = (${ratings.join(",")});
                         sort category asc;
                         limit ${ratings.length};`
         )
 
-        const contentDescriptionsIds = ageRatingData[0].content_descriptions
-        const uniqueContentDescriptionsIds = [...new Set(contentDescriptionsIds)];
+        let pegiAgeRating = PEGI[0]
+        let cpt = 0
+        const order = [2, 4, 1, 3, 5, 6, 7]
+        const ratingMappings = {
+            [category.ESRB]: ESRB,
+            [category.PEGI]: PEGI,
+            [category.CERO]: CERO,
+            [category.USK]: USK,
+            [category.GRAC]: GRAC,
+            [category.CLASS_IND]: CLASS_IND,
+            [category.ACB]: ACB
+        };
 
-        const ageRatingDetailsData = uniqueContentDescriptionsIds?.length > 0 ? await this.getData(
-            "age_rating_content_descriptions",
-            `fields id, description; where id = (${uniqueContentDescriptionsIds.join(",")});`
-        ) : null
+        while (cpt < ageRatingData.length && pegiAgeRating == PEGI[0]) {
+            const ageRating = ageRatingData.find(rating => rating.category === order[cpt])
+            cpt++
+            if (!ageRating) break;
+            const categoryRating = ratingMappings[ageRating.category];
+            console.log(PEGI[categoryRating[ageRating.rating]])
+            pegiAgeRating = PEGI[categoryRating[ageRating.rating]];
+            return {
+                ageRating: pegiAgeRating,
+            }
+        }
 
         return {
-            ageRating: ageRatingData[0].rating ? ageRatingData[0].rating : null,
-            ageRatingSummary: ageRatingData[0].synopsis ? ageRatingData[0].synopsis : null,
-            ageRatingContentDescriptions: ageRatingData[0].content_descriptions ? ageRatingData[0].content_descriptions : null,
-            ageRatingDetails: ageRatingDetailsData,
+            ageRating: pegiAgeRating,
         }
     }
 
