@@ -7,7 +7,7 @@ import {
     CircularProgress,
     useMediaQuery,
 } from "@mui/material";
-import GameSection from "../components/GameSection.jsx";
+import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
 
@@ -176,7 +176,7 @@ function HomePage() {
                     <>
                         {/* Mobile View */}
                         {isMobile ? (
-                            <GameSection
+                            <GameList
                                 games={currentGames}
                             />
                         ) : (
@@ -185,7 +185,7 @@ function HomePage() {
                                 <Box sx={{
                                     marginTop: "2em"
                                 }}>
-                                    <GameSection
+                                    <GameList
                                         title="Sorties récentes"
                                         games={recentGames}
                                     />
@@ -194,7 +194,7 @@ function HomePage() {
                             */}
 
                                 <Box sx={{}}>
-                                    <GameSection
+                                    <GameList
                                         title="Jeux populaires"
                                         games={popularGames}
                                     />

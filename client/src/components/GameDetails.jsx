@@ -2,6 +2,8 @@ import React from 'react';
 import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import {useTheme} from "@mui/material/styles";
+import GameList from "./GameList.jsx";
+import GameCard from "./GameCard.jsx";
 
 
 /**TODO :
@@ -18,151 +20,176 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
     return (
         <div style={styles.container}>
-            {/* Section gauche : Couverture du jeu */}
-            <div style={styles.leftSection}>
-                <img
-                    src={coverImage || 'https://via.placeholder.com/300x400'}
-                    alt={`${name} cover`}
-                    style={styles.coverImage}
-                />
-            </div>
-
-            {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
-            <div style={styles.rightSection}>
-                <GameDetailsNavBar activeSection={"details"} />
-
-                {/* Boutons d'actions rapides */}
-                <div style={styles.quickActions}>
-                    <button
-                        style={{...styles.quickActionButton, ...styles.reviewButton}}
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = theme.palette.colors.blue;
-                            e.target.style.color = theme.palette.text.contrast;
-                            e.target.style.borderColor = 'transparent';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = theme.palette.background.default;
-                            e.target.style.color = theme.palette.text.primary;
-                            e.target.style.borderColor = theme.palette.colors.blue;
-                        }}
-                    >
-                        Ajouter un avis
-                    </button>
-                    <button
-                        style={{...styles.quickActionButton, ...styles.noteButton}}
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = theme.palette.colors.green;
-                            e.target.style.color = theme.palette.text.contrast;
-                            e.target.style.borderColor = 'transparent';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = theme.palette.background.default;
-                            e.target.style.color = theme.palette.text.primary;
-                            e.target.style.borderColor = theme.palette.colors.green;
-                        }}
-                    >
-                        Ajouter une note
-                    </button>
-                    <button
-                        style={{...styles.quickActionButton, ...styles.logButton}}
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = theme.palette.colors.yellow;
-                            e.target.style.color = theme.palette.text.contrast;
-                            e.target.style.borderColor = 'transparent';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = theme.palette.background.default;
-                            e.target.style.color = theme.palette.text.primary;
-                            e.target.style.borderColor = theme.palette.colors.yellow;
-                        }}
-                    >
-                        Ajouter un journal
-                    </button>
+            {/* Conteneur principal pour l'entièreté des détails du jeu */}
+            <div style={styles.detailsContainer}>
+                {/* Section gauche : Couverture du jeu */}
+                <div style={styles.leftSection}>
+                    <img
+                        src={coverImage || 'https://via.placeholder.com/300x400'}
+                        alt={`${name} cover`}
+                        style={styles.coverImage}
+                    />
                 </div>
 
-                <div style={styles.mainContainer}>
-                    <div style={styles.mainContent}>
-                        {/* Détails et Notes */}
-                        <div style={styles.detailsAndNotes}>
-                            {/* Détails */}
-                            <div style={styles.detailsBox}>
-                                <h2 style={styles.categoryHeader}>Détails</h2>
-                                <ul style={styles.detailsList}>
-                                    <li><SportsEsports style={styles.icon}/> {name || "Non disponible"}</li>
-                                    <li><CalendarToday style={styles.icon}/> {
-                                        releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() :
-                                            "Non disponible"}</li>
-                                    {/* TODO : associer `ageRatingCategory` pour comprendre la valeur de `ageRating` */}
-                                    <li><ChildCare style={styles.icon} /> {ageRating || "Non précisé"}</li>
-                                </ul>
-                            </div>
+                {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
+                <div style={styles.rightSection}>
+                    <GameDetailsNavBar activeSection={"details"} />
 
-                            {/* Notes */}
-                            <div style={styles.noteBox}>
-                                <h2 style={styles.categoryHeader}>Note</h2>
-                                <div style={styles.ratings}>
-                                    <div style={styles.ratingItem}>
-                                        <strong>Ma Note</strong>
-                                        <div style={styles.ratingValue}>{"-"}</div>
-                                    </div>
-                                    <div style={styles.ratingItem}>
-                                        <strong>Note des joueurs</strong>
-                                        <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
+                    {/* Boutons d'actions rapides */}
+                    <div style={styles.quickActions}>
+                        <button
+                            style={{...styles.quickActionButton, ...styles.reviewButton}}
+                            onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = theme.palette.colors.blue;
+                                e.target.style.color = theme.palette.text.contrast;
+                                e.target.style.borderColor = 'transparent';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = theme.palette.background.default;
+                                e.target.style.color = theme.palette.text.primary;
+                                e.target.style.borderColor = theme.palette.colors.blue;
+                            }}
+                        >
+                            Ajouter un avis
+                        </button>
+                        <button
+                            style={{...styles.quickActionButton, ...styles.noteButton}}
+                            onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = theme.palette.colors.green;
+                                e.target.style.color = theme.palette.text.contrast;
+                                e.target.style.borderColor = 'transparent';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = theme.palette.background.default;
+                                e.target.style.color = theme.palette.text.primary;
+                                e.target.style.borderColor = theme.palette.colors.green;
+                            }}
+                        >
+                            Ajouter une note
+                        </button>
+                        <button
+                            style={{...styles.quickActionButton, ...styles.logButton}}
+                            onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = theme.palette.colors.yellow;
+                                e.target.style.color = theme.palette.text.contrast;
+                                e.target.style.borderColor = 'transparent';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = theme.palette.background.default;
+                                e.target.style.color = theme.palette.text.primary;
+                                e.target.style.borderColor = theme.palette.colors.yellow;
+                            }}
+                        >
+                            Ajouter un journal
+                        </button>
+                    </div>
+
+                    <div style={styles.mainContainer}>
+                        <div style={styles.mainContent}>
+                            {/* Détails et Notes */}
+                            <div style={styles.detailsAndNotes}>
+                                {/* Détails */}
+                                <div style={styles.detailsBox}>
+                                    <h2 style={styles.categoryHeader}>Détails</h2>
+                                    <ul style={styles.detailsList}>
+                                        <li><SportsEsports style={styles.icon}/> {name || "Non disponible"}</li>
+                                        <li><CalendarToday style={styles.icon}/> {
+                                            releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() :
+                                                "Non disponible"}</li>
+                                        <li><ChildCare style={styles.icon} /> {ageRating || "Non précisé"}</li>
+                                    </ul>
+                                </div>
+
+                                {/* Notes */}
+                                <div style={styles.noteBox}>
+                                    <h2 style={styles.categoryHeader}>Note</h2>
+                                    <div style={styles.ratings}>
+                                        <div style={styles.ratingItem}>
+                                            <strong>Ma Note</strong>
+                                            <div style={styles.ratingValue}>{"-"}</div>
+                                        </div>
+                                        <div style={styles.ratingItem}>
+                                            <strong>Note des joueurs</strong>
+                                            <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Synopsis ou Description */}
+                            {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
+                                <div style={styles.synopsisBox}>
+                                    <h2 style={styles.categoryHeader}>Synopsis</h2>
+                                    <p style={styles.synopsisText}>{detailedSynopsis}</p>
+                                </div>
+                            ) : (
+                                description && (
+                                    <div style={styles.synopsisBox}>
+                                        <h2 style={styles.synopsisHeader}>Résumé</h2>
+                                        <p style={styles.synopsisText}>{description}</p>
+                                    </div>
+                                )
+                            )}
                         </div>
 
-                        {/* Synopsis ou Description */}
-                        {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
-                            <div style={styles.synopsisBox}>
-                                <h2 style={styles.categoryHeader}>Synopsis</h2>
-                                <p style={styles.synopsisText}>{detailedSynopsis}</p>
-                            </div>
-                        ) : (
-                            description && (
-                                <div style={styles.synopsisBox}>
-                                    <h2 style={styles.synopsisHeader}>Résumé</h2>
-                                    <p style={styles.synopsisText}>{description}</p>
+                        {/* Plateformes et Genres */}
+                        <div style={styles.platformsAndGenres}>
+                            {/* Plateformes */}
+                            {platforms && platforms.length > 0 && (
+                                <div style={styles.platformBox}>
+                                    <h2 style={styles.categoryHeader}>Plateformes</h2>
+                                    <ul style={styles.platformList}>
+                                        {platforms.map((platform) => (
+                                            <li key={platform.id} style={styles.platformItem}>
+                                                {platform.name}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                            )
-                        )}
-                    </div>
+                            )}
 
-                    {/* Plateformes et Genres */}
-                    <div style={styles.platformsAndGenres}>
-                        {/* Plateformes */}
-                        {platforms && platforms.length > 0 && (
-                            <div style={styles.platformBox}>
-                                <h2 style={styles.categoryHeader}>Plateformes</h2>
-                                <ul style={styles.platformList}>
-                                    {platforms.map((platform) => (
-                                        <li key={platform.id} style={styles.platformItem}>
-                                            {platform.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
-                        {/* Genres */}
-                        {genres && genres.length > 0 && (
-                            <div style={styles.genreBox}>
-                                <h2 style={styles.categoryHeader}>Genres</h2>
-                                <ul style={styles.genreList}>
-                                    {genres.map((genre) => (
-                                        <li key={genre.id} style={styles.genreItem}>
-                                            {genre.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                            {/* Genres */}
+                            {genres && genres.length > 0 && (
+                                <div style={styles.genreBox}>
+                                    <h2 style={styles.categoryHeader}>Genres</h2>
+                                    <ul style={styles.genreList}>
+                                        {genres.map((genre) => (
+                                            <li key={genre.id} style={styles.genreItem}>
+                                                {genre.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-            {/*TODO: ajouter les listes de jeux DLC, extensions, jeux similaires, etc.
-               TODO: utiliser les composants avis de @Nicolas*/}
+
+            {/*Listes des jeux similiares, extensions, etc.*/}
+            {dlcs && dlcs.length > 0 && (
+                <GameList title= "DLC" games={dlcs} />)}
+            {expansions && expansions.length > 0 && (
+                <GameList title= "Extensions" games={expansions} />)}
+            {remakes && remakes.length > 0 && (
+                <GameList title= "Remakes" games={remakes} />)}
+            {remasters && remasters.length > 0 && (
+                <GameList title= "Remasters" games={remasters} />)}
+            {standaloneExpansions && standaloneExpansions.length > 0 && (
+                <GameList title= "Standalones" games={standaloneExpansions} />)}
+            {franchises && franchises.length > 0 && (
+                <GameList title= "Franchise" games={franchises[0].games} />)}
+            {parentGame && (
+                <GameCard
+                    id={parentGame.id}
+                    image={parentGame.cover}
+                    title={parentGame.name}
+                    rating={parentGame.aggregated_rating}
+                    categories={parentGame.genres}
+                />)}
+
+            {similarGames && similarGames.length > 0 && (
+                <GameList title= "Jeux similaires" games={similarGames} />)}
         </div>
     );
 };
@@ -172,11 +199,20 @@ const getStyles = (theme) => ({
         height: '100%',
         display: 'flex',
         alignItems: 'stretch',
+        flexDirection: 'column',
         gap: '1.25rem',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
         paddingBlock: '3.75rem 5rem',
         paddingInline: '3.125rem',
+    },
+    detailsContainer: {
+        height: '100%',
+        display: 'flex',
+        alignItems: 'stretch',
+        gap: '1.25rem',
+        color: theme.palette.text.primary,
+        marginBottom: '2rem',
     },
     leftSection: {
         display: 'flex',
@@ -218,13 +254,13 @@ const getStyles = (theme) => ({
         boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     reviewButton: {
-        border: '1px solid ${theme.palette.colors.blue}',
+        border: '1px solid' + theme.palette.colors.blue,
     },
     noteButton: {
-        border: '1px solid ${theme.palette.colors.green}',
+        border: '1px solid' + theme.palette.colors.green,
     },
     logButton: {
-        border: '1px solid ${theme.palette.colors.yellow}',
+        border: '1px solid' + theme.palette.colors.yellow,
     },
     mainContainer: {
         display: 'flex',
@@ -237,7 +273,6 @@ const getStyles = (theme) => ({
         display: 'flex',
         flexDirection: 'column',
         gap: '1.25rem',
-        overflowX: 'scroll',
     },
     categoryHeader: {
         fontSize: '1.125rem',

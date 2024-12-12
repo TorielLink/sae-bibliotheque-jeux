@@ -4,7 +4,7 @@ import GameCard from "../components/GameCard.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 import {useTheme} from "@mui/material/styles";
 
-function GameSection({title, games}) {
+function GameList({title, games}) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -70,4 +70,4 @@ function GameSection({title, games}) {
     );
 }
 
-export default GameSection;
+export default GameList;
