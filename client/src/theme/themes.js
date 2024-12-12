@@ -18,6 +18,15 @@ const generateTransparentColors = (colorMap, transparency) => {
   );
 };
 
+// TODO : ne fonctionne pas
+const loadGoogleFont = (fontName) => {
+  const link = document.createElement('link');
+  link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}&display=swap`;
+  link.rel = 'stylesheet';
+  document.head.appendChild(link);
+};
+loadGoogleFont('Jacquard');
+
 export const baseTheme = {
   palette: {
     colors,
@@ -28,10 +37,9 @@ export const baseTheme = {
   },
   typography: {
     fontFamily: 'Inter, Arial, sans-serif',
-    //TODO : mettre la police de Scrib
+    titleFontFamily: 'Jacquard, Arial, sans-serif',
   },
 };
-
 
 export const lightTheme = createTheme({
   ...baseTheme,

@@ -95,7 +95,7 @@ function Navbar() {
             component={Link}
             to="/"
             sx={{
-              fontFamily: '"Roboto", sans-serif',
+              fontFamily: theme.typography.titleFontFamily,
               fontWeight: 700,
               color: theme.palette.text.primary,
               fontSize: isMobile ? '1rem' : '1.8rem',

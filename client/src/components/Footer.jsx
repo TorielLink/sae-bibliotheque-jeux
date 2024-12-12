@@ -136,7 +136,7 @@ const getStyles = (theme) => ({
     },
     separator: {
         border: 'none',
-        borderTop: '1px solid #CCC', // TODO : changer couleur ici
+        borderTop: '1px solid ' + theme.palette.text.secondary,
         margin: '20px auto',
         width: '90%',
     },

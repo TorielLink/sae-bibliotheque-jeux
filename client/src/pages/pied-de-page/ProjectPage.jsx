@@ -5,6 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 const ProjectPage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const styles = getStyles(theme);
 
     return (
         <div style={styles.page}>
@@ -69,52 +70,51 @@ const ProjectPage = () => {
     );
 };
 
-const styles = {
+const getStyles = (theme) => ({
     page: {
-        padding: '20px',
-        fontFamily: 'Arial, sans-serif',
+        padding: '1.25rem',
+        fontFamily: theme.typography.fontFamily,
     },
     header: {
-        fontSize: '24px',
+        fontSize: '1.5rem',
         fontWeight: 'bold',
-        marginBottom: '10px',
+        marginBottom: '0.625rem',
     },
     text: {
-        fontSize: '16px',
-        color: '#555',
-        marginBottom: '20px',
+        fontSize: '1rem',
+        color: theme.palette.text.primary,
+        marginBottom: '1.25rem',
     },
     section: {
-        marginBottom: '30px',
+        marginBottom: '1.875rem',
     },
     subHeader: {
-        fontSize: '20px',
+        fontSize: '1.25rem',
         fontWeight: 'bold',
-        color: '#222',
-        marginBottom: '10px',
-        paddingBottom: '5px',
+        marginBottom: '0.625rem',
+        paddingBottom: '0.3125rem',
     },
     list: {
         listStyleType: 'disc',
-        paddingLeft: '20px',
-        marginTop: '10px',
+        paddingLeft: '1.25rem',
+        marginTop: '0.625rem',
     },
     linksContainer: {
         display: 'flex',
         justifyContent: 'flex-start',
-        gap: '10px',
+        gap: '0.625rem',
     },
     mobileLink: {
-        fontSize: '12px',
+        fontSize: '0.75rem',
         fontWeight: 'bold',
-        color: '#007BFF',
+        color: theme.palette.colors.blue,
         textDecoration: 'none',
-        border: '1px solid #007BFF',
-        padding: '4px 8px',
-        borderRadius: '5px',
+        border: '1px solid ' + theme.palette.colors.blue,
+        padding: '0.25rem 0.5rem',
+        borderRadius: '0.3125rem',
         transition: 'background-color 0.3s, color 0.3s',
         flexShrink: 0,
     },
-};
+});
 
 export default ProjectPage;

@@ -89,7 +89,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                             {/* Détails et Notes */}
                             <div style={styles.detailsAndNotes}>
                                 {/* Détails */}
-                                <div style={styles.detailsBox}>
+                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['purple-50']}}>
                                     <h2 style={styles.categoryHeader}>Détails</h2>
                                     <ul style={styles.detailsList}>
                                         <li><SportsEsports style={styles.icon}/> {name || "Non disponible"}</li>
@@ -101,7 +101,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                                 </div>
 
                                 {/* Notes */}
-                                <div style={styles.noteBox}>
+                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
                                     <h2 style={styles.categoryHeader}>Note</h2>
                                     <div style={styles.ratings}>
                                         <div style={styles.ratingItem}>
@@ -118,14 +118,16 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                             {/* Synopsis ou Description */}
                             {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
-                                <div style={styles.synopsisBox}>
+                                <div style={{...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['yellow-50']}}>
                                     <h2 style={styles.categoryHeader}>Synopsis</h2>
                                     <p style={styles.synopsisText}>{detailedSynopsis}</p>
                                 </div>
                             ) : (
                                 description && (
-                                    <div style={styles.synopsisBox}>
-                                        <h2 style={styles.synopsisHeader}>Résumé</h2>
+                                    <div style={{...styles.box,
+                                        backgroundColor: theme.palette.transparentColors['yellow-50']}}>
+                                        <h2 style={styles.categoryHeader}>Résumé</h2>
                                         <p style={styles.synopsisText}>{description}</p>
                                     </div>
                                 )
@@ -136,7 +138,8 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         <div style={styles.platformsAndGenres}>
                             {/* Plateformes */}
                             {platforms && platforms.length > 0 && (
-                                <div style={styles.platformBox}>
+                                <div style={{...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['green-50']}}>
                                     <h2 style={styles.categoryHeader}>Plateformes</h2>
                                     <ul style={styles.platformList}>
                                         {platforms.map((platform) => (
@@ -150,7 +153,8 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                             {/* Genres */}
                             {genres && genres.length > 0 && (
-                                <div style={styles.genreBox}>
+                                <div style={{...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['blue-50']}}>
                                     <h2 style={styles.categoryHeader}>Genres</h2>
                                     <ul style={styles.genreList}>
                                         {genres.map((genre) => (
@@ -280,18 +284,16 @@ const getStyles = (theme) => ({
         color: theme.palette.text.primary,
         marginBottom: '0.625rem',
     },
+    box: {
+        flex: '1',
+        padding: '0.9375rem',
+        borderRadius: '0.625rem',
+        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
+    },
     detailsAndNotes: {
         display: 'flex',
         gap: '1.25rem',
         flexWrap: 'wrap',
-    },
-    detailsBox: {
-        display: 'block',
-        flex: '1',
-        backgroundColor: theme.palette.transparentColors['purple-50'],
-        padding: '0.9375rem',
-        borderRadius: '0.625rem', // TODO : Optimiser le style des boîtes
-        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     detailsList: {
         listStyle: 'none',
@@ -307,13 +309,6 @@ const getStyles = (theme) => ({
         verticalAlign: 'middle',
         marginRight: '0.25rem',
         color: theme.palette.text.primary,
-    },
-    noteBox: {
-        flex: '1',
-        backgroundColor: theme.palette.transparentColors['red-50'],
-        padding: '0.9375rem',
-        borderRadius: '0.625rem',
-        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     ratings: {
         display: 'flex',
@@ -333,12 +328,6 @@ const getStyles = (theme) => ({
         fontWeight: 'bold',
         color: theme.palette.colors.red,
     },
-    synopsisBox: {
-        backgroundColor: theme.palette.transparentColors['yellow-50'],
-        padding: '0.9375rem',
-        borderRadius: '0.625rem',
-        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
-    },
     synopsisText: {
         paddingLeft: '1.25rem',
         fontSize: '0.875rem',
@@ -352,13 +341,6 @@ const getStyles = (theme) => ({
         flexDirection: 'column',
         justifyContent: 'flex-start',
     },
-    platformBox: {
-        backgroundColor: theme.palette.transparentColors['green-50'],
-        flex: '0 0 66%',
-        padding: '0.9375rem',
-        borderRadius: '0.625rem',
-        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
-    },
     platformList: {
         listStyle: 'none',
         padding: 0,
@@ -366,13 +348,6 @@ const getStyles = (theme) => ({
     },
     platformItem: {
         padding: '0.3125rem 0',
-    },
-    genreBox: {
-        flex: '0 0 33%',
-        backgroundColor: theme.palette.transparentColors['blue-50'],
-        padding: '0.9375rem',
-        borderRadius: '0.625rem',
-        boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)',
     },
     genreList: {
         listStyleType: 'none',
