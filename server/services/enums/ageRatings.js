@@ -7,14 +7,6 @@ module.exports = {
         GRAC: 5,
         CLASS_IND: 6,
         ACB: 7
-    }, categoryReversed: {
-        1: "ESRB",
-        2: "PEGI",
-        3: "CERO",
-        4: "USK",
-        5: "GRAC",
-        6: "CLASS_IND",
-        7: "ACB"
     },
     ESRB: {
         6: 0,

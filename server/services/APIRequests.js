@@ -1,4 +1,4 @@
-const {category, categoryReversed, ESRB, PEGI, CERO, USK, GRAC, CLASS_IND, ACB} = require("./enums/ageRatings");
+const {category, ESRB, PEGI, CERO, USK, GRAC, CLASS_IND, ACB} = require("./enums/ageRatings");
 
 class APIRequests {
     static #apiUrl = "https://api.igdb.com/v4";
@@ -164,8 +164,6 @@ class APIRequests {
                         limit ${ratings.length};`
         )
 
-        let pegiAgeRating = PEGI[0]
-        let cpt = 0
         const order = [2, 4, 1, 3, 5, 6, 7]
         const ratingMappings = {
             [category.ESRB]: ESRB,
@@ -175,22 +173,25 @@ class APIRequests {
             [category.GRAC]: GRAC,
             [category.CLASS_IND]: CLASS_IND,
             [category.ACB]: ACB
-        };
+        }
 
-        while (cpt < ageRatingData.length && pegiAgeRating == PEGI[0]) {
-            const ageRating = ageRatingData.find(rating => rating.category === order[cpt])
-            cpt++
-            if (!ageRating) break;
-            const categoryRating = ratingMappings[ageRating.category];
-            console.log(PEGI[categoryRating[ageRating.rating]])
-            pegiAgeRating = PEGI[categoryRating[ageRating.rating]];
-            return {
-                ageRating: pegiAgeRating,
+        for (const priority of order) {
+            const ageRating = ageRatingData.find(rating => rating.category === priority);
+            if (!ageRating) continue
+
+            const categoryRating = ratingMappings[ageRating.category]
+            if (categoryRating) {
+                const pegiRating = ageRating.category === 2
+                    ? categoryRating[ageRating.rating]
+                    : PEGI[categoryRating[ageRating.rating]]
+                return {
+                    ageRating: pegiRating,
+                }
             }
         }
 
         return {
-            ageRating: pegiAgeRating,
+            ageRating: PEGI[0]
         }
     }
 
