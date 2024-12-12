@@ -168,17 +168,17 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
             {/*Listes des jeux similiares, extensions, etc.*/}
             {dlcs && dlcs.length > 0 && (
-                <GameList title= "DLC" games={dlcs} />)}
+                <GameList title="DLC" games={dlcs} />)}
             {expansions && expansions.length > 0 && (
-                <GameList title= "Extensions" games={expansions} />)}
+                <GameList title="Extensions" games={expansions} />)}
             {remakes && remakes.length > 0 && (
-                <GameList title= "Remakes" games={remakes} />)}
+                <GameList title="Remakes" games={remakes} />)}
             {remasters && remasters.length > 0 && (
-                <GameList title= "Remasters" games={remasters} />)}
+                <GameList title="Remasters" games={remasters} />)}
             {standaloneExpansions && standaloneExpansions.length > 0 && (
-                <GameList title= "Standalones" games={standaloneExpansions} />)}
+                <GameList title="Standalones" games={standaloneExpansions} />)}
             {franchises && franchises.length > 0 && (
-                <GameList title= "Franchise" games={franchises[0].games} />)}
+                <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games} />)}
             {parentGame && (
                 <GameCard
                     id={parentGame.id}
