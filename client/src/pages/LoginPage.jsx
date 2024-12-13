@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../components/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false); // Gérer l'affichage du formulaire d'inscription
+  const [credentials, setCredentials] = useState({ username: '', password: '' }); // Champs de connexion
   const [signupData, setSignupData] = useState({
     username: '',
     mail: '',
@@ -9,9 +12,49 @@ function LoginPage() {
     profilePicture: null,
     privacy_setting_id: 1,
   });
-  const [signupError, setSignupError] = useState(''); // Stocker les erreurs d'inscription
 
-  // Gérer le changement des champs d'inscription
+  const [loginError, setLoginError] = useState(''); // Erreurs de connexion
+  const [signupError, setSignupError] = useState(''); // Erreurs d'inscription
+  const { login } = useContext(AuthContext); // Utiliser la fonction login depuis le contexte
+  const navigate = useNavigate();
+
+  // Gérer les modifications des champs de connexion
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
+    setLoginError(''); // Réinitialiser les erreurs
+  };
+
+const handleLoginSubmit = async (e) => {
+  e.preventDefault();
+  setLoginError('');
+
+  try {
+    const response = await fetch('http://localhost:8080/users/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      setLoginError(errorData.message || 'Erreur de connexion.');
+      console.log('Erreur de connexion :', errorData);
+      return;
+    }
+
+    const data = await response.json();
+    console.log('Connexion réussie :', data); // Log des données reçues
+    login(data.token, data.user);
+    navigate('/'); // Redirection après connexion
+  } catch (error) {
+    console.error('Erreur lors de la connexion :', error);
+    setLoginError('Erreur réseau. Veuillez réessayer.');
+  }
+};
+
+
+  // Gérer les modifications des champs d'inscription
   const handleSignupChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'profilePicture') {
@@ -19,7 +62,7 @@ function LoginPage() {
     } else {
       setSignupData({ ...signupData, [name]: value });
     }
-    setSignupError(''); // Réinitialiser les erreurs lorsque l'utilisateur modifie le formulaire
+    setSignupError(''); // Réinitialiser les erreurs
   };
 
   // Soumettre les données d'inscription
@@ -44,7 +87,6 @@ function LoginPage() {
       if (!response.ok) {
         const errorData = await response.json();
         if (response.status === 400) {
-          // Afficher le message d'erreur spécifique du serveur
           setSignupError(errorData.message);
         } else {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -61,6 +103,7 @@ function LoginPage() {
         mail: '',
         password: '',
         profilePicture: null,
+        privacy_setting_id: 1,
       });
       setShowSignup(false); // Revenir à l'écran de connexion
     } catch (error) {
@@ -71,34 +114,44 @@ function LoginPage() {
 
   return (
     <div>
-      <h1>Connexion</h1>
-      <form>
-        <label>
-          Nom d'utilisateur:
-          <input type="text" name="username" />
-        </label>
-        <br />
-        <label>
-          Mot de passe:
-          <input type="password" name="password" />
-        </label>
-        <br />
-        <button type="submit">Se connecter</button>
-      </form>
-
-      <hr />
-
-      {/* Bouton pour basculer vers le formulaire d'inscription */}
-      <button onClick={() => setShowSignup(!showSignup)}>
-        {showSignup ? 'Annuler' : "S'inscrire"}
-      </button>
-
-      {showSignup && (
-        <div>
+      {!showSignup ? (
+        <>
+          <h1>Connexion</h1>
+          <form onSubmit={handleLoginSubmit}>
+            <label>
+              Nom d'utilisateur :
+              <input
+                type="text"
+                name="username"
+                value={credentials.username}
+                onChange={handleLoginChange}
+                required
+              />
+            </label>
+            <br />
+            <label>
+              Mot de passe :
+              <input
+                type="password"
+                name="password"
+                value={credentials.password}
+                onChange={handleLoginChange}
+                required
+              />
+            </label>
+            <br />
+            <button type="submit">Se connecter</button>
+          </form>
+          {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
+          <hr />
+          <button onClick={() => setShowSignup(true)}>S'inscrire</button>
+        </>
+      ) : (
+        <>
           <h2>Inscription</h2>
           <form onSubmit={handleSignupSubmit}>
             <label>
-              Nom d'utilisateur:
+              Nom d'utilisateur :
               <input
                 type="text"
                 name="username"
@@ -109,7 +162,7 @@ function LoginPage() {
             </label>
             <br />
             <label>
-              Adresse e-mail:
+              Adresse e-mail :
               <input
                 type="email"
                 name="mail"
@@ -120,7 +173,7 @@ function LoginPage() {
             </label>
             <br />
             <label>
-              Mot de passe:
+              Mot de passe :
               <input
                 type="password"
                 name="password"
@@ -131,7 +184,7 @@ function LoginPage() {
             </label>
             <br />
             <label>
-              Photo de profil:
+              Photo de profil :
               <input
                 type="file"
                 name="profilePicture"
@@ -140,11 +193,12 @@ function LoginPage() {
               />
             </label>
             <br />
-            {/* Affichage des erreurs */}
-            {signupError && <p style={{ color: 'red' }}>{signupError}</p>}
             <button type="submit">S'inscrire</button>
           </form>
-        </div>
+          {signupError && <p style={{ color: 'red' }}>{signupError}</p>}
+          <hr />
+          <button onClick={() => setShowSignup(false)}>Retour à la connexion</button>
+        </>
       )}
     </div>
   );

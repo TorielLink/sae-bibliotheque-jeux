@@ -1,4 +1,3 @@
-// Navbar.jsx
 import React, { useState, useContext } from 'react';
 import {
   AppBar,
@@ -15,12 +14,16 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeContext } from '../theme/ThemeContext';
 import SearchBar from './SearchBar';
+import { AuthContext } from './AuthContext';
+import UserMenu from "./UserMenu.jsx";
 
 function Navbar() {
   const theme = useTheme();
   const { toggleTheme, mode } = useContext(ThemeContext);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const location = useLocation();
+
+  const { isAuthenticated } = useContext(AuthContext); // AuthContext pour vérifier l'état de connexion
 
   const isCatalogue = location.pathname === '/catalogue';
   const isAvis = location.pathname === '/avis';
@@ -54,6 +57,7 @@ function Navbar() {
       sx={{
         backgroundColor: theme.palette.background.paper,
         padding: isMobile ? '4px' : '8px',
+        boxShadow: `0px 4px 8px ${theme.palette.colors['blue-50']}`, // Ombre bleue transparente
       }}
     >
       <Toolbar
@@ -103,7 +107,7 @@ function Navbar() {
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               display: 'block',
-              marginLeft: isMobile ? '-2px' : '8px', // Optionnel : ajuster la marge si nécessaire
+              marginLeft: isMobile ? '-2px' : '8px',
             }}
           >
             SCRIB
@@ -143,7 +147,7 @@ function Navbar() {
                 sx={{
                   textDecoration: 'none',
                   color: isAvis
-                    ? theme.palette.info.main
+                    ? theme.palette.colors.green
                     : theme.palette.text.primary,
                   fontSize: isMobile ? '0.75rem' : '1.1rem',
                 }}
@@ -166,14 +170,15 @@ function Navbar() {
           />
 
           {/* Bouton de connexion */}
+            {!isAuthenticated ? (
           <Button
             component={Link}
             to="/login"
             variant="contained"
             sx={{
-              fontSize: isMobile ? '0.5rem' : '1rem', // Taille plus petite en mobile
+              fontSize: isMobile ? '0.5rem' : '1rem',
               padding: isMobile ? '2px 4px' : '8px 16px',
-              minWidth: isMobile ? '60px' : '130px', // Largeur fixe pour mobile et desktop
+              minWidth: isMobile ? '60px' : '130px',
               backgroundColor: theme.palette.colors.green,
               color: theme.palette.background.default,
               display: 'flex',
@@ -185,6 +190,9 @@ function Navbar() {
           >
             Se connecter
           </Button>
+                ) : (
+            <UserMenu /> // Affiche le menu utilisateur si connecté
+          )}
 
           {/* Bouton de bascule de thème */}
           <IconButton
@@ -206,7 +214,7 @@ function Navbar() {
               <LightModeIcon
                 sx={{
                   fontSize: isMobile ? '20px' : '32px',
-                  color: theme.palette.text.primary,
+                  color: theme.palette.colors.yellow,
                 }}
               />
             )}
