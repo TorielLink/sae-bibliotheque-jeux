@@ -72,85 +72,40 @@ function LoginPage() {
     }
   };
 
+  useEffect(() => { //Execution du script background3D.jsx
+    // Code à exécuter lorsque le composant est monté
+    console.log('Composant chargé');
+
+    // Exemple : Attacher un script ou une logique
+    const script = document.createElement('script');
+    script.src = "/src/3Dbackgrounds/background3D.jsx";
+    script.async = true;
+    script.type = "module";
+    document.body.appendChild(script);
+
+    // Nettoyage (si nécessaire)
+    return () => {
+      console.log('Composant démonté');
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const stateVariables = {
+    signupData,
+    setSignupData,
+    signupError,
+    setShowSignup,
+    handleSignupChange,
+    handleSignupSubmit,
+  }
+
   return (
-    <div>
-      <h1>Connexion</h1>
-      <form>
-        <label>
-          Nom d'utilisateur:
-          <input type="text" name="username" />
-        </label>
-        <br />
-        <label>
-          Mot de passe:
-          <input type="password" name="password" />
-        </label>
-        <br />
-        <button type="submit">Se connecter</button>
-      </form>
-
-      <hr />
-
-      {/* Bouton pour basculer vers le formulaire d'inscription */}
-      <button onClick={() => setShowSignup(!showSignup)}>
-        {showSignup ? 'Annuler' : "S'inscrire"}
-      </button>
-
-      {showSignup && (
-        <div>
-          <h2>Inscription</h2>
-          <form onSubmit={handleSignupSubmit}>
-            <label>
-              Nom d'utilisateur:
-              <input
-                type="text"
-                name="username"
-                value={signupData.username}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Adresse e-mail:
-              <input
-                type="email"
-                name="mail"
-                value={signupData.mail}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Mot de passe:
-              <input
-                type="password"
-                name="password"
-                value={signupData.password}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Photo de profil:
-              <input
-                type="file"
-                name="profilePicture"
-                accept="image/*"
-                onChange={handleSignupChange}
-              />
-            </label>
-            <br />
-            {/* Affichage des erreurs */}
-            {signupError && <p style={{ color: 'red' }}>{signupError}</p>}
-            <button type="submit">S'inscrire</button>
-          </form>
-        </div>
-      )}
-    </div>
+    <>
+      <canvas id="bg" style = {{position: "fixed",top: 0,left:0,}}></canvas>
+      {showSignup ? <SignupBox {...stateVariables}/> : <LoginBox {...stateVariables} />}
+    </>
   );
+  
 }
 
 export default LoginPage;
