@@ -5,6 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 const TeamPage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const styles = getStyles(theme);
 
     const teamMembers = [
         {
@@ -91,65 +92,65 @@ const TeamPage = () => {
     );
 };
 
-const styles = {
+const getStyles = (theme) => ({
     page: {
-        padding: '20px',
-        fontFamily: 'Inter, sans-serif',
+        padding: '1.25rem',
+        fontFamily: theme.typography.fontFamily,
     },
     header: {
-        fontSize: '24px',
+        fontSize: '1.5rem',
         fontWeight: 'bold',
-        marginBottom: '10px',
+        marginBottom: '0.625rem',
     },
     text: {
-        fontSize: '16px',
-        color: '#555',
-        marginBottom: '20px',
+        fontSize: '1rem',
+        color: theme.palette.text.primary,
+        marginBottom: '1.25rem',
     },
     mobileLink: {
-        fontSize: '12px',
+        fontSize: '0.75rem',
         fontWeight: 'bold',
-        color: '#007BFF',
+        color: theme.palette.colors.blue,
         textDecoration: 'none',
-        border: '1px solid #007BFF',
-        padding: '4px 8px',
-        borderRadius: '5px',
+        border: '1px solid ' + theme.palette.colors.blue,
+        padding: '0.25rem 0.5rem',
+        borderRadius: '0.3125rem',
         transition: 'background-color 0.3s, color 0.3s',
     },
     teamContainer: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '20px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(15.625rem, 1fr))',
+        gap: '1.25rem',
         justifyContent: 'center',
     },
     card: {
-        padding: '20px',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        padding: '1.25rem',
+        border: '1px solid #DDD',
+        borderRadius: '0.5rem',
+        boxShadow: '0 0.25rem 0.375re rgba(0, 0, 0, 0.1)',
         textAlign: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: theme.palette.background.paper,
         transition: 'transform 0.3s, box-shadow 0.3s',
     },
     memberName: {
-        fontSize: '18px',
+        fontSize: '1.125rem',
         fontWeight: 'bold',
-        marginBottom: '5px',
+        marginBottom: '0.3125rem',
     },
     memberRole: {
-        fontSize: '14px',
-        color: '#777',
-        marginBottom: '10px',
+        fontSize: '0.875rem',
+        color: theme.palette.text.secondary,
+        marginBottom: '0.625rem',
     },
     socialLinks: {
         display: 'flex',
         justifyContent: 'center',
-        gap: '10px',
+        gap: '0.625rem',
     },
     socialIcon: {
         display: 'inline-block',
         transition: 'opacity 0.3s',
     },
-};
+});
 
 export default TeamPage;

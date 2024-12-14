@@ -1,6 +1,9 @@
 import React from 'react';
+import {useTheme} from "@mui/material/styles";
 
 const ContactPage = () => {
+    const theme = useTheme();
+    const styles = getStyles(theme);
     return (
         <div style={styles.page}>
             <h1 style={styles.header}>Contactez-nous</h1>
@@ -40,21 +43,21 @@ const ContactPage = () => {
     );
 };
 
-const styles = {
+const getStyles = (theme) => ({
     page: {
-        padding: '20px',
-        fontFamily: 'Arial, sans-serif',
-        color: '#333',
+        padding: '1.25rem',
+        fontFamily: theme.typography.fontFamily,
+        color: theme.palette.text.primary,
         lineHeight: '1.6',
     },
     header: {
-        fontSize: '24px',
+        fontSize: '1.5rem',
         fontWeight: 'bold',
-        marginBottom: '20px',
+        marginBottom: '1.25rem',
     },
     text: {
-        fontSize: '16px',
-        marginBottom: '15px',
+        fontSize: '1rem',
+        marginBottom: '0.9375rem',
     },
     linkList: {
         listStyleType: 'none',
@@ -62,16 +65,13 @@ const styles = {
     },
     link: {
         display: 'block',
-        color: '#0077b5',
+        color: theme.palette.colors.blue,
         textDecoration: 'none',
         fontWeight: 'bold',
-        fontSize: '16px',
-        margin: '10px 0',
+        fontSize: '1rem',
+        margin: '0.625rem 0',
         transition: 'color 0.3s',
     },
-    linkHover: {
-        color: '#005580',
-    },
-};
+});
 
 export default ContactPage;

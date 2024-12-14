@@ -5,6 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 const PrivacyPolicy = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const styles = getStyles(theme);
 
     return (
         <div style={styles.page}>
@@ -91,53 +92,56 @@ const PrivacyPolicy = () => {
     );
 };
 
-const styles = {
+const getStyles = (theme) => ({
     page: {
-        padding: '20px',
-        fontFamily: 'Arial, sans-serif',
-        lineHeight: '1.6',
-        color: '#333',
+        padding: '1.25rem',
+        fontFamily: theme.typography.fontFamily,
     },
     header: {
-        fontSize: '24px',
+        fontSize: '1.5rem',
         fontWeight: 'bold',
-        marginBottom: '10px',
-    },
-    subHeader: {
-        fontSize: '20px',
-        fontWeight: 'bold',
-        marginBottom: '10px',
-        color: '#555',
+        marginBottom: '0.625rem',
     },
     text: {
-        fontSize: '16px',
-        marginBottom: '15px',
+        fontSize: '1rem',
+        color: theme.palette.text.primary,
+        marginBottom: '1.25rem',
     },
     section: {
-        marginBottom: '20px',
+        marginBottom: '1.875rem',
+    },
+    subHeader: {
+        fontSize: '1.25rem',
+        fontWeight: 'bold',
+        marginBottom: '0.625rem',
+        paddingBottom: '0.3125rem',
     },
     list: {
-        marginLeft: '20px',
         listStyleType: 'disc',
+        paddingLeft: '1.25rem',
+        marginTop: '0.625rem',
     },
     link: {
-        color: '#0077b5',
+        color: theme.palette.colors.blue,
         textDecoration: 'none',
         fontWeight: 'bold',
+        fontSize: '1rem',
+        margin: '0.625rem 0',
+        transition: 'color 0.3s',
     },
     linkHover: {
         color: '#005580',
     },
     mobileLink: {
-        fontSize: '12px',
+        fontSize: '0.75rem',
         fontWeight: 'bold',
-        color: '#007BFF',
+        color: theme.palette.colors.blue,
         textDecoration: 'none',
-        border: '1px solid #007BFF',
-        padding: '4px 8px',
-        borderRadius: '5px',
+        border: '1px solid ' + theme.palette.colors.blue,
+        padding: '0.25rem 0.5rem',
+        borderRadius: '0.3125rem',
         transition: 'background-color 0.3s, color 0.3s',
     },
-};
+});
 
 export default PrivacyPolicy;

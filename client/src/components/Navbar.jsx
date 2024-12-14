@@ -55,7 +55,7 @@ function Navbar() {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
         padding: isMobile ? '4px' : '8px',
         boxShadow: `0px 4px 8px ${theme.palette.colors['blue-50']}`, // Ombre bleue transparente
       }}
@@ -99,7 +99,7 @@ function Navbar() {
             component={Link}
             to="/"
             sx={{
-              fontFamily: '"Roboto", sans-serif',
+              fontFamily: theme.typography.titleFontFamily,
               fontWeight: 700,
               color: theme.palette.text.primary,
               fontSize: isMobile ? '1rem' : '1.8rem',
@@ -180,7 +180,7 @@ function Navbar() {
               padding: isMobile ? '2px 4px' : '8px 16px',
               minWidth: isMobile ? '60px' : '130px',
               backgroundColor: theme.palette.colors.green,
-              color: theme.palette.colors['blue-70'],
+              color: theme.palette.background.default,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

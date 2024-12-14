@@ -49,7 +49,7 @@ class DataRetriever extends APIRequests {
         return [
             [this.getGamePlatforms, game.platforms, 3],
             [this.getGameCover, game.cover, 1],
-            [this.getGameAgeRatingsData, game.age_ratings, 2],
+            [this.getGameAgeRatingsData, game.age_ratings, 1],
             [this.getGameGenres, game.genres, 1],
             [this.getGameFranchises, game.franchises, 1],
 
@@ -96,7 +96,7 @@ class DataRetriever extends APIRequests {
                 category: game.category,
                 releaseDate: game.first_release_date,
                 platforms: apiData.platforms,
-                ageRating: apiData.ageRatingSummary,
+                ageRating: apiData.ageRating,
                 cover: apiData.cover,
                 genres: apiData.genres,
                 screenshots: apiData.screenshots,
@@ -150,7 +150,6 @@ class DataRetriever extends APIRequests {
             relatedContentData.map(el => {
                 relatedContentMap.set(el.id, el);
             })
-
 
             const bundles = this.#setRelatedContent("bundles", game.bundles || [], relatedContentMap);
             const collections = this.#setRelatedContent("collections", game.collections || [], relatedContentMap);

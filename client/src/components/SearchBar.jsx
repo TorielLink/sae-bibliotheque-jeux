@@ -1,34 +1,17 @@
-// SearchBar.jsx
 import React, { useState } from 'react';
-import {
-  Box,
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  CircularProgress,
-  Paper,
-  Divider, // Importer Divider
-} from '@mui/material';
+import { Box, TextField, List, ListItem, ListItemText, IconButton, CircularProgress, Paper, Divider } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
 import Collapse from '@mui/material/Collapse';
+import useMediaQuery from "@mui/material/useMediaQuery";
 
-function SearchBar({
-  searchText,
-  setSearchText,
-  handleSearchBack,
-  handleSearchSubmit,
-  isSearchActive,
-  setSearchActive,
-  isMobile,
-  onGameSelect,
-}) {
+function SearchBar({ searchText, setSearchText, handleSearchBack, handleSearchSubmit, isSearchActive, setSearchActive,
+                       onGameSelect,}) {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Fonction de récupération des suggestions
   const fetchSuggestions = async (query) => {
@@ -70,18 +53,18 @@ function SearchBar({
       sx={{
         display: 'flex',
         alignItems: 'center',
-        position: 'relative', // Position relative pour le positionnement absolu des suggestions
+        position: 'relative',
         width: isMobile ? '100%' : 'auto',
-        margin: 0, // Suppression des marges externes
-        padding: 0, // Suppression des paddings
+        margin: 0,
+        padding: 0,
       }}
     >
       {/* Bouton de recherche ou de fermeture */}
       <IconButton
         onClick={() => setSearchActive(!isSearchActive)}
         sx={{
-          padding: '2px', // Réduction du padding du bouton
-          marginRight: '4px', // Espacement minimal entre les éléments
+          padding: '2px',
+          marginRight: '4px',
         }}
         aria-label={isSearchActive ? 'Fermer la recherche' : 'Ouvrir la recherche'}
       >
@@ -92,9 +75,9 @@ function SearchBar({
       <Box
         sx={{
           position: 'relative',
-          width: isSearchActive ? (isMobile ? '100%' : '200px') : '0px', // Ajustez la largeur selon vos besoins
+          width: isSearchActive ? (isMobile ? '100%' : '200px') : '0px',
           transition: 'width 300ms ease-in-out',
-          overflow: 'visible', // Assure que les suggestions ne sont pas cachées
+          overflow: 'visible',
         }}
       >
         {/* Champ de recherche avec animation Collapse */}
@@ -125,17 +108,14 @@ function SearchBar({
               sx={{
                 width: '100%',
                 input: {
-                  padding: '6px 12px', // Ajustement pour éviter un champ trop grand
+                  padding: '6px 12px',
                 },
                 '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: theme.palette.divider,
-                  },
                   '&:hover fieldset': {
-                    borderColor: theme.palette.primary.main,
+                    borderColor: theme.palette.colors.yellow,
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: theme.palette.primary.main,
+                    borderColor: theme.palette.colors.yellow,
                   },
                 },
               }}
@@ -144,7 +124,7 @@ function SearchBar({
               <CircularProgress
                 size={20}
                 sx={{
-                  marginLeft: '8px',
+                  marginLeft: '0.5em',
                 }}
               />
             )}
@@ -156,17 +136,17 @@ function SearchBar({
           <Paper
             elevation={3}
             sx={{
-              position: 'absolute', // Position absolue par rapport au conteneur relatif
-              top: '100%', // Directement sous la boîte de recherche
-              left: '0', // Aligné à gauche du champ de recherche
-              width: '100%', // Assurer que la largeur est de 100%
+              position: 'absolute',
+              top: '100%',
+              left: '0',
+              width: '100%',
               maxHeight: '200px',
               overflowY: 'auto',
               backgroundColor: theme.palette.background.paper,
               zIndex: 10,
               boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
               borderRadius: '4px',
-              marginTop: '4px', // Réduction du margin-top pour un meilleur alignement
+              marginTop: '4px',
             }}
           >
             <List>
@@ -175,9 +155,9 @@ function SearchBar({
                   <ListItem
                     button
                     onClick={() => handleSuggestionClick(suggestion)}
-                    divider={index < suggestions.length - 1} // Ajouter un séparateur sauf pour le dernier élément
+                    divider={index < suggestions.length - 1}
                     sx={{
-                      '&:hover': { backgroundColor: theme.palette.action.hover },
+                      '&:hover': { backgroundColor: theme.palette.colors.yellow },
                     }}
                   >
                     <ListItemText primary={suggestion.name} />

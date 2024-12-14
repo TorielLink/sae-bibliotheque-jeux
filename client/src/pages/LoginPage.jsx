@@ -188,7 +188,7 @@ const handleLoginSubmit = async (e) => {
               <input
                 type="file"
                 name="profilePicture"
-                accept="image/*"
+                accept="mentorOrInvestorImage/*"
                 onChange={handleSignupChange}
               />
             </label>

@@ -36,7 +36,7 @@ function GameCard({ id, image, title, rating, categories }) {
                 "&:hover": {
                     boxShadow: "0 0 1em #000000",
                     "& .categories": {
-                        opacity: isMobile ? 1 : 1,
+                        opacity: 1,
                     },
                 },
             }}
@@ -51,17 +51,16 @@ function GameCard({ id, image, title, rating, categories }) {
                     sx={{
                         objectFit: "cover",
                         width: "100%",
-                        height: "100%",
-                    }}
-                />
+                        height: "100%"
+                }} />
 
                 <Box
                     sx={{
                         position: "absolute",
                         top: "0.5em",
                         right: "0.5em",
-                        backgroundColor: theme.palette.background.paper,
-                        color: theme.palette.text.primary,
+                        backgroundColor: theme.palette.background.default,
+                        color: theme.palette.colors.yellow,
                         borderRadius: "0.2em",
                         boxShadow: "0 0 0.1em #000000",
                         padding: "0 0.25em",
@@ -107,7 +106,7 @@ function GameCard({ id, image, title, rating, categories }) {
                             size="small"
                             sx={{
                                 backgroundColor: theme.palette.colors.red,
-                                color: theme.palette.text.primary,
+                                color: theme.palette.text.contrast,
                                 fontSize: "0.8em",
                                 height: "1.5em",
                                 borderRadius: "0.325em",

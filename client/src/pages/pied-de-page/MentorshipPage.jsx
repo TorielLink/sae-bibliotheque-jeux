@@ -5,6 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 const MentorshipPage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const styles = getStyles(theme);
 
     return (
         <div style={styles.page}>
@@ -23,16 +24,17 @@ const MentorshipPage = () => {
 
             {/* Section : Mentor */}
             <div style={styles.section}>
-                <h2 style={{...styles.subHeader, borderBottom: '2px solid #FE4A49'}}>Notre professeur référent</h2>
+                <h2 style={{...styles.subHeader, borderBottom: '2px solid ' + theme.palette.colors.red}}>
+                    Notre professeur référent</h2>
                 <div style={{ ...styles.mentor, flexDirection: isMobile ? 'column' : 'row' }}>
                     <img
                         src="https://via.placeholder.com/150"
                         alt="Jérôme FESSY"
-                        style={styles.image}
+                        style={styles.mentorOrInvestorImage}
                     />
                     <div>
-                        <h3 style={styles.mentorName}>Jérôme FESSY</h3>
-                        <p style={styles.mentorRole}>
+                        <h3 style={styles.mentorOrInvestorName}>Jérôme FESSY</h3>
+                        <p style={styles.mentorOrInvestorRole}>
                             Maître de Conférences et Chef du Département Informatique, IUT de
                             Paris
                         </p>
@@ -47,34 +49,35 @@ const MentorshipPage = () => {
 
             {/* Section : Investisseurs */}
             <div style={styles.section}>
-                <h2 style={{...styles.subHeader, borderBottom: '2px solid #FFBB33'}}>Nos investisseurs</h2>
+                <h2 style={{...styles.subHeader, borderBottom: '2px solid ' + theme.palette.colors.yellow}}>
+                    Nos investisseurs</h2>
                 <div style={styles.investors}>
                     <div style={styles.investorCard}>
                         <img
                             src="/images/investor1.png"
                             alt="Investisseur"
-                            style={styles.investorImage}
+                            style={styles.mentorOrInvestorImage}
                         />
-                        <h4 style={styles.investorName}>Alex Dupont</h4>
-                        <p style={styles.investorRole}>CEO, StartupTech</p>
+                        <h4 style={styles.mentorOrInvestorName}>Alex Dupont</h4>
+                        <p style={styles.mentorOrInvestorRole}>CEO, StartupTech</p>
                     </div>
                     <div style={styles.investorCard}>
                         <img
                             src="/images/investor2.png"
                             alt="Investisseur"
-                            style={styles.investorImage}
+                            style={styles.mentorOrInvestorImage}
                         />
-                        <h4 style={styles.investorName}>Marie Leblanc</h4>
-                        <p style={styles.investorRole}>Fondatrice, InnovInvest</p>
+                        <h4 style={styles.mentorOrInvestorName}>Marie Leblanc</h4>
+                        <p style={styles.mentorOrInvestorRole}>Fondatrice, InnovInvest</p>
                     </div>
                     <div style={styles.investorCard}>
                         <img
                             src="/images/investor3.png"
                             alt="Investisseur"
-                            style={styles.investorImage}
+                            style={styles.mentorOrInvestorImage}
                         />
-                        <h4 style={styles.investorName}>Julien Moreau</h4>
-                        <p style={styles.investorRole}>Partner, Future Ventures</p>
+                        <h4 style={styles.mentorOrInvestorName}>Julien Moreau</h4>
+                        <p style={styles.mentorOrInvestorRole}>Partner, Future Ventures</p>
                     </div>
                 </div>
             </div>
@@ -82,93 +85,73 @@ const MentorshipPage = () => {
     );
 };
 
-const styles = {
+const getStyles = (theme) => ({
     page: {
-        padding: '20px',
-        fontFamily: 'Arial, sans-serif',
+        padding: '1.25rem',
+        fontFamily: theme.typography.fontFamily,
     },
     header: {
-        fontSize: '24px',
+        fontSize: '1.5rem',
         fontWeight: 'bold',
-        marginBottom: '20px',
-        color: '#333',
+        marginBottom: '0.625rem',
     },
     text: {
-        fontSize: '16px',
-        color: '#555',
-        marginBottom: '20px',
+        fontSize: '1rem',
+        color: theme.palette.text.primary,
+        marginBottom: '1.25rem',
     },
     section: {
-        marginBottom: '30px',
+        marginBottom: '1.875rem',
     },
     subHeader: {
-        fontSize: '20px',
+        fontSize: '1.25rem',
         fontWeight: 'bold',
-        color: '#222',
-        marginBottom: '10px',
-        paddingBottom: '5px',
+        marginBottom: '0.625rem',
+        paddingBottom: '0.3125rem',
     },
     mentor: {
         display: 'flex',
         alignItems: 'center',
-        gap: '20px',
+        gap: '1.25rem',
     },
-    image: {
-        width: '150px',
-        height: '150px',
+    mentorOrInvestorImage: {
+        width: '9.375rem',
+        height: '9.375rem',
         borderRadius: '50%',
         objectFit: 'cover',
+        marginBottom: '0.625rem',
     },
-    mentorName: {
-        fontSize: '18px',
+    mentorOrInvestorName: {
+        fontSize: '1rem',
         fontWeight: 'bold',
         margin: '0',
-        color: '#222',
     },
-    mentorRole: {
-        fontSize: '14px',
-        color: '#777',
-        margin: '3px 0 10px 0',
+    mentorOrInvestorRole: {
+        fontSize: '0.875rem',
+        color: theme.palette.text.secondary,
+        margin: '0.1875rem 0 0.625rem 0',
     },
     investors: {
         display: 'flex',
-        gap: '20px',
+        gap: '1.25rem',
         flexWrap: 'wrap',
     },
     investorCard: {
         textAlign: 'center',
         flex: '1',
-        minWidth: '120px',
-        maxWidth: '180px',
-    },
-    investorImage: {
-        width: '100px',
-        height: '100px',
-        borderRadius: '50%',
-        objectFit: 'cover',
-        marginBottom: '10px',
-    },
-    investorName: {
-        fontSize: '16px',
-        fontWeight: 'bold',
-        margin: '0',
-        color: '#222',
-    },
-    investorRole: {
-        fontSize: '14px',
-        color: '#777',
-        margin: '3px 0 10px 0',
+        minWidth: '7.5rem',
+        maxWidth: '11.25rem',
     },
     mobileLink: {
-        fontSize: '12px',
+        fontSize: '0.75rem',
         fontWeight: 'bold',
-        color: '#007BFF',
+        color: theme.palette.colors.blue,
         textDecoration: 'none',
-        border: '1px solid #007BFF',
-        padding: '4px 8px',
-        borderRadius: '5px',
+        border: '1px solid ' + theme.palette.colors.blue,
+        padding: '0.25rem 0.5rem',
+        borderRadius: '0.3125rem',
         transition: 'background-color 0.3s, color 0.3s',
     },
-};
+});
 
 export default MentorshipPage;
