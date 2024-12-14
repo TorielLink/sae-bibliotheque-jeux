@@ -14,7 +14,9 @@ const friendsModel = require('../models/friends.js');
 const userListsModel = require('../models/userLists.js');
 require('dotenv').config();
 
-let sequelize = new Sequelize(
+let sequelize;
+
+sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
@@ -22,16 +24,16 @@ let sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     pool: {
-      max: 5, // Maximum de connexions
+      max: 5,
       min: 0,
-      acquire: 30000, // Temps max en ms avant d'être considéré comme échoué
-      idle: 10000, // Temps max d'inactivité avant de libérer la connexion
+      acquire: 30000,
+      idle: 10000,
     },
     logging: console.log,
   }
 );
 
-// Initialisation des modèles
+// Initialize the models
 const users = usersModel(sequelize, DataTypes);
 const privacySettings = privacySettingsModel(sequelize, DataTypes);
 const status = statusModel(sequelize, DataTypes);
@@ -46,8 +48,7 @@ const gameStatus = gameStatusModel(sequelize, DataTypes);
 const friends = friendsModel(sequelize, DataTypes);
 const userLists = userListsModel(sequelize, DataTypes);
 
-// Définition des associations
-
+// Define associations
 // Privacy Settings → Users (One-to-Many)
 users.belongsTo(privacySettings, { foreignKey: 'privacy_setting_id', as: 'default_privacy' });
 privacySettings.hasMany(users, { foreignKey: 'privacy_setting_id' });
@@ -61,13 +62,12 @@ gameReview.belongsTo(privacySettings, { foreignKey: 'privacy_setting_id', as: 'r
 privacySettings.hasMany(gameReview, { foreignKey: 'privacy_setting_id' });
 
 // Association entre gameReview et gameRatings
-// L'association est définie sur user_id, et nous utiliserons un where dans les requêtes pour relier igdb_game_id.
-// constraints: false permet d'éviter les conflits de clés étrangères non standard
+// Utilisez constraints: false si vous utilisez un where manuel dans vos requêtes (user_id, igdb_game_id)
 gameReview.belongsTo(gameRatings, {
   foreignKey: 'user_id',
   targetKey: 'user_id',
   as: 'rating',
-  constraints: false,
+  constraints: false, // Désactive les contraintes FK
 });
 
 // Game Logs → Users (Many-to-One)

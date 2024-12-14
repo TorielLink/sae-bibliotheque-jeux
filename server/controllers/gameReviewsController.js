@@ -1,4 +1,4 @@
-const { Sequelize, gameReview, privacySettings, users, gameRatings } = require('../database/sequelize');
+const {Sequelize, gameReview, privacySettings, users, gameRatings } = require('../database/sequelize');
 const DataRetriever = require('../services/DataRetriever');
 
 // Initialiser DataRetriever avec vos clés d'API
@@ -8,7 +8,7 @@ const dataRetriever = new DataRetriever(clientId, accessToken);
 
 const controller = {};
 
-// Mise en place d'un cache en mémoire pour les données de jeux
+// Mise en place d'un cache en mémoire pour éviter d'appeler l'API IGDB pour chaque critique identique
 const gameCache = new Map();
 
 async function getGameData(igdb_game_id) {
@@ -20,7 +20,6 @@ async function getGameData(igdb_game_id) {
     return gameData;
 }
 
-// Récupérer toutes les critiques avec leurs paramètres de confidentialité, infos utilisateur, note, et infos de jeu depuis l'API (avec cache)
 controller.getAllReviews = async (req, res) => {
     try {
         const reviews = await gameReview.findAll({
@@ -33,7 +32,7 @@ controller.getAllReviews = async (req, res) => {
                 {
                     model: users,
                     as: 'user',
-                    attributes: ['username', 'profile_picture'],
+                    attributes: ['username'],
                 },
                 {
                     model: gameRatings,
@@ -48,20 +47,30 @@ controller.getAllReviews = async (req, res) => {
             ],
         });
 
-        const reviewsWithGames = await Promise.all(
-            reviews.map(async (review) => {
-                const gameData = await getGameData(review.igdb_game_id);
-                return {
-                    ...review.toJSON(),
-                    game: {
-                        id: review.igdb_game_id,
-                        title: gameData?.name || 'Titre inconnu',
-                        cover: gameData?.cover?.url || null,
-                    },
-                    rating: review.rating ? review.rating.rating_value : null,
-                };
-            })
-        );
+        // Récupérer tous les igdb_game_id distincts pour minimiser les appels API
+        const uniqueGameIds = [...new Set(reviews.map(r => r.igdb_game_id))];
+
+        // Précharger le cache
+        // (Facultatif: si API IGDB supporte le batch, le faire en un seul appel)
+        for (const gameId of uniqueGameIds) {
+            if (!gameCache.has(gameId)) {
+                await getGameData(gameId);
+            }
+        }
+
+        const reviewsWithGames = reviews.map((review) => {
+            const gameData = gameCache.get(review.igdb_game_id);
+
+            return {
+                ...review.toJSON(),
+                game: {
+                    id: review.igdb_game_id,
+                    title: gameData?.name || 'Titre inconnu',
+                    cover: gameData?.cover?.url || null,
+                },
+                rating: review.rating ? review.rating.rating_value : null,
+            };
+        });
 
         res.status(200).json({ message: 'Reviews fetched successfully', data: reviewsWithGames });
     } catch (error) {
@@ -70,7 +79,6 @@ controller.getAllReviews = async (req, res) => {
     }
 };
 
-// Récupérer les critiques pour un utilisateur spécifique (même logique, avec cache)
 controller.getReviewsByUserId = async (req, res) => {
     try {
         const { id } = req.params;
@@ -85,7 +93,7 @@ controller.getReviewsByUserId = async (req, res) => {
                 {
                     model: users,
                     as: 'user',
-                    attributes: ['username', 'profile_picture'],
+                    attributes: ['username'],
                 },
                 {
                     model: gameRatings,
@@ -104,20 +112,27 @@ controller.getReviewsByUserId = async (req, res) => {
             return res.status(404).json({ message: 'No reviews found for this user' });
         }
 
-        const reviewsWithGames = await Promise.all(
-            reviews.map(async (review) => {
-                const gameData = await getGameData(review.igdb_game_id);
-                return {
-                    ...review.toJSON(),
-                    game: {
-                        id: review.igdb_game_id,
-                        title: gameData?.name || 'Titre inconnu',
-                        cover: gameData?.cover?.url || null,
-                    },
-                    rating: review.rating ? review.rating.rating_value : null,
-                };
-            })
-        );
+        const uniqueGameIds = [...new Set(reviews.map(r => r.igdb_game_id))];
+
+        for (const gameId of uniqueGameIds) {
+            if (!gameCache.has(gameId)) {
+                await getGameData(gameId);
+            }
+        }
+
+        const reviewsWithGames = reviews.map((review) => {
+            const gameData = gameCache.get(review.igdb_game_id);
+
+            return {
+                ...review.toJSON(),
+                game: {
+                    id: review.igdb_game_id,
+                    title: gameData?.name || 'Titre inconnu',
+                    cover: gameData?.cover?.url || null,
+                },
+                rating: review.rating ? review.rating.rating_value : null,
+            };
+        });
 
         res.status(200).json({ message: 'User reviews fetched successfully', data: reviewsWithGames });
     } catch (error) {
@@ -126,10 +141,9 @@ controller.getReviewsByUserId = async (req, res) => {
     }
 };
 
-// Récupérer les critiques pour un jeu spécifique (même logique, avec cache)
 controller.getReviewsByGameId = async (req, res) => {
     try {
-        const { id } = req.params; // igdb_game_id du jeu
+        const { id } = req.params;
         const reviews = await gameReview.findAll({
             where: { igdb_game_id: id },
             include: [
@@ -141,7 +155,7 @@ controller.getReviewsByGameId = async (req, res) => {
                 {
                     model: users,
                     as: 'user',
-                    attributes: ['username', 'profile_picture'],
+                    attributes: ['username'],
                 },
                 {
                     model: gameRatings,
@@ -160,20 +174,24 @@ controller.getReviewsByGameId = async (req, res) => {
             return res.status(404).json({ message: 'No reviews found for this game' });
         }
 
-        const reviewsWithGames = await Promise.all(
-            reviews.map(async (review) => {
-                const gameData = await getGameData(review.igdb_game_id);
-                return {
-                    ...review.toJSON(),
-                    game: {
-                        id: review.igdb_game_id,
-                        title: gameData?.name || 'Titre inconnu',
-                        cover: gameData?.cover?.url || null,
-                    },
-                    rating: review.rating ? review.rating.rating_value : null,
-                };
-            })
-        );
+        // Tous les reviews concernent le même igdb_game_id, pas besoin de Set
+        if (!gameCache.has(id)) {
+            await getGameData(id);
+        }
+
+        const reviewsWithGames = reviews.map((review) => {
+            const gameData = gameCache.get(review.igdb_game_id);
+
+            return {
+                ...review.toJSON(),
+                game: {
+                    id: review.igdb_game_id,
+                    title: gameData?.name || 'Titre inconnu',
+                    cover: gameData?.cover?.url || null,
+                },
+                rating: review.rating ? review.rating.rating_value : null,
+            };
+        });
 
         res.status(200).json({ message: 'Game reviews fetched successfully', data: reviewsWithGames });
     } catch (error) {
