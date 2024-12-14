@@ -1,22 +1,22 @@
 import React from "react";
-import {Box, Grid, Typography, useMediaQuery} from "@mui/material";
+import {Box, Grid, useMediaQuery} from "@mui/material";
 import GameCard from "../components/GameCard.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 import {useTheme} from "@mui/material/styles";
 
-function GameSection({title, games, isMobileView}) {
+function GameList({title, games}) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
         <>
             {/* Afficher le titre de la section */}
-            {!isMobileView && <SectionTitle title={title}/>}
+            {!isMobile && <SectionTitle title={title}/>}
 
-            {isMobileView ? (
+            {isMobile ? (
                 <Grid container spacing={2} justifyContent="center" sx={{
                     padding:'0.75em'
-                }}>
+                }}> // TODO : passer de Grid (déprécié) à Grid2
                     {games.map((game) => (
                         <Grid
                             item
@@ -31,7 +31,7 @@ function GameSection({title, games, isMobileView}) {
                         >
                             {/* Ajout de l'ID ici */}
                             <GameCard
-                                id={game.id} // Transmettez l'ID à GameCard
+                                id={game.id}
                                 image={game.cover}
                                 title={game.name}
                                 rating={game.aggregated_rating}
@@ -56,7 +56,7 @@ function GameSection({title, games, isMobileView}) {
                     {games.map((game) => (
                         <Box key={game.id} sx={{flex: "0 0 auto"}}>
                             <GameCard
-                                id={game.id} // Transmettez également l'ID ici
+                                id={game.id}
                                 image={game.cover}
                                 title={game.name}
                                 rating={game.aggregated_rating}
@@ -70,4 +70,4 @@ function GameSection({title, games, isMobileView}) {
     );
 }
 
-export default GameSection;
+export default GameList;

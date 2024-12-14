@@ -1,16 +1,20 @@
 import React from 'react';
+import {useTheme} from "@mui/material/styles";
 
 
 export default function GameDetailsNavBar({ activeSection }) {
+    const theme = useTheme();
+    const styles = getStyles(theme);
+
     // Chaque section a une couleur différente
     const getActiveColor = () => {
         switch (activeSection) {
             case "details":
-                return "#9534D5B3"; // violet
+                return theme.palette.transparentColors['purple-70']; // violet
             case "reviews":
-                return "#FFBB33B3"; // jaune
+                return theme.palette.transparentColors['yellow-70']; // jaune
             case "medias":
-                return "#36A0FCB3"; // bleu
+                return theme.palette.transparentColors['blue-70']; // bleu
             default:
                 return "transparent"; // Par défaut, aucune couleur
         }
@@ -45,13 +49,13 @@ export default function GameDetailsNavBar({ activeSection }) {
     );
 }
 
-const styles = {
+const getStyles = (theme) => ({
     navbar: {
         width: '35vw', // pour que ça ne s'adapte pas à la taille du parent
-        backgroundColor: '#F5F5F5',
-        borderRadius: '5px',
-        fontFamily: 'Arial, sans-serif',
-        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+        backgroundColor: theme.palette.background.default,
+        borderRadius: '0.3125rem',
+        fontFamily: theme.typography.fontFamily,
+        boxShadow: '0 0.25rem 0.375rem rgba(0, 0, 0, 0.1)',
     },
     navList: {
         listStyleType: 'none',
@@ -62,22 +66,22 @@ const styles = {
     },
     navItem: {
         transition: 'background-color 0.3s ease, transform 0.3s ease',
-        borderRadius: '5px',
+        borderRadius: '0.3125rem',
         flex: '1', // pour s'assurer que chaque onglet occupe un espace équivalent
         textAlign: 'center',
         cursor: 'pointer',
-        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 0.25rem 0.375rem rgba(0, 0, 0, 0.1)',
     },
     navLink: {
         display: 'block',
-        padding: '21px 15px',
-        color: '#333',
+        padding: '1.3125rem 0.9375rem',
+        color: theme.palette.text.primary,
         textDecoration: 'none',
-        fontSize: '14px',
+        fontSize: '0.875rem',
         fontWeight: '500',
     },
     activeNavLink: {
-        color: '#FFF',
+        color: theme.palette.text.contrast,
         fontWeight: 'bold',
     },
-};
+});

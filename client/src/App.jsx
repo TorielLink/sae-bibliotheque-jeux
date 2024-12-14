@@ -1,15 +1,17 @@
 import React, { useContext } from 'react';
-import { CssBaseline, Button, Grid } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { ThemeContext } from './theme/ThemeContext.jsx';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// Pages
 import Navbar from './components/Navbar.jsx';
 import Footer from "./components/Footer.jsx";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage.jsx';
 import CataloguePage from './pages/CataloguePage.jsx';
 import OpinionPage from './pages/OpinionPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import GameDetailsPage from "./pages/GamesDetailsPage.jsx";
+// Pied de page
 import Team from './pages/TeamPage.jsx';
 import Establishment from './pages/InstitutionPage.jsx';
 import Project from './pages/ProjectPage.jsx';
@@ -17,6 +19,7 @@ import Mentorship from './pages/MentorshipPage.jsx';
 import Terms from './pages/TermsPage.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicyPage.jsx';
 import Contacts from './pages/ContactsPage.jsx';
+// Profil utilisateur
 import ProtectedRoute from './utils/ProtectedRoute.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import StatsPage from './pages/StatsPage.jsx';
@@ -25,6 +28,8 @@ import JournalsPage from './pages/JournalsPage.jsx';
 import ReviewsPage from './pages/ReviewsPage.jsx';
 import CustomListsPage from './pages/CustomListsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
+
+
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
 

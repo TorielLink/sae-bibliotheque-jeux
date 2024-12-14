@@ -181,7 +181,7 @@ const styles = {
         justifyContent: 'flex-start',
         overflowX: 'auto',
         scrollbarWidth: 'none',
-        '-ms-overflow-style': 'none',
+        msOverflowStyle: 'none',
     },
     mediaThumbnail: {
         flex: '0 0 auto',

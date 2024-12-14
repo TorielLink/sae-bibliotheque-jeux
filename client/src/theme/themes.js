@@ -10,26 +10,36 @@ const colors = {
 };
 
 const generateTransparentColors = (colorMap, transparency) => {
-  const transparencySuffix = Math.round(transparency * 100);
   return Object.fromEntries(
       Object.entries(colorMap).map(([colorName, hexValue]) => [
-        `${colorName}-${transparencySuffix}`,
-        `${hexValue}${Math.round(transparency * 255).toString(16).padStart(2, '0')}`,
+        `${colorName}-${Math.round(transparency * 100)}`, // Exemple: 'yellow-50'
+        `${hexValue}${Math.round(transparency * 255).toString(16).padStart(2, '0')}`, // Exemple: FFBB3380
       ])
   );
 };
 
+// TODO : ne fonctionne pas
+const loadGoogleFont = (fontName) => {
+  const link = document.createElement('link');
+  link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}&display=swap`;
+  link.rel = 'stylesheet';
+  document.head.appendChild(link);
+};
+loadGoogleFont('Jacquard');
+
 export const baseTheme = {
   palette: {
     colors,
-    ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
-    ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
+    transparentColors: {
+      ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
+      ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
+    },
   },
   typography: {
     fontFamily: 'Inter, Arial, sans-serif',
+    titleFontFamily: 'Jacquard, Arial, sans-serif',
   },
 };
-
 
 export const lightTheme = createTheme({
   ...baseTheme,
@@ -37,13 +47,13 @@ export const lightTheme = createTheme({
     ...baseTheme.palette,
     mode: 'light',
     background: {
-      default: '#ffffff',
-      paper: '#f4f6f8',
-      footer: '#E6E6E6', // Fond footer
+      default: '#F5F5F5',
+      paper: '#FFF',
     },
     text: {
-      primary: '#000', // Texte principal noir
+      primary: '#222', // Texte principal noir
       secondary: '#666', // Texte secondaire gris
+      contrast: '#F5F5F5', // Texte blanc
     },
   },
 });
@@ -54,12 +64,11 @@ export const darkTheme = createTheme({
     ...baseTheme.palette,
     mode: 'dark',
     background: {
-      default: '#121212', // Fond sombre
-      paper: '#1d1d1d',
-      footer:'#404040', // Fond footer
+      default: '#222',
+      paper: '#333',
     },
     text: {
-      primary: '#FFF', // Texte principal blanc
+      primary: '#FFF',
       secondary: '#B3B3B3', // Texte secondaire gris clair
     },
   },

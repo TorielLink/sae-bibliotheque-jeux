@@ -7,8 +7,8 @@ import {
     CircularProgress,
     useMediaQuery,
 } from "@mui/material";
-import GameSection from "../components/GameSection.jsx";
-import { useTheme } from "@mui/material/styles";
+import GameList from "../components/GameList.jsx";
+import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
 
 function HomePage() {
@@ -80,7 +80,7 @@ function HomePage() {
                 <Typography
                     variant="subtitle2"
                     sx={{
-                        color: theme.palette.text.secondary,
+                        color: theme.palette.colors.red,
                         fontSize: isMobile ? "0.9em" : "1em",
                         display: "inline",
                     }}
@@ -90,10 +90,7 @@ function HomePage() {
                 <Typography
                     variant="subtitle2"
                     sx={{
-                        color: isMobile
-                            ? theme.palette.colors.red
-                            : theme.palette.text.primary,
-                        fontWeight: "bold",
+                        color: isMobile ? theme.palette.colors.red : theme.palette.text.primary,
                         display: "inline",
                         marginLeft: "0.25em",
                     }}
@@ -117,12 +114,16 @@ function HomePage() {
                                 fontWeight: "bold",
                                 fontSize: "0.8em",
                                 margin: "0 0.5em",
-                                padding: "0.5em 0.75em",
+                                padding: '0.5em 0.75em',
+                                minHeight: "auto",
+                                background: theme.palette.background.default,
+                                color: theme.palette.text.primary,
                                 border: `0.2em solid ${theme.palette.colors.green}`,
-                                borderRadius: "0.5em 0.5em 0 0",
+                                borderRadius: '0.5em 0.5em 0 0',
                             },
                             "& .Mui-selected": {
                                 color: theme.palette.colors.red,
+                                borderBottom: `0`,
                                 fontWeight: "bold",
                             },
                         }}
@@ -131,55 +132,73 @@ function HomePage() {
                         <Tab label="Jeux populaires" />
                         <Tab label="Avis récents" />
                     </Tabs>
-                </Box>
+                    <hr
+                        style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            width: "100%",
+                            border: 'none',
+                            height: '0.15em',
+                            backgroundColor: theme.palette.colors.green,
+                            margin: 0,
+                            zIndex: 0,
+                        }}
+                    />
+                </div>
             )}
 
-            {/* Loading or Error */}
-            {loading ? (
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "50vh",
-                    }}
-                >
-                    <CircularProgress />
-                </Box>
-            ) : error ? (
-                <Box
-                    sx={{
-                        textAlign: "center",
-                        color: theme.palette.error.main,
-                        marginTop: "20px",
-                    }}
-                >
-                    <Typography variant="h6">{error}</Typography>
-                </Box>
-            ) : (
-                <>
-                    {/* Mobile View */}
-                    {isMobile ? (
-                        <GameSection games={currentGames} isMobileView={true} />
-                    ) : (
-                        /* Desktop View */
-                        <>
-                            <Box sx={{ marginTop: "2em" }}>
-                                <GameSection
-                                    title="Sorties récentes"
-                                    games={recentGames}
-                                    isMobileView={false}
-                                />
-                            </Box>
+            {/* Loading or Error */
+            }
+            {
+                loading ? (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "50vh",
+                        }}
+                    >
+                        <CircularProgress/>
+                    </Box>
+                ) : error ? (
+                    <Box
+                        sx={{
+                            textAlign: "center",
+                            color: theme.palette.colors.red,
+                            marginTop: "20px",
+                        }}
+                    >
+                        <Typography variant="h6">{error}</Typography>
+                    </Box>
+                ) : (
+                    <>
+                        {/* Mobile View */}
+                        {isMobile ? (
+                            <GameList
+                                games={currentGames}
+                            />
+                        ) : (
+                            /* Desktop View */
+                            <>
+                                <Box sx={{
+                                    marginTop: "2em"
+                                }}>
+                                    <GameList
+                                        title="Sorties récentes"
+                                        games={recentGames}
+                                    />
+                                </Box>
+                                {/*
+                            */}
 
-                            <Box sx={{ marginTop: "2em" }}>
-                                <GameSection
-                                    title="Jeux populaires"
-                                    games={popularGames}
-                                    isMobileView={false}
-                                />
-                            </Box>
-
+                                <Box sx={{}}>
+                                    <GameList
+                                        title="Jeux populaires"
+                                        games={popularGames}
+                                    />
+                                </Box>
                             <SectionTitle title="Avis récents" />
                             <Box
                                 sx={{
