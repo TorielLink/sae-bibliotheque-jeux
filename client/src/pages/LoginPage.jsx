@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import LoginBox from "../components/LoginSignup/LoginBox"
+import SignupBox from "../components/LoginSignup/SignupBox"
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false); // Gérer l'affichage du formulaire d'inscription
