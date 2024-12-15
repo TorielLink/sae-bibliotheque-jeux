@@ -31,6 +31,7 @@ export const baseTheme = {
   palette: {
     colors,
     transparentColors: {
+      ...generateTransparentColors(colors, 1),
       ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
       ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
     },

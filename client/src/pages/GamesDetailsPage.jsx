@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom"; // pour récupérer les paramètres de l'URL
+import React, {useState, useEffect} from 'react';
+import {useParams} from "react-router-dom"; // pour récupérer les paramètres de l'URL
 import GameDetails from "../components/GameDetails.jsx";
 import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
 import {Typography} from "@mui/material";
+import GameLogs from "../components/game-logs/GameLogs.jsx";
 // import GameLogs from '../components/GameLogs.jsx';
 
 
@@ -12,7 +13,7 @@ import {Typography} from "@mui/material";
  - Faire la version mobile
  */
 export default function GamesDetailsPage() {
-    const { id } = useParams(); // Récupère l'ID depuis l'URL
+    const {id} = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -41,7 +42,7 @@ export default function GamesDetailsPage() {
 
     return (
         <>
-            <Typography variant="subtitle2"  style={styles.breadcrumb}>
+            <Typography variant="subtitle2" style={styles.breadcrumb}>
                 Accueil &gt; {gameData.name}
             </Typography>
             <div id="details">
@@ -76,6 +77,15 @@ export default function GamesDetailsPage() {
                 </div>
             </div>
             {/* TODO: si l'utilisateur est connecté : montrer "GameLogs" */}
+            <div id="logs">
+                <GameLogs
+                    name={gameData.name}
+                    coverImage={gameData.cover.url}
+                />
+                <div style={styles.separatorContainerL}>
+                    <div style={styles.separator}></div>
+                </div>
+            </div>
             <div id="medias">
                 <GameMedias
                     videos={gameData.videos}

@@ -145,7 +145,7 @@ function HomePage() {
                             zIndex: 0,
                         }}
                     />
-                </div>
+                </Box>
             )}
 
             {/* Loading or Error */
