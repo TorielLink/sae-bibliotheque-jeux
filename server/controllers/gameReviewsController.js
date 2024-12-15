@@ -19,7 +19,6 @@ controller.getAllReviews = async (req, res) => {
     }
 };
 
-// Récupérer les critiques pour un utilisateur spécifique
 controller.getReviewsByUserId = async (req, res) => {
     try {
         const { id } = req.params; // ID de l'utilisateur
