@@ -35,7 +35,7 @@ server: {
           JSON.stringify({
             token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsInVzZXJuYW1lIjoibmljbzEyIiwiaWF0IjoxNzMzNzUwNjE3fQ.Ef1AlgYkKDhuTSAQEV9ZQ1mbtc1lUSK8EN7GTp3jAuM',
             user: {
-              id: 1,
+              id: 15,
               username: 'testuser',
               email: 'testuser@example.com',
               profile_picture: '/uploads/profile_pictures/profile_picture-1733753112111-210866192.png', // Ajout du chemin de l'image

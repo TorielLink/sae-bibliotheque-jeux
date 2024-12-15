@@ -2,20 +2,20 @@ import React from "react";
 import {
     Card,
     CardMedia,
-    CardContent,
     Typography,
     Chip,
     Box,
     useMediaQuery,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import {useTheme} from "@mui/material/styles";
-import {useNavigate} from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
-function GameCard({id, image, title, rating, categories}) {
+function GameCard({ id, image, title, rating, categories }) {
     const theme = useTheme();
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
     const handleCardClick = () => {
         console.log("Navigating to details with ID:", id);
         navigate(`/details/${id}`);
@@ -36,16 +36,14 @@ function GameCard({id, image, title, rating, categories}) {
                 "&:hover": {
                     boxShadow: "0 0 1em #000000",
                     "& .categories": {
-                        opacity: isMobile ? 1 : 1,
+                        opacity: 1,
                     },
                 },
             }}
             onClick={handleCardClick}
         >
             {/* Zone contenant l'image et l'évaluation */}
-            <Box sx={{position: "relative", height: "85%"}}>
-                {/* Affiche l'image uniquement si elle existe */}
-
+            <Box sx={{ position: "relative", height: "85%" }}>
                 <CardMedia
                     component="img"
                     image={image}
@@ -54,8 +52,7 @@ function GameCard({id, image, title, rating, categories}) {
                         objectFit: "cover",
                         width: "100%",
                         height: "100%"
-                }}
-                />
+                }} />
 
                 <Box
                     sx={{
@@ -63,7 +60,7 @@ function GameCard({id, image, title, rating, categories}) {
                         top: "0.5em",
                         right: "0.5em",
                         backgroundColor: theme.palette.background.default,
-                        color: theme.palette.jaune?.main || theme.palette.primary.main,
+                        color: theme.palette.colors.yellow,
                         borderRadius: "0.2em",
                         boxShadow: "0 0 0.1em #000000",
                         padding: "0 0.25em",
@@ -76,7 +73,6 @@ function GameCard({id, image, title, rating, categories}) {
                         variant="body2"
                         sx={{
                             fontWeight: "bold",
-                            color: theme.palette.text.primary,
                         }}
                     >
                         {rating}
@@ -84,7 +80,7 @@ function GameCard({id, image, title, rating, categories}) {
                     <StarIcon
                         sx={{
                             fontSize: "1em",
-                            color: theme.palette.jaune?.main || theme.palette.primary.main,
+                            color: theme.palette.colors.yellow,
                         }}
                     />
                 </Box>
@@ -109,8 +105,8 @@ function GameCard({id, image, title, rating, categories}) {
                             label={category}
                             size="small"
                             sx={{
-                                backgroundColor: theme.palette.red?.main || theme.palette.secondary.main,
-                                color: theme.palette.white?.main || "#fff",
+                                backgroundColor: theme.palette.colors.red,
+                                color: theme.palette.text.contrast,
                                 fontSize: "0.8em",
                                 height: "1.5em",
                                 borderRadius: "0.325em",

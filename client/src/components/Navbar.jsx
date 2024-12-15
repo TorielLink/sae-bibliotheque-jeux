@@ -15,7 +15,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeContext } from '../theme/ThemeContext';
 import { AuthContext } from './AuthContext';
 import SearchBar from './SearchBar';
-import UserMenu from './UserMenu'; // Import du menu utilisateur
+import { AuthContext } from './AuthContext';
+import UserMenu from "./UserMenu.jsx";
 
 function Navbar() {
   const theme = useTheme();
@@ -55,8 +56,9 @@ function Navbar() {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
         padding: isMobile ? '4px' : '8px',
+        boxShadow: `0px 4px 8px ${theme.palette.colors['blue-50']}`, // Ombre bleue transparente
       }}
     >
       <Toolbar
@@ -98,7 +100,7 @@ function Navbar() {
             component={Link}
             to="/"
             sx={{
-              fontFamily: '"Roboto", sans-serif',
+              fontFamily: theme.typography.titleFontFamily,
               fontWeight: 700,
               color: theme.palette.text.primary,
               fontSize: isMobile ? '1rem' : '1.8rem',
@@ -106,7 +108,7 @@ function Navbar() {
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               display: 'block',
-              marginLeft: isMobile ? '-2px' : '8px', // Optionnel : ajuster la marge si nécessaire
+              marginLeft: isMobile ? '-2px' : '8px',
             }}
           >
             SCRIB
@@ -124,6 +126,38 @@ function Navbar() {
             gap: isMobile ? 2 : 3, // Espacement entre les éléments
           }}
         >
+          {/* Navigation Links */}
+          {!isSearchActive || !isMobile ? (
+            <>
+              <Typography
+                component={Link}
+                to="/catalogue"
+                sx={{
+                  textDecoration: 'none',
+                  color: isCatalogue
+                    ? theme.palette.colors.yellow
+                    : theme.palette.text.primary,
+                  fontSize: isMobile ? '0.75rem' : '1.1rem',
+                }}
+              >
+                Catalogue
+              </Typography>
+              <Typography
+                component={Link}
+                to="/avis"
+                sx={{
+                  textDecoration: 'none',
+                  color: isAvis
+                    ? theme.palette.colors.green
+                    : theme.palette.text.primary,
+                  fontSize: isMobile ? '0.75rem' : '1.1rem',
+                }}
+              >
+                Avis
+              </Typography>
+            </>
+          ) : null}
+
           {/* Barre de recherche */}
           <SearchBar
             searchText={searchText}
@@ -136,25 +170,56 @@ function Navbar() {
             onGameSelect={handleGameSelect}
           />
 
-          {/* Bouton de connexion ou UserMenu */}
-          {!isAuthenticated ? (
-            <Button
-              component={Link}
-              to="/login"
-              variant="contained"
-              sx={{
-                fontSize: isMobile ? '0.75rem' : '1rem',
-                padding: isMobile ? '2px 4px' : '8px 16px',
-                minWidth: isMobile ? '60px' : '130px',
-                backgroundColor: theme.palette.green.main,
-                color: theme.palette.white.main,
-              }}
-            >
-              Se connecter
-            </Button>
-          ) : (
+          {/* Bouton de connexion */}
+            {!isAuthenticated ? (
+          <Button
+            component={Link}
+            to="/login"
+            variant="contained"
+            sx={{
+              fontSize: isMobile ? '0.5rem' : '1rem',
+              padding: isMobile ? '2px 4px' : '8px 16px',
+              minWidth: isMobile ? '60px' : '130px',
+              backgroundColor: theme.palette.colors.green,
+              color: theme.palette.background.default,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              flexShrink: 0,
+            }}
+          >
+            Se connecter
+          </Button>
+                ) : (
             <UserMenu /> // Affiche le menu utilisateur si connecté
           )}
+
+          {/* Bouton de bascule de thème */}
+          <IconButton
+            onClick={toggleTheme}
+            color="inherit"
+            sx={{
+              padding: isMobile ? '0px' : '8px',
+              ml: isMobile ? '6px' : '8px',
+            }}
+          >
+            {mode === 'light' ? (
+              <DarkModeIcon
+                sx={{
+                  fontSize: isMobile ? '20px' : '32px',
+                  color: theme.palette.text.primary,
+                }}
+              />
+            ) : (
+              <LightModeIcon
+                sx={{
+                  fontSize: isMobile ? '20px' : '32px',
+                  color: theme.palette.colors.yellow,
+                }}
+              />
+            )}
+          </IconButton>
         </Box>
 
         {/* Bouton de bascule de thème */}

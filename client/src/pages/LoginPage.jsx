@@ -1,4 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useContext, useEffect } from 'react';
+import { AuthContext } from '../components/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../components/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +17,49 @@ function LoginPage() {
     profilePicture: null,
     privacy_setting_id: 1,
   });
+
+  const [loginError, setLoginError] = useState(''); // Erreurs de connexion
+  const [signupError, setSignupError] = useState(''); // Erreurs d'inscription
+  const { login } = useContext(AuthContext); // Utiliser la fonction login depuis le contexte
+  const navigate = useNavigate();
+
+  // Gérer les modifications des champs de connexion
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
+    setLoginError(''); // Réinitialiser les erreurs
+  };
+
+const handleLoginSubmit = async (e) => {
+  e.preventDefault();
+  setLoginError('');
+
+  try {
+    const response = await fetch('http://localhost:8080/users/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      setLoginError(errorData.message || 'Erreur de connexion.');
+      console.log('Erreur de connexion :', errorData);
+      return;
+    }
+
+    const data = await response.json();
+    console.log('Connexion réussie :', data); // Log des données reçues
+    login(data.token, data.user);
+    navigate('/'); // Redirection après connexion
+  } catch (error) {
+    console.error('Erreur lors de la connexion :', error);
+    setLoginError('Erreur réseau. Veuillez réessayer.');
+  }
+};
+
+
+  // Gérer les modifications des champs d'inscription
 
   const [loginError, setLoginError] = useState(''); // Erreurs de connexion
   const [signupError, setSignupError] = useState(''); // Erreurs d'inscription

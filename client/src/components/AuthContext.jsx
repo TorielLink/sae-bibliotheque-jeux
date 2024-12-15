@@ -10,7 +10,7 @@ useEffect(() => {
   const token = localStorage.getItem('token');
   if (token) {
     const user = JSON.parse(localStorage.getItem('user'));
-    console.log('Utilisateur chargé depuis le stockage local :', user); // Ajoutez ce log
+    console.log('Utilisateur chargé depuis le stockage local :', user);
     setIsAuthenticated(true);
     setUser(user);
   }
@@ -18,7 +18,7 @@ useEffect(() => {
 
 
   const login = (token, userData) => {
-    localStorage.setItem('token', token); // Stocker le token
+    localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setIsAuthenticated(true);
     setUser(userData);

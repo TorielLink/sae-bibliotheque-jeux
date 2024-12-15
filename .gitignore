@@ -2,7 +2,6 @@
 server/.env
 /server/node_modules/
 # Ignorer tous les fichiers du dossier profile_pictures
-server/uploads/profile_pictures/*
 
 # Mais ne pas ignorer le dossier profile_pictures lui-même
 !server/uploads/profile_pictures/.gitkeep

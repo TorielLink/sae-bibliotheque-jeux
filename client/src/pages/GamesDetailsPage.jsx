@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import {useParams} from 'react-router-dom';
+import { useParams } from "react-router-dom"; // pour récupérer les paramètres de l'URL
+import GameDetails from "../components/GameDetails.jsx";
+import GameReviews from "../components/GameReviews.jsx";
+import GameMedias from "../components/GameMedias.jsx";
+import {Typography} from "@mui/material";
+// import GameLogs from '../components/GameLogs.jsx';
 
-const GameDetailsPage = () => {
-    const {id} = useParams(); // Récupère l'ID depuis l'URL
+
+/** TODO :
+ - Implémente les thèmes sur la page
+ - Faire la version mobile
+ */
+export default function GamesDetailsPage() {
+    const { id } = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,12 +40,74 @@ const GameDetailsPage = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div>
-            <h1>Détails du jeu</h1>
-            <p>Nom du jeu : {gameData.name}</p>
-            {/* Ajoutez d'autres informations ici */}
-        </div>
-    );
-};
+        <>
+            <Typography variant="subtitle2"  style={styles.breadcrumb}>
+                Accueil &gt; {gameData.name}
+            </Typography>
+            <div id="details">
+                <GameDetails
+                    name={gameData.name}
+                    description={gameData.summary}
+                    releaseDate={gameData.releaseDate}
+                    ageRating={gameData.ageRating || "Non précisé"}
+                    rating={gameData.criticsAggregatedRating}
+                    detailedSynopsis={gameData.storyline}
+                    platforms={gameData.platforms}
+                    genres={[...(gameData.genres || []), ...(gameData.themes || [])]}
+                    coverImage={gameData.cover?.url || 'https://via.placeholder.com/300x400'}
 
-export default GameDetailsPage;
+                    dlcs={gameData.dlcs}
+                    expansions={gameData.expansions}
+                    remakes={gameData.remakes}
+                    remasters={gameData.remasters}
+                    standaloneExpansions={gameData.standalones}
+                    franchises={gameData.franchises}
+                    parentGame={gameData.parentGame}
+                    similarGames={gameData.similarGames}
+                />
+                <div style={styles.separatorContainerR}>
+                    <div style={styles.separator}></div>
+                </div>
+            </div>
+            <div id="reviews">
+                <GameReviews/>
+                <div style={styles.separatorContainerL}>
+                    <div style={styles.separator}></div>
+                </div>
+            </div>
+            {/* TODO: si l'utilisateur est connecté : montrer "GameLogs" */}
+            <div id="medias">
+                <GameMedias
+                    videos={gameData.videos}
+                    screenshots={gameData.screenshots}
+                />
+            </div>
+        </>
+    );
+}
+
+const styles = {
+    breadcrumb: {
+        color: '#FE4A49',
+        padding: '20px 0px 0px 50px',
+        font: 'Inter',
+        fontSize: '15px',
+    },
+    separatorContainerR: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        width: '100%',
+        marginBlock: '80px',
+    },
+    separatorContainerL: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        width: '100%',
+        marginBlock: '80px',
+    },
+    separator: {
+        width: '85%',
+        height: '2px',
+        backgroundColor: '#2FC75A',
+    },
+};

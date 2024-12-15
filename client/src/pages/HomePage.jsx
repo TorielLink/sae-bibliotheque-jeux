@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Typography,
@@ -7,7 +7,7 @@ import {
     CircularProgress,
     useMediaQuery,
 } from "@mui/material";
-import GameSection from "../components/GameSection.jsx";
+import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
 
@@ -24,13 +24,18 @@ function HomePage() {
 
     // Fonction pour charger les jeux en fonction des filtres
     const fetchGamesByFilter = async (filter) => {
-        // const queryParams = new URLSearchParams(filter).toString();
-
-        const response = await fetch(`http://localhost:8080/games/${filter}`);
-        if (!response.ok) {
-            throw new Error("Erreur lors de la récupération des données");
+        try {
+            const response = await fetch(`http://localhost:8080/games/${filter}`);
+            if (!response.ok) {
+                throw new Error(`Erreur API : ${response.statusText}`);
+            }
+            const data = await response.json();
+            console.log(`Données reçues pour ${filter}:`, data);
+            return data;
+        } catch (error) {
+            console.error(`Erreur lors de la récupération des jeux (${filter}):`, error);
+            throw error;
         }
-        return response.json();
     };
 
     // Chargement des données pour les sections
@@ -38,38 +43,44 @@ function HomePage() {
         setLoading(true);
         setError("");
         try {
-            setRecentGames(await fetchGamesByFilter("by-date"));
-            setPopularGames(await fetchGamesByFilter("by-popularity"));
+            const recent = await fetchGamesByFilter("by-date");
+            const popular = await fetchGamesByFilter("by-popularity");
+            setRecentGames(recent.length ? recent : recentGames); // Préserver les anciennes données si vides
+            setPopularGames(popular.length ? popular : popularGames);
         } catch (err) {
-            console.error("Erreur lors de la récupération des jeux :", err);
             setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
         } finally {
             setLoading(false);
         }
     };
 
+    // Chargement initial des jeux
     useEffect(() => {
         fetchAllGames();
     }, []);
 
+    // Gestion des changements d'onglets
     const handleTabChange = (event, newValue) => {
         setSelectedTab(newValue);
     };
 
+    // Données affichées en fonction de l'onglet sélectionné
     const currentGames =
         selectedTab === 0 ? recentGames : selectedTab === 1 ? popularGames : [];
 
     return (
-        <Box sx={{padding: "0"}}>
+        <Box sx={{ padding: "0" }}>
             {/* Breadcrumb */}
-            <Box sx={{
-                display: "inline-block",
-                padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
-            }}>
+            <Box
+                sx={{
+                    display: "inline-block",
+                    padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
+                }}
+            >
                 <Typography
                     variant="subtitle2"
                     sx={{
-                        color: theme.palette.text.secondary,
+                        color: theme.palette.colors.red,
                         fontSize: isMobile ? "0.9em" : "1em",
                         display: "inline",
                     }}
@@ -79,8 +90,7 @@ function HomePage() {
                 <Typography
                     variant="subtitle2"
                     sx={{
-                        color: isMobile ? theme.palette.red.main : theme.palette.text.primary,
-                        fontWeight: "bold",
+                        color: isMobile ? theme.palette.colors.red : theme.palette.text.primary,
                         display: "inline",
                         marginLeft: "0.25em",
                     }}
@@ -91,14 +101,7 @@ function HomePage() {
 
             {/* Mobile Tabs */}
             {isMobile && (
-                <div style={{
-                    position: "relative",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-end",
-                    height: "100%",
-                    margin: "0.5em 0 0.5em 0"
-                }}>
+                <Box sx={{ margin: "0.5em 0" }}>
                     <Tabs
                         value={selectedTab}
                         onChange={handleTabChange}
@@ -106,11 +109,7 @@ function HomePage() {
                         textColor="primary"
                         indicatorColor="blue"
                         sx={{
-                            position: 'relative',
-                            minHeight: "2em",
-                            zIndex: 1,
                             "& .MuiTab-root": {
-                                position: 'relative',
                                 textTransform: "none",
                                 fontWeight: "bold",
                                 fontSize: "0.8em",
@@ -119,19 +118,19 @@ function HomePage() {
                                 minHeight: "auto",
                                 background: theme.palette.background.default,
                                 color: theme.palette.text.primary,
-                                border: `0.2em solid ${theme.palette.green.main}`,
+                                border: `0.2em solid ${theme.palette.colors.green}`,
                                 borderRadius: '0.5em 0.5em 0 0',
                             },
                             "& .Mui-selected": {
-                                color: theme.palette.red.primary,
+                                color: theme.palette.colors.red,
                                 borderBottom: `0`,
                                 fontWeight: "bold",
                             },
                         }}
                     >
-                        <Tab label="Sorties récentes"/>
-                        <Tab label="Jeux populaires"/>
-                        <Tab label="Avis récents"/>
+                        <Tab label="Sorties récentes" />
+                        <Tab label="Jeux populaires" />
+                        <Tab label="Avis récents" />
                     </Tabs>
                     <hr
                         style={{
@@ -141,7 +140,7 @@ function HomePage() {
                             width: "100%",
                             border: 'none',
                             height: '0.15em',
-                            backgroundColor: theme.palette.green.main,
+                            backgroundColor: theme.palette.colors.green,
                             margin: 0,
                             zIndex: 0,
                         }}
@@ -167,7 +166,7 @@ function HomePage() {
                     <Box
                         sx={{
                             textAlign: "center",
-                            color: theme.palette.error.main,
+                            color: theme.palette.colors.red,
                             marginTop: "20px",
                         }}
                     >
@@ -177,9 +176,8 @@ function HomePage() {
                     <>
                         {/* Mobile View */}
                         {isMobile ? (
-                            <GameSection
+                            <GameList
                                 games={currentGames}
-                                isMobileView={true}
                             />
                         ) : (
                             /* Desktop View */
@@ -187,44 +185,39 @@ function HomePage() {
                                 <Box sx={{
                                     marginTop: "2em"
                                 }}>
-                                    <GameSection
+                                    <GameList
                                         title="Sorties récentes"
                                         games={recentGames}
-                                        isMobileView={false}
                                     />
                                 </Box>
                                 {/*
                             */}
 
                                 <Box sx={{}}>
-                                    <GameSection
+                                    <GameList
                                         title="Jeux populaires"
                                         games={popularGames}
-                                        isMobileView={false}
                                     />
                                 </Box>
-
-                                <SectionTitle title="Avis récents"/>
-                                <Box
-                                    sx={{
-                                        textAlign: "center",
-                                        color: theme.palette.text.secondary,
-                                        marginTop: "1.5em",
-                                        marginBottom: "2.5em",
-                                    }}
-                                >
-                                    <Typography variant="body1">
-                                        Les avis récents seront bientôt disponibles !
-                                    </Typography>
-                                </Box>
-                            </>
-                        )}
-                    </>
-                )
-            }
+                            <SectionTitle title="Avis récents" />
+                            <Box
+                                sx={{
+                                    textAlign: "center",
+                                    color: theme.palette.text.secondary,
+                                    marginTop: "1.5em",
+                                    marginBottom: "2.5em",
+                                }}
+                            >
+                                <Typography variant="body1">
+                                    Les avis récents seront bientôt disponibles !
+                                </Typography>
+                            </Box>
+                        </>
+                    )}
+                </>
+            )}
         </Box>
-    )
-        ;
+    );
 }
 
 export default HomePage;
