@@ -1,9 +1,13 @@
+// middleware/verifyToken.js
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SECRET = process.env.SECRET;
+
 // Middleware pour vérifier le token JWT
 const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization']; // Récupérer le token dans les en-têtes
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Extraction du token
+
   if (!token) {
     return res.status(403).json({ message: 'Accès interdit : Token manquant.' });
   }

@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { uploadProfilePicture } = require('../middleware/upload'); // Middleware pour l'upload
-const { users } = require('../controllers/indexController');
+const controller = require('../controllers/usersController');
+const verifyToken = require('../middleware/auth'); // Assurez-vous que c'est le bon chemin
 
 /**
  * @swagger
@@ -24,7 +25,7 @@ const { users } = require('../controllers/indexController');
  *       500:
  *         description: Erreur serveur
  */
-router.get('/', users.getAll);
+router.get('/', controller.getAll);
 /**
  * @swagger
  * /login:
@@ -66,7 +67,7 @@ router.get('/', users.getAll);
  *       500:
  *         description: Erreur serveur
  */
-router.post('/login', users.login);
+router.post('/login', controller.login);
 
 /**
  * @swagger
@@ -96,7 +97,7 @@ router.post('/login', users.login);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/:id', users.getById);
+router.get('/:id', controller.getById);
 
 /**
  * @swagger
@@ -136,6 +137,8 @@ router.get('/:id', users.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.post('/', uploadProfilePicture, users.create);
+router.post('/', uploadProfilePicture, controller.create);
+
+router.put('/:id', verifyToken, uploadProfilePicture, controller.update);
 
 module.exports = router;

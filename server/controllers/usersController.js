@@ -109,6 +109,83 @@ controller.create = async (req, res) => {
     }
 };
 
+
+controller.update = async (req, res) => {
+    console.log("UPDATE USER: req.body", req.body);
+    console.log("UPDATE USER: req.file", req.file);
+
+    try {
+        const { id } = req.params;
+        const { username, mail, password, isDeleted, privacy_setting_id } = req.body;
+
+        // Vérification de l'existence de l'utilisateur
+        const user = await users.findOne({ where: { user_id: id } });
+        if (!user) {
+            console.log("UPDATE USER: Utilisateur introuvable, id =", id);
+            return res.status(404).json({ message: "Utilisateur introuvable." });
+        }
+
+        // Vérifier si le username ou le mail sont déjà utilisés par un autre utilisateur
+        if (username || mail) {
+            const conditions = [];
+            if (username) conditions.push({ username });
+            if (mail) conditions.push({ mail });
+
+            const existingUser = await users.findOne({
+                where: {
+                    [Op.or]: conditions
+                }
+            });
+
+            if (existingUser && existingUser.user_id !== user.user_id) {
+                console.log("UPDATE USER: Username ou email déjà utilisé");
+                return res.status(400).json({
+                    message: 'Nom d’utilisateur ou adresse e-mail déjà utilisé.',
+                    data: { username, mail }
+                });
+            }
+        }
+
+        // Gestion de la photo de profil
+        let profilePicturePath = user.profile_picture;
+        if (req.file) {
+            profilePicturePath = `/uploads/profile_pictures/${req.file.filename}`;
+            console.log("UPDATE USER: Nouvelle image sauvegardée à:", profilePicturePath);
+        }
+
+        // Préparer les données à mettre à jour
+        const updateData = {};
+        if (username !== undefined) updateData.username = username;
+        if (mail !== undefined) updateData.mail = mail;
+        if (password !== undefined) updateData.password = password; // Note : Pensez à hasher le mot de passe
+        if (profilePicturePath !== undefined) updateData.profile_picture = profilePicturePath;
+        if (isDeleted !== undefined) updateData.isDeleted = isDeleted;
+        if (privacy_setting_id !== undefined) updateData.privacy_setting_id = privacy_setting_id;
+
+        // Mettre à jour l'utilisateur avec les données fournies
+        await user.update(updateData);
+
+        console.log("UPDATE USER: Mise à jour réussie pour l'utilisateur", user.user_id);
+
+        // Mapper les champs avant de renvoyer la réponse
+        const updatedUser = {
+            id: user.user_id,
+            username: user.username,
+            email: user.mail,
+            profile_picture: user.profile_picture,
+            isDeleted: user.isDeleted,
+            privacy_setting_id: user.privacy_setting_id,
+        };
+
+        res.status(200).json({ message: 'Utilisateur mis à jour avec succès', data: updatedUser });
+    } catch (error) {
+        console.error('UPDATE USER: Erreur lors de la mise à jour de l’utilisateur :', error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour de l’utilisateur', error: error.message });
+    }
+};
+
+
+
 // Récupérer un utilisateur par son ID
 controller.getById = async (req, res) => {
     try {
