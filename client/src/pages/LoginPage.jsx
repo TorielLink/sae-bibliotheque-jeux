@@ -115,23 +115,23 @@ const handleLoginSubmit = async (e) => {
     }
   };
 
-  useEffect(() => { //Execution du script background3D.jsx
-    // Code à exécuter lorsque le composant est monté
-    console.log('Composant chargé');
+  // useEffect(() => { //Execution du script background3D.jsx
+  //   // Code à exécuter lorsque le composant est monté
+  //   console.log('Composant chargé');
 
-    // Exemple : Attacher un script ou une logique
-    const script = document.createElement('script');
-    script.src = "/src/3Dbackgrounds/background3D.jsx";
-    script.async = true;
-    script.type = "module";
-    document.body.appendChild(script);
+  //   // Exemple : Attacher un script ou une logique
+  //   const script = document.createElement('script');
+  //   script.src = "/src/3Dbackgrounds/background3D.jsx";
+  //   script.async = true;
+  //   script.type = "module";
+  //   document.body.appendChild(script);
 
-    // Nettoyage (si nécessaire)
-    return () => {
-      console.log('Composant démonté');
-      document.body.removeChild(script);
-    };
-  }, []);
+  //   // Nettoyage (si nécessaire)
+  //   return () => {
+  //     console.log('Composant démonté');
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
 
   const stateVariables = {
     signupData,
@@ -140,6 +140,9 @@ const handleLoginSubmit = async (e) => {
     setShowSignup,
     handleSignupChange,
     handleSignupSubmit,
+    handleLoginChange,
+    handleLoginSubmit,
+    credentials
   }
 
   return (
@@ -148,7 +151,7 @@ const handleLoginSubmit = async (e) => {
       {showSignup ? <SignupBox {...stateVariables}/> : <LoginBox {...stateVariables} />}
     </>
   );
-  
+
 }
 
 export default LoginPage;

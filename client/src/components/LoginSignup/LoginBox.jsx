@@ -13,9 +13,12 @@ function LoginBox({
   setShowSignup,
   handleSignupChange,
   handleSignupSubmit,
+  handleLoginChange,
+  handleLoginSubmit,
+  credentials,
 }) {
   return (
-      <form 
+      <form onSubmit={handleLoginSubmit}
       container
       spacing = {1} 
       direction="column"
@@ -33,17 +36,25 @@ function LoginBox({
           <TextField style={{paddingBottom:15,}}
             id="username-input"
             label="Username"
-            type = "username"
             autoComplete="current-password"
+            type="text"
+            name="username"
+            value={credentials.username}
+            onChange={handleLoginChange}
+            required
           />
           <TextField style={{paddingBottom:15,}}
             id="password-input-1"
             label="Mot de passe"
-            type="password"
             autoComplete="current-password"
+            type="password"
+            name="password"
+            value={credentials.password}
+            onChange={handleLoginChange}
+            required
           />
           <ThemeProvider theme={greenBtn}>
-            <Button variant="contained" color = "primary" style={{width:'100%'}}>Se Connecter</Button>
+            <Button variant="contained" color="primary" type="submit" style={{width:'100%'}}>Se Connecter</Button>
           </ThemeProvider>
           <p style={{paddingTop:10,paddingBottom:10,}}>Vous n'avez pas de compte?</p>
           <ThemeProvider theme={blueBtn}>
