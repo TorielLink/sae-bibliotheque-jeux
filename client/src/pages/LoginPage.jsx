@@ -150,8 +150,11 @@ const handleLoginSubmit = async (e) => {
 
   return (
     <>
-      <canvas id="bg" style = {{position: "fixed",top: 0,left:0,}}></canvas>
+    <canvas id="bg" style = {{position: "fixed",top: 0,left:0,}}></canvas>
+    
+    <div style={{marginTop:"100vh"}}>
       {showSignup ? <SignupBox {...stateVariables}/> : <LoginBox {...stateVariables} />}
+    </div>
     </>
   );
 

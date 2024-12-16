@@ -25,7 +25,7 @@ function SignupBox({
     fontFamily: 'Inter, Arial, sans-serif',
     position: 'absolute', left: '50%', top: '50%',
     transform: 'translate(-50%, -50%)',
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     borderRadius: '10px',
     display: "flex",
     flexDirection:"column",

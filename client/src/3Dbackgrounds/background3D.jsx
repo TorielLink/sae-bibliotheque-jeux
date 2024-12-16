@@ -1,5 +1,6 @@
 import * as THREE from "three";
 
+import {useTheme} from "@mui/material/styles";
 
 console.log("ran 3D background")
 
