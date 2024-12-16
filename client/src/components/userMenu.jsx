@@ -55,7 +55,7 @@ const UserMenu = () => {
           onClick={handleMenuClose}
           sx={{
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >
@@ -68,7 +68,7 @@ const UserMenu = () => {
           onClick={handleMenuClose}
           sx={{
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >
@@ -80,7 +80,7 @@ const UserMenu = () => {
           onClick={handleMenuClose}
           sx={{
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >
@@ -92,7 +92,7 @@ const UserMenu = () => {
           onClick={handleMenuClose}
           sx={{
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >
@@ -104,7 +104,7 @@ const UserMenu = () => {
           onClick={handleMenuClose}
           sx={{
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >
@@ -116,7 +116,7 @@ const UserMenu = () => {
           onClick={handleMenuClose}
           sx={{
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >
@@ -129,7 +129,7 @@ const UserMenu = () => {
           onClick={handleMenuClose}
           sx={{
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >
@@ -140,7 +140,7 @@ const UserMenu = () => {
           sx={{
             color: 'red',
             '&:hover': {
-              backgroundColor: theme.palette.purple.main,
+              backgroundColor: theme.palette.colors.purple,
             },
           }}
         >

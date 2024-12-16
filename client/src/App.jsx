@@ -12,13 +12,13 @@ import OpinionPage from './pages/OpinionPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import GameDetailsPage from "./pages/GamesDetailsPage.jsx";
 // Pied de page
-import Team from './pages/TeamPage.jsx';
-import Establishment from './pages/InstitutionPage.jsx';
-import Project from './pages/ProjectPage.jsx';
-import Mentorship from './pages/MentorshipPage.jsx';
-import Terms from './pages/TermsPage.jsx';
-import PrivacyPolicy from './pages/PrivacyPolicyPage.jsx';
-import Contacts from './pages/ContactsPage.jsx';
+import Team from './pages/pied-de-page/TeamPage.jsx';
+import Establishment from './pages/pied-de-page/InstitutionPage.jsx';
+import Project from './pages/pied-de-page/ProjectPage.jsx';
+import Mentorship from './pages/pied-de-page/MentorshipPage.jsx';
+import Terms from './pages/pied-de-page/TermsPage.jsx';
+import PrivacyPolicy from './pages/pied-de-page/PrivacyPolicyPage.jsx';
+import Contacts from './pages/pied-de-page/ContactsPage.jsx';
 // Profil utilisateur
 import ProtectedRoute from './utils/ProtectedRoute.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';

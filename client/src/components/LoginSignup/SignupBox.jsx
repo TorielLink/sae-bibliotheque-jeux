@@ -3,8 +3,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-import {ThemeProvider } from '@mui/material';
-import {purpleBtn,yellowBtn} from "./BtnColors.jsx";
+import {useTheme} from "@mui/material/styles";
 
 function SignupBox({
   signupData,
@@ -14,6 +13,9 @@ function SignupBox({
   handleSignupChange,
   handleSignupSubmit,
 }) {
+
+  const theme = useTheme();
+
   return (
     <form onSubmit={handleSignupSubmit}
     container
@@ -23,7 +25,7 @@ function SignupBox({
     fontFamily: 'Inter, Arial, sans-serif',
     position: 'absolute', left: '50%', top: '50%',
     transform: 'translate(-50%, -50%)',
-    backgroundColor: '#E6E6E6',
+    backgroundColor: theme.palette.background.default,
     borderRadius: '10px',
     display: "flex",
     flexDirection:"column",
@@ -72,13 +74,19 @@ function SignupBox({
         onChange={handleSignupChange}
       />
       {signupError && <p style={{ color: 'red' }}>{signupError}</p>}
-      <ThemeProvider theme={purpleBtn}>
-        <Button variant="contained" color = "primary" type = "submit" style={{width:'100%'}} onClick={handleSignupSubmit}>S'inscrire</Button>
-      </ThemeProvider>
+      <Button variant="contained" type = "submit" style={{
+            width:'100%',
+            backgroundColor: theme.palette.colors.purple,
+            color: theme.palette.background.default,}} onClick={handleSignupSubmit}>
+        S'inscrire
+      </Button>
       <p style={{paddingTop:10,paddingBottom:10,}}>Déja inscrit?</p>
-      <ThemeProvider theme={yellowBtn} >
-        <Button variant="contained"   style={{width:'100%'}} onClick={() => setShowSignup(false)}>{"Se connecter"}</Button>
-      </ThemeProvider>
+        <Button variant="contained" style={{
+            width:'100%',
+            backgroundColor: theme.palette.colors.yellow,
+            color: theme.palette.background.default,}} onClick={() => setShowSignup(false)}>
+          Se connecter
+        </Button>
     </form>
   )
 }

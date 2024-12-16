@@ -3,8 +3,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-import {ThemeProvider } from '@mui/material';
-import {greenBtn,blueBtn} from "./BtnColors.jsx";
+import {useTheme} from "@mui/material/styles";
 
 function LoginBox({
   signupData,
@@ -17,6 +16,9 @@ function LoginBox({
   handleLoginSubmit,
   credentials,
 }) {
+  
+  const theme = useTheme();
+  
   return (
       <form onSubmit={handleLoginSubmit}
       container
@@ -26,7 +28,7 @@ function LoginBox({
         fontFamily: 'Inter, Arial, sans-serif',
         position: 'absolute', left: '50%', top: '50%',
         transform: 'translate(-50%, -50%)',
-        backgroundColor: '#E6E6E6',
+        backgroundColor: theme.palette.background.default,
         borderRadius: '10px',
         display: "flex",
         flexDirection:"column",
@@ -53,13 +55,19 @@ function LoginBox({
             onChange={handleLoginChange}
             required
           />
-          <ThemeProvider theme={greenBtn}>
-            <Button variant="contained" color="primary" type="submit" style={{width:'100%'}}>Se Connecter</Button>
-          </ThemeProvider>
+          <Button variant="contained" type="submit" style={{
+            width:'100%',
+            backgroundColor: theme.palette.colors.green,
+            color: theme.palette.background.default,}}>
+              Se Connecter
+          </Button>
           <p style={{paddingTop:10,paddingBottom:10,}}>Vous n'avez pas de compte?</p>
-          <ThemeProvider theme={blueBtn}>
-            <Button variant="contained" style={{width:'100%'}} onClick={() => setShowSignup(true)}>{"Créer un compte"}</Button>
-          </ThemeProvider>
+            <Button variant="contained" style={{
+            width:'100%',
+            backgroundColor: theme.palette.colors.blue,
+            color: theme.palette.background.default,}} onClick={() => setShowSignup(true)}>
+              Créer un compte
+            </Button>
       </form>
   )
 }

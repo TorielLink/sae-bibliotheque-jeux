@@ -15,7 +15,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeContext } from '../theme/ThemeContext';
 import { AuthContext } from './AuthContext';
 import SearchBar from './SearchBar';
-import { AuthContext } from './AuthContext';
 import UserMenu from "./UserMenu.jsx";
 
 function Navbar() {
@@ -221,32 +220,6 @@ function Navbar() {
             )}
           </IconButton>
         </Box>
-
-        {/* Bouton de bascule de thème */}
-        <IconButton
-          onClick={toggleTheme}
-          color="inherit"
-          sx={{
-            padding: isMobile ? '0px' : '8px',
-            ml: isMobile ? '6px' : '8px',
-          }}
-        >
-          {mode === 'light' ? (
-            <DarkModeIcon
-              sx={{
-                fontSize: isMobile ? '20px' : '32px',
-                color: theme.palette.text.primary,
-              }}
-            />
-          ) : (
-            <LightModeIcon
-              sx={{
-                fontSize: isMobile ? '20px' : '32px',
-                color: theme.palette.text.primary,
-              }}
-            />
-          )}
-        </IconButton>
       </Toolbar>
     </AppBar>
   );
