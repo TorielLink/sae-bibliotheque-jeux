@@ -214,5 +214,26 @@ controller.getById = async (req, res) => {
     }
 };
 
+// Ajoutez cette méthode dans votre usersController.js
+
+controller.delete = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Trouver l'utilisateur par ID et s'assurer qu'il n'est pas déjà supprimé
+        const user = await users.findOne({ where: { user_id: id, isDeleted: false } });
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur introuvable ou déjà supprimé." });
+        }
+
+        // Suppression douce : mettre à jour isDeleted à true
+        await user.update({ isDeleted: true });
+
+        res.status(200).json({ message: "Utilisateur supprimé avec succès." });
+    } catch (error) {
+        console.error('Erreur lors de la suppression de l’utilisateur :', error);
+        res.status(500).json({ message: 'Erreur lors de la suppression de l’utilisateur', error: error.message });
+    }
+};
 
 module.exports = controller;

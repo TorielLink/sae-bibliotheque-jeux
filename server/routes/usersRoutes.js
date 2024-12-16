@@ -140,5 +140,6 @@ router.get('/:id', controller.getById);
 router.post('/', uploadProfilePicture, controller.create);
 
 router.put('/:id', verifyToken, uploadProfilePicture, controller.update);
+router.delete('/:id', verifyToken, controller.delete);
 
 module.exports = router;

@@ -15,12 +15,16 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    useTheme, Snackbar
+    useTheme,
+    Snackbar
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import { useDropzone } from 'react-dropzone';
+
+// Importer le fichier SCSS
+import '../style/SettingsPage.scss'; // Assurez-vous que le chemin est correct
 
 const API_URL = '/users'; // Utilise le proxy Vite
 
@@ -243,194 +247,232 @@ const SettingsPage = () => {
         onDrop
     });
 
+    // Libérer l'URL de prévisualisation pour éviter les fuites de mémoire
+    useEffect(() => {
+        return () => {
+            if (profilePicture) {
+                URL.revokeObjectURL(profilePicture);
+            }
+        };
+    }, [profilePicture]);
+
     return (
-        <Box
-            sx={{
-                minHeight: '100vh',
-                bgcolor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                p: { xs: 2, sm: 4 }
+        <div
+            className="settings-page"
+            style={{
+                '--primary-color': theme.palette.primary.main,
+                '--secondary-color': theme.palette.secondary.main,
+                '--error-color': theme.palette.error.main,
+                '--background-color': theme.palette.background.default,
+                '--text-primary': theme.palette.text.primary,
+                '--text-secondary': theme.palette.text.secondary,
+                '--grey-light': theme.palette.grey[300],
+                '--grey-dark': theme.palette.grey[800],
+                // Ajoutez d'autres variables si nécessaire
             }}
         >
-            <Card
+            <Box
                 sx={{
-                    maxWidth: 600,
-                    width: '100%',
-                    borderRadius: 3,
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                    bgcolor: theme.palette.background.paper
+                    minHeight: '80vh', // Réduire la hauteur minimale pour laisser de l'espace pour la barre de navigation et le footer
+                    bgcolor: 'transparent', // Rendre le fond transparent pour laisser le background animé
+                    color: theme.palette.text.primary,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    p: { xs: 1, sm: 2 }, // Réduire le padding
+                    maxWidth: '1200px', // Limiter la largeur maximale
+                    margin: '0 auto' // Centrer la Box horizontalement
                 }}
             >
-                <CardContent sx={{ p: { xs: 3, sm: 5 } }}>
-                    <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
-                        Paramètres du Compte
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        ID de l'utilisateur : <strong>{userId}</strong>
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                        Modifier les informations pour <strong>{user?.username}</strong>
-                    </Typography>
+                <Card
+                    sx={{
+                        maxWidth: 500, // Réduire la largeur maximale de la Card
+                        width: '100%',
+                        borderRadius: 3,
+                        boxShadow: '0 5px 15px rgba(0,0,0,0.1)', // Réduire l'intensité de l'ombre
+                        bgcolor: theme.palette.background.paper,
+                        position: 'relative',
+                        zIndex: 2, // Assurez-vous que le contenu est au-dessus du pseudo-élément ::before
+                        padding: { xs: 2, sm: 3 } // Réduire le padding interne
+                    }}
+                >
+                    <CardContent sx={{ p: 0 }}> {/* Supprimer le padding supplémentaire */}
+                        <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" fontSize={{ xs: '1.2rem', sm: '1.5rem' }}>
+                            Paramètres du Compte
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.85rem' }}>
+                            ID de l'utilisateur : <strong>{userId}</strong>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, fontSize: '0.85rem' }}>
+                            Modifier les informations pour <strong>{user?.username}</strong>
+                        </Typography>
 
-                    <Divider sx={{ mb: 3 }} />
+                        <Divider sx={{ mb: 2 }} />
 
-                    {/* Section Pseudo */}
-                    <Accordion
-                        expanded={expandedAccordion === 'pseudo'}
-                        onChange={handleAccordionChange('pseudo')}
-                    >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <PersonIcon color="primary" />
-                                <Typography variant="h5">Modifier le pseudo</Typography>
-                            </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Stack spacing={2}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Pseudo actuel : <strong>{user?.username}</strong>
-                                </Typography>
-                                <TextField
-                                    type="text"
-                                    label="Nouveau pseudo"
-                                    variant="outlined"
-                                    value={newPseudo}
-                                    onChange={(e) => setNewPseudo(e.target.value)}
-                                    fullWidth
-                                />
-                                <Button variant="contained" onClick={handleUpdatePseudo}>
-                                    Enregistrer le pseudo
-                                </Button>
-                            </Stack>
-                        </AccordionDetails>
-                    </Accordion>
+                        {/* Section Pseudo */}
+                        <Accordion
+                            expanded={expandedAccordion === 'pseudo'}
+                            onChange={handleAccordionChange('pseudo')}
+                        >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                    <PersonIcon color="primary" />
+                                    <Typography variant="h6">Modifier le pseudo</Typography>
+                                </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Stack spacing={1.5}>
+                                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                                        Pseudo actuel : <strong>{user?.username}</strong>
+                                    </Typography>
+                                    <TextField
+                                        type="text"
+                                        label="Nouveau pseudo"
+                                        variant="outlined"
+                                        value={newPseudo}
+                                        onChange={(e) => setNewPseudo(e.target.value)}
+                                        fullWidth
+                                        size="small"
+                                        inputProps={{ style: { fontSize: '0.8rem' } }}
+                                    />
+                                    <Button variant="contained" onClick={handleUpdatePseudo} size="small">
+                                        Enregistrer le pseudo
+                                    </Button>
+                                </Stack>
+                            </AccordionDetails>
+                        </Accordion>
 
-                    <Divider sx={{ my: 3 }} />
+                        <Divider sx={{ my: 1.5 }} />
 
-                    {/* Section Photo de profil */}
-                    <Accordion
-                        expanded={expandedAccordion === 'photo'}
-                        onChange={handleAccordionChange('photo')}
-                    >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <PersonIcon color="primary" />
-                                <Typography variant="h5">Photo de profil</Typography>
-                            </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Stack spacing={2}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Photo de profil actuelle :
-                                </Typography>
-                                <Avatar
-                                    src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
-                                    alt="Ancienne photo de profil"
-                                    sx={{ width: 60, height: 60 }}
-                                />
+                        {/* Section Photo de profil */}
+                        <Accordion
+                            expanded={expandedAccordion === 'photo'}
+                            onChange={handleAccordionChange('photo')}
+                        >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                    <PersonIcon color="primary" />
+                                    <Typography variant="h6">Photo de profil</Typography>
+                                </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Stack spacing={1.5}>
+                                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                                        Photo de profil actuelle :
+                                    </Typography>
+                                    <Avatar
+                                        src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                                        alt="Ancienne photo de profil"
+                                        sx={{ width: 50, height: 50 }}
+                                    />
 
-                                <Typography variant="body2" color="text.secondary">
-                                    Nouvelle photo (optionnel) :
-                                </Typography>
-                                <Box
-                                    {...getRootProps()}
-                                    sx={{
-                                        border: '2px dashed #aaa',
-                                        borderRadius: 2,
-                                        p: 2,
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        minWidth: '200px',
-                                        color: isDragActive ? 'primary.main' : 'text.secondary',
-                                        transition: 'border-color 0.2s ease-in-out'
-                                    }}
-                                >
-                                    <input {...getInputProps()} />
-                                    {isDragActive ? (
-                                        <Typography variant="body2" color="primary">
-                                            Déposez l'image ici...
-                                        </Typography>
-                                    ) : (
-                                        <Typography variant="body2">
-                                            Glissez-déposez une image ou cliquez pour sélectionner
-                                        </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                                        Nouvelle photo (optionnel) :
+                                    </Typography>
+                                    <Box
+                                        {...getRootProps()}
+                                        sx={{
+                                            border: '2px dashed var(--grey-dark)',
+                                            borderRadius: 2,
+                                            p: 1, // Réduire le padding
+                                            textAlign: 'center',
+                                            cursor: 'pointer',
+                                            minWidth: '150px', // Réduire la largeur minimale
+                                            color: isDragActive ? 'var(--primary-color)' : 'var(--text-secondary)',
+                                            transition: 'border-color 0.2s ease-in-out',
+                                            fontSize: '0.75rem' // Réduire la taille du texte
+                                        }}
+                                    >
+                                        <input {...getInputProps()} />
+                                        {isDragActive ? (
+                                            <Typography variant="body2" color="var(--primary-color)" sx={{ fontSize: '0.75rem' }}>
+                                                Déposez l'image ici...
+                                            </Typography>
+                                        ) : (
+                                            <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+                                                Glissez-déposez une image ou cliquez pour sélectionner
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                    {profilePictureFile && (
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
+                                            <Avatar
+                                                src={profilePicture || 'https://via.placeholder.com/150'}
+                                                alt="Nouvelle photo de profil"
+                                                sx={{ width: 40, height: 40 }}
+                                            />
+                                        </Stack>
                                     )}
-                                </Box>
-                                {profilePictureFile && (
-                                    <Stack direction="row" spacing={2} alignItems="center">
-                                        <Avatar
-                                            src={profilePicture || 'https://via.placeholder.com/150'}
-                                            alt="Nouvelle photo de profil"
-                                            sx={{ width: 60, height: 60 }}
-                                        />
-                                    </Stack>
-                                )}
 
-                                <Button variant="contained" onClick={handleUpdateProfilePicture}>
-                                    Enregistrer la photo
-                                </Button>
-                            </Stack>
-                        </AccordionDetails>
-                    </Accordion>
+                                    <Button variant="contained" onClick={handleUpdateProfilePicture} size="small">
+                                        Enregistrer la photo
+                                    </Button>
+                                </Stack>
+                            </AccordionDetails>
+                        </Accordion>
 
-                    <Divider sx={{ my: 3 }} />
+                        <Divider sx={{ my: 1.5 }} />
 
-                    {/* Section Mot de passe */}
-                    <Accordion
-                        expanded={expandedAccordion === 'password'}
-                        onChange={handleAccordionChange('password')}
-                    >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <LockIcon color="primary" />
-                                <Typography variant="h5">Modifier le mot de passe</Typography>
-                            </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Stack spacing={2}>
-                                <TextField
-                                    type="password"
-                                    label="Ancien mot de passe"
-                                    variant="outlined"
-                                    value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
-                                    fullWidth
-                                />
-                                <TextField
-                                    type="password"
-                                    label="Nouveau mot de passe"
-                                    variant="outlined"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    fullWidth
-                                />
-                                <TextField
-                                    type="password"
-                                    label="Confirmer le nouveau mot de passe"
-                                    variant="outlined"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    fullWidth
-                                />
-                                <Button
-                                    variant="contained"
-                                    onClick={handleUpdatePassword}
-                                    disabled={!isPasswordValid}
-                                >
-                                    Mettre à jour le mot de passe
-                                </Button>
-                            </Stack>
-                        </AccordionDetails>
-                    </Accordion>
+                        {/* Section Mot de passe */}
+                        <Accordion
+                            expanded={expandedAccordion === 'password'}
+                            onChange={handleAccordionChange('password')}
+                        >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                    <LockIcon color="primary" />
+                                    <Typography variant="h6">Modifier le mot de passe</Typography>
+                                </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Stack spacing={1.5}>
+                                    <TextField
+                                        type="password"
+                                        label="Ancien mot de passe"
+                                        variant="outlined"
+                                        value={oldPassword}
+                                        onChange={(e) => setOldPassword(e.target.value)}
+                                        fullWidth
+                                        size="small"
+                                        inputProps={{ style: { fontSize: '0.8rem' } }}
+                                    />
+                                    <TextField
+                                        type="password"
+                                        label="Nouveau mot de passe"
+                                        variant="outlined"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        fullWidth
+                                        size="small"
+                                        inputProps={{ style: { fontSize: '0.8rem' } }}
+                                    />
+                                    <TextField
+                                        type="password"
+                                        label="Confirmer le nouveau mot de passe"
+                                        variant="outlined"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        fullWidth
+                                        size="small"
+                                        inputProps={{ style: { fontSize: '0.8rem' } }}
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleUpdatePassword}
+                                        disabled={!isPasswordValid}
+                                        size="small"
+                                    >
+                                        Mettre à jour le mot de passe
+                                    </Button>
+                                </Stack>
+                            </AccordionDetails>
+                        </Accordion>
 
-                    <Divider sx={{ my: 3 }} />
+                        <Divider sx={{ my: 1.5 }} />
 
-                    {/* Bouton Supprimer mon compte en dehors des accordéons */}
-                    <Stack spacing={2} direction="row" justifyContent="flex-end">
-                        <Button
+                        {/* Bouton Supprimer mon compte en dehors des accordéons */}
+                        <Stack spacing={1} direction="row" justifyContent="flex-end">
+                            <Button
                             variant="contained"
                             color="error"
                             onClick={async () => {
@@ -458,26 +500,30 @@ const SettingsPage = () => {
                                     }
                                 }
                             }}
+                            size="small"
                         >
                             Supprimer mon compte
                         </Button>
-                    </Stack>
-                </CardContent>
-            </Card>
 
-            {/* Composant Snackbar pour les notifications */}
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            >
-                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
-        </Box>
+                        </Stack>
+                    </CardContent>
+                </Card>
+
+                {/* Composant Snackbar pour les notifications */}
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                >
+                    <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
+            </Box>
+        </div>
     );
+
 };
 
 export default SettingsPage;
