@@ -34,4 +34,91 @@ const gameLogsController = require('../controllers/gameLogsController');
  */
 router.get('/', gameLogsController.getAll);
 
+/**
+ * @swagger
+ * /gameLogs/user/{userId}:
+ *   get:
+ *     summary: Récupérer les journaux de jeu d'un utilisateur spécifique
+ *     description: >
+ *       Cette route retourne tous les journaux de jeu créés par un utilisateur spécifique, avec leurs relations, y compris :
+ *       - La plateforme associée
+ *       - Le paramètre de confidentialité
+ *     tags:
+ *       - Game Logs
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: L'ID de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Liste des journaux de jeu récupérée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game logs fetched successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/GameLog'
+ *       404:
+ *         description: Aucun journal trouvé pour cet utilisateur
+ *       500:
+ *         description: Erreur serveur
+ */
+router.get('/user/:userId', gameLogsController.getByUserId);
+
+/**
+ * @swagger
+ * /gameLogs/user/{userId}/game/{gameId}:
+ *   get:
+ *     summary: Récupérer les journaux de jeu d'un utilisateur et d'un jeu spécifique
+ *     description: >
+ *       Cette route retourne tous les journaux de jeu créés par un utilisateur pour un jeu en particulier, avec leurs relations, y compris :
+ *       - La plateforme associée
+ *       - Le paramètre de confidentialité
+ *     tags:
+ *       - Game Logs
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: L'ID de l'utilisateur
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: L'ID de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Liste des journaux de jeu récupérée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game logs fetched successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/GameLog'
+ *       404:
+ *         description: Aucun journal trouvé pour cet utilisateur
+ *       500:
+ *         description: Erreur serveur
+ */
+router.get('/user/:userId/game/:gameId', gameLogsController.getByUserAndGame);
+
+
 module.exports = router;

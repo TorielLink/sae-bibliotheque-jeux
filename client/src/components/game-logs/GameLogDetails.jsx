@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, useEffect, useContext} from "react"
 import {RadioGroup, Radio, FormControl, FormControlLabel, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {
@@ -9,97 +9,28 @@ import {
 } from "@mui/icons-material"
 import Library from '../../assets/library-icon.svg?react'
 import Wishlist from '../../assets/wishlist-icon.svg?react'
-import {Grid, IconButton} from "@mui/material"; // Import necessary components
+import {Grid, IconButton} from "@mui/material"
+import GameStatus from "./log-details-content/GameStatus.jsx"
+import GameLog from "./log-details-content/GameLog.jsx"
 
-function GameLogDetails({name, coverImage}) {
+function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage}) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-    const [selectedStatus, setSelectedStatus] = useState('');
-
-    const handleStatusChange = (event) => {
-        setSelectedStatus(event.target.value);
-    };
 
     return (
         <div style={styles.container}>
             <img
-                src={coverImage}
-                alt={`${name} cover`}
+                src={gameCoverImage}
+                alt={`${gameName} cover`}
                 style={styles.coverImage}
             />
             <hr style={styles.separator}/>
 
-            <div style={styles.statusContainer}>
-                <RadioGroup
-                    row
-                    value={selectedStatus}
-                    onChange={handleStatusChange}
-                >
-                    <FormControl fullWidth>
-                        <Grid container spacing={1} justifyContent="center">
-                            {[
-                                {
-                                    value: 'played',
-                                    Icon: Played,
-                                    baseStyle: styles.icon,
-                                    selectedStyle: styles.icon.played
-                                },
-                                {
-                                    value: 'playing',
-                                    Icon: Playing,
-                                    baseStyle: styles.icon,
-                                    selectedStyle: styles.icon.playing
-                                },
-                                {
-                                    value: 'library',
-                                    Icon: Library,
-                                    baseStyle: styles.iconImg,
-                                    selectedStyle: styles.iconImg.library
-                                },
-                                {
-                                    value: 'wishlist',
-                                    Icon: Wishlist,
-                                    baseStyle: styles.iconImg,
-                                    selectedStyle: styles.iconImg.wishlist
-                                },
-                                {
-                                    value: 'paused',
-                                    Icon: Paused,
-                                    baseStyle: styles.icon,
-                                    selectedStyle: styles.icon.paused
-                                },
-                                {
-                                    value: 'stopped',
-                                    Icon: Stopped,
-                                    baseStyle: styles.icon,
-                                    selectedStyle: styles.icon.stopped
-                                }
-                            ].map(({value, Icon, baseStyle, selectedStyle}) => (
-                                <Grid item key={value}>
-                                    <FormControlLabel
-                                        value={value}
-                                        control={
-                                            <Radio
-                                                checkedIcon={
-                                                    <Icon style={{
-                                                        ...baseStyle,
-                                                        ...selectedStyle
-                                                    }}/>}
-                                                icon={<Icon style={baseStyle}/>}
-                                                value={value}
-                                                checked={selectedStatus === value}
-                                                onChange={handleStatusChange}
-                                            />
-                                        }
-                                        label=""
-                                    />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </FormControl>
-                </RadioGroup>
-            </div>
+            <GameStatus userId={userId} gameId={gameId}/>
+            <hr style={styles.separator}/>
+
+            <GameLog userId={userId} gameId={gameId}/>
             <hr style={styles.separator}/>
 
         </div>
@@ -118,14 +49,14 @@ const getStyles = (theme) => ({
         maxWidth: '80%',
         height: 'auto',
         maxHeight: '20%',
-        margin: '0',
+        marginBottom: '1.5em',
         borderRadius: '0.625em',
         boxShadow: '0 0.25em 0.5em rgba(0, 0, 0, 0.1)',
     },
     separator: {
         height: '0.15em',
         width: '100%',
-        margin: '1em 0',
+        margin: '0',
         border: 'none',
         backgroundColor: theme.palette.text.primary,
         color: theme.palette.text.primary

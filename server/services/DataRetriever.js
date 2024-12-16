@@ -6,6 +6,7 @@ class DataRetriever extends APIRequests {
     static #DEFAULT_LIMIT = 50
 
     static #gamePageFields = `
+        id,
         age_ratings,
         aggregated_rating,
         aggregated_rating_count,
@@ -88,6 +89,7 @@ class DataRetriever extends APIRequests {
                 remasters, similar_games, standalone_expansions, franchises, parentGame] = await this.#getRelatedContent(game, apiData);
 
             return {
+                id: game.id,
                 name: game.name,
                 summary: game.summary,
                 storyline: game.storyline,

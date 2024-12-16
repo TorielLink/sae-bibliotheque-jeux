@@ -28,7 +28,7 @@ const gameStatusController = require('../controllers/gameStatusController');
  *       500:
  *         description: Erreur serveur
  */
-router.get('/', gameStatusController.getAllGameStatuses);
+router.get('/', gameStatusController.getAllGameStatus);
 /**
  * @swagger
  * /gameStatus/user/{userId}:
@@ -42,12 +42,55 @@ router.get('/', gameStatusController.getAllGameStatuses);
  *       - in: path
  *         name: userId
  *         required: true
+*         schema:
+*           type: integer
+*         description: ID de l'utilisateur
+*     responses:
+*       200:
+*         description: Statuts récupérés avec succès
+*         content:
+*           application/json:
+*             schema:
+    *               type: object
+*               properties:
+*                 message:
+    *                   type: string
+*                   example: Game statuses fetched successfully
+*                 data:
+*                   type: array
+*                   items:
+*                     $ref: '#/components/schemas/GameStatus'
+*       404:
+*         description: Aucun statut trouvé pour cet utilisateur
+*       500:
+*         description: Erreur serveur
+*/
+router.get('/user/:userId', gameStatusController.getGameStatusByUser);
+/**
+ * @swagger
+ * /gameStatus/user/{userId}/game/{gameId}:
+ *   get:
+ *     summary: Récupérer le statut de jeu pour un utilisateur spécifique et un jeu donné
+ *     description: >
+ *       Cette route retourne le statut de jeu pour un utilisateur donné et un jeu spécifique.
+ *     tags:
+ *       - Game Status
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
  *         schema:
  *           type: integer
  *         description: ID de l'utilisateur
+ *       - in: path
+ *         name: gameId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du jeu
  *     responses:
  *       200:
- *         description: Statuts récupérés avec succès
+ *         description: Statut récupéré avec succès
  *         content:
  *           application/json:
  *             schema:
@@ -55,17 +98,16 @@ router.get('/', gameStatusController.getAllGameStatuses);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Game statuses fetched successfully
+ *                   example: Game status fetched successfully
  *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/GameStatus'
+ *                   type: object
+ *                   $ref: '#/components/schemas/GameStatus'
  *       404:
- *         description: Aucun statut trouvé pour cet utilisateur
+ *         description: Aucun statut trouvé pour cet utilisateur et ce jeu
  *       500:
  *         description: Erreur serveur
  */
-router.get('/user/:userId', gameStatusController.getGameStatusesByUser);
+router.get('/user/:userId/game/:gameId', gameStatusController.getStatusByUserAndGame);
 /**
  * @swagger
  * /gameStatus/game/{igdb_game_id}:
@@ -102,6 +144,6 @@ router.get('/user/:userId', gameStatusController.getGameStatusesByUser);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/game/:igdb_game_id', gameStatusController.getGameStatusesByGame);
+router.get('/game/:igdb_game_id', gameStatusController.getGameByGame);
 
 module.exports = router;
