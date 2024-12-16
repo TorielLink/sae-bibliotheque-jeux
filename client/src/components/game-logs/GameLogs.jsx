@@ -14,6 +14,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const {isAuthenticated, user} = useContext(AuthContext)
     const [error, setError] = useState(null);
     const [logData, setLogData] = useState(null);
+    const [currentLog, setCurrentLog] = useState(-1)
 
     useEffect(() => {
         const fetchGameData = async () => {
@@ -42,13 +43,15 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                     tabNumber={0}
                     tabBackground={'yellow'}
                     tabIcon={<Info/>}
-                    tabContent={<GameLogDetails userId={user.id} gameId={gameId} logData={logData} gameName={gameName} gameCoverImage={gameCoverImage}/>}
+                    tabContent={<GameLogDetails userId={user.id} gameId={gameId} logData={logData} gameName={gameName}
+                                                gameCoverImage={gameCoverImage} currentLog={currentLog}
+                                                setCurrentLog={setCurrentLog}/>}
                 />
                 <GameLogsTab
                     tabNumber={1}
                     tabBackground={'blue'}
                     tabIcon={<FormatListBulleted/>}
-                    tabContent={<GameLogSessions logId={0}/>}
+                    tabContent={<GameLogSessions log={currentLog}/>}
                 />
             </div>
         </div>

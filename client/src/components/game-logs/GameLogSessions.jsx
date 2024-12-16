@@ -2,14 +2,14 @@ import React, {useState, useEffect, useContext} from "react"
 import {useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 
-function GameLogSessions({logId}) {
+function GameLogSessions({log}) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
     return (
         <div style={styles.container}>
-            <p>{logId}</p>
+            <p>{log.game_log_id}</p>
         </div>
     )
 }

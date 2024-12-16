@@ -13,7 +13,7 @@ import {Grid, IconButton} from "@mui/material"
 import GameStatus from "./log-details-content/GameStatus.jsx"
 import GameLog from "./log-details-content/GameLog.jsx"
 
-function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage}) {
+function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage, currentLog, setCurrentLog}) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -30,7 +30,7 @@ function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage}) {
             <GameStatus userId={userId} gameId={gameId}/>
             <hr style={styles.separator}/>
 
-            <GameLog userId={userId} gameId={gameId}/>
+            <GameLog userId={userId} gameId={gameId} currentLog={currentLog} setCurrentLog={setCurrentLog}/>
             <hr style={styles.separator}/>
 
         </div>
