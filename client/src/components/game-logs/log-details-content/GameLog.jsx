@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from "react"
 import {FormControl, InputLabel, MenuItem, OutlinedInput, Select, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {PowerInput} from "@mui/icons-material";
+import LogPlatform from "./LogPlatform.jsx";
 
 function GameLog({userId, gameId, currentLog, setCurrentLog}) {
     const theme = useTheme()
@@ -10,7 +11,8 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
     const [logs, setLogs] = useState(null)
     const [error, setError] = useState(null)
     const [currentLogIndex, setCurrentLogIndex] = useState(-1)
-    const [currentPrivacyIndex, setCcurrentPrivacyIndex] = useState(0)
+    const [currentPrivacyIndex, setCurrentPrivacyIndex] = useState(-1)
+    const [selectedPlatform, setSelectedPlatform] = useState(1)
 
     useEffect(() => {
         const fetchLogData = async () => {
@@ -20,10 +22,8 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
 
                 const data = await response.json()
                 setLogs(data.data)
-                if (logs)
-                    setCurrentLog(logs[0])
             } catch (err) {
-                console.error('Erreur lors de la récupération des données du status :', err)
+                console.error('Erreur lors de la rÃ©cupÃ©ration des donnÃ©es du status :', err)
                 setError('Impossible de charger le status.')
             }
         }
@@ -35,10 +35,12 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
     const handleLogChange = (event) => {
         setCurrentLog(logs[event.target.value])
         setCurrentLogIndex(event.target.value)
+        setCurrentPrivacyIndex(currentLog.privacy.privacy_setting_id)
+        setSelectedPlatform(currentLog.platform.platform_id)
     };
 
     const handlePrivacyChange = (event) => {
-        setCcurrentPrivacyIndex(event.target.value)
+        setCurrentPrivacyIndex(event.target.value)
     };
 
     return (
@@ -68,12 +70,14 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
                         ))
                     }
                 </Select>
+            </FormControl>
 
+            <FormControl style={styles.logSettingsForm}>
                 <Select
                     style={{...styles.selector, ...styles.privacySelector}}
                     id="log-selector"
                     value={currentPrivacyIndex}
-                    label="Visibilité"
+                    label="VisibilitÃ©"
                     input={<OutlinedInput/>}
                     onChange={handlePrivacyChange}
                     sx={{
@@ -83,13 +87,17 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
                     }}
                 >
                     <MenuItem disabled value={-1}>
-                        <em>Visibilité</em>
+                        <em>VisibilitÃ©</em>
                     </MenuItem>
-                    <MenuItem value={1}>Privé</MenuItem>
+                    <MenuItem value={1}>PrivÃ©</MenuItem>
                     <MenuItem value={2}>Publique</MenuItem>
 
                 </Select>
             </FormControl>
+
+            <LogPlatform selectedPlatform={selectedPlatform} setSelectedPlatform={setSelectedPlatform}/>
+
+
         </div>
     )
 }
@@ -103,22 +111,22 @@ const getStyles = (theme) => ({
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
     },
-    logSettingsForm:{
+    logSettingsForm: {
         display: 'flex',
-        alignItems:'center',
+        alignItems: 'center',
     },
-    selector:{
-        marginBottom:'1em',
+    selector: {
+        height: '2.5em',
+        marginBottom: '1em',
         boxShadow: `0 0 0.2em 0.05em ${theme.palette.text.primary}`,
         borderRadius: '0.3rem',
         background: theme.palette.background.default,
     },
     logSelector: {
-        height:'3em',
-        fontSize:'large'
+        fontSize: 'large'
     },
     privacySelector: {
-        height:'2.5em',
+        height: '2.5em',
     },
 
 })

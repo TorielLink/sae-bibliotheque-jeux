@@ -3,6 +3,7 @@ import {Avatar, Menu, MenuItem, IconButton, Divider} from '@mui/material';
 import {AuthContext} from './AuthContext';
 import {ThemeContext} from '../theme/ThemeContext';
 import {Link} from 'react-router-dom';
+import log from "eslint-plugin-react/lib/util/log.js";
 
 const UserMenu = () => {
     const {isAuthenticated, user, logout} = useContext(AuthContext);

@@ -47,6 +47,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                                                 gameCoverImage={gameCoverImage} currentLog={currentLog}
                                                 setCurrentLog={setCurrentLog}/>}
                 />
+                
                 <GameLogsTab
                     tabNumber={1}
                     tabBackground={'blue'}

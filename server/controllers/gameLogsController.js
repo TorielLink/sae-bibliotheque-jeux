@@ -83,12 +83,12 @@ controller.getByUserAndGame = async (req, res) => {
                 {
                     model: gamePlatforms,
                     as: 'platform',
-                    attributes: ['name', 'short_name'],
+                    attributes: ['platform_id', 'name', 'short_name'],
                 },
                 {
                     model: privacySettings,
                     as: 'privacy',
-                    attributes: ['name'],
+                    attributes: ['privacy_setting_id', 'name'],
                 }
             ],
             attributes: ['game_log_id', 'igdb_game_id', 'time_played'],

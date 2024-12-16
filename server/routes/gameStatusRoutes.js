@@ -24,7 +24,7 @@ const gameStatusController = require('../controllers/gameStatusController');
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/GameStatus'
+ *                     $ref: '#/components/schemas/LogPlatform'
  *       500:
  *         description: Erreur serveur
  */
@@ -59,7 +59,7 @@ router.get('/', gameStatusController.getAllGameStatus);
 *                 data:
 *                   type: array
 *                   items:
-*                     $ref: '#/components/schemas/GameStatus'
+*                     $ref: '#/components/schemas/LogPlatform'
 *       404:
 *         description: Aucun statut trouvé pour cet utilisateur
 *       500:
@@ -101,7 +101,7 @@ router.get('/user/:userId', gameStatusController.getGameStatusByUser);
  *                   example: Game status fetched successfully
  *                 data:
  *                   type: object
- *                   $ref: '#/components/schemas/GameStatus'
+ *                   $ref: '#/components/schemas/LogPlatform'
  *       404:
  *         description: Aucun statut trouvé pour cet utilisateur et ce jeu
  *       500:
@@ -138,7 +138,7 @@ router.get('/user/:userId/game/:gameId', gameStatusController.getStatusByUserAnd
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/GameStatus'
+ *                     $ref: '#/components/schemas/LogPlatform'
  *       404:
  *         description: Aucun statut trouvé pour ce jeu
  *       500:
