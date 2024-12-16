@@ -148,20 +148,18 @@ function HomePage() {
                 </div>
             )}
 
-            {/* Loading or Error */
-            }
-            {
-                loading ? (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "50vh",
-                        }}
-                    >
-                        <CircularProgress/>
-                    </Box>
+            {/* Loading or Error */}
+            { loading ? (
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "50vh",
+                    }}
+                >
+                    <CircularProgress/>
+                </Box>
                 ) : error ? (
                     <Box
                         sx={{
@@ -175,7 +173,7 @@ function HomePage() {
                 ) : (
                     <>
                         {/* Mobile View */}
-                        {isMobile ? (
+                        { isMobile ? (
                             <GameList
                                 games={currentGames}
                             />

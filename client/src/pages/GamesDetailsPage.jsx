@@ -8,10 +8,10 @@ import {Typography} from "@mui/material";
 
 
 /** TODO :
- - Implémente les thèmes sur la page
  - Faire la version mobile
  */
 export default function GamesDetailsPage() {
+
     const { id } = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);

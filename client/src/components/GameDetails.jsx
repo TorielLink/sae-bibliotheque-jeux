@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import {useTheme} from "@mui/material/styles";
+import { AuthContext } from "./AuthContext.jsx";
 import GameList from "./GameList.jsx";
 import GameCard from "./GameCard.jsx";
 
@@ -10,12 +11,12 @@ import GameCard from "./GameCard.jsx";
  * - Coder les actions des boutons d'actions rapides
  * - Mettre en forme les informations dans les blocs (commencé)
  * - Limiter la taille des blocs (overflow: hidden)
- * - Ajouter les différentes listes supplémentaires (jeux similaires, DLC, Suites, etc.)
  */
 const GameDetails = ({name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
                          parentGame, similarGames}) => {
     const theme = useTheme();
+    const { isAuthenticated } = useContext(AuthContext);
     const styles = getStyles(theme);
 
     return (
@@ -36,53 +37,55 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                     <GameDetailsNavBar activeSection={"details"} />
 
                     {/* Boutons d'actions rapides */}
-                    <div style={styles.quickActions}>
-                        <button
-                            style={{...styles.quickActionButton, ...styles.reviewButton}}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = theme.palette.colors.blue;
-                                e.target.style.color = theme.palette.text.contrast;
-                                e.target.style.borderColor = 'transparent';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = theme.palette.background.default;
-                                e.target.style.color = theme.palette.text.primary;
-                                e.target.style.borderColor = theme.palette.colors.blue;
-                            }}
-                        >
-                            Ajouter un avis
-                        </button>
-                        <button
-                            style={{...styles.quickActionButton, ...styles.noteButton}}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = theme.palette.colors.green;
-                                e.target.style.color = theme.palette.text.contrast;
-                                e.target.style.borderColor = 'transparent';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = theme.palette.background.default;
-                                e.target.style.color = theme.palette.text.primary;
-                                e.target.style.borderColor = theme.palette.colors.green;
-                            }}
-                        >
-                            Ajouter une note
-                        </button>
-                        <button
-                            style={{...styles.quickActionButton, ...styles.logButton}}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = theme.palette.colors.yellow;
-                                e.target.style.color = theme.palette.text.contrast;
-                                e.target.style.borderColor = 'transparent';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = theme.palette.background.default;
-                                e.target.style.color = theme.palette.text.primary;
-                                e.target.style.borderColor = theme.palette.colors.yellow;
-                            }}
-                        >
-                            Ajouter un journal
-                        </button>
-                    </div>
+                    {isAuthenticated && (
+                        <div style={styles.quickActions}>
+                            <button
+                                style={{...styles.quickActionButton, ...styles.reviewButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.blue;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.blue;
+                                }}
+                            >
+                                Ajouter un avis
+                            </button>
+                            <button
+                                style={{...styles.quickActionButton, ...styles.noteButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.green;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.green;
+                                }}
+                            >
+                                Ajouter une note
+                            </button>
+                            <button
+                                style={{...styles.quickActionButton, ...styles.logButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.yellow;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.yellow;
+                                }}
+                            >
+                                Ajouter un journal
+                            </button>
+                        </div>
+                    )}
 
                     <div style={styles.mainContainer}>
                         <div style={styles.mainContent}>
