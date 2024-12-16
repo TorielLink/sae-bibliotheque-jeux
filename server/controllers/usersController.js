@@ -28,14 +28,19 @@ controller.login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // Vérifiez si l'utilisateur existe
-        const user = await users.findOne({ where: { username } });
+        // Vérifiez si l'utilisateur existe et n'est pas supprimé
+        const user = await users.findOne({
+            where: {
+                username,
+                isDeleted: false // Ajout de cette condition
+            }
+        });
 
         if (!user) {
             return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect." });
         }
 
-        if (user.password !== password) {
+        if (user.password !== password) { // Note : Pensez à hasher et comparer les mots de passe
             return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect." });
         }
 
@@ -43,6 +48,7 @@ controller.login = async (req, res) => {
         const token = jwt.sign(
             { id: user.user_id, username: user.username },
             SECRET,
+            { expiresIn: '1h' } // Optionnel : définir une expiration
         );
 
         res.status(200).json({
