@@ -13,7 +13,6 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
     const [currentLogIndex, setCurrentLogIndex] = useState(-1)
     const [currentPrivacyIndex, setCurrentPrivacyIndex] = useState(-1)
     const [selectedPlatform, setSelectedPlatform] = useState(1)
-
     useEffect(() => {
         const fetchLogData = async () => {
             try {
@@ -45,7 +44,7 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
 
     return (
         <div style={styles.container}>
-            <FormControl style={styles.logSettingsForm}>
+            <FormControl style={styles.logSelectorForm}>
                 <Select
                     style={{...styles.selector, ...styles.logSelector}}
                     id="log-selector"
@@ -72,7 +71,7 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
                 </Select>
             </FormControl>
 
-            <FormControl style={styles.logSettingsForm}>
+            <FormControl style={styles.privacySelectorForm}>
                 <Select
                     style={{...styles.selector, ...styles.privacySelector}}
                     id="log-selector"
@@ -106,14 +105,21 @@ const getStyles = (theme) => ({
     container: {
         display: 'flex',
         width: '100%',
-        padding: '1.5rem',
+        padding: '0',
         flexDirection: 'column',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
     },
-    logSettingsForm: {
+    logSelectorForm: {
         display: 'flex',
         alignItems: 'center',
+        marginTop: '1.5em',
+        padding:'0 1.5rem'
+    },
+    privacySelectorForm: {
+        display: 'flex',
+        alignItems: 'center',
+        padding:'0 1.5rem'
     },
     selector: {
         height: '2.5em',

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react"
+import React, {useState, useEffect} from "react"
 import {RadioGroup, Radio, FormControl, FormControlLabel, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {
@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material"
 import Library from '../../../assets/library-icon.svg?react'
 import Wishlist from '../../../assets/wishlist-icon.svg?react'
-import {Grid, IconButton} from "@mui/material"
+import {Grid} from "@mui/material"
 
 function GameStatus({userId, gameId}) {
     const theme = useTheme()
@@ -137,7 +137,7 @@ const getStyles = (theme) => ({
         margin: '0em',
     },
     statusContainer: {
-        padding: '0 1.5em',
+        padding: '0 0.5em',
         fontFamily:
         theme.typography.fontFamily,
         color:
