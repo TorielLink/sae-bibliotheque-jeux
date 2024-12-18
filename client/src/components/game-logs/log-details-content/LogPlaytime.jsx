@@ -47,58 +47,58 @@ function LogPlaytime({playtime}) {
                             />
                         </div>
                     </div>
-                    <div style={styles.texts}>
-                        <TextField
-                            style={styles.text}
-                            id="hours"
-                            placeholder="HH"
-                            value={hours}
-                            size="small"
-                            disabled={timeCalculationMethod === '1'}
-                            slotProps={{
-                                htmlInput: {
-                                    pattern: "\\d*",
-                                    onKeyDown: (e) => {
-                                        if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                                            e.preventDefault()
-                                        }
-                                    },
-                                    style: {
-                                        textAlign: 'center',
-                                        padding: '0.25rem 0.5rem',
-                                    }
-                                },
-                            }}
-                            sx={{
-                                '& .MuiOutlinedInput-notchedOutline': {
-                                    border: 'none',
-                                },
-                            }}
-                        />
-                        <TextField
-                            style={styles.text}
-                            id="minutes"
-                            placeholder="MM"
-                            value={minutes}
-                            size="small"
-                            disabled={timeCalculationMethod === '1'}
-                            slotProps={{
-                                htmlInput: {
-                                    maxLength: 2,
-                                    style: {
-                                        textAlign: 'center',
-                                        padding: '0.25rem 0.5rem',
-                                    }
-                                },
-                            }}
-                            sx={{
-                                '& .MuiOutlinedInput-notchedOutline': {
-                                    border: 'none',
-                                },
-                            }}
-                        />
-                    </div>
                 </RadioGroup>
+                <div style={styles.texts}>
+                    <TextField
+                        style={styles.text}
+                        id="hours"
+                        value={hours}
+                        placeholder="HH"
+                        size="small"
+                        disabled={timeCalculationMethod === '1'}
+                        slotProps={{
+                            htmlInput: {
+                                pattern: "\\d*",
+                                onKeyDown: (e) => {
+                                    if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                                        e.preventDefault()
+                                    }
+                                },
+                                style: {
+                                    textAlign: 'center',
+                                    padding: '0.25rem 0.5rem',
+                                }
+                            },
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none',
+                            },
+                        }}
+                    />
+                    <TextField
+                        style={styles.text}
+                        id="minutes"
+                        placeholder="MM"
+                        value={minutes}
+                        size="small"
+                        disabled={timeCalculationMethod === '1'}
+                        slotProps={{
+                            htmlInput: {
+                                maxLength: 2,
+                                style: {
+                                    textAlign: 'center',
+                                    padding: '0.25rem 0.5rem',
+                                }
+                            },
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none',
+                            },
+                        }}
+                    />
+                </div>
             </FormControl>
         </div>
     )

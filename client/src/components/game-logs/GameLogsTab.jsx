@@ -24,6 +24,7 @@ function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent}) {
             <div style={{
                 ...styles.tabContainer,
                 width: isTabOpen ? '17em' : '0',
+                overflow: isTabOpen ? 'visible' : 'hidden',
             }}>
                 <div style={styles.content}>
                     {tabContent}
@@ -75,12 +76,12 @@ const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize) => ({
         background: theme.palette.transparentColors[`${tabBackground}-50`],
         boxShadow: `0.125em 0 0.125em ${theme.palette.text.secondary}`,
         borderRadius: '0 0 0.3em 0',
-        overflow: 'hidden',
         transition: 'width 0.3s ease',
     },
     content: {
         height: '100%',
         overflowY: 'auto',
+        overflow: 'visible',
     },
     tabCollapse: {
         border: 'none',
@@ -88,7 +89,7 @@ const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize) => ({
         height: `${collapseButtonSize}rem`,
         padding: '0',
         background: theme.palette.transparentColors[`${tabBackground}-70`],
-        boxShadow: `0.125em 0 0.125em ${theme.palette.text.secondary}`,
+        boxShadow: `0.125em 0 0.125em ${theme.palette.text.primary}`,
         borderRadius: '0 0.3em 0.3em 0',
         cursor: 'pointer',
         position: 'absolute',

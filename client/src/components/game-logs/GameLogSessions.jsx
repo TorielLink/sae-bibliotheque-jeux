@@ -44,6 +44,10 @@ function GameLogSessions({log, currentSession, setCurrentSession}) {
         fetchData()
     }, [log])
 
+    const handleCurrentSessionChange = (newSession) => {
+        setCurrentSession(newSession)
+    }
+
     if (error) return <div>{error}</div>
     if (log === -1) return (
         <div style={styles.noLog}>
@@ -59,7 +63,12 @@ function GameLogSessions({log, currentSession, setCurrentSession}) {
                 </Button>
                 {
                     sessions.map((session, index) => (
-                        <div key={index} style={styles.session}>
+                        <div key={index} onClick={() => {
+                            handleCurrentSessionChange(session)
+                        }} style={{
+                            ...styles.session,
+                            ...(currentSession === session ? styles.selectedSession : {})
+                        }}>
                             <div style={styles.informations}>
                                 <p style={styles.date}>{session.session_date}</p>
                                 <h4 style={styles.title}>{session.title}</h4>
@@ -70,7 +79,7 @@ function GameLogSessions({log, currentSession, setCurrentSession}) {
                                     transition: 'transform 0.1s',
                                     '&:hover': {
                                         transform: 'scale(1.1)',
-                                        color: theme.palette.colors.green
+                                        color: theme.palette.colors.blue
                                     },
                                 }}>
                                     <Edit fontSize="inherit"/>
@@ -117,10 +126,10 @@ const getStyles = (theme) => ({
     newSession: {
         margin: '0',
         borderWidth: '0.1rem 0',
-        borderRadius:'0',
+        borderRadius: '0',
         borderColor: theme.palette.text.primary,
         background: theme.palette.background.default,
-        width:'100%',
+        width: '100%',
         height: '3rem',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
@@ -132,7 +141,9 @@ const getStyles = (theme) => ({
         width: '100%',
         borderWidth: '0.1rem 0',
         borderStyle: 'solid',
-        borderRadius:'0',
+        borderRadius: '0',
+        display: 'flex',
+        flexDirection: 'column',
     },
     session: {
         margin: '0',
@@ -140,7 +151,17 @@ const getStyles = (theme) => ({
         borderColor: theme.palette.text.primary,
         borderStyle: 'solid',
         background: theme.palette.background.default,
-        position: 'relative'
+        position: 'relative',
+        cursor:'pointer'
+    },
+    selectedSession: {
+        position: 'relative',
+        zIndex: 0,
+        width: '102.5%',
+        alignSelf: 'flex-start',
+        borderRadius: '0 0.5rem 0.5rem 0',
+        boxShadow: `0 0 0.5rem ${theme.palette.text.primary}`,
+        cursor:'auto'
     },
     informations: {
         padding: '0.5rem 1rem',

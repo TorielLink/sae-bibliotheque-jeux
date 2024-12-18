@@ -6,6 +6,7 @@ import {Info, FormatListBulleted} from "@mui/icons-material";
 import GameLogDetails from "./GameLogDetails.jsx";
 import {AuthContext} from "../AuthContext.jsx";
 import GameLogSessions from "./GameLogSessions.jsx";
+import SessionEditor from "./SessionEditor.jsx";
 
 function GameLogs({gameId, gameName, gameCoverImage}) {
     const theme = useTheme();
@@ -16,6 +17,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [logData, setLogData] = useState(null);
     const [currentLog, setCurrentLog] = useState(-1)
     const [currentSession, setCurrentSession] = useState(-1)
+    const [sessionContent, setSessionContent] = useState(currentSession.content)
 
     useEffect(() => {
         const fetchGameData = async () => {
@@ -37,6 +39,24 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         fetchGameData();
     }, []);
 
+    const handleCurrentSessionChange = (newSession) => {
+        setCurrentSession(newSession)
+        handleSessionContentChange(newSession.content)
+
+        if (newSession !== -1) {
+            handleSessionContentChange(newSession.content)
+        }
+    }
+
+    const handleSessionContentChange = (newContent) => {
+        setSessionContent(newContent)
+    }
+
+    const handleCurrentLogChange = (newLog) => {
+        setCurrentLog(newLog)
+        handleCurrentSessionChange(-1)
+    }
+
     return (
         <div style={styles.container}>
             <div style={styles.logsContainer}>
@@ -46,16 +66,22 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                     tabIcon={<Info/>}
                     tabContent={<GameLogDetails userId={user.id} gameId={gameId} logData={logData} gameName={gameName}
                                                 gameCoverImage={gameCoverImage} currentLog={currentLog}
-                                                setCurrentLog={setCurrentLog}/>}
+                                                setCurrentLog={handleCurrentLogChange}/>}
                 />
 
                 <GameLogsTab
                     tabNumber={1}
-                    tabBackground={'blue'}
+                    tabBackground={'green'}
                     tabIcon={<FormatListBulleted/>}
                     tabContent={<GameLogSessions log={currentLog} currentSession={currentSession}
-                                                 setCurrentSession={setCurrentSession}/>}
+                                                 setCurrentSession={handleCurrentSessionChange}/>}
                 />
+
+                <div style={styles.editor}>
+                    <SessionEditor session={currentSession} setSession={handleCurrentSessionChange}
+                                   sessionContent={sessionContent}
+                                   setSessionContent={handleSessionContentChange}/>
+                </div>
             </div>
         </div>
     )
@@ -77,10 +103,13 @@ const getStyles = (theme) => ({
         background: theme.palette.background,
         boxShadow: `0 0 0.5em ${theme.palette.text.primary}`,
         borderRadius: '0.625em',
-        overflow: "hidden",
+        overflow: 'hidden',
         display: 'flex',
         position: 'relative',
     },
+    editor: {
+        width: '100%'
+    }
 })
 
 export default GameLogs
