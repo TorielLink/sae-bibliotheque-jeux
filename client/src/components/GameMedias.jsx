@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTheme } from "@mui/material/styles";
+import { useMediaQuery } from "@mui/material";
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 
 /**TODO :
@@ -12,6 +14,10 @@ const GameMedias = ({ videos, screenshots }) => {
     const isDragging = useRef(false);
     const startX = useRef(0);
     const scrollLeft = useRef(0);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const styles = getStyles(theme, isMobile);
 
     // Fusionner les vidéos et les captures d'écran dans une seule liste de miniatures
     const allMedia = [
@@ -70,6 +76,7 @@ const GameMedias = ({ videos, screenshots }) => {
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
         // Ajout d'événements de souris pour le glissement
+        if (!allMedia.length || !mediaGridRef.current) return;
         const mediaGridElement = mediaGridRef.current;
         mediaGridElement.addEventListener('mousedown', handleMouseDown);
         mediaGridElement.addEventListener('mousemove', handleMouseMove);
@@ -94,47 +101,75 @@ const GameMedias = ({ videos, screenshots }) => {
                 <GameDetailsNavBar activeSection={"medias"}/>
             </div>
             <div style={styles.container}>
-                {/* Afficher le média principal (le premier élément de la liste ou celui sélectionné) */}
-                {mainMedia && mainMedia.type === 'video' ? (
-                    <div style={styles.mainMedia}>
-                        <iframe
-                            key={mainMedia.id}
-                            src={`https://www.youtube.com/embed/${mainMedia.videoId}?autoplay=0`}
-                            title={mainMedia.title}
-                            style={styles.videoMain}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
+                {/* Afficher tous les médias à la suite */}
+                {isMobile ? (
+                    <div style={styles.mobileMediaList}>
+                        {allMedia.map((media) => (
+                            <div key={media.id} style={styles.mobileMediaItem}>
+                                {media.type === 'video' ? (
+                                    <iframe
+                                        key={media.id}
+                                        src={`https://www.youtube.com/embed/${media.videoId}?autoplay=0`}
+                                        title={media.title}
+                                        style={styles.screenshotMain}
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    ></iframe>
+                                ) : (
+                                    <img
+                                        src={media.url}
+                                        alt={media.title}
+                                        style={styles.screenshotMain}
+                                    />
+                                )}
+                            </div>
+                        ))}
                     </div>
                 ) : (
-                    <div style={styles.mainMedia}>
-                        <img
-                            src={mainMedia.url}
-                            alt={mainMedia.title}
-                            style={styles.screenshotMain}
-                        />
-                    </div>
-                )}
+                    <>
+                        {/* Afficher le média principal (le premier élément de la liste ou celui sélectionné) */}
+                        {mainMedia && mainMedia.type === 'video' ? (
+                            <div style={styles.mainMedia}>
+                                <iframe
+                                    key={mainMedia.id}
+                                    src={`https://www.youtube.com/embed/${mainMedia.videoId}?autoplay=0`}
+                                    title={mainMedia.title}
+                                    style={styles.videoMain}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                        ) : (
+                            <div style={styles.mainMedia}>
+                                <img
+                                    src={mainMedia.url}
+                                    alt={mainMedia.title}
+                                    style={styles.screenshotMain}
+                                />
+                            </div>
+                        )}
 
-                {/* Liste des miniatures des vidéos et captures d'écran */}
-                <div ref={mediaGridRef} style={styles.mediaGrid}>
-                    {allMedia.map((media, index) => (
-                        <div
-                            key={media.id}
-                            style={{
-                                ...styles.mediaThumbnail,
-                                ...(mainMedia?.id === media?.id ? styles.activeThumbnail : {}),
-                            }}
-                            onClick={() => handleThumbnailClick(index)}
-                        >
-                            <img
-                                src={media.type === 'video' ? media.thumbnail : media.url || media.thumbnail}
-                                alt={media.title}
-                                style={styles.screenshotThumbnail}
-                            />
+                        {/* Liste des miniatures des vidéos et captures d'écran */}
+                        <div ref={mediaGridRef} style={styles.mediaGrid}>
+                            {allMedia.map((media, index) => (
+                                <div
+                                    key={media.id}
+                                    style={{
+                                        ...styles.mediaThumbnail,
+                                        ...(mainMedia?.id === media?.id ? styles.activeThumbnail : {}),
+                                    }}
+                                    onClick={() => handleThumbnailClick(index)}
+                                >
+                                    <img
+                                        src={media.type === 'video' ? media.thumbnail : media.url || media.thumbnail}
+                                        alt={media.title}
+                                        style={styles.screenshotThumbnail}
+                                    />
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </>
+                )}
 
                 {/* Si aucun média n'est disponible */}
                 {allMedia.length === 0 && (
@@ -145,19 +180,18 @@ const GameMedias = ({ videos, screenshots }) => {
     );
 };
 
-const styles = {
+const getStyles = (theme, isMobile) => ({
     navContainer: {
         marginLeft: '15%',
         marginBottom: '2%',
     },
     container: {
         padding: '20px',
-        fontFamily: 'Arial, sans-serif',
-        color: '#333',
+        fontFamily: theme.typography.fontFamily,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '20px',
+        gap: isMobile ? '10px' : '20px',
     },
     section: {
         marginBottom: '30px',
@@ -222,11 +256,22 @@ const styles = {
         top: 0,
         left: 0,
     },
+    mobileMediaList: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        gap: '15px',
+    },
+    mobileMediaItem: {
+        width: '100%',
+        aspectRatio: '16/9',
+        position: 'relative',
+    },
     noMediaText: {
         textAlign: 'center',
         fontStyle: 'italic',
         color: '#666',
     },
-};
+});
 
 export default GameMedias;
