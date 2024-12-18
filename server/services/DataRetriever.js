@@ -85,8 +85,10 @@ class DataRetriever extends APIRequests {
 
             const apiData = await this.makeRequests(requests);
 
+
             const [bundles, collections, dlcs, expansions, remakes,
                 remasters, similar_games, standalone_expansions, franchises, parentGame] = await this.#getRelatedContent(game, apiData);
+
 
             return {
                 id: game.id,
@@ -127,7 +129,6 @@ class DataRetriever extends APIRequests {
             apiData.franchises?.map(el => {
                 franchisesIds.push(...(el.games || []));
             });
-
 
             const relatedContentIds = [
                 ...(game.bundles || []),
@@ -186,11 +187,26 @@ class DataRetriever extends APIRequests {
     }
 
     async #getRelatedContentList(gamesIds) {
-        if (gamesIds.length === 0) return [];
+        if (gamesIds.length === 0) return []
 
-        const sortingOptions = `where id = (${gamesIds.join(",")});`;
-        const paginationOption = `limit ${gamesIds.length};`;
-        return await this.#getGameList(sortingOptions, paginationOption);
+        const chunkSize = 200
+        const chunks = []
+        for (let i = 0; i < gamesIds.length; i += chunkSize) {
+            chunks.push(gamesIds.slice(i, i + chunkSize))
+        }
+
+        const promises = chunks.map(chunk => {
+            const sortingOptions = `where id = (${chunk.join(",")});`;
+            const paginationOption = `limit ${chunk.length};`;
+            return this.#getGameList(sortingOptions, paginationOption);
+        });
+
+        const results = await Promise.all(promises);
+        return results.flat();
+
+        // const sortingOptions = `where id = (${gamesIds.join(",")});`;
+        // const paginationOption = `limit ${gamesIds.length};`;
+        // return await this.#getGameList(sortingOptions, paginationOption);
     }
 
     async #getGameList(sortingOption, paginationOption) {
