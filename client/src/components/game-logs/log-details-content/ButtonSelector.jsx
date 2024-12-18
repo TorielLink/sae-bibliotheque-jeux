@@ -1,24 +1,23 @@
 import React, {useState, useEffect} from "react"
-import {RadioGroup, Radio, FormControl, FormControlLabel, useMediaQuery} from "@mui/material"
+import {RadioGroup, Radio, FormControl, FormControlLabel, Tooltip} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 
-import {Grid, IconButton} from "@mui/material"
-import * as FaIcons from 'react-icons/fa';
-import * as IoIcons from 'react-icons/io';
-import * as PiIcons from 'react-icons/pi';
-import * as SiIcons from 'react-icons/si';
-import * as BsIcons from 'react-icons/bs';
+import {Grid2} from "@mui/material"
+import * as FaIcons from 'react-icons/fa'
+import * as SiIcons from 'react-icons/si'
+import * as BsIcons from 'react-icons/bs'
+import * as Io5Icons from 'react-icons/io5'
+import * as PiIcons from 'react-icons/pi'
 
-function ButtonSelector({selectedItem, setSelectedItem, fetchUrl}) {
+function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
     const theme = useTheme()
     const styles = getStyles(theme)
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [error, setError] = useState(null)
 
     const [data, setData] = useState([])
 
     useEffect(() => {
-        const fetchData = async () => {
+        (async () => {
             try {
                 const response = await fetch(fetchUrl)
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
@@ -26,77 +25,79 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl}) {
                 const data = await response.json()
                 setData(data.data)
             } catch (err) {
-                console.error('Erreur lors de la récupération des données :', err)
-                setError('Impossible de charger les données.')
+                console.error('Erreur lors de la rÃ©cupÃ©ration des donnÃ©es :', err)
+                setError('Impossible de charger les donnÃ©es.')
             }
-        }
+        })()
+    }, [fetchUrl])
 
-        fetchData()
-    }, [])
-
+    if (error) return <div>{error}</div>;
 
     const handleItemChange = (event) => {
         // La property value est par convention une String. NE SURTOUT PAS ENLEVER LA CONVERSION
         setSelectedItem(Number(event.target.value))
     }
 
-
     return (
 
-        <div style={styles.platformsContainer}>
+        <div style={styles.selectorContainer}>
             <RadioGroup
                 row
-                value={selectedPlatform}
+                value={selectedItem}
                 onChange={handleItemChange}
             >
                 <FormControl fullWidth>
                     {/*Utiliser le margin des FormControlLabel pour changer l'espacement*/}
-                    <Grid container spacing={0} justifyContent="center">
-                        {data.map(({platform_id, name, icon}) => {
-
+                    <Grid2 container spacing={0} justifyContent="center">
+                        {data.map(({[idName]: id, name, icon}) => {
                             const IconComponent =
                                 FaIcons[icon] ||
                                 SiIcons[icon] ||
                                 BsIcons[icon] ||
+                                Io5Icons[icon] ||
+                                PiIcons[icon] ||
                                 FaIcons.FaQuestionCircle
-                            return (
-                                <Grid item key={platform_id}>
 
-                                    <FormControlLabel
-                                        value={platform_id}
-                                        style={styles.controlLabel}
-                                        control={
-                                            <Radio
-                                                checkedIcon={
-                                                    <IconComponent size={'1.5rem'}/>
-                                                }
-                                                icon={
-                                                    <IconComponent size={'1.5rem'}/>
-                                                }
-                                                value={platform_id}
-                                                checked={selectedPlatform === platform_id}
-                                                disableTouchRipple
-                                                style={styles.icon}
-                                                sx={{
-                                                    transition: 'transform 0.1s',
-                                                    '&:hover': {
-                                                        transform: 'scale(1.2)',
-                                                    },
-                                                    '&.Mui-checked': {
-                                                        color: 'none',
-                                                        transform: 'scale(1.2)',
-                                                        background: theme.palette.background.default,
-                                                        boxShadow: '0 0 2px 1px #000000',
+                            return (
+                                <Grid2 key={id}>
+                                    <Tooltip title={name} placement="top" arrow>
+                                        <FormControlLabel
+                                            value={id}
+                                            style={styles.controlLabel}
+                                            control={
+                                                <Radio
+                                                    checkedIcon={
+                                                        <IconComponent size={'2rem'}/>
                                                     }
-                                                }}
-                                            />
-                                        }
-                                        label=""
-                                    />
-                                </Grid>
+                                                    icon={
+                                                        <IconComponent size={'2rem'}/>
+                                                    }
+                                                    value={id}
+                                                    checked={selectedItem === id}
+                                                    disableTouchRipple
+                                                    style={styles.icon}
+                                                    sx={{
+                                                        transition: 'transform 0.1s',
+                                                        '&:hover': {
+                                                            transform: 'scale(1.2)',
+                                                        },
+                                                        '&.Mui-checked': {
+                                                            color: 'none',
+                                                            transform: 'scale(1.2)',
+                                                            borderRadius: '0.5rem',
+                                                            background: theme.palette.background.default,
+                                                            boxShadow: '0 0 2px 1px #000000',
+                                                        }
+                                                    }}
+                                                />
+                                            }
+                                            label=""
+                                        />
+                                    </Tooltip>
+                                </Grid2>
                             )
                         })}
-                    </Grid>
+                    </Grid2>
                 </FormControl>
             </RadioGroup>
         </div>
@@ -104,16 +105,17 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl}) {
 }
 
 const getStyles = (theme) => ({
-    platformsContainer: {
-        marginBottom: '1.5rem',
+    selectorContainer: {
+        padding: '1rem 0',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
     },
     controlLabel: {
         //Pour controler l'espacement des icon et maintenir l'alignement entre les Grid item et les FormControlLabel
-        margin: '0.5rem',
+        margin: '0.25rem 0.5rem',
     },
     icon: {
+        padding: '0.25rem',
         color: theme.palette.text.primary
     },
 })

@@ -34,7 +34,7 @@ router.get('/', gameSessionController.getAll);
 /**
  * @swagger
  * /gameSessions/log/{logId}:
- *   summary: Récupérer toutes les sessions d'un journal
+ *     summary: Récupérer toutes les sessions d'un journal
  *     description: >
  *       Cette route retourne toutes les sessions de jeu d'un journal en particulier
  *     tags:

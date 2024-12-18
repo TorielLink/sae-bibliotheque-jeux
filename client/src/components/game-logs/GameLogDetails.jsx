@@ -10,13 +10,31 @@ import {
 import Library from '../../assets/library-icon.svg?react'
 import Wishlist from '../../assets/wishlist-icon.svg?react'
 import {Grid, IconButton} from "@mui/material"
-import GameStatus from "./log-details-content/GameStatus.jsx"
 import GameLog from "./log-details-content/GameLog.jsx"
+import ButtonSelector from "./log-details-content/ButtonSelector.jsx";
 
 function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage, currentLog, setCurrentLog}) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const [selectedStatus, setSelectedStatus] = useState(0)
+
+    useEffect(() => {
+        const fetchGameStatus = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/game-status/user/${userId}/game/${gameId}`)
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+
+                const data = await response.json()
+                setSelectedStatus(data.data[0].game_status_id)
+            } catch (err) {
+                console.error('Erreur lors de la récupération des données du status :', err)
+                setError('Impossible de charger le status.')
+            }
+        }
+
+        fetchGameStatus()
+    }, [])
 
     return (
         <div style={styles.container}>
@@ -27,7 +45,12 @@ function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage, curr
             />
             <hr style={styles.separator}/>
 
-            <GameStatus userId={userId} gameId={gameId}/>
+            <ButtonSelector
+                selectedItem={selectedStatus}
+                setSelectedItem={setSelectedStatus}
+                fetchUrl={`http://localhost:8080/status`}
+                idName={'game_status_id'}
+            />
             <hr style={styles.separator}/>
 
             <GameLog userId={userId} gameId={gameId} currentLog={currentLog} setCurrentLog={setCurrentLog}/>

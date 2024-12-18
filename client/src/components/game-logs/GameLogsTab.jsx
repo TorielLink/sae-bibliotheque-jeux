@@ -1,11 +1,12 @@
-import React, {useState,useEffect, useContext} from "react"
+import React, {useState, useEffect, useContext} from "react"
 import {Box, Button, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {KeyboardDoubleArrowLeft} from "@mui/icons-material";
 
 function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent}) {
     const theme = useTheme();
-    const styles = getStyles(theme, tabNumber, tabBackground);
+    const collapseButtonSize = 3.5
+    const styles = getStyles(theme, tabNumber, tabBackground, collapseButtonSize);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
     const [isTabOpen, setIsTabOpen] = useState(true)
@@ -13,6 +14,7 @@ function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent}) {
     const handleToggleTab = () => {
         setIsTabOpen(!isTabOpen);
     }
+
 
     return (
         <div style={{
@@ -58,7 +60,7 @@ function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent}) {
     )
 }
 
-const getStyles = (theme, tabNumber, tabBackground) => ({
+const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize) => ({
     container: {
         width: 'auto',
         height: '100%',
@@ -77,20 +79,20 @@ const getStyles = (theme, tabNumber, tabBackground) => ({
         transition: 'width 0.3s ease',
     },
     content: {
-        height:'100%',
-        overflowY:'auto'
+        height: '100%',
+        overflowY: 'auto',
     },
     tabCollapse: {
         border: 'none',
-        width: '3em',
-        height: '3em',
+        width: `${collapseButtonSize}rem`,
+        height: `${collapseButtonSize}rem`,
         padding: '0',
         background: theme.palette.transparentColors[`${tabBackground}-70`],
         boxShadow: `0.125em 0 0.125em ${theme.palette.text.secondary}`,
         borderRadius: '0 0.3em 0.3em 0',
         cursor: 'pointer',
         position: 'absolute',
-        top: `${tabNumber * 4}em`,
+        top: `${tabNumber * (collapseButtonSize + 0.5)}rem`,
         left: '100%',
         display: 'flex',
         alignItems: 'center',

@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useContext} from "react"
-import {FormControl, InputLabel, MenuItem, OutlinedInput, Select, useMediaQuery} from "@mui/material"
+import {FormControl, InputLabel, MenuItem, OutlinedInput, Radio, RadioGroup, Select, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import {PowerInput} from "@mui/icons-material";
-import LogPlatform from "./LogPlatform.jsx";
+import ButtonSelector from "./ButtonSelector.jsx";
+import LogPlaytime from "./LogPlaytime.jsx";
 
 function GameLog({userId, gameId, currentLog, setCurrentLog}) {
     const theme = useTheme()
@@ -10,11 +10,13 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [logs, setLogs] = useState(null)
     const [error, setError] = useState(null)
+    const [playtime, setPlaytime] = useState(0)
     const [currentLogIndex, setCurrentLogIndex] = useState(-1)
     const [currentPrivacyIndex, setCurrentPrivacyIndex] = useState(-1)
-    const [selectedPlatform, setSelectedPlatform] = useState(1)
+    const [selectedPlatform, setSelectedPlatform] = useState(-1)
+
     useEffect(() => {
-        const fetchLogData = async () => {
+        const fetchData = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/game-logs/user/${userId}/game/${gameId}`)
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
@@ -27,15 +29,16 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
             }
         }
 
-        fetchLogData()
-    }, [])
+        fetchData()
+    }, [userId, gameId])
 
 
     const handleLogChange = (event) => {
         setCurrentLog(logs[event.target.value])
         setCurrentLogIndex(event.target.value)
-        setCurrentPrivacyIndex(currentLog.privacy.privacy_setting_id)
-        setSelectedPlatform(currentLog.platform.platform_id)
+        setCurrentPrivacyIndex(logs[event.target.value].privacy.privacy_setting_id)
+        setSelectedPlatform(logs[event.target.value].platform.platform_id)
+        setPlaytime(logs[event.target.value].time_played)
     };
 
     const handlePrivacyChange = (event) => {
@@ -44,11 +47,12 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
 
     return (
         <div style={styles.container}>
-            <FormControl style={styles.logSelectorForm}>
+            <FormControl style={styles.form}>
                 <Select
                     style={{...styles.selector, ...styles.logSelector}}
                     id="log-selector"
                     value={currentLogIndex}
+                    size="small"
                     label="Journal"
                     input={<OutlinedInput/>}
                     onChange={handleLogChange}
@@ -71,12 +75,13 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
                 </Select>
             </FormControl>
 
-            <FormControl style={styles.privacySelectorForm}>
+            <FormControl style={styles.form}>
                 <Select
                     style={{...styles.selector, ...styles.privacySelector}}
                     id="log-selector"
                     value={currentPrivacyIndex}
                     label="Visibilité"
+                    size="small"
                     input={<OutlinedInput/>}
                     onChange={handlePrivacyChange}
                     sx={{
@@ -94,9 +99,14 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
                 </Select>
             </FormControl>
 
-            <LogPlatform selectedPlatform={selectedPlatform} setSelectedPlatform={setSelectedPlatform}/>
+            <ButtonSelector
+                selectedItem={selectedPlatform}
+                setSelectedItem={setSelectedPlatform}
+                fetchUrl={'http://localhost:8080/game-platforms'}
+                idName={'platform_id'}
+            />
 
-
+            <LogPlaytime playtime={playtime}/>
         </div>
     )
 }
@@ -109,32 +119,25 @@ const getStyles = (theme) => ({
         flexDirection: 'column',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
-    },
-    logSelectorForm: {
-        display: 'flex',
-        alignItems: 'center',
         marginTop: '1.5em',
-        padding:'0 1.5rem'
     },
-    privacySelectorForm: {
+    form: {
         display: 'flex',
         alignItems: 'center',
-        padding:'0 1.5rem'
+        padding: '0 1.5rem'
     },
     selector: {
-        height: '2.5em',
-        marginBottom: '1em',
         boxShadow: `0 0 0.2em 0.05em ${theme.palette.text.primary}`,
         borderRadius: '0.3rem',
         background: theme.palette.background.default,
     },
     logSelector: {
+        marginBottom: '0.5rem',
         fontSize: 'large'
     },
     privacySelector: {
-        height: '2.5em',
+        marginBottom: '0.5rem',
     },
-
 })
 
 export default GameLog

@@ -15,12 +15,13 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [error, setError] = useState(null);
     const [logData, setLogData] = useState(null);
     const [currentLog, setCurrentLog] = useState(-1)
+    const [currentSession, setCurrentSession] = useState(-1)
 
     useEffect(() => {
         const fetchGameData = async () => {
             try {
                 console.log(`Fetching log data for user : `, user.id);
-                //TODO : récupérer uniquement les logs de ce jeu
+                //TODO : rÃ©cupÃ©rer uniquement les logs de ce jeu
 
                 const response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`);
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
@@ -28,8 +29,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 const data = await response.json();
                 setLogData(data[0]);
             } catch (err) {
-                console.error('Erreur lors de la récupération des données du jeu :', err);
-                setError('Impossible de charger les données du jeu.');
+                console.error('Erreur lors de la rÃ©cupÃ©ration des donnÃ©es du jeu :', err);
+                setError('Impossible de charger les donnÃ©es du jeu.');
             }
         };
 
@@ -47,12 +48,13 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                                                 gameCoverImage={gameCoverImage} currentLog={currentLog}
                                                 setCurrentLog={setCurrentLog}/>}
                 />
-                
+
                 <GameLogsTab
                     tabNumber={1}
                     tabBackground={'blue'}
                     tabIcon={<FormatListBulleted/>}
-                    tabContent={<GameLogSessions log={currentLog}/>}
+                    tabContent={<GameLogSessions log={currentLog} currentSession={currentSession}
+                                                 setCurrentSession={setCurrentSession}/>}
                 />
             </div>
         </div>
@@ -64,8 +66,8 @@ const getStyles = (theme) => ({
         width: '100%',
         height: 'auto',
         display: 'flex',
-        paddingBlock: '0em',
-        paddingInline: '3em',
+        paddingBlock: '0rem',
+        paddingInline: '5rem',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
     },
