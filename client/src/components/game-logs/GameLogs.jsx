@@ -1,7 +1,7 @@
 import React, {useEffect, useContext, useState} from "react"
 import {useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import GameLogsTab from "./GameLogsTab.jsx";
+import GameLogsTab from "./log-details-content/GameLogsTab.jsx";
 import {Info, FormatListBulleted} from "@mui/icons-material";
 import GameLogDetails from "./GameLogDetails.jsx";
 import {AuthContext} from "../AuthContext.jsx";
@@ -15,20 +15,20 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const {isAuthenticated, user} = useContext(AuthContext)
     const [error, setError] = useState(null)
 
-    useEffect(() => {
-        const fetchData = async (url, setData) => {
-            try {
-                const response = await fetch(url)
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+    const fetchData = async (url, setData) => {
+        try {
+            const response = await fetch(url)
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
-                const data = await response.json()
-                setData(data.data)
-            } catch (err) {
-                console.error('Erreur lors de la récupération des données du status :', err)
-                setError('Impossible de charger le status.')
-            }
+            const data = await response.json()
+            setData(data.data)
+        } catch (err) {
+            console.error('Erreur lors de la récupération des données du status :', err)
+            setError('Impossible de charger le status.')
         }
+    }
 
+    useEffect(() => {
         fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${gameId}`, handleStatusChange)
         fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${gameId}`, setLogs)
         fetchData(`http://localhost:8080/privacy-settings`, setPrivacySettings)
@@ -42,11 +42,13 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [logs, setLogs] = useState([])
     const [currentLog, setCurrentLog] = useState(null)
     const handleCurrentLogChange = (log) => {
-        console.log(log)
+        // console.log(log)
         setCurrentLog(log)
         handleCurrentPrivacySettingChange(log.privacy)
         handleCurrentPlatform(log.platform)
         handlePlaytimeChange(log.time_played)
+        fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions)
+        handleCurrentSessionChange(-1)
     }
 
     const [privacySettings, setPrivacySettings] = useState([])
@@ -65,18 +67,19 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         setPlaytime(playtime)
     }
 
-    //TODO----------------------------------------------------------------------------------------------------------\\
-    const [currentSession, setCurrentSession] = useState(-1)
-    const [sessionContent, setSessionContent] = useState(currentSession.content)
+    const [sessions, setSessions] = useState([])
 
+    const [currentSession, setCurrentSession] = useState(-1)
     const handleCurrentSessionChange = (newSession) => {
         setCurrentSession(newSession)
-        handleSessionContentChange(newSession.content)
 
         if (newSession !== -1) {
             handleSessionContentChange(newSession.content)
         }
     }
+
+    const [sessionContent, setSessionContent] = useState(currentSession.content)
+
     const handleSessionContentChange = (newContent) => {
         setSessionContent(newContent)
     }
@@ -122,6 +125,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                     tabContent={
                         <GameLogSessions
                             log={currentLog}
+                            sessions={sessions}
+                            setSessions={setSessions}
                             currentSession={currentSession}
                             setCurrentSession={handleCurrentSessionChange}/>
                     }

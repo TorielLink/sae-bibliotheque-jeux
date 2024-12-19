@@ -19,39 +19,20 @@ import * as PiIcons from "react-icons/pi";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {AddBox, Edit, ModeEdit} from "@mui/icons-material";
 
-function GameLogSessions({log, currentSession, setCurrentSession}) {
+function GameLogSessions({log, sessions, setSessions, currentSession, setCurrentSession}) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [error, setError] = useState(null);
-    const [sessions, setSessions] = useState([])
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/game-sessions/log/${log.game_log_id}`)
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
-
-                const data = await response.json()
-                setSessions(data.data)
-            } catch (err) {
-                console.error('Erreur lors de la r�cup�ration des donn�es du jeu :', err)
-                setError('Impossible de charger les donn�es du jeu.')
-            }
-        }
-
-        fetchData()
-    }, [log])
 
     const handleCurrentSessionChange = (newSession) => {
         setCurrentSession(newSession)
     }
 
     if (error) return <div>{error}</div>
-    if (log === -1) return (
+    if (log === null) return (
         <div style={styles.noLog}>
-            <p>Veuillez choisir un journal</p>
+            <p>Choisissez un journal</p>
         </div>
     )
 
@@ -59,7 +40,7 @@ function GameLogSessions({log, currentSession, setCurrentSession}) {
         <div style={styles.container}>
             <div style={styles.sessionsContainer}>
                 <Button variant="outlined" size="large" startIcon={<AddBox/>} style={styles.newSession}>
-                    Nouveau journal
+                    Nouvelle session
                 </Button>
                 {
                     sessions.map((session, index) => (
@@ -152,16 +133,16 @@ const getStyles = (theme) => ({
         borderStyle: 'solid',
         background: theme.palette.background.default,
         position: 'relative',
-        cursor:'pointer'
+        cursor: 'pointer'
     },
     selectedSession: {
         position: 'relative',
         zIndex: 10,
-        width: '102.5%',
+        width: '102%',
         alignSelf: 'flex-start',
-        borderRadius: '0 0.5rem 0.5rem 0',
+        borderRadius: '0 0.25rem 0.25rem 0',
         boxShadow: `0 0 0.5rem ${theme.palette.text.primary}`,
-        cursor:'auto'
+        cursor: 'auto'
     },
     informations: {
         padding: '0.5rem 1rem',
