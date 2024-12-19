@@ -13,31 +13,44 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const {isAuthenticated, user} = useContext(AuthContext)
-    const [error, setError] = useState(null);
-    const [logData, setLogData] = useState(null);
-    const [currentLog, setCurrentLog] = useState(-1)
-    const [currentSession, setCurrentSession] = useState(-1)
-    const [sessionContent, setSessionContent] = useState(currentSession.content)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
-        const fetchGameData = async () => {
+        const fetchData = async (url, setData) => {
             try {
-                console.log(`Fetching log data for user : `, user.id);
-                //TODO : récupérer uniquement les logs de ce jeu
+                const response = await fetch(url)
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
-                const response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`);
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
-
-                const data = await response.json();
-                setLogData(data[0]);
+                const data = await response.json()
+                setData(data.data)
             } catch (err) {
-                console.error('Erreur lors de la récupération des données du jeu :', err);
-                setError('Impossible de charger les données du jeu.');
+                console.error('Erreur lors de la récupération des données du status :', err)
+                setError('Impossible de charger le status.')
             }
-        };
+        }
 
-        fetchGameData();
-    }, []);
+        fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${gameId}`, handleStatusChange)
+        fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${gameId}`, setLogs)
+    }, [])
+
+    const [currentStatus, setCurrentStatus] = useState(0)
+    const handleStatusChange = (status) => {
+        console.log(status)
+        setCurrentStatus(status)
+    }
+
+    const [logs, setLogs] = useState([])
+
+    const [currentLog, setCurrentLog] = useState(null)
+    const handleCurrentLogChange = (log) => {
+        console.log(log)
+        setCurrentLog(log)
+    }
+
+
+    //TODO----------------------------------------------------------------------------------------------------------\\
+    const [currentSession, setCurrentSession] = useState(-1)
+    const [sessionContent, setSessionContent] = useState(currentSession.content)
 
     const handleCurrentSessionChange = (newSession) => {
         setCurrentSession(newSession)
@@ -47,14 +60,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
             handleSessionContentChange(newSession.content)
         }
     }
-
     const handleSessionContentChange = (newContent) => {
         setSessionContent(newContent)
-    }
-
-    const handleCurrentLogChange = (newLog) => {
-        setCurrentLog(newLog)
-        handleCurrentSessionChange(-1)
     }
 
     return (
@@ -68,11 +75,12 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                         <GameLogDetails
                             userId={user.id}
                             gameId={gameId}
-                            logData={logData}
                             gameName={gameName}
                             gameCoverImage={gameCoverImage}
+                            currentStatus={currentStatus}
+                            setCurrentStatus={handleStatusChange}
+                            logs={logs}
                             currentLog={currentLog}
-
                             setCurrentLog={handleCurrentLogChange}
                         />
                     }

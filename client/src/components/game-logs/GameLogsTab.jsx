@@ -8,7 +8,6 @@ function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent, additionalS
     const collapseButtonSize = 3.5
     const styles = getStyles(theme, tabNumber, tabBackground, collapseButtonSize, additionalStyles);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-        console.log(additionalStyles)
     const [isTabOpen, setIsTabOpen] = useState(true)
 
     const handleToggleTab = () => {

@@ -46,7 +46,7 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
     };
 
     return (
-        <div style={styles.container}>
+        <div style={styles.logInformationsContainer}>
             <FormControl style={styles.form}>
                 <Select
                     style={{...styles.selector, ...styles.logSelector}}
@@ -112,7 +112,7 @@ function GameLog({userId, gameId, currentLog, setCurrentLog}) {
 }
 
 const getStyles = (theme) => ({
-    container: {
+    logInformationsContainer: {
         display: 'flex',
         width: '100%',
         padding: '0',

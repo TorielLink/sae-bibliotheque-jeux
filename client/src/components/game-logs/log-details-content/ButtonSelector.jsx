@@ -34,8 +34,7 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
     if (error) return <div>{error}</div>;
 
     const handleItemChange = (event) => {
-        // La property value est par convention une String. NE SURTOUT PAS ENLEVER LA CONVERSION
-        setSelectedItem(Number(event.target.value))
+        setSelectedItem(data.find((item) => item[idName] === Number(event.target.value)))
     }
 
     return (
@@ -43,26 +42,26 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
         <div style={styles.selectorContainer}>
             <RadioGroup
                 row
-                value={selectedItem}
+                value={selectedItem[idName]}
                 onChange={handleItemChange}
             >
                 <FormControl fullWidth>
                     {/*Utiliser le margin des FormControlLabel pour changer l'espacement*/}
                     <Grid2 container spacing={0} justifyContent="center">
-                        {data.map(({[idName]: id, name, icon}) => {
+                        {data.map((item, index) => {
                             const IconComponent =
-                                FaIcons[icon] ||
-                                SiIcons[icon] ||
-                                BsIcons[icon] ||
-                                Io5Icons[icon] ||
-                                PiIcons[icon] ||
+                                FaIcons[item.icon] ||
+                                SiIcons[item.icon] ||
+                                BsIcons[item.icon] ||
+                                Io5Icons[item.icon] ||
+                                PiIcons[item.icon] ||
                                 FaIcons.FaQuestionCircle
 
                             return (
-                                <Grid2 key={id}>
-                                    <Tooltip title={name} placement="top" arrow>
+                                <Grid2 key={index}>
+                                    <Tooltip title={item.name} placement="top" arrow>
                                         <FormControlLabel
-                                            value={id}
+                                            value={item[idName]}
                                             style={styles.controlLabel}
                                             control={
                                                 <Radio
@@ -72,8 +71,8 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
                                                     icon={
                                                         <IconComponent size={'2rem'}/>
                                                     }
-                                                    value={id}
-                                                    checked={selectedItem === id}
+                                                    value={item[idName]}
+                                                    checked={selectedItem[idName] === item[idName]}
                                                     disableTouchRipple
                                                     style={styles.icon}
                                                     sx={{

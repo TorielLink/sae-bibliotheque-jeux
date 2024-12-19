@@ -8,8 +8,8 @@ controller.getAllGameStatus = async (req, res) => {
         const gameStatusData = await gameStatusData.findAll({
             include: {
                 model: status,
-                as: 'status', // Alias pour l'association avec status
-                attributes: ['game_status_id', 'name'], // Attributs de la table status
+                as: 'status',
+                attributes: ['game_status_id', 'name', 'icon'],
             },
         });
         res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData});
@@ -27,8 +27,8 @@ controller.getGameStatusByUser = async (req, res) => {
             where: {user_id: userId},
             include: {
                 model: status,
-                as: 'status', // Alias pour l'association avec status
-                attributes: ['game_status_id', 'name'], // Attributs de la table status
+                as: 'status',
+                attributes: ['game_status_id', 'name', 'icon'],
             },
         });
 
@@ -51,8 +51,8 @@ controller.getGameByGame = async (req, res) => {
             where: {igdb_game_id: igdb_game_id},
             include: {
                 model: status,
-                as: 'status', // Alias pour l'association avec status
-                attributes: ['game_status_id', 'name'], // Attributs de la table status
+                as: 'status',
+                attributes: ['game_status_id', 'name', 'icon'],
             },
         });
 
@@ -70,7 +70,7 @@ controller.getGameByGame = async (req, res) => {
 controller.getStatusByUserAndGame = async (req, res) => {
     try {
         const {userId, gameId} = req.params
-        const gameStatusData = await gameStatus.findAll({
+        const gameStatusData = await gameStatus.findOne({
             where: {
                 user_id: userId,
                 igdb_game_id: gameId
@@ -78,15 +78,16 @@ controller.getStatusByUserAndGame = async (req, res) => {
             include: {
                 model: status,
                 as: 'status',
-                attributes: ['game_status_id', 'name'], // Attributs de la table status
+                attributes: ['game_status_id', 'name', 'icon'],
             },
+            attributes: [],
         });
 
         if (!gameStatusData) {
             return res.status(404).json({message: 'No game status found for this game and user'});
         }
 
-        res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData});
+        res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData.status});
     } catch (error) {
         console.error('Error fetching game status :', error);
         res.status(500).json({message: 'Error fetching game status', error: error.message});

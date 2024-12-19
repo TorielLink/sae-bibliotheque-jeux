@@ -1,5 +1,14 @@
 import React, {useState, useEffect, useContext} from "react"
-import {RadioGroup, Radio, FormControl, FormControlLabel, useMediaQuery} from "@mui/material"
+import {
+    RadioGroup,
+    Radio,
+    FormControl,
+    FormControlLabel,
+    useMediaQuery,
+    Select,
+    OutlinedInput,
+    MenuItem
+} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {
     PlayCircleOutlined as Playing,
@@ -12,29 +21,22 @@ import Wishlist from '../../assets/wishlist-icon.svg?react'
 import {Grid, IconButton} from "@mui/material"
 import GameLog from "./log-details-content/GameLog.jsx"
 import ButtonSelector from "./log-details-content/ButtonSelector.jsx";
+import LogPlaytime from "./log-details-content/LogPlaytime.jsx";
 
-function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage, currentLog, setCurrentLog}) {
+function GameLogDetails({
+                            userId, gameId, gameName, gameCoverImage,
+                            currentStatus, setCurrentStatus,
+                            logs,
+                            currentLog, setCurrentLog
+                        }) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-    const [selectedStatus, setSelectedStatus] = useState(0)
 
-    useEffect(() => {
-        const fetchGameStatus = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/game-status/user/${userId}/game/${gameId}`)
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
-
-                const data = await response.json()
-                setSelectedStatus(data.data[0].game_status_id)
-            } catch (err) {
-                console.error('Erreur lors de la récupération des données du status :', err)
-                setError('Impossible de charger le status.')
-            }
-        }
-
-        fetchGameStatus()
-    }, [])
+    const handleLogChange = (event) => {
+        console.log(event.target.value)
+        setCurrentLog(logs.find((log) => log.game_log_id === Number(event.target.value)))
+    }
 
     return (
         <div style={styles.container}>
@@ -46,14 +48,84 @@ function GameLogDetails({userId, gameId, logData, gameName, gameCoverImage, curr
             <hr style={styles.separator}/>
 
             <ButtonSelector
-                selectedItem={selectedStatus}
-                setSelectedItem={setSelectedStatus}
+                selectedItem={currentStatus}
+                setSelectedItem={setCurrentStatus}
                 fetchUrl={`http://localhost:8080/status`}
                 idName={'game_status_id'}
             />
             <hr style={styles.separator}/>
 
-            <GameLog userId={userId} gameId={gameId} currentLog={currentLog} setCurrentLog={setCurrentLog}/>
+            <div style={styles.logInformationsContainer}>
+                <FormControl style={styles.form}>
+                    <Select
+                        style={{...styles.selector, ...styles.logSelector}}
+                        id="log-selector"
+                        value={currentLog?.game_log_id || -1}
+                        size="small"
+                        label="Journal"
+                        input={<OutlinedInput/>}
+                        onChange={handleLogChange}
+                        sx={{
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none',
+                            },
+                        }}
+                    >
+                        <MenuItem disabled value={-1}>
+                            <em>Journal</em>
+                        </MenuItem>
+                        {
+                            logs && logs.map((log, index) => (
+                                <MenuItem key={index} value={log.game_log_id}>
+                                    {`Journal ${index + 1}`}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+
+                {/*
+                <FormControl style={styles.form}>
+                    <Select
+                        style={{...styles.selector, ...styles.privacySelector}}
+                        id="log-selector"
+                        value={currentPrivacyIndex}
+                        label="Visibilité"
+                        size="small"
+                        input={<OutlinedInput/>}
+                        onChange={handlePrivacyChange}
+                        sx={{
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none',
+                            },
+                        }}
+                    >
+                        <MenuItem disabled value={-1}>
+                            <em>Visibilité</em>
+                        </MenuItem>
+                        <MenuItem value={1}>Privé</MenuItem>
+                        <MenuItem value={2}>Publique</MenuItem>
+
+                    </Select>
+                </FormControl>
+                */}
+
+                {/*
+                <ButtonSelector
+                    selectedItem={selectedPlatform}
+                    setSelectedItem={setSelectedPlatform}
+                    fetchUrl={'http://localhost:8080/game-platforms'}
+                    idName={'platform_id'}
+                />
+                */}
+
+                {/*
+                <LogPlaytime playtime={playtime}/>
+                */}
+
+            </div>
+
+            {/*<GameLog userId={userId} gameId={gameId} currentLog={currentLog} setCurrentLog={setCurrentLog}/>*/}
             <hr style={styles.separator}/>
 
         </div>
@@ -84,36 +156,32 @@ const getStyles = (theme) => ({
         backgroundColor: theme.palette.text.primary,
         color: theme.palette.text.primary
     },
-    statusContainer: {
-        padding: '0 1.5em'
-    },
-    icon: {
-        fontSize: 40,
+    logInformationsContainer: {
+        display: 'flex',
+        width: '100%',
+        padding: '0',
+        flexDirection: 'column',
+        fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
-        played: {
-            color: theme.palette.colors.purple
-        },
-        playing: {
-            color: theme.palette.colors.green
-        },
-        paused: {
-            color: theme.palette.text.secondary
-        },
-        stopped: {
-            color: theme.palette.colors.red
-        },
+        marginTop: '1.5em',
     },
-    iconImg: {
-        width: '2.5rem',
-        height: 'auto',
-        fill: theme.palette.text.primary,
-        library: {
-            fill: theme.palette.colors.blue
-        },
-        wishlist: {
-            fill: theme.palette.text.contrast
-        },
-    }
+    form: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 1.5rem'
+    },
+    selector: {
+        boxShadow: `0 0 0.2em 0.05em ${theme.palette.text.primary}`,
+        borderRadius: '0.3rem',
+        background: theme.palette.background.default,
+    },
+    logSelector: {
+        marginBottom: '0.5rem',
+        fontSize: 'large'
+    },
+    privacySelector: {
+        marginBottom: '0.5rem',
+    },
 })
 
 export default GameLogDetails
