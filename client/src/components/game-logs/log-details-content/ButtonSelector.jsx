@@ -42,7 +42,7 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
         <div style={styles.selectorContainer}>
             <RadioGroup
                 row
-                value={selectedItem[idName]}
+                value={selectedItem[idName] ?? 0}
                 onChange={handleItemChange}
             >
                 <FormControl fullWidth>
@@ -61,7 +61,7 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
                                 <Grid2 key={index}>
                                     <Tooltip title={item.name} placement="top" arrow>
                                         <FormControlLabel
-                                            value={item[idName]}
+                                            value={item[idName] ?? 0}
                                             style={styles.controlLabel}
                                             control={
                                                 <Radio

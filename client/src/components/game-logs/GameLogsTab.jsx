@@ -78,7 +78,6 @@ const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize, addition
         transition: 'width 0.3s ease',
     },
     content: {
-        border: 'solid 1px red',
         height: '100%',
         ...additionalStyles
     },

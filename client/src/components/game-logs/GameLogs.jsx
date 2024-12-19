@@ -31,22 +31,39 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
         fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${gameId}`, handleStatusChange)
         fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${gameId}`, setLogs)
+        fetchData(`http://localhost:8080/privacy-settings`, setPrivacySettings)
     }, [])
 
     const [currentStatus, setCurrentStatus] = useState(0)
     const handleStatusChange = (status) => {
-        console.log(status)
         setCurrentStatus(status)
     }
 
     const [logs, setLogs] = useState([])
-
     const [currentLog, setCurrentLog] = useState(null)
     const handleCurrentLogChange = (log) => {
         console.log(log)
         setCurrentLog(log)
+        handleCurrentPrivacySettingChange(log.privacy)
+        handleCurrentPlatform(log.platform)
+        handlePlaytimeChange(log.time_played)
     }
 
+    const [privacySettings, setPrivacySettings] = useState([])
+    const [currentPrivacySetting, setCurrentPrivacySetting] = useState(null)
+    const handleCurrentPrivacySettingChange = (privacySetting) => {
+        setCurrentPrivacySetting(privacySetting)
+    }
+
+    const [currentPlatform, setCurrentPlatform] = useState(0)
+    const handleCurrentPlatform = (platform) => {
+        setCurrentPlatform(platform)
+    }
+
+    const [playtime, setPlaytime] = useState(0)
+    const handlePlaytimeChange = (playtime) => {
+        setPlaytime(playtime)
+    }
 
     //TODO----------------------------------------------------------------------------------------------------------\\
     const [currentSession, setCurrentSession] = useState(-1)
@@ -73,15 +90,24 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                     tabIcon={<Info/>}
                     tabContent={
                         <GameLogDetails
-                            userId={user.id}
-                            gameId={gameId}
                             gameName={gameName}
                             gameCoverImage={gameCoverImage}
+
                             currentStatus={currentStatus}
                             setCurrentStatus={handleStatusChange}
+
                             logs={logs}
                             currentLog={currentLog}
                             setCurrentLog={handleCurrentLogChange}
+
+                            privacySettings={privacySettings}
+                            currentPrivacySetting={currentPrivacySetting}
+                            setCurrentPrivacySetting={handleCurrentPrivacySettingChange}
+
+                            currentPlatform={currentPlatform}
+                            setCurrentPlatform={handleCurrentPlatform}
+
+                            playtime={playtime}
                         />
                     }
                     additionalStyles={{
