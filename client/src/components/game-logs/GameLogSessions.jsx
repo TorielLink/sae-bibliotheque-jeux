@@ -156,7 +156,7 @@ const getStyles = (theme) => ({
     },
     selectedSession: {
         position: 'relative',
-        zIndex: 0,
+        zIndex: 10,
         width: '102.5%',
         alignSelf: 'flex-start',
         borderRadius: '0 0.5rem 0.5rem 0',

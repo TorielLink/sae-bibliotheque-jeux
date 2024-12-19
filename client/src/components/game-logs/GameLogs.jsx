@@ -64,17 +64,36 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                     tabNumber={0}
                     tabBackground={'yellow'}
                     tabIcon={<Info/>}
-                    tabContent={<GameLogDetails userId={user.id} gameId={gameId} logData={logData} gameName={gameName}
-                                                gameCoverImage={gameCoverImage} currentLog={currentLog}
-                                                setCurrentLog={handleCurrentLogChange}/>}
+                    tabContent={
+                        <GameLogDetails
+                            userId={user.id}
+                            gameId={gameId}
+                            logData={logData}
+                            gameName={gameName}
+                            gameCoverImage={gameCoverImage}
+                            currentLog={currentLog}
+
+                            setCurrentLog={handleCurrentLogChange}
+                        />
+                    }
+                    additionalStyles={{
+                        overflowY: 'auto',
+                    }}
                 />
 
                 <GameLogsTab
                     tabNumber={1}
                     tabBackground={'green'}
                     tabIcon={<FormatListBulleted/>}
-                    tabContent={<GameLogSessions log={currentLog} currentSession={currentSession}
-                                                 setCurrentSession={handleCurrentSessionChange}/>}
+                    tabContent={
+                        <GameLogSessions
+                            log={currentLog}
+                            currentSession={currentSession}
+                            setCurrentSession={handleCurrentSessionChange}/>
+                    }
+                    additionalStyles={{
+                        overflow: 'visible',
+                    }}
                 />
 
                 <div style={styles.editor}>
@@ -99,7 +118,8 @@ const getStyles = (theme) => ({
     },
     logsContainer: {
         width: '100%',
-        height: '85vh',
+        height: 'auto',
+        maxHeight: '85vh',
         background: theme.palette.background,
         boxShadow: `0 0 0.5em ${theme.palette.text.primary}`,
         borderRadius: '0.625em',

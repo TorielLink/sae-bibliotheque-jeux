@@ -69,7 +69,7 @@ const getStyles = (theme) => ({
         padding: '1.5em 0',
     },
     coverImage: {
-        maxWidth: '80%',
+        maxWidth: '70%',
         height: 'auto',
         maxHeight: '20%',
         marginBottom: '1.5em',

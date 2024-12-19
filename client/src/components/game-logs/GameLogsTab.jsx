@@ -3,12 +3,12 @@ import {Box, Button, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {KeyboardDoubleArrowLeft} from "@mui/icons-material";
 
-function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent}) {
+function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent, additionalStyles}) {
     const theme = useTheme();
     const collapseButtonSize = 3.5
-    const styles = getStyles(theme, tabNumber, tabBackground, collapseButtonSize);
+    const styles = getStyles(theme, tabNumber, tabBackground, collapseButtonSize, additionalStyles);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-
+        console.log(additionalStyles)
     const [isTabOpen, setIsTabOpen] = useState(true)
 
     const handleToggleTab = () => {
@@ -61,7 +61,7 @@ function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent}) {
     )
 }
 
-const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize) => ({
+const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize, additionalStyles) => ({
     container: {
         width: 'auto',
         height: '100%',
@@ -79,9 +79,9 @@ const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize) => ({
         transition: 'width 0.3s ease',
     },
     content: {
+        border: 'solid 1px red',
         height: '100%',
-        overflowY: 'auto',
-        overflow: 'visible',
+        ...additionalStyles
     },
     tabCollapse: {
         border: 'none',
