@@ -1,25 +1,10 @@
-import React, {useState, useEffect, useContext} from "react"
-import {
-    Button,
-    FormControl,
-    FormControlLabel,
-    Grid2,
-    IconButton,
-    Radio,
-    RadioGroup,
-    Tooltip,
-    useMediaQuery
-} from "@mui/material"
+import React, {useState} from "react"
+import {Button, IconButton, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import * as FaIcons from "react-icons/fa";
-import * as SiIcons from "react-icons/si";
-import * as BsIcons from "react-icons/bs";
-import * as Io5Icons from "react-icons/io5";
-import * as PiIcons from "react-icons/pi";
 import DeleteIcon from '@mui/icons-material/Delete';
-import {AddBox, Edit, ModeEdit} from "@mui/icons-material";
+import {AddBox, Edit} from "@mui/icons-material";
 
-function GameLogSessions({log, sessions, setSessions, currentSession, setCurrentSession}) {
+function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))

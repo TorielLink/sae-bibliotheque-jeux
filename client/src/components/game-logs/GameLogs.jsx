@@ -14,6 +14,16 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const {isAuthenticated, user} = useContext(AuthContext)
     const [error, setError] = useState(null)
+    const collapseButtonSize = 3
+
+    if (!isAuthenticated) return (
+        <div style={{
+            textAlign: 'center'
+        }}>
+            <h1>Connectez-vous pour accéder à cette section</h1>
+        </div>
+    )
+
 
     const fetchData = async (url, setData) => {
         try {
@@ -42,7 +52,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [logs, setLogs] = useState([])
     const [currentLog, setCurrentLog] = useState(null)
     const handleCurrentLogChange = (log) => {
-        // console.log(log)
         setCurrentLog(log)
         handleCurrentPrivacySettingChange(log.privacy)
         handleCurrentPlatform(log.platform)
@@ -75,19 +84,26 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
         if (newSession !== -1) {
             handleSessionContentChange(newSession.content)
+            handlePlaytimeChange(newSession.playtime)
         }
     }
 
     const [sessionContent, setSessionContent] = useState(currentSession.content)
-
     const handleSessionContentChange = (newContent) => {
         setSessionContent(newContent)
+    }
+
+
+    const [sessionTitle, setSessionTitle] = useState(currentSession.title)
+    const handleSessionTitleChange = (newTitle) => {
+        setSessionTitle(newTitle)
     }
 
     return (
         <div style={styles.container}>
             <div style={styles.logsContainer}>
                 <GameLogsTab
+                    collapseButtonSize={collapseButtonSize}
                     tabNumber={0}
                     tabBackground={'yellow'}
                     tabIcon={<Info/>}
@@ -119,6 +135,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 />
 
                 <GameLogsTab
+                    collapseButtonSize={collapseButtonSize}
                     tabNumber={1}
                     tabBackground={'green'}
                     tabIcon={<FormatListBulleted/>}
@@ -126,7 +143,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                         <GameLogSessions
                             log={currentLog}
                             sessions={sessions}
-                            setSessions={setSessions}
                             currentSession={currentSession}
                             setCurrentSession={handleCurrentSessionChange}/>
                     }
@@ -136,9 +152,16 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 />
 
                 <div style={styles.editor}>
-                    <SessionEditor session={currentSession} setSession={handleCurrentSessionChange}
+                    <SessionEditor session={currentSession}
+
                                    sessionContent={sessionContent}
-                                   setSessionContent={handleSessionContentChange}/>
+                                   setSessionContent={handleSessionContentChange}
+
+                                   sessionTitle={sessionTitle}
+                                   setSessionTitle={handleSessionTitleChange}
+
+                                   collapseButtonSize={collapseButtonSize}
+                    />
                 </div>
             </div>
         </div>
@@ -150,6 +173,7 @@ const getStyles = (theme) => ({
         width: '100%',
         height: 'auto',
         display: 'flex',
+        justifyContent: 'center',
         paddingBlock: '0rem',
         paddingInline: '5rem',
         fontFamily: theme.typography.fontFamily,
@@ -157,8 +181,9 @@ const getStyles = (theme) => ({
     },
     logsContainer: {
         width: '100%',
-        height: 'auto',
-        maxHeight: '85vh',
+        maxWidth: '200rem',
+        height: '80vh',
+        maxHeight: '75rem',
         background: theme.palette.background,
         boxShadow: `0 0 0.5em ${theme.palette.text.primary}`,
         borderRadius: '0.625em',

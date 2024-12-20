@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import {RadioGroup, Radio, FormControl, useMediaQuery, Select, MenuItem, FormLabel, TextField} from "@mui/material"
+import {RadioGroup, Radio, FormControl, useMediaQuery, FormLabel} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import ButtonSelector from "./log-details-content/ButtonSelector.jsx";
 import HorizontalSelector from "./log-details-content/HorizontalSelector.jsx";
@@ -32,13 +32,28 @@ function GameLogDetails({
         setHours(Number(event.target.value))
     }
 
+    const formatHours = () => {
+        if (hours === 0) {
+            setHours('')
+            formatMinutes(true)
+        } else {
+            formatMinutes(false)
+        }
+    }
+
     const [minutes, setMinutes] = useState('')
     const handleMinutesChange = (event) => {
         setMinutes(Number(event.target.value))
     }
 
-    const formatMinutes = () => {
-        setMinutes(minutes.toString().padStart(2, '0'))
+    const formatMinutes = (hoursEqualZero) => {
+        if (hoursEqualZero && Number(minutes) === 0) {
+            setMinutes('')
+        } else if (!hoursEqualZero && Number(minutes) === 0) {
+            setMinutes('00')
+        } else {
+            setMinutes(minutes.toString().padStart(2, '0'))
+        }
     }
 
     const [timeCalculationMethod, setTimeCalculationMethod] = useState(0)
@@ -138,6 +153,7 @@ function GameLogDetails({
                             <PlaytimeSetter
                                 hours={hours}
                                 setHours={handleHoursChange}
+                                formatHours={formatHours}
                                 minutes={minutes}
                                 setMinutes={handleMinutesChange}
                                 formatMinutes={formatMinutes}
