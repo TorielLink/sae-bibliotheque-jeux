@@ -74,7 +74,7 @@ const getStyles = (theme) => ({
     editor: {
         borderRadius: '0',
         // background: theme.palette.background.default,
-        // color: theme.palette.text.primary,
+        // color: theme.palette.input.primary,
         width: '100%',
     },
 })

@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react"
 import {RadioGroup, Radio, FormControl, useMediaQuery, Select, MenuItem, FormLabel, TextField} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import ButtonSelector from "./log-details-content/ButtonSelector.jsx";
+import HorizontalSelector from "./log-details-content/HorizontalSelector.jsx";
+import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
 
 function GameLogDetails({
                             gameName, gameCoverImage,
@@ -34,6 +36,7 @@ function GameLogDetails({
     const handleMinutesChange = (event) => {
         setMinutes(Number(event.target.value))
     }
+
     const formatMinutes = () => {
         setMinutes(minutes.toString().padStart(2, '0'))
     }
@@ -72,63 +75,25 @@ function GameLogDetails({
             <hr style={styles.separator}/>
 
             <div style={styles.logInformationsContainer}>
-                <FormControl style={styles.horizontalSelector.form}>
-                    <Select
-                        style={{...styles.horizontalSelector.selector, ...styles.horizontalSelector.logSelector}}
-                        id="log-selector"
-                        value={currentLog?.game_log_id || -1}
-                        size="small"
-                        label="Journal"
-                        variant="outlined"
-                        onChange={handleLogChange}
-                        sx={{
-                            '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none',
-                            },
-                        }}
-                    >
-                        <MenuItem disabled value={-1}>
-                            <em>Journal</em>
-                        </MenuItem>
-                        {
-                            logs && logs.map((log, index) => (
-                                <MenuItem key={index} value={log.game_log_id}>
-                                    {`Journal ${index + 1}`}
-                                </MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
+                <HorizontalSelector label={"Journal"}
+                                    items={logs}
+                                    itemId={"game_log_id"}
+                                    selectedItem={currentLog}
+                                    setSelectedItem={handleLogChange}
+                                    defaultValue={-1}
+                                    size={"small"}
+                                    fontSize={"large"}
+                />
 
-                <FormControl style={styles.horizontalSelector.form}>
-                    <Select
-                        style={{...styles.horizontalSelector.selector, ...styles.horizontalSelector.privacySelector}}
-                        id="log-selector"
-                        value={currentPrivacySetting?.privacy_setting_id || 1}
-                        label="Visibilité"
-                        size="small"
-                        variant="outlined"
-                        onChange={handlePrivacyChange}
-                        sx={{
-                            '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none',
-                            },
-                        }}
-                    >
-                        <MenuItem disabled value={-1}>
-                            <em>Visibilité</em>
-                        </MenuItem>
-                        {
-                            privacySettings && privacySettings.map((privacy, index) => {
-                                return (
-                                    <MenuItem key={index} value={privacy.privacy_setting_id}>
-                                        {privacy.name}
-                                    </MenuItem>
-                                )
-                            })
-                        }
-                    </Select>
-                </FormControl>
+                <HorizontalSelector label={"Visibilité"}
+                                    items={privacySettings}
+                                    itemId={"privacy_setting_id"}
+                                    selectedItem={currentPrivacySetting}
+                                    setSelectedItem={handlePrivacyChange}
+                                    defaultValue={1}
+                                    size={"small"}
+                                    value={"name"}
+                />
 
                 <ButtonSelector
                     selectedItem={currentPlatform}
@@ -170,57 +135,13 @@ function GameLogDetails({
                         </RadioGroup>
 
                         <div style={styles.playtime.texts}>
-                            <TextField
-                                style={styles.playtime.text}
-                                id="hours"
-                                value={hours}
-                                onChange={handleHoursChange}
-                                placeholder="HH"
-                                size="small"
-                                disabled={timeCalculationMethod === 1}
-                                slotProps={{
-                                    htmlInput: {
-                                        pattern: "\\d*",
-                                        onKeyDown: (e) => {
-                                            if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                                                e.preventDefault()
-                                            }
-                                        },
-                                        style: {
-                                            textAlign: 'center',
-                                            padding: '0.25rem 0.5rem',
-                                        }
-                                    },
-                                }}
-                                sx={{
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none',
-                                    },
-                                }}
-                            />
-                            <TextField
-                                style={styles.playtime.text}
-                                id="minutes"
-                                placeholder="MM"
-                                value={minutes}
-                                onChange={handleMinutesChange}
-                                onBlur={formatMinutes}
-                                size="small"
-                                disabled={timeCalculationMethod === 1}
-                                slotProps={{
-                                    htmlInput: {
-                                        maxLength: 2,
-                                        style: {
-                                            textAlign: 'center',
-                                            padding: '0.25rem 0.5rem',
-                                        }
-                                    },
-                                }}
-                                sx={{
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none',
-                                    },
-                                }}
+                            <PlaytimeSetter
+                                hours={hours}
+                                setHours={handleHoursChange}
+                                minutes={minutes}
+                                setMinutes={handleMinutesChange}
+                                formatMinutes={formatMinutes}
+                                timeCalculationMethod={timeCalculationMethod} // autre chose que 1 ou 0 pour le playtime dans la session
                             />
                         </div>
                     </FormControl>
@@ -266,25 +187,6 @@ const getStyles = (theme) => ({
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
         marginTop: '1.5em',
-    },
-    horizontalSelector: {
-        form: {
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 1.5rem'
-        },
-        selector: {
-            boxShadow: `0 0 0.2em 0.05em ${theme.palette.text.primary}`,
-            borderRadius: '0.3rem',
-            background: theme.palette.background.default,
-        },
-        logSelector: {
-            marginBottom: '0.5rem',
-            fontSize: 'large'
-        },
-        privacySelector: {
-            marginBottom: '0.5rem',
-        },
     },
     playtime: {
         container: {
