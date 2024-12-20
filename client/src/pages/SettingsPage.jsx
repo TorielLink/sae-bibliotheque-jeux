@@ -1,6 +1,6 @@
 // src/pages/SettingsPage.jsx
 import React, { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '../components/AuthContext'; // Chemin ajusté si nécessaire
+import { AuthContext } from '../components/AuthContext';
 import {
     Box,
     Typography,
@@ -22,11 +22,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import { useDropzone } from 'react-dropzone';
+import '../style/SettingsPage.scss';
 
-// Importer le fichier SCSS
-import '../style/SettingsPage.scss'; // Assurez-vous que le chemin est correct
 
-const API_URL = '/users'; // Utilise le proxy Vite
+const API_URL = '/users';
 
 const SettingsPage = () => {
     const { user, token, setUser, logout } = useContext(AuthContext);
@@ -112,7 +111,7 @@ const SettingsPage = () => {
               };
 
         try {
-            const response = await fetch(`${API_URL}/${userId}`, options); // `${API_URL}/${userId}` correspond à '/users/:id'
+            const response = await fetch(`${API_URL}/${userId}`, options);
             const data = await response.json();
 
             if (!response.ok) {
@@ -120,7 +119,6 @@ const SettingsPage = () => {
                 return null;
             }
 
-            // Mise à jour de l'utilisateur dans le contexte après une mise à jour réussie
             setUser(data.data);
 
             return data;
@@ -130,21 +128,17 @@ const SettingsPage = () => {
         }
     };
 
-    // Fonction de mise à jour du pseudo
     const handleUpdatePseudo = async () => {
         if (newPseudo !== user?.username && newPseudo.trim() !== '') {
             const result = await updateUser({ username: newPseudo });
             if (result) {
-                // Afficher le Snackbar de succès
                 setSnackbar({
                     open: true,
                     message: 'Votre pseudo a été mis à jour avec succès.',
                     severity: 'success',
                 });
-                // Fermer l'accordéon
                 setExpandedAccordion(false);
             } else {
-                // Afficher le Snackbar d'erreur
                 setSnackbar({
                     open: true,
                     message: 'Erreur lors de la mise à jour du pseudo.',
@@ -152,7 +146,6 @@ const SettingsPage = () => {
                 });
             }
         } else {
-            // Afficher le Snackbar d'information
             setSnackbar({
                 open: true,
                 message: 'Aucune modification de pseudo détectée.',
@@ -178,16 +171,13 @@ const SettingsPage = () => {
 
         const result = await updateUser(formData, true);
         if (result) {
-            // Afficher le Snackbar de succès
             setSnackbar({
                 open: true,
                 message: 'Votre photo de profil a été mise à jour avec succès.',
                 severity: 'success',
             });
-            // Fermer l'accordéon
             setExpandedAccordion(false);
         } else {
-            // Afficher le Snackbar d'erreur
             setSnackbar({
                 open: true,
                 message: 'Erreur lors de la mise à jour de la photo de profil.',
@@ -201,20 +191,17 @@ const SettingsPage = () => {
         if (isPasswordValid) {
             const result = await updateUser({ password: newPassword });
             if (result) {
-                // Afficher le Snackbar de succès
                 setSnackbar({
                     open: true,
                     message: 'Votre mot de passe a été mis à jour avec succès.',
                     severity: 'success',
                 });
-                // Réinitialiser les champs
                 setOldPassword('');
                 setNewPassword('');
                 setConfirmPassword('');
                 // Fermer l'accordéon
                 setExpandedAccordion(false);
             } else {
-                // Afficher le Snackbar d'erreur
                 setSnackbar({
                     open: true,
                     message: 'Erreur lors de la mise à jour du mot de passe.',
@@ -222,7 +209,6 @@ const SettingsPage = () => {
                 });
             }
         } else {
-            // Afficher le Snackbar d'erreur
             setSnackbar({
                 open: true,
                 message: 'Erreur : veuillez vérifier vos entrées.',
@@ -247,7 +233,6 @@ const SettingsPage = () => {
         onDrop
     });
 
-    // Libérer l'URL de prévisualisation pour éviter les fuites de mémoire
     useEffect(() => {
         return () => {
             if (profilePicture) {
@@ -268,44 +253,50 @@ const SettingsPage = () => {
                 '--text-secondary': theme.palette.text.secondary,
                 '--grey-light': theme.palette.grey[300],
                 '--grey-dark': theme.palette.grey[800],
-                // Ajoutez d'autres variables si nécessaire
+
             }}
         >
             <Box
                 sx={{
-                    minHeight: '80vh', // Réduire la hauteur minimale pour laisser de l'espace pour la barre de navigation et le footer
-                    bgcolor: 'transparent', // Rendre le fond transparent pour laisser le background animé
+                    minHeight: '80vh',
+                    bgcolor: 'transparent',
                     color: theme.palette.text.primary,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    p: { xs: 1, sm: 2 }, // Réduire le padding
-                    maxWidth: '1200px', // Limiter la largeur maximale
-                    margin: '0 auto' // Centrer la Box horizontalement
+                    p: { xs: 1, sm: 2 },
+                    maxWidth: '1200px',
+                    margin: '0 auto'
                 }}
             >
                 <Card
                     sx={{
-                        maxWidth: 500, // Réduire la largeur maximale de la Card
+                        maxWidth: 500,
                         width: '100%',
                         borderRadius: 3,
-                        boxShadow: '0 5px 15px rgba(0,0,0,0.1)', // Réduire l'intensité de l'ombre
+                        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
                         bgcolor: theme.palette.background.paper,
                         position: 'relative',
-                        zIndex: 2, // Assurez-vous que le contenu est au-dessus du pseudo-élément ::before
-                        padding: { xs: 2, sm: 3 } // Réduire le padding interne
+                        zIndex: 2,
+                        padding: { xs: 2, sm: 3 }
                     }}
                 >
-                    <CardContent sx={{ p: 0 }}> {/* Supprimer le padding supplémentaire */}
+                    <CardContent sx={{ p: 0 }}>
                         <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" fontSize={{ xs: '1.2rem', sm: '1.5rem' }}>
                             Paramètres du Compte
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.85rem' }}>
-                            ID de l'utilisateur : <strong>{userId}</strong>
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, fontSize: '0.85rem' }}>
-                            Modifier les informations pour <strong>{user?.username}</strong>
-                        </Typography>
+
+                        {/* Ajout de l'Avatar et du Pseudo de l'utilisateur */}
+                        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                            <Avatar
+                                src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                                alt="Photo de profil"
+                                sx={{ width: 60, height: 60 }}
+                            />
+                            <Typography variant="h6" component="h2">
+                                {user?.username}
+                            </Typography>
+                        </Stack>
 
                         <Divider sx={{ mb: 2 }} />
 
@@ -374,13 +365,13 @@ const SettingsPage = () => {
                                         sx={{
                                             border: '2px dashed var(--grey-dark)',
                                             borderRadius: 2,
-                                            p: 1, // Réduire le padding
+                                            p: 1,
                                             textAlign: 'center',
                                             cursor: 'pointer',
-                                            minWidth: '150px', // Réduire la largeur minimale
+                                            minWidth: '150px',
                                             color: isDragActive ? 'var(--primary-color)' : 'var(--text-secondary)',
                                             transition: 'border-color 0.2s ease-in-out',
-                                            fontSize: '0.75rem' // Réduire la taille du texte
+                                            fontSize: '0.75rem'
                                         }}
                                     >
                                         <input {...getInputProps()} />
@@ -473,38 +464,36 @@ const SettingsPage = () => {
                         {/* Bouton Supprimer mon compte en dehors des accordéons */}
                         <Stack spacing={1} direction="row" justifyContent="flex-end">
                             <Button
-                            variant="contained"
-                            color="error"
-                            onClick={async () => {
-                                const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer votre compte ?');
-                                if (confirmDelete) {
-                                    try {
-                                        console.log('Suppression du compte utilisateur ID:', userId);
-                                        const response = await fetch(`${API_URL}/${userId}`, {
-                                            method: 'DELETE',
-                                            headers: {
-                                                'Authorization': `Bearer ${token}`
+                                variant="contained"
+                                color="error"
+                                onClick={async () => {
+                                    const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer votre compte ?');
+                                    if (confirmDelete) {
+                                        try {
+                                            console.log('Suppression du compte utilisateur ID:', userId);
+                                            const response = await fetch(`${API_URL}/${userId}`, {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Authorization': `Bearer ${token}`
+                                                }
+                                            });
+                                            const data = await response.json();
+                                            if (response.ok) {
+                                                alert('Compte supprimé.');
+                                                logout();
+                                            } else {
+                                                alert(`Erreur lors de la suppression du compte: ${data.message}`);
                                             }
-                                        });
-                                        const data = await response.json();
-                                        if (response.ok) {
-                                            alert('Compte supprimé.');
-                                            // Déconnecter l'utilisateur ou rediriger
-                                            logout(); // Appel de la méthode logout du contexte
-                                        } else {
-                                            alert(`Erreur lors de la suppression du compte: ${data.message}`);
+                                        } catch (error) {
+                                            console.error('Erreur lors de la suppression du compte:', error);
+                                            alert('Erreur lors de la suppression du compte.');
                                         }
-                                    } catch (error) {
-                                        console.error('Erreur lors de la suppression du compte:', error);
-                                        alert('Erreur lors de la suppression du compte.');
                                     }
-                                }
-                            }}
-                            size="small"
-                        >
-                            Supprimer mon compte
-                        </Button>
-
+                                }}
+                                size="small"
+                            >
+                                Supprimer mon compte
+                            </Button>
                         </Stack>
                     </CardContent>
                 </Card>

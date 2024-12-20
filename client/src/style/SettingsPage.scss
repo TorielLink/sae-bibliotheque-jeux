@@ -1,5 +1,8 @@
 // src/style/SettingsPage.scss
 
+// Importation du module de couleurs de Sass (facultatif mais recommandé pour la clarté)
+@use 'sass:color';
+
 // Définir les fonctions SCSS
 @function book-height($height) {
   @return linear-gradient(to bottom, #111 #{$height}, transparent #{$height});
@@ -10,7 +13,13 @@
 }
 
 @function book-color($color, $shade, $start, $end) {
-  @return linear-gradient(to right, transparent #{$start}, $color #{$start}, darken($color, $shade) #{$end}, transparent #{$end});
+  @return linear-gradient(
+    to right,
+    transparent #{$start},
+    $color #{$start},
+    color.adjust($color, $lightness: -$shade) #{$end},
+    transparent #{$end}
+  );
 }
 
 // Styles pour la page des paramètres avec fond animé
@@ -69,7 +78,7 @@
       linear-gradient(to top, tan 5%, #111 6%, #111 7%, transparent 7%),
       book-height(30%),
 
-      linear-gradient(to right, firebrick, darken(firebrick, 10%) 5%, transparent 5%), // book 1
+      linear-gradient(to right, firebrick, color.adjust(firebrick, $lightness: -10%) 5%, transparent 5%), // book 1
       book-color(tomato, 10%, 6%, 9%), // book 2
       book-color(darkolivegreen, 10%, 27%, 34%), // book 6
       book-color(salmon, 10%, 51%, 57%), // book 11
