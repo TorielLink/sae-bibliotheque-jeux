@@ -45,7 +45,7 @@ function HomePage() {
         try {
             const recent = await fetchGamesByFilter("by-date");
             const popular = await fetchGamesByFilter("by-popularity");
-            setRecentGames(recent.length ? recent : recentGames); // Préserver les anciennes données si vides
+            setRecentGames(recent.length ? recent : recentGames);
             setPopularGames(popular.length ? popular : popularGames);
         } catch (err) {
             setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
