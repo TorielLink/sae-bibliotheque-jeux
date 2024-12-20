@@ -2,7 +2,7 @@ import React from "react"
 import {TextField} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 
-function PlaytimeSetter({hours, setHours, formatHours, minutes, setMinutes, formatMinutes, timeCalculationMethod}) {
+function PlaytimeSetter({hours, setHours, minutes, setMinutes, timeCalculationMethod}) {
     const theme = useTheme()
     const styles = getStyles(theme)
 
@@ -14,7 +14,6 @@ function PlaytimeSetter({hours, setHours, formatHours, minutes, setMinutes, form
                 id="hours"
                 value={hours}
                 onChange={setHours}
-                onBlur={formatHours}
                 placeholder="HH"
                 size="small"
                 disabled={timeCalculationMethod === 1}
@@ -45,7 +44,6 @@ function PlaytimeSetter({hours, setHours, formatHours, minutes, setMinutes, form
                 placeholder="MM"
                 value={minutes}
                 onChange={setMinutes}
-                onBlur={formatMinutes}
                 size="small"
                 disabled={timeCalculationMethod === 1}
                 slotProps={{

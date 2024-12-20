@@ -19,9 +19,8 @@ function SessionEditor({
     useEffect(() => {
         setSessionTitle(session.title)
         if (session.time_played !== 0) {
-            setHours(Math.floor(session.time_played / 60))
+            setHours(session.time_played > 60 ? Math.floor(session.time_played / 60) : '')
             setMinutes(session.time_played % 60)
-            formatMinutes()
         } else {
             setHours('')
             setMinutes('')
@@ -30,31 +29,13 @@ function SessionEditor({
 
     const [hours, setHours] = useState('')
     const handleHoursChange = (event) => {
-        setHours(Number(event.target.value))
-    }
-
-    const formatHours = () => {
-        if (hours === 0) {
-            setHours('')
-            formatMinutes(true)
-        } else {
-            formatMinutes(false)
-        }
+        const time = Number(event.target.value)
+        setHours(time !== 0 ? Number(event.target.value) : '')
     }
 
     const [minutes, setMinutes] = useState('')
     const handleMinutesChange = (event) => {
         setMinutes(Number(event.target.value))
-    }
-
-    const formatMinutes = (hoursEqualZero) => {
-        if (hoursEqualZero && Number(minutes) === 0) {
-            setMinutes('')
-        } else if (!hoursEqualZero && Number(minutes) === 0) {
-            setMinutes('00')
-        } else {
-            setMinutes(minutes.toString().padStart(2, '0'))
-        }
     }
 
     const handleEditorChange = (value) => {
@@ -101,10 +82,8 @@ function SessionEditor({
                     <PlaytimeSetter
                         hours={hours}
                         setHours={handleHoursChange}
-                        formatHours={formatHours}
                         minutes={minutes}
                         setMinutes={handleMinutesChange}
-                        formatMinutes={formatMinutes}
                         timeCalculationMethod={-1}
                     />
                 </div>

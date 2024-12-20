@@ -55,9 +55,9 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         setCurrentLog(log)
         handleCurrentPrivacySettingChange(log.privacy)
         handleCurrentPlatform(log.platform)
-        handlePlaytimeChange(log.time_played)
         fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions)
         handleCurrentSessionChange(-1)
+        calculateTime(timeCalculationMethod, log, sessions)
     }
 
     const [privacySettings, setPrivacySettings] = useState([])
@@ -78,13 +78,17 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     const [sessions, setSessions] = useState([])
 
+    const [sessionsPlaytime, setSessionsPlaytime] = useState(0)
+    const handleSessionsPlaytimeChange = (playtime) => {
+        setSessionsPlaytime(playtime)
+    }
+
     const [currentSession, setCurrentSession] = useState(-1)
     const handleCurrentSessionChange = (newSession) => {
         setCurrentSession(newSession)
 
         if (newSession !== -1) {
             handleSessionContentChange(newSession.content)
-            handlePlaytimeChange(newSession.playtime)
         }
     }
 
@@ -93,11 +97,35 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         setSessionContent(newContent)
     }
 
-
     const [sessionTitle, setSessionTitle] = useState(currentSession.title)
     const handleSessionTitleChange = (newTitle) => {
         setSessionTitle(newTitle)
     }
+
+    const [timeCalculationMethod, setTimeCalculationMethod] = useState(0)
+    const handleTimeCalculationMethodChange = (value) => {
+        setTimeCalculationMethod(value)
+        calculateTime(1, null, sessions)
+    }
+
+    const calculateTime = (method, journal, sessionsJournal) => {
+        console.log(sessions)
+        if (method === 1) {
+            handlePlaytimeChange(sessionsPlaytime)
+        } else {
+            setPlaytime(journal.time_played)
+            handlePlaytimeChange(playtime)
+        }
+    }
+
+    useEffect(() => {
+        let time = 0
+        sessions.map(session => {
+            time += session.time_played
+        })
+        console.log(time)
+        setSessionsPlaytime(time)
+    }, [sessions]);
 
     return (
         <div style={styles.container}>
@@ -112,10 +140,12 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                             gameName={gameName}
                             gameCoverImage={gameCoverImage}
 
+                            logs={logs}
+                            sessions={sessions}
+
                             currentStatus={currentStatus}
                             setCurrentStatus={handleStatusChange}
 
-                            logs={logs}
                             currentLog={currentLog}
                             setCurrentLog={handleCurrentLogChange}
 
@@ -127,6 +157,10 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                             setCurrentPlatform={handleCurrentPlatform}
 
                             playtime={playtime}
+                            setPlaytime={setPlaytime}
+
+                            timeCalculationMethod={timeCalculationMethod}
+                            setTimeCalculationMethod={handleTimeCalculationMethodChange}
                         />
                     }
                     additionalStyles={{

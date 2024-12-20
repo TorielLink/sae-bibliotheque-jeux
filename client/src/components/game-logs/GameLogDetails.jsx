@@ -8,12 +8,13 @@ import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
 function GameLogDetails({
                             gameName, gameCoverImage,
                             currentStatus, setCurrentStatus,
-                            logs,
+                            logs, sessions,
                             currentLog, setCurrentLog,
                             privacySettings,
                             currentPrivacySetting, setCurrentPrivacySetting,
                             currentPlatform, setCurrentPlatform,
-                            playtime
+                            playtime, setPlaytime,
+                            timeCalculationMethod, setTimeCalculationMethod
                         }) {
     const theme = useTheme();
     const styles = getStyles(theme);
@@ -29,43 +30,25 @@ function GameLogDetails({
 
     const [hours, setHours] = useState('')
     const handleHoursChange = (event) => {
-        setHours(Number(event.target.value))
+        const time = Number(event.target.value)
+        setHours(time !== 0 ? Number(event.target.value) : '')
+        setPlaytime(Number(event.target.value) * 60 + minutes)
     }
 
-    const formatHours = () => {
-        if (hours === 0) {
-            setHours('')
-            formatMinutes(true)
-        } else {
-            formatMinutes(false)
-        }
-    }
-
-    const [minutes, setMinutes] = useState('')
+    const [minutes, setMinutes] = useState(null)
     const handleMinutesChange = (event) => {
         setMinutes(Number(event.target.value))
+        setPlaytime(Number(event.target.value) + 60 * hours)
     }
 
-    const formatMinutes = (hoursEqualZero) => {
-        if (hoursEqualZero && Number(minutes) === 0) {
-            setMinutes('')
-        } else if (!hoursEqualZero && Number(minutes) === 0) {
-            setMinutes('00')
-        } else {
-            setMinutes(minutes.toString().padStart(2, '0'))
-        }
-    }
-
-    const [timeCalculationMethod, setTimeCalculationMethod] = useState(0)
     const handleTimeCalculationMethodChange = (event) => {
         setTimeCalculationMethod(Number(event.target.value))
     }
 
     useEffect(() => {
         if (playtime !== 0) {
-            setHours(Math.floor(playtime / 60))
+            setHours(playtime > 60 ? Math.floor(playtime / 60) : '')
             setMinutes(playtime % 60)
-            formatMinutes()
         } else {
             setHours('')
             setMinutes('')
@@ -153,10 +136,8 @@ function GameLogDetails({
                             <PlaytimeSetter
                                 hours={hours}
                                 setHours={handleHoursChange}
-                                formatHours={formatHours}
                                 minutes={minutes}
                                 setMinutes={handleMinutesChange}
-                                formatMinutes={formatMinutes}
                                 timeCalculationMethod={timeCalculationMethod} // autre chose que 1 ou 0 pour le playtime dans la session
                             />
                         </div>
