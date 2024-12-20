@@ -1,9 +1,5 @@
-// src/style/SettingsPage.scss
-
-// Importation du module de couleurs de Sass (facultatif mais recommandé pour la clarté)
 @use 'sass:color';
 
-// Définir les fonctions SCSS
 @function book-height($height) {
   @return linear-gradient(to bottom, #111 #{$height}, transparent #{$height});
 }
@@ -25,41 +21,41 @@
 // Styles pour la page des paramètres avec fond animé
 .settings-page {
   position: relative;
-  z-index: 1; // Assurez-vous que le contenu est au-dessus du fond
-  padding: 2rem; // Ajoutez un peu de padding si nécessaire
+  z-index: 1;
+  padding: 2rem;
   background-color: #111;
   background-image:
     linear-gradient(to top, #222 5%, #111 6%, #111 7%, transparent 7%),
     book-height(30%),
 
     linear-gradient(to right, #222, #2e2e2e 5%, transparent 5%), // book 1
-    book-grey(6%, 9%), // book 2
-    book-grey(27%, 34%), // book 6
-    book-grey(51%, 57%), // book 11
+    book-grey(6%, 9%),
+    book-grey(27%, 34%),
+    book-grey(51%, 57%),
 
     book-height(35%),
-    book-grey(42%, 44%), // book 8
-    book-grey(45%, 47%), // book 9
-    book-grey(48%, 50%), // book 10
-    book-grey(87%, 91%), // book 13
+    book-grey(42%, 44%),
+    book-grey(45%, 47%),
+    book-grey(48%, 50%),
+    book-grey(87%, 91%),
 
     book-height(37.5%),
-    book-grey(14%, 20%), // book 4
+    book-grey(14%, 20%),
 
     book-height(40%),
-    book-grey(10%, 13%), // book 3
-    book-color(#222, 3%, 21%, 25%), // book 5
-    book-grey(58%, 64%), // book 12
-    book-grey(92%, 95%), // book 14
+    book-grey(10%, 13%),
+    book-color(#222, 3%, 21%, 25%),
+    book-grey(58%, 64%),
+    book-grey(92%, 95%),
 
     book-height(48%),
-    book-color(#222, 3%, 96%, 99%), // book 15
+    book-color(#222, 3%, 96%, 99%),
     linear-gradient(to bottom, transparent 68.5%, transparent 76%, #111 76%, #111 77.5%, transparent 77.5%, transparent 86%, #111 86%, #111 87.5%, transparent 87.5%),
-    book-grey(35%, 41%), // book 7
+    book-grey(35%, 41%),
 
     book-height(68%),
     linear-gradient(to right, transparent 78%, #333 78%, #333 80%, transparent 80%, transparent 82%, #333 82%, #333 83%, transparent 83%),
-    book-grey(66%, 85%); // box
+    book-grey(66%, 85%);
 
   background-size: 80px 40px;
   background-position: center bottom;
@@ -73,35 +69,35 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(17, 17, 17, 0.8); // Semi-transparent pour une meilleure visibilité du contenu
+    background-color: rgba(17, 17, 17, 0.8);
     background-image:
       linear-gradient(to top, tan 5%, #111 6%, #111 7%, transparent 7%),
       book-height(30%),
 
-      linear-gradient(to right, firebrick, color.adjust(firebrick, $lightness: -10%) 5%, transparent 5%), // book 1
-      book-color(tomato, 10%, 6%, 9%), // book 2
-      book-color(darkolivegreen, 10%, 27%, 34%), // book 6
-      book-color(salmon, 10%, 51%, 57%), // book 11
+      linear-gradient(to right, firebrick, color.adjust(firebrick, $lightness: -10%) 5%, transparent 5%),
+      book-color(tomato, 10%, 6%, 9%),
+      book-color(darkolivegreen, 10%, 27%, 34%),
+      book-color(salmon, 10%, 51%, 57%),
 
       book-height(35%),
-      book-color(teal, 10%, 42%, 44%), // book 8
-      book-color(teal, 10%, 45%, 47%), // book 9
-      book-color(teal, 10%, 48%, 50%), // book 10
-      book-color(lightslategrey, 17%, 87%, 91%), // book 13
+      book-color(teal, 10%, 42%, 44%),
+      book-color(teal, 10%, 45%, 47%),
+      book-color(teal, 10%, 48%, 50%),
+      book-color(lightslategrey, 17%, 87%, 91%),
 
       book-height(37.5%),
-      book-color(darkkhaki, 15%, 14%, 20%), // book 4
+      book-color(darkkhaki, 15%, 14%, 20%),
 
       book-height(40%),
-      book-color(olive, 10%, 10%, 13%), // book 3
-      book-color(saddlebrown, 10%, 21%, 25%), // book 5
-      book-color(saddlebrown, 10%, 58%, 64%), // book 12
-      book-color(darkslategrey, 10%, 92%, 95%), // book 14
+      book-color(olive, 10%, 10%, 13%),
+      book-color(saddlebrown, 10%, 21%, 25%),
+      book-color(saddlebrown, 10%, 58%, 64%),
+      book-color(darkslategrey, 10%, 92%, 95%),
 
       book-height(48%),
-      book-color(darkslategrey, 10%, 96%, 99%), // book 15
+      book-color(darkslategrey, 10%, 96%, 99%),
       linear-gradient(to bottom, transparent 68.5%, transparent 76%, #111 76%, #111 77.5%, transparent 77.5%, transparent 86%, #111 86%, #111 87.5%, transparent 87.5%),
-      book-color(indianred, 10%, 35%, 41%), // book 7
+      book-color(indianred, 10%, 35%, 41%),
 
       book-height(68%),
       linear-gradient(to right, rosybrown 78%, rosybrown 80%, transparent 80%, transparent 82%, rosybrown 82%, rosybrown 83%, transparent 83%),
@@ -112,7 +108,7 @@
     background-repeat: repeat;
     clip-path: circle(60px at center center); // Réduire la taille du cercle
     animation: flashlight 5000ms infinite;
-    z-index: -1; // Assurez-vous que le pseudo-élément est derrière le contenu
+    z-index: -1;
   }
 
   // Pseudo-élément ::after pour les yeux
