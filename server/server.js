@@ -53,12 +53,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Gestion des routes
 app.use('/games', gamesRoutes);
-app.use('/search', searchRoutes); // Routes pour la recherche
-app.use('/users', usersRoutes); // Routes pour les utilisateurs
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Routes pour les fichiers téléchargés
-app.use('/status', statusRoutes); // Ajout des routes pour les statuts
-app.use('/game-platforms', gamePlatformsRoutes); // Ajout des routes pour les plateformes de jeu
-app.use('/game-lists', gameListRoutes); // Ajout des routes pour les listes de jeux
+app.use('/search', searchRoutes);
+app.use('/users', usersRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/status', statusRoutes);
+app.use('/game-platforms', gamePlatformsRoutes);
+app.use('/game-lists', gameListRoutes);
 app.use('/list-content', listContentRoutes);
 app.use('/game-logs', gameLogsRoutes);
 app.use('/game-sessions', gameSessionRoutes);

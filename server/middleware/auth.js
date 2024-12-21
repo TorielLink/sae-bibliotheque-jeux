@@ -6,7 +6,7 @@ const SECRET = process.env.SECRET;
 // Middleware pour vérifier le token JWT
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Extraction du token
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(403).json({ message: 'Accès interdit : Token manquant.' });
@@ -18,8 +18,8 @@ const verifyToken = (req, res, next) => {
       return res.status(401).json({ message: 'Accès non autorisé : Token invalide.' });
     }
 
-    req.user = decoded; // Ajouter les informations du token à la requête
-    next(); // Passer au prochain middleware ou à la route
+    req.user = decoded;
+    next();
   });
 };
 

@@ -1,43 +1,51 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('game_reviews', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true, // Nouvelle clé primaire unique
+        },
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true,
             references: {
                 model: 'users',
                 key: 'user_id',
-                onDelete: 'CASCADE' // Si un utilisateur est supprimé, ses critiques sont supprimées
-            }
+            },
+            onDelete: 'SET NULL', // Les critiques ne seront pas supprimées, mais user_id sera mis à NULL
         },
         igdb_game_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true // Clé primaire composite avec user_id
+            references: {
+                model: 'games', // Supposons qu'il existe une table `games`
+                key: 'igdb_game_id',
+            },
         },
         content: {
             type: DataTypes.TEXT,
-            allowNull: true // Critiques longues autorisées
+            allowNull: true, // Texte optionnel
         },
         spoiler: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: false // Valeur par défaut : pas de spoiler
+            defaultValue: false, // Par défaut : pas de spoiler
         },
         date_published: {
             type: DataTypes.DATE,
-            allowNull: false // Date obligatoire
+            allowNull: false, // Obligatoire
         },
         privacy_setting_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true, // Peut être NULL pour gérer les suppressions de privacy settings
             references: {
                 model: 'privacy_settings',
-                key: 'privacy_setting_id' // Pas de suppression en cascade
-            }
-        }
+                key: 'privacy_setting_id',
+            },
+            onDelete: 'SET NULL', // Met à NULL si une privacy setting est supprimée
+        },
     }, {
-        freezeTableName: true, // Le nom de la table ne sera pas pluralisé automatiquement
-        timestamps: false // Pas de createdAt/updatedAt
+        freezeTableName: true, // Empêche la pluralisation automatique du nom de la table
+        timestamps: false, // Pas de createdAt/updatedAt
     });
 };

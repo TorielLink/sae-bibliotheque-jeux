@@ -1,4 +1,4 @@
-const {Sequelize, gameReview, privacySettings, users, gameRatings } = require('../database/sequelize');
+const { Sequelize, gameReview, privacySettings, users, gameRatings } = require('../database/sequelize');
 const DataRetriever = require('../services/DataRetriever');
 
 // Initialiser DataRetriever avec vos clés d'API
@@ -11,6 +11,9 @@ const controller = {};
 // Mise en place d'un cache en mémoire pour éviter d'appeler l'API IGDB pour chaque critique identique
 const gameCache = new Map();
 
+/**
+ * Récupérer les données d'un jeu via l'API ou le cache
+ */
 async function getGameData(igdb_game_id) {
     if (gameCache.has(igdb_game_id)) {
         return gameCache.get(igdb_game_id);
@@ -20,6 +23,9 @@ async function getGameData(igdb_game_id) {
     return gameData;
 }
 
+/**
+ * Obtenir toutes les critiques
+ */
 controller.getAllReviews = async (req, res) => {
     try {
         const reviews = await gameReview.findAll({
@@ -47,20 +53,17 @@ controller.getAllReviews = async (req, res) => {
             ],
         });
 
-        // Récupérer tous les igdb_game_id distincts pour minimiser les appels API
+        // Charger les données des jeux dans le cache
         const uniqueGameIds = [...new Set(reviews.map(r => r.igdb_game_id))];
-
-        // Précharger le cache
-        // (Facultatif: si API IGDB supporte le batch, le faire en un seul appel)
         for (const gameId of uniqueGameIds) {
             if (!gameCache.has(gameId)) {
                 await getGameData(gameId);
             }
         }
 
-        const reviewsWithGames = reviews.map((review) => {
+        // Ajouter les données des jeux aux critiques
+        const reviewsWithGames = reviews.map(review => {
             const gameData = gameCache.get(review.igdb_game_id);
-
             return {
                 ...review.toJSON(),
                 game: {
@@ -79,6 +82,9 @@ controller.getAllReviews = async (req, res) => {
     }
 };
 
+/**
+ * Obtenir les critiques par utilisateur
+ */
 controller.getReviewsByUserId = async (req, res) => {
     try {
         const { id } = req.params;
@@ -112,17 +118,17 @@ controller.getReviewsByUserId = async (req, res) => {
             return res.status(404).json({ message: 'No reviews found for this user' });
         }
 
+        // Charger les données des jeux dans le cache
         const uniqueGameIds = [...new Set(reviews.map(r => r.igdb_game_id))];
-
         for (const gameId of uniqueGameIds) {
             if (!gameCache.has(gameId)) {
                 await getGameData(gameId);
             }
         }
 
-        const reviewsWithGames = reviews.map((review) => {
+        // Ajouter les données des jeux aux critiques
+        const reviewsWithGames = reviews.map(review => {
             const gameData = gameCache.get(review.igdb_game_id);
-
             return {
                 ...review.toJSON(),
                 game: {
@@ -141,6 +147,9 @@ controller.getReviewsByUserId = async (req, res) => {
     }
 };
 
+/**
+ * Obtenir les critiques par jeu
+ */
 controller.getReviewsByGameId = async (req, res) => {
     try {
         const { id } = req.params;
@@ -174,14 +183,13 @@ controller.getReviewsByGameId = async (req, res) => {
             return res.status(404).json({ message: 'No reviews found for this game' });
         }
 
-        // Tous les reviews concernent le même igdb_game_id, pas besoin de Set
         if (!gameCache.has(id)) {
             await getGameData(id);
         }
 
-        const reviewsWithGames = reviews.map((review) => {
+        // Ajouter les données des jeux aux critiques
+        const reviewsWithGames = reviews.map(review => {
             const gameData = gameCache.get(review.igdb_game_id);
-
             return {
                 ...review.toJSON(),
                 game: {

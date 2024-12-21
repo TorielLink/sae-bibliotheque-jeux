@@ -1,4 +1,12 @@
-const { users, privacySettings } = require('../database/sequelize');
+const {
+    users,
+    gameReview,
+    gameRatings,
+    gameLogs,
+    gameStatus,
+    friends,
+    userLists,
+} = require('../database/sequelize');
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -221,25 +229,72 @@ controller.getById = async (req, res) => {
 };
 
 // Ajoutez cette méthode dans votre usersController.js
-
 controller.delete = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Trouver l'utilisateur par ID et s'assurer qu'il n'est pas déjà supprimé
-        const user = await users.findOne({ where: { user_id: id, isDeleted: false } });
+        // Trouver l'utilisateur à supprimer
+        const user = await users.findOne({ where: { user_id: id } });
         if (!user) {
-            return res.status(404).json({ message: "Utilisateur introuvable ou déjà supprimé." });
+            return res.status(404).json({ message: "Utilisateur introuvable." });
         }
 
-        // Suppression douce : mettre à jour isDeleted à true
-        await user.update({ isDeleted: true });
+        // ID de l'utilisateur générique
+        const userDeleteId = 9999;
 
-        res.status(200).json({ message: "Utilisateur supprimé avec succès." });
+        // Vérifier que l'utilisateur générique existe
+        const userDelete = await users.findOne({ where: { user_id: userDeleteId } });
+        if (!userDelete) {
+            return res.status(500).json({ message: "Utilisateur générique introuvable. Veuillez le créer." });
+        }
+
+        // Transférer les données liées en gérant les conflits
+        await Promise.all([
+            // Transférer les critiques
+            gameReview.update(
+                { user_id: userDeleteId },
+                { where: { user_id: id } }
+            ),
+
+            // Transférer les notes
+            gameRatings.update(
+                { user_id: userDeleteId },
+                { where: { user_id: id } }
+            ),
+
+            // Transférer les journaux de jeux
+            gameLogs.update(
+                { user_id: userDeleteId },
+                { where: { user_id: id } }
+            ),
+
+            // Transférer les statuts de jeux
+            gameStatus.update(
+                { user_id: userDeleteId },
+                { where: { user_id: id } }
+            ),
+
+            // Supprimer les relations d'amis
+            friends.destroy({
+                where: { [Op.or]: [{ user_id: id }, { user_id_1: id }] }
+            }),
+
+            // Supprimer les listes associées
+            userLists.destroy({
+                where: { user_id: id }
+            }),
+        ]);
+
+        // Supprimer définitivement l'utilisateur
+        await user.destroy();
+
+        res.status(200).json({ message: "Utilisateur supprimé et données réassignées avec succès." });
     } catch (error) {
         console.error('Erreur lors de la suppression de l’utilisateur :', error);
-        res.status(500).json({ message: 'Erreur lors de la suppression de l’utilisateur', error: error.message });
+        res.status(500).json({ message: 'Erreur lors de la suppression de l’utilisateur.', error: error.message });
     }
 };
+
+
 
 module.exports = controller;

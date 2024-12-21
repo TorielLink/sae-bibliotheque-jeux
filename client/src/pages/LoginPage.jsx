@@ -46,7 +46,7 @@ const handleLoginSubmit = async (e) => {
     const data = await response.json();
     console.log('Connexion réussie :', data);
     login(data.token, data.user);
-    navigate('/'); // Redirection après connexion
+    navigate('/');
   } catch (error) {
     console.error('Erreur lors de la connexion :', error);
     setLoginError('Erreur réseau. Veuillez réessayer.');
