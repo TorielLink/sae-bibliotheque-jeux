@@ -74,17 +74,17 @@ const ListsPage = () => {
   return (
     <div style={{ padding: '2px' }}>
       {/* Conteneur principal */}
-      <Box sx={{ position: 'relative', mb: 3 }}>
+      <Box sx={{ position: 'relative', mb: 2 }}>
         {/* Box pour les filtres */}
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between', // Aligner les filtres horizontalement
+            justifyContent: 'space-between',
             background: '#F5F5F5',
             boxShadow: '0px 0px 7px #000000',
             borderRadius: '5px',
-            height: '50px', // Réduction de la hauteur de la barre de filtres
+            height: '45px', // Réduction de la hauteur de la barre de filtres
             padding: '0 10px',
           }}
         >
@@ -101,7 +101,7 @@ const ListsPage = () => {
               <Box
                 key={filter.id}
                 sx={{
-                  padding: '10px 20px',
+                  padding: '8px 16px', // Réduction du padding pour un aspect plus compact
                   cursor: 'pointer',
                   backgroundColor: selectedFilter === filter.id ? '#D6BBFB' : 'transparent',
                   color: selectedFilter === filter.id ? '#000' : '#555',
@@ -129,7 +129,7 @@ const ListsPage = () => {
             display: 'flex',
             justifyContent: 'flex-end',
             position: 'absolute',
-            top: '55px', // Positionné juste sous la barre de filtres
+            top: '50px', // Positionné juste sous la barre de filtres
             right: '10px', // Aligné à droite
             gap: 1,
           }}
@@ -143,7 +143,7 @@ const ListsPage = () => {
               background: '#FFFFFF',
               borderRadius: '5px',
               boxShadow: '0px 0px 7px #000000',
-              height: '40px',
+              height: '35px', // Réduction de la hauteur des boutons
             }}
           >
             <Button
@@ -247,7 +247,7 @@ const ListsPage = () => {
       )}
 
       {viewMode === 'table' && (
-        <TableContainer component={Paper} sx={{ boxShadow: '0px 0px 7px #000000', mt: '2px' }}>
+        <TableContainer component={Paper} sx={{ boxShadow: '0px 0px 7px #000000', mt: '80px' }}>
           <Table>
             <TableHead>
               <TableRow>
