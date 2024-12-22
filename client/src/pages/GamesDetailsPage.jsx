@@ -3,7 +3,9 @@ import { useParams } from "react-router-dom"; // pour récupérer les paramètre
 import GameDetails from "../components/GameDetails.jsx";
 import GameReviews from "../components/GameReviews.jsx";
 import GameMedias from "../components/GameMedias.jsx";
-import {Typography} from "@mui/material";
+import {Typography, useMediaQuery} from "@mui/material";
+import GameMobileQuickActions from "../components/GameMobileQuickActions.jsx";
+import {useTheme} from "@mui/material/styles";
 // import GameLogs from '../components/GameLogs.jsx';
 
 
@@ -11,11 +13,14 @@ import {Typography} from "@mui/material";
  - Faire la version mobile
  */
 export default function GamesDetailsPage() {
-
     const { id } = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const styles = getStyles(theme, isMobile);
 
     useEffect(() => {
         const fetchGameData = async () => {
@@ -44,6 +49,10 @@ export default function GamesDetailsPage() {
             <Typography variant="subtitle2"  style={styles.breadcrumb}>
                 Accueil &gt; {gameData.name}
             </Typography>
+            {/* Boutons d'actions rapides */}
+            { isMobile && (
+                <GameMobileQuickActions />
+            )}
             <div id="details">
                 <GameDetails
                     name={gameData.name}
@@ -86,12 +95,12 @@ export default function GamesDetailsPage() {
     );
 }
 
-const styles = {
+const getStyles = (theme, isMobile) => ({
     breadcrumb: {
-        color: '#FE4A49',
-        padding: '20px 0px 0px 50px',
+        color: theme.palette.colors.red,
+        padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
         font: 'Inter',
-        fontSize: '15px',
+        fontSize: isMobile ? "0.9em" : "1em",
     },
     separatorContainerR: {
         display: 'flex',
@@ -108,6 +117,6 @@ const styles = {
     separator: {
         width: '85%',
         height: '2px',
-        backgroundColor: '#2FC75A',
+        backgroundColor: theme.palette.colors.green,
     },
-};
+});
