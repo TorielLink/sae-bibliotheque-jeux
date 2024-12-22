@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
+import { useTheme } from "@mui/material/styles";
 import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
-import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
-import {useTheme} from "@mui/material/styles";
+import { useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { AuthContext } from "./AuthContext.jsx";
+import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import GameList from "./GameList.jsx";
 import GameCard from "./GameCard.jsx";
 
@@ -16,8 +18,9 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
                          parentGame, similarGames}) => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const { isAuthenticated } = useContext(AuthContext);
-    const styles = getStyles(theme);
+    const styles = getStyles(theme, isMobile);
 
     return (
         <div style={styles.container}>
@@ -37,7 +40,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                     <GameDetailsNavBar activeSection={"details"} />
 
                     {/* Boutons d'actions rapides */}
-                    {isAuthenticated && (
+                    {!isMobile && isAuthenticated && (
                         <div style={styles.quickActions}>
                             <button
                                 style={{...styles.quickActionButton, ...styles.reviewButton}}
@@ -174,34 +177,116 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
             </div>
 
             {/*Listes des jeux similiares, extensions, etc.*/}
-            {dlcs && dlcs.length > 0 && (
-                <GameList title="DLC" games={dlcs} />)}
-            {expansions && expansions.length > 0 && (
-                <GameList title="Extensions" games={expansions} />)}
-            {remakes && remakes.length > 0 && (
-                <GameList title="Remakes" games={remakes} />)}
-            {remasters && remasters.length > 0 && (
-                <GameList title="Remasters" games={remasters} />)}
-            {standaloneExpansions && standaloneExpansions.length > 0 && (
-                <GameList title="Standalones" games={standaloneExpansions} />)}
-            {franchises && franchises.length > 0 && (
-                <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games} />)}
-            {parentGame && (
-                <GameCard
-                    id={parentGame.id}
-                    image={parentGame.cover}
-                    title={parentGame.name}
-                    rating={parentGame.aggregated_rating}
-                    categories={parentGame.genres}
-                />)}
-
-            {similarGames && similarGames.length > 0 && (
-                <GameList title= "Jeux similaires" games={similarGames} />)}
+            {/*TODO : aggrandir les listes pour prendre un max de place*/}
+            { isMobile ? (
+                <>
+                    { dlcs && dlcs.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="dlc-header">
+                                <Typography>DLC</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="DLC" games={dlcs} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { expansions && expansions.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} id="expansions-header">
+                                <Typography>Extensions</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Extensions" games={expansions} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { remakes && remakes.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remakes-header">
+                                <Typography>Remakes</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Remakes" games={remakes} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { remasters && remasters.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remasters-header">
+                                <Typography>Remasters</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Remasters" games={remasters} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { standaloneExpansions && standaloneExpansions.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="standalone-expansions-header">
+                                <Typography>Standalones</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Standalones" games={standaloneExpansions} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { franchises && franchises.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="franchises-header">
+                                <Typography>Franchise - {franchises[0].name}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Franchise" games={franchises[0].games} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { parentGame && (
+                        <GameCard
+                            id={parentGame.id}
+                            image={parentGame.cover}
+                            title={parentGame.name}
+                            rating={parentGame.aggregated_rating}
+                            categories={parentGame.genres}
+                        />
+                    )}
+                     { similarGames && similarGames.length > 0 && (
+                         <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="similar-games-header">
+                                <Typography>Jeux Similaires</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Jeux Similaires" games={similarGames} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                </>
+            ) : (
+                <>
+                    { dlcs && dlcs.length > 0 && (<GameList title="DLC" games={dlcs} />)}
+                    { expansions && expansions.length > 0 && (<GameList title="Extensions" games={expansions} />)}
+                    { remakes && remakes.length > 0 && (<GameList title="Remakes" games={remakes} />)}
+                    { remasters && remasters.length > 0 && (<GameList title="Remasters" games={remasters} />)}
+                    { standaloneExpansions && standaloneExpansions.length > 0 && (
+                        <GameList title="Standalones" games={standaloneExpansions} />)}
+                    { franchises && franchises.length > 0 && (
+                        <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games} />)}
+                    { parentGame && (
+                        <GameCard
+                            id={parentGame.id}
+                            image={parentGame.cover}
+                            title={parentGame.name}
+                            rating={parentGame.aggregated_rating}
+                            categories={parentGame.genres}
+                        />)}
+                    { similarGames && similarGames.length > 0 && (
+                        <GameList title= "Jeux similaires" games={similarGames} />)}
+                </>
+            )}
         </div>
     );
 };
 
-const getStyles = (theme) => ({
+const getStyles = (theme, isMobile) => ({
     container: {
         height: '100%',
         display: 'flex',
@@ -210,18 +295,21 @@ const getStyles = (theme) => ({
         gap: '1.25rem',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
-        paddingBlock: '3.75rem 5rem',
+        paddingBlock: isMobile ? '1rem' : '3.75rem 5rem',
         paddingInline: '3.125rem',
     },
     detailsContainer: {
         height: '100%',
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'stretch',
         gap: '1.25rem',
         color: theme.palette.text.primary,
         marginBottom: '2rem',
     },
     leftSection: {
+        width: isMobile ? '100%' : 'auto',
+        marginBottom: isMobile ? '1rem' : '0',
         display: 'flex',
         flex: '1',
         flexDirection: 'column',
@@ -230,7 +318,7 @@ const getStyles = (theme) => ({
     },
     coverImage: {
         width: '100%',
-        height: '40.625rem',
+        height: isMobile ? 'auto' : '40.625rem',
         borderRadius: '0.625rem',
         boxShadow: '0 0.25rem 0.5rem rgba(0, 0, 0, 0.1)',
     },
@@ -241,7 +329,7 @@ const getStyles = (theme) => ({
         height: '100%',
         gap: '2.5rem',
         flex: '2',
-        alignItems: 'flex-start',
+        alignItems: isMobile ? 'center' : 'flex-start',
     },
     quickActions: {
         width: '100%',

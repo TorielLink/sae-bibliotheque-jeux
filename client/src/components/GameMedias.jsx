@@ -102,7 +102,7 @@ const GameMedias = ({ videos, screenshots }) => {
             </div>
             <div style={styles.container}>
                 {/* Afficher tous les médias à la suite */}
-                {isMobile ? (
+                { isMobile ? (
                     <div style={styles.mobileMediaList}>
                         {allMedia.map((media) => (
                             <div key={media.id} style={styles.mobileMediaItem}>
