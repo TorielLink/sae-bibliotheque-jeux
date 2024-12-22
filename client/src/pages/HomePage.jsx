@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-    Box,
-    Typography,
-    Tabs,
-    Tab,
-    CircularProgress,
-    useMediaQuery,
-} from "@mui/material";
+import {Box, Typography, CircularProgress, useMediaQuery, Tabs, Tab} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
+import MobileTabs from "../components/MobileTabs.jsx";
 
 function HomePage() {
     const [recentGames, setRecentGames] = useState([]);
@@ -21,6 +15,15 @@ function HomePage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
+    const tabContents = [
+        <GameList key="recent" games={recentGames} />,
+        <GameList key="popular" games={popularGames} />,
+        <Box sx={{ textAlign: "center", color: theme.palette.text.secondary }}>
+            <Typography variant="body1">
+                Les avis récents seront bientôt disponibles !
+            </Typography>
+        </Box>,
+    ];
 
     // Fonction pour charger les jeux en fonction des filtres
     const fetchGamesByFilter = async (filter) => {
@@ -118,8 +121,8 @@ function HomePage() {
                                 minHeight: "auto",
                                 background: theme.palette.background.default,
                                 color: theme.palette.text.primary,
-                                border: `0.2em solid ${theme.palette.colors.green}`,
                                 borderRadius: '0.5em 0.5em 0 0',
+                                border: "0.2em solid ${theme.palette.colors.green}",
                             },
                             "& .Mui-selected": {
                                 color: theme.palette.colors.red,
@@ -145,8 +148,9 @@ function HomePage() {
                             zIndex: 0,
                         }}
                     />
-                </div>
+                </Box>
             )}
+
 
             {/* Loading or Error */}
             { loading ? (
@@ -158,7 +162,7 @@ function HomePage() {
                         height: "50vh",
                     }}
                 >
-                    <CircularProgress/>
+                    <CircularProgress />
                 </Box>
                 ) : error ? (
                     <Box
