@@ -46,7 +46,7 @@ controller.login = async (req, res) => {
         const user = await users.findOne({
             where: {
                 username,
-                isDeleted: false // Ajout de cette condition
+                isDeleted: false
             }
         });
 
@@ -62,7 +62,7 @@ controller.login = async (req, res) => {
         const token = jwt.sign(
             { id: user.user_id, username: user.username },
             SECRET,
-            { expiresIn: '1h' } // Optionnel : définir une expiration
+            { expiresIn: '1h' }
         );
 
         res.status(200).json({
@@ -443,7 +443,5 @@ controller.delete = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la suppression de l’utilisateur.', error: error.message });
     }
 };
-
-
 
 module.exports = controller;
