@@ -4,6 +4,7 @@ import {
   Typography,
   Box,
   Button,
+  Grid,
   Table,
   TableBody,
   TableCell,
@@ -260,27 +261,25 @@ const ListsPage = () => {
   const games = fakeGames[selectedFilter] || [];
 
   return (
-    <div style={{ padding: '2px' }}>
+    <Box style={{ padding: '2px' }}>
       {/* Conteneur principal */}
-      <Box sx={{ position: 'relative', mb: 2 }}>
-        {/* Box pour les filtres */}
-        <Box
+        <Grid container sx={{m:1}}  alignItems='flex-start' columnSpacing={2} >
+          <Grid item md={8} >
+            <Box
           sx={{
-            width: '75%',
-            margin: 'left',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             background: '#F5F5F5',
             boxShadow: '0px 0px 7px #000000',
             borderRadius: '5px',
-            height: '45px',
             padding: '0 10px',
+            height :'45px'
           }}
         >
           {/* Barre de filtres alignée horizontalement */}
           <Box
-            sx={{
+            sx  ={{
               display: 'flex',
               flex: 1,
               alignItems: 'center',
@@ -291,7 +290,7 @@ const ListsPage = () => {
               <Box
                 key={filter.id}
                 sx={{
-                  width: '75%',
+                  width: '100%',
                   margin: '0 auto',
                   padding: '8px 16px',
                   cursor: 'pointer',
@@ -314,12 +313,12 @@ const ListsPage = () => {
           </Box>
         </Box>
 
-        {/* Box pour les boutons de gestion d'affichage*/}
+          </Grid>
+          <Grid item md={4}  >
+            {/* Box pour les boutons de gestion d'affichage*/}
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'flex-end',
-            position: 'absolute',
             gap: 1,
           }}
         >
@@ -329,9 +328,9 @@ const ListsPage = () => {
               alignItems: 'center',
               justifyContent: 'space-around',
               width: '150px',
-              height: '35px',
               backgroundColor: 'D9D9D9',
               borderRadius: '5px',
+              height :'45px',
               boxShadow: '0px 0px 7px #000000',
             }}
           >
@@ -390,7 +389,14 @@ const ListsPage = () => {
             </Button>
           </Box>
         </Box>
-      </Box>
+
+          </Grid>
+
+        </Grid>
+        {/* Box pour les filtres */}
+
+
+
 
       {/* Affichage des jeux */}
       {viewMode === 'grid' && (
@@ -516,7 +522,7 @@ const ListsPage = () => {
           </Table>
         </TableContainer>
       )}
-    </div>
+    </Box>
   );
 };
 

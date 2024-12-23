@@ -42,7 +42,7 @@ controller.getAllRatings = async (req, res) => {
             include: {
                 model: privacySettings,
                 as: 'rating_privacy',
-                attributes: ['name'], // Champs spécifiques de privacy_settings
+                attributes: ['name'],
             },
         });
 

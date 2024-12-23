@@ -3,7 +3,7 @@ import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import {useTheme} from "@mui/material/styles";
 import GameList from "./GameList.jsx";
-import GameCard from "./GameCard.jsx";
+import {GameCard} from "./GameCard.jsx";
 
 
 /**TODO :

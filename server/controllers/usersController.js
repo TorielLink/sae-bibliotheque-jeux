@@ -239,7 +239,7 @@ controller.getUserGameDetails = async (req, res) => {
                         },
                         {
                             model: gameSession,
-                            as: 'game_sessions', // Alias défini dans sequelize.js
+                            as: 'game_sessions',
                             attributes: ['game_session_id', 'session_date', 'time_played', 'title', 'content'],
                         },
                     ],

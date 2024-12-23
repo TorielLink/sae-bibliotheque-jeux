@@ -1,8 +1,8 @@
 import React from "react";
 import {Box, Grid, useMediaQuery} from "@mui/material";
-import GameCard from "../components/GameCard.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 import {useTheme} from "@mui/material/styles";
+import {GameCard} from "./GameCard.jsx";
 
 function GameList({title, games}) {
     const theme = useTheme();
