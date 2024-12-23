@@ -138,6 +138,74 @@ router.get('/:id', controller.getById);
  *         description: Erreur serveur
  */
 router.post('/', uploadProfilePicture, controller.create);
+/**
+ * @swagger
+ * /users/{id}/game-details:
+ *   get:
+ *     summary: Récupérer les statuts et journaux de jeux d'un utilisateur
+ *     description: >
+ *       Cette route retourne les statuts et journaux de jeux associés à un utilisateur spécifique.
+ *     tags:
+ *       - Users
+ *       - Game Details
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Statuts et journaux récupérés avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Détails des statuts et journaux de jeu récupérés avec succès
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user_id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: "exemple_user"
+ *                     user_status:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           game_status_id:
+ *                             type: integer
+ *                             example: 1
+ *                           status:
+ *                             type: object
+ *                             properties:
+ *                               name:
+ *                                 type: string
+ *                                 example: "Playing"
+ *                     user:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           time_played:
+ *                             type: integer
+ *                             example: 120
+ *                           igdb_game_id:
+ *                             type: integer
+ *                             example: 101
+ *       404:
+ *         description: Utilisateur introuvable
+ *       500:
+ *         description: Erreur serveur
+ */
+router.get('/:id/game-details', controller.getUserGameDetails);
 
 router.put('/:id', verifyToken, uploadProfilePicture, controller.update);
 router.delete('/:id', verifyToken, controller.delete);

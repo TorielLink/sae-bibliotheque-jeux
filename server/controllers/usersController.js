@@ -1,16 +1,22 @@
 const {
     users,
+    status,
     gameReview,
     gameRatings,
     gameLogs,
     gameStatus,
     friends,
     userLists,
+    gamePlatforms,
+    gameSession,
 } = require('../database/sequelize');
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SECRET = process.env.SECRET;
+const DataRetriever = require('../services/DataRetriever');
+
+
 const controller = {};
 
 // Récupérer tous les utilisateurs
@@ -123,7 +129,6 @@ controller.create = async (req, res) => {
     }
 };
 
-
 controller.update = async (req, res) => {
     console.log("UPDATE USER: req.body", req.body);
     console.log("UPDATE USER: req.file", req.file);
@@ -198,6 +203,150 @@ controller.update = async (req, res) => {
     }
 };
 
+// Récupérer les détails enrichis des jeux d'un utilisateur
+controller.getUserGameDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Initialisation du service pour les appels API
+        const dataRetriever = new DataRetriever(process.env.CLIENT_ID, process.env.ACCESS_TOKEN);
+
+        // Récupérer les informations utilisateur et relations
+        const userWithDetails = await users.findOne({
+            where: { user_id: id, isDeleted: false },
+            attributes: ['user_id', 'username', 'mail', 'profile_picture'],
+            include: [
+                {
+                    model: gameStatus,
+                    as: 'game_statuses',
+                    include: [
+                        {
+                            model: status,
+                            as: 'status',
+                            attributes: ['name'],
+                        },
+                    ],
+                },
+                {
+                    model: gameLogs,
+                    as: 'game_logs',
+                    attributes: ['time_played', 'igdb_game_id', 'platform_id'],
+                    include: [
+                        {
+                            model: gamePlatforms,
+                            as: 'platform',
+                            attributes: ['name'],
+                        },
+                        {
+                            model: gameSession,
+                            as: 'game_sessions', // Alias défini dans sequelize.js
+                            attributes: ['game_session_id', 'session_date', 'time_played', 'title', 'content'],
+                        },
+                    ],
+                },
+                {
+                    model: gameRatings,
+                    as: 'user_ratings',
+                    attributes: ['igdb_game_id', 'rating_value'],
+                },
+            ],
+        });
+
+        if (!userWithDetails) {
+            return res.status(404).json({ message: 'Utilisateur introuvable ou supprimé.' });
+        }
+
+        // Regrouper les données par jeu
+        const gameDetails = {};
+        userWithDetails.game_logs.forEach((log) => {
+            const gameId = log.igdb_game_id;
+            if (!gameDetails[gameId]) {
+                gameDetails[gameId] = {
+                    igdb_game_id: gameId,
+                    total_time_played: 0,
+                    session_count: 0,
+                    platform: log.platform?.name || null,
+                    sessions: [], // Ajout des sessions
+                };
+            }
+
+            // Ajouter le temps joué et le nombre de sessions
+            gameDetails[gameId].total_time_played += log.time_played;
+            gameDetails[gameId].session_count += log.game_sessions.length;
+
+            // Ajouter les détails des sessions
+            log.game_sessions.forEach((session) => {
+                gameDetails[gameId].sessions.push({
+                    session_id: session.game_session_id,
+                    date: session.session_date,
+                    time_played: session.time_played,
+                    title: session.title,
+                    content: session.content,
+                });
+            });
+        });
+
+        userWithDetails.game_statuses.forEach((status) => {
+            const gameId = status.igdb_game_id;
+            if (gameDetails[gameId]) {
+                gameDetails[gameId].status = status.status.name;
+            }
+        });
+
+        userWithDetails.user_ratings.forEach((rating) => {
+            const gameId = rating.igdb_game_id;
+            if (gameDetails[gameId]) {
+                gameDetails[gameId].user_rating = rating.rating_value;
+            }
+        });
+
+        // Enrichir avec les détails IGDB
+        const igdbGameIds = Object.keys(gameDetails);
+        const igdbDetails = await Promise.all(
+            igdbGameIds.map(async (gameId) => {
+                try {
+                    const details = await dataRetriever.getGameInfo(gameId);
+                    return {
+                        gameId,
+                        title: details.name,
+                        cover: details.cover?.url || null,
+                        genres: details.genres?.map((genre) => genre.name) || [],
+                    };
+                } catch (error) {
+                    console.error(`Erreur lors de la récupération des détails du jeu ID ${gameId}:`, error);
+                    return { gameId, title: null, cover: null, genres: [] };
+                }
+            })
+        );
+
+        igdbDetails.forEach((detail) => {
+            if (gameDetails[detail.gameId]) {
+                gameDetails[detail.gameId].title = detail.title;
+                gameDetails[detail.gameId].cover = detail.cover;
+                gameDetails[detail.gameId].genres = detail.genres;
+            }
+        });
+
+        const games = Object.values(gameDetails);
+
+        res.status(200).json({
+            message: 'Détails des jeux récupérés avec succès',
+            data: {
+                user_id: userWithDetails.user_id,
+                username: userWithDetails.username,
+                mail: userWithDetails.mail,
+                profile_picture: userWithDetails.profile_picture,
+                games,
+            },
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des détails de jeu de l’utilisateur :', error);
+        res.status(500).json({
+            message: 'Erreur lors de la récupération des détails de jeu de l’utilisateur',
+            error: error.message,
+        });
+    }
+};
 
 
 // Récupérer un utilisateur par son ID

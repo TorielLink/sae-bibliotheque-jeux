@@ -1,6 +1,39 @@
 const { gameRatings, privacySettings } = require('../database/sequelize');
+const { Op, fn, col } = require('sequelize');
 
 const controller = {};
+
+controller.getAverageRatingByGameId = async (req, res) => {
+  try {
+    const { id } = req.params; // igdb_game_id
+
+    // On fait la moyenne de rating_value pour les évaluations du jeu {id}
+    const result = await gameRatings.findOne({
+      where: { igdb_game_id: id },
+      attributes: [[fn('AVG', col('rating_value')), 'average']],
+      raw: true
+    });
+
+    let average = result && result.average ? parseFloat(result.average).toFixed(2) : null;
+
+    if (!average || isNaN(average)) {
+      return res.status(404).json({
+        message: 'No ratings found for this game',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Average rating fetched successfully',
+      data: { average },
+    });
+  } catch (error) {
+    console.error('Error fetching average rating:', error);
+    return res.status(500).json({
+      message: 'Error fetching average rating',
+      error: error.message,
+    });
+  }
+};
 
 // Récupérer toutes les évaluations avec leurs paramètres de confidentialité
 controller.getAllRatings = async (req, res) => {
