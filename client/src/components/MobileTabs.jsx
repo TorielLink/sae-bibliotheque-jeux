@@ -11,7 +11,7 @@ function MobileTabs({ tabTitles, tabContents }) {
     };
 
     return (
-        <Box sx={{ margin: "0.5em 0" }}>
+        <Box sx={{ margin: "0.5em 0", position: "relative"}}>
             <Tabs
                 value={selectedTab}
                 onChange={handleTabChange}
@@ -45,11 +45,10 @@ function MobileTabs({ tabTitles, tabContents }) {
             <hr
                 style={{
                     position: "absolute",
-                    bottom: 0,
-                    left: 0,
                     width: "100%",
+                    top: "1.975rem",
                     border: 'none',
-                    height: '0.15em',
+                    height: '0.10em',
                     backgroundColor: theme.palette.colors.green,
                     margin: 0,
                     zIndex: 0,

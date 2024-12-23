@@ -97,9 +97,11 @@ const GameMedias = ({ videos, screenshots }) => {
 
     return (
         <>
-            <div style={styles.navContainer}> {/* Conteneur pour décaler la navbar */}
-                <GameDetailsNavBar activeSection={"medias"}/>
-            </div>
+            { !isMobile && (
+                <div style={styles.navContainer}> {/* Conteneur pour décaler la navbar */}
+                    <GameDetailsNavBar activeSection={"medias"}/>
+                </div>
+            )}
             <div style={styles.container}>
                 {/* Afficher tous les médias à la suite */}
                 { isMobile ? (

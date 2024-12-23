@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { useTheme } from "@mui/material/styles";
 import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
+import PersonIcon from '@mui/icons-material/Person';
+import GroupIcon from '@mui/icons-material/Group';
 import { useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { AuthContext } from "./AuthContext.jsx";
@@ -37,10 +39,10 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                 {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
                 <div style={styles.rightSection}>
-                    <GameDetailsNavBar activeSection={"details"} />
+                    { !isMobile && (<GameDetailsNavBar activeSection={"details"} />)}
 
                     {/* Boutons d'actions rapides */}
-                    {!isMobile && isAuthenticated && (
+                    { !isMobile && isAuthenticated && (
                         <div style={styles.quickActions}>
                             <button
                                 style={{...styles.quickActionButton, ...styles.reviewButton}}
@@ -110,14 +112,38 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                                 <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
                                     <h2 style={styles.categoryHeader}>Note</h2>
                                     <div style={styles.ratings}>
-                                        <div style={styles.ratingItem}>
-                                            <strong>Ma Note</strong>
-                                            <div style={styles.ratingValue}>{"-"}</div>
-                                        </div>
-                                        <div style={styles.ratingItem}>
-                                            <strong>Note des joueurs</strong>
-                                            <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
-                                        </div>
+                                        {isMobile ? (
+                                            <>
+                                                <div style={styles.ratingItem}>
+                                                    <div style={styles.ratingValue}>
+                                                        {"-"}
+                                                    </div>
+                                                    <div style={styles.icon}>
+                                                        <PersonIcon style={{ fontSize: "1.5rem" }} />
+                                                    </div>
+                                                </div>
+                                                {/* Note des joueurs - Mobile */}
+                                                <div style={styles.ratingItem}>
+                                                    <div style={styles.ratingValue}>
+                                                        {rating ? `${rating}` : "-"}
+                                                    </div>
+                                                    <div style={styles.icon}>
+                                                        <GroupIcon style={{ fontSize: "1.5rem" }} />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div style={styles.ratingItem}>
+                                                    <strong>Ma Note</strong>
+                                                    <div style={styles.ratingValue}>{"-"}</div>
+                                                </div>
+                                                <div style={styles.ratingItem}>
+                                                    <strong>Note des joueurs</strong>
+                                                    <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -177,13 +203,12 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
             </div>
 
             {/*Listes des jeux similiares, extensions, etc.*/}
-            {/*TODO : aggrandir les listes pour prendre un max de place*/}
             { isMobile ? (
                 <>
                     { dlcs && dlcs.length > 0 && (
-                        <Accordion style={{width: "100%"}}>
+                        <Accordion>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} id="dlc-header">
-                                <Typography>DLC</Typography>
+                                <Typography>DLC ({dlcs.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <GameList title="DLC" games={dlcs} />
@@ -191,9 +216,9 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         </Accordion>
                     )}
                     { expansions && expansions.length > 0 && (
-                        <Accordion style={{width: "100%"}}>
+                        <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />} id="expansions-header">
-                                <Typography>Extensions</Typography>
+                                <Typography>Extensions ({expansions.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <GameList title="Extensions" games={expansions} />
@@ -201,9 +226,9 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         </Accordion>
                     )}
                     { remakes && remakes.length > 0 && (
-                        <Accordion style={{width: "100%"}}>
+                        <Accordion>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remakes-header">
-                                <Typography>Remakes</Typography>
+                                <Typography>Remakes ({remakes.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <GameList title="Remakes" games={remakes} />
@@ -211,9 +236,9 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         </Accordion>
                     )}
                     { remasters && remasters.length > 0 && (
-                        <Accordion style={{width: "100%"}}>
+                        <Accordion>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remasters-header">
-                                <Typography>Remasters</Typography>
+                                <Typography>Remasters ({remasters.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <GameList title="Remasters" games={remasters} />
@@ -221,9 +246,9 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         </Accordion>
                     )}
                     { standaloneExpansions && standaloneExpansions.length > 0 && (
-                        <Accordion style={{width: "100%"}}>
+                        <Accordion>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} id="standalone-expansions-header">
-                                <Typography>Standalones</Typography>
+                                <Typography>Standalones ({standaloneExpansions.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <GameList title="Standalones" games={standaloneExpansions} />
@@ -233,7 +258,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                     { franchises && franchises.length > 0 && (
                         <Accordion style={{width: "100%"}}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} id="franchises-header">
-                                <Typography>Franchise - {franchises[0].name}</Typography>
+                                <Typography>Franchise - {franchises[0].name} ({franchises[0].games.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <GameList title="Franchise" games={franchises[0].games} />
@@ -252,7 +277,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                      { similarGames && similarGames.length > 0 && (
                          <Accordion style={{width: "100%"}}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} id="similar-games-header">
-                                <Typography>Jeux Similaires</Typography>
+                                <Typography>Jeux similaires</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <GameList title="Jeux Similaires" games={similarGames} />
@@ -296,7 +321,7 @@ const getStyles = (theme, isMobile) => ({
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
         paddingBlock: isMobile ? '1rem' : '3.75rem 5rem',
-        paddingInline: '3.125rem',
+        paddingInline: isMobile ? '0.938rem' : '3.125rem',
     },
     detailsContainer: {
         height: '100%',
@@ -310,6 +335,7 @@ const getStyles = (theme, isMobile) => ({
     leftSection: {
         width: isMobile ? '100%' : 'auto',
         marginBottom: isMobile ? '1rem' : '0',
+        paddingInline: isMobile ? '2rem' : '0',
         display: 'flex',
         flex: '1',
         flexDirection: 'column',
@@ -362,6 +388,7 @@ const getStyles = (theme, isMobile) => ({
         flex: '2',
         gap: '1.25rem',
         alignItems: 'stretch',
+        flexDirection: isMobile ? 'column' : 'row',
     },
     mainContent: {
         flex: '3',
@@ -373,7 +400,8 @@ const getStyles = (theme, isMobile) => ({
         fontSize: '1.125rem',
         fontWeight: 'bold',
         color: theme.palette.text.primary,
-        marginBottom: '0.625rem',
+        marginBottom: isMobile ? '0.313' : '0.625rem',
+        marginTop: isMobile ? '0' : 'auto',
     },
     box: {
         flex: '1',
@@ -388,7 +416,7 @@ const getStyles = (theme, isMobile) => ({
     },
     detailsList: {
         listStyle: 'none',
-        paddingLeft: '0.9375rem',
+        paddingLeft: isMobile ? '0.125rem' : '0.9375rem',
         margin: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -408,19 +436,19 @@ const getStyles = (theme, isMobile) => ({
     },
     ratingItem: {
         flex: '1',
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: isMobile ? 'transparent' : theme.palette.background.paper,
         textAlign: 'center',
         borderRadius: '0.3125rem',
         padding: '0.625rem',
         boxShadow: '0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1)',
     },
     ratingValue: {
-        fontSize: '1.5rem',
+        fontSize: isMobile ? '1rem' : '1.5rem',
         fontWeight: 'bold',
         color: theme.palette.colors.red,
     },
     synopsisText: {
-        paddingLeft: '1.25rem',
+        paddingLeft: isMobile ? '0.125rem' : '1.25rem',
         fontSize: '0.875rem',
         lineHeight: '1.6',
     },
@@ -438,7 +466,7 @@ const getStyles = (theme, isMobile) => ({
         margin: 0,
     },
     platformItem: {
-        padding: '0.3125rem 0',
+        padding: isMobile ? '0.125rem 0' : '0.3125rem 0',
     },
     genreList: {
         listStyleType: 'none',

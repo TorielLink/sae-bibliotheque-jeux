@@ -6,6 +6,7 @@ import GameMedias from "../components/GameMedias.jsx";
 import {Typography, useMediaQuery} from "@mui/material";
 import GameMobileQuickActions from "../components/GameMobileQuickActions.jsx";
 import {useTheme} from "@mui/material/styles";
+import MobileTabs from "../components/MobileTabs.jsx";
 // import GameLogs from '../components/GameLogs.jsx';
 
 
@@ -44,53 +45,64 @@ export default function GamesDetailsPage() {
     if (loading) return <div>Chargement des données...</div>;
     if (error) return <div>{error}</div>;
 
+    const tabTitles = ["Détails", "Avis", "Médias"];
+    const tabContents = [
+        <GameDetails
+            name={gameData.name}
+            description={gameData.summary}
+            releaseDate={gameData.releaseDate}
+            ageRating={gameData.ageRating || "Non précisé"}
+            rating={gameData.criticsAggregatedRating}
+            detailedSynopsis={gameData.storyline}
+            platforms={gameData.platforms}
+            genres={[...(gameData.genres || []), ...(gameData.themes || [])]}
+            coverImage={gameData.cover?.url || 'https://via.placeholder.com/300x400'}
+            dlcs={gameData.dlcs}
+            expansions={gameData.expansions}
+            remakes={gameData.remakes}
+            remasters={gameData.remasters}
+            standaloneExpansions={gameData.standalones}
+            franchises={gameData.franchises}
+            parentGame={gameData.parentGame}
+            similarGames={gameData.similarGames}
+        />,
+        <GameReviews />,
+        <GameMedias
+            videos={gameData.videos}
+            screenshots={gameData.screenshots}
+        />,
+    ];
+
     return (
         <>
-            <Typography variant="subtitle2"  style={styles.breadcrumb}>
+            <Typography variant="subtitle2" style={styles.breadcrumb}>
                 Accueil &gt; {gameData.name}
             </Typography>
-            {/* Boutons d'actions rapides */}
-            { isMobile && (
-                <GameMobileQuickActions />
-            )}
-            <div id="details">
-                <GameDetails
-                    name={gameData.name}
-                    description={gameData.summary}
-                    releaseDate={gameData.releaseDate}
-                    ageRating={gameData.ageRating || "Non précisé"}
-                    rating={gameData.criticsAggregatedRating}
-                    detailedSynopsis={gameData.storyline}
-                    platforms={gameData.platforms}
-                    genres={[...(gameData.genres || []), ...(gameData.themes || [])]}
-                    coverImage={gameData.cover?.url || 'https://via.placeholder.com/300x400'}
 
-                    dlcs={gameData.dlcs}
-                    expansions={gameData.expansions}
-                    remakes={gameData.remakes}
-                    remasters={gameData.remasters}
-                    standaloneExpansions={gameData.standalones}
-                    franchises={gameData.franchises}
-                    parentGame={gameData.parentGame}
-                    similarGames={gameData.similarGames}
-                />
-                <div style={styles.separatorContainerR}>
-                    <div style={styles.separator}></div>
-                </div>
-            </div>
-            <div id="reviews">
-                <GameReviews/>
-                <div style={styles.separatorContainerL}>
-                    <div style={styles.separator}></div>
-                </div>
-            </div>
-            {/* TODO: si l'utilisateur est connecté : montrer "GameLogs" */}
-            <div id="medias">
-                <GameMedias
-                    videos={gameData.videos}
-                    screenshots={gameData.screenshots}
-                />
-            </div>
+            {isMobile ? (
+                <>
+                    <GameMobileQuickActions /> {/* Boutons d'actions rapides */}
+                    <MobileTabs tabTitles={tabTitles} tabContents={tabContents} />
+                </>
+            ) : (
+                <>
+                    <div id="details">
+                        {tabContents[0]}
+                        <div style={styles.separatorContainerR}>
+                            <div style={styles.separator}></div>
+                        </div>
+                    </div>
+                    <div id="reviews">
+                        {tabContents[1]}
+                        <div style={styles.separatorContainerL}>
+                            <div style={styles.separator}></div>
+                        </div>
+                    </div>
+                    <div id="medias">
+                        {tabContents[2]}
+                    </div>
+                </>
+            )}
         </>
     );
 }
