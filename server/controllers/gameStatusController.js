@@ -168,6 +168,9 @@ controller.getGamesWithSessions = async (req, res) => {
                     return total + (session.time_played || 0); // Additionner le temps joué dans chaque session
                 }, 0);
 
+                // Calculer le nombre de sessions
+                const sessionCount = gameSessions.length; // Compter le nombre de sessions
+
                 // Calculer la note moyenne des utilisateurs pour ce jeu
                 const avgRatingResult = await gameRatings.findOne({
                     where: {igdb_game_id: igdbGameId}, // On filtre par le jeu
@@ -197,6 +200,7 @@ controller.getGamesWithSessions = async (req, res) => {
                     lastSessionDate: formattedLastSessionDate, // Dernière session formatée en français
                     averageRating: averageRating, // Moyenne des évaluations des utilisateurs
                     totalTimePlayed: totalTimePlayed, // Temps total joué
+                    sessionCount: sessionCount, // Nombre total de sessions
                     platform: platformName, // Nom de la plateforme
                 };
             })
