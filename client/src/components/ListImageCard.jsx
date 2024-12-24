@@ -1,16 +1,19 @@
+import {useNavigate} from 'react-router-dom'; // Ajouter cet import
 import React from "react";
 import {Box, Card} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
-import {useNavigate} from "react-router-dom";
 
 function ListImageCard({id, image, title, rating, genres = [], platform}) {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Initialiser useNavigate
 
     const handleCardClick = () => {
         console.log("Navigating to details with ID:", id);
-        navigate(`/details/${id}`);
+        navigate(`/details/${id}`);  // Utiliser navigate pour la navigation
     };
+
+    // Assurer que genres est un tableau
+    const safeGenres = Array.isArray(genres) ? genres : [];
 
     return (
         <Card
@@ -93,27 +96,57 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                             gap: "8px",
                         }}
                     >
-                        {genres.map((genre, index) => (
+                        {safeGenres.length > 0 ? (
+                            safeGenres.map((genre, index) => (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        padding: "5px 10px",
+                                        background: "#FE4A49",
+                                        boxShadow: "0px 0px 2px #000000",
+                                        borderRadius: "5px",
+                                        color: "#FFF",
+                                        fontSize: "0.8em",
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    {genre.name} {/* Afficher le nom du genre */}
+                                </Box>
+                            ))
+                        ) : (
                             <Box
-                                key={index}
                                 sx={{
                                     padding: "5px 10px",
-                                    background: "#FE4A49",
-                                    boxShadow: "0px 0px 2px #000000",
+                                    background: "#ccc",
                                     borderRadius: "5px",
                                     color: "#FFF",
                                     fontSize: "0.8em",
                                     fontWeight: "bold",
                                     textAlign: "center",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
                                 }}
                             >
-                                {genre}
+                                Aucun genre disponible
                             </Box>
-                        ))}
+                        )}
                     </Box>
+                </Box>
+
+                {/* Affichage de la plateforme */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginTop: "10px",
+                        fontSize: "0.9em",
+                        fontWeight: "bold",
+                        color: "#333",
+                    }}
+                >
+                    <span>Plateforme : {platform || "Non spécifiée"}</span>
                 </Box>
 
                 {/* Note en haut à droite */}

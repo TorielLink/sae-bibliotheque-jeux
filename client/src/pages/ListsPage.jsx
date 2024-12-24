@@ -14,11 +14,11 @@ import {
 } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridViewIcon from '@mui/icons-material/GridView';
-// On importe la carte overlay
-import GameCardTitle from "../components/GameCardTitle.jsx";
-import StarRating from "../components/StarRating.jsx";
 import ViewWeekIcon from '@mui/icons-material/ViewWeek';
+import GameCardTitle from "../components/GameCardTitle.jsx";
 import ListImageCard from "../components/ListImageCard.jsx";
+import StarRating from "../components/StarRating.jsx";
+
 
 const ListsPage = () => {
     const {user} = useContext(AuthContext);
@@ -29,147 +29,13 @@ const ListsPage = () => {
 
     // Options de tri
     const filters = [
-        {id: 'finish', label: 'Terminés'},          // Finish
-        {id: 'playing', label: 'En cours'},        // Playing
-        {id: 'library', label: 'Dans la bibliothèque'}, // Library
-        {id: 'wishlist', label: 'Liste de souhaits'},   // Wishlist
-        {id: 'paused', label: 'En pause'},         // Paused
-        {id: 'stopped', label: 'Abandonnés'},      // Stopped
+        {id: 'finish', label: 'Terminés'},
+        {id: 'playing', label: 'En cours'},
+        {id: 'library', label: 'Dans la bibliothèque'},
+        {id: 'wishlist', label: 'Liste de souhaits'},
+        {id: 'paused', label: 'En pause'},
+        {id: 'stopped', label: 'Abandonnés'},
     ];
-
-
-    const handleFilterChange = (filter) => {
-        setSelectedFilter(filter);
-    };
-
-    // Jeux factices
-    const fakeGames = {
-        finish: [
-            {
-                igdb_game_id: 1942,
-                platform: "PlayStation",
-                lastSessionDate: "18-12-2024",
-                timePlayed: 152,
-                userRating: 8,
-                averageRating: "8.0",
-                title: "The Witcher 3: Wild Hunt",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wyy.png",
-                releaseDate: "19-05-2015",
-                genres: [
-                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ]
-            },
-            {
-                igdb_game_id: 2958,
-                platform: "PC",
-                lastSessionDate: "15-12-2024",
-                timePlayed: 200,
-                userRating: 9,
-                averageRating: "9.0",
-                title: "Cyberpunk 2077",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4wyy.png",
-                releaseDate: "10-12-2020",
-                genres: [
-                    {id: 31, name: "Adventure", slug: "adventure"},
-                    {id: 15, name: "Shooter", slug: "shooter"}
-                ]
-            }
-        ],
-        playing: [
-            {
-                igdb_game_id: 5896,
-                platform: "Switch",
-                lastSessionDate: "01-12-2024",
-                timePlayed: 50,
-                userRating: 7,
-                averageRating: "7.5",
-                title: "Hades",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co5hades.png",
-                releaseDate: "17-09-2020",
-                genres: [
-                    {id: 24, name: "Indie", slug: "indie"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ]
-            }
-        ],
-        library: [
-            {
-                igdb_game_id: 8761,
-                platform: "PC",
-                lastSessionDate: null,
-                timePlayed: 0,
-                userRating: null,
-                averageRating: "8.2",
-                title: "Elden Ring",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6eldenring.png",
-                releaseDate: "25-02-2022",
-                genres: [
-                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ]
-            }
-        ],
-        wishlist: [
-            {
-                igdb_game_id: 9021,
-                platform: "PlayStation",
-                lastSessionDate: null,
-                timePlayed: 0,
-                userRating: null,
-                averageRating: "7.8",
-                title: "Final Fantasy XVI",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7ffxvi.png",
-                releaseDate: "22-06-2023",
-                genres: [
-                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ]
-            }
-        ],
-        paused: [
-            {
-                igdb_game_id: 3045,
-                platform: "Xbox",
-                lastSessionDate: "05-12-2024",
-                timePlayed: 45,
-                userRating: 6,
-                averageRating: "6.5",
-                title: "Anthem",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1anthem.png",
-                releaseDate: "22-02-2019",
-                genres: [
-                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ]
-            }
-        ],
-        stopped: [
-            {
-                igdb_game_id: 4563,
-                platform: "PC",
-                lastSessionDate: "30-11-2024",
-                timePlayed: 120,
-                userRating: 5,
-                averageRating: "5.8",
-                title: "Fallout 76",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4fallout.png",
-                releaseDate: "14-11-2018",
-                genres: [
-                    {id: 31, name: "Adventure", slug: "adventure"},
-                    {id: 25, name: "Survival", slug: "survival"}
-                ]
-            }
-        ]
-    };
-
-    const formatPlayTime = (minutes) => {
-        const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
-        return `${hours} h ${mins} min`;
-    };
-
-    const games = fakeGames[selectedFilter]?.slice(0, 5) || [];
 
     const tableHeaders = {
         finish: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // Terminés
@@ -181,14 +47,144 @@ const ListsPage = () => {
     };
 
 
-    const filterColors = {
-        termines: '#D6BBFB',
-        en_cours: '#A3D9FF',
-        a_jouer: '#FFD9A3',
-        liste_de_souhaits: '#FFD1D1',
-        en_pause: '#FFE1A3',
-        abandonnes: '#D1FFD1',
+    const handleFilterChange = (filter) => {
+        setSelectedFilter(filter);
     };
+
+    const fakeGames = {
+        finish: [
+            {
+                igdb_game_id: 1942,
+                platform: "PlayStation",
+                lastSessionDate: "18-12-2024",
+                timePlayed: 152,
+                userRating: 4.5,
+                averageRating: "4",
+                title: "The Witcher 3: Wild Hunt",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wyy.png",
+                releaseDate: "19-05-2015",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ],
+                sessions: 12,  // Nombre de sessions
+            },
+            {
+                igdb_game_id: 2958,
+                platform: "PC",
+                lastSessionDate: "15-12-2024",
+                timePlayed: 200,
+                userRating: 2,
+                averageRating: "0",
+                title: "Cyberpunk 2077",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4wyy.png",
+                releaseDate: "10-12-2020",
+                genres: [
+                    {id: 31, name: "Adventure", slug: "adventure"},
+                    {id: 15, name: "Shooter", slug: "shooter"}
+                ],
+                sessions: 25,  // Nombre de sessions
+            }
+        ],
+        playing: [
+            {
+                igdb_game_id: 5896,
+                platform: "Switch",
+                lastSessionDate: "01-12-2024",
+                timePlayed: 50,
+                userRating: 1,
+                averageRating: "3.5",
+                title: "Hades",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co5hades.png",
+                releaseDate: "17-09-2020",
+                genres: [
+                    {id: 24, name: "Indie", slug: "indie"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ],
+                sessions: 5,  // Nombre de sessions
+            }
+        ],
+        library: [
+            {
+                igdb_game_id: 8761,
+                platform: "PC",
+                lastSessionDate: null,
+                timePlayed: 0,
+                userRating: null,
+                averageRating: "4.2",
+                title: "Elden Ring",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6eldenring.png",
+                releaseDate: "25-02-2022",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ],
+                sessions: 0,  // Nombre de sessions
+            }
+        ],
+        wishlist: [
+            {
+                igdb_game_id: 9021,
+                platform: "PlayStation",
+                lastSessionDate: null,
+                timePlayed: 0,
+                userRating: null,
+                averageRating: "3.8",
+                title: "Final Fantasy XVI",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7ffxvi.png",
+                releaseDate: "22-06-2023",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ],
+                sessions: 0,  // Nombre de sessions
+            }
+        ],
+        paused: [
+            {
+                igdb_game_id: 3045,
+                platform: "Xbox",
+                lastSessionDate: "05-12-2024",
+                timePlayed: 45,
+                userRating: 5,
+                averageRating: "2.5",
+                title: "Anthem",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1anthem.png",
+                releaseDate: "22-02-2019",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ],
+                sessions: 7,  // Nombre de sessions
+            }
+        ],
+        stopped: [
+            {
+                igdb_game_id: 4563,
+                platform: "PC",
+                lastSessionDate: "30-11-2024",
+                timePlayed: 120,
+                userRating: 5,
+                averageRating: "5.0",
+                title: "Fallout 76",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4fallout.png",
+                releaseDate: "14-11-2018",
+                genres: [
+                    {id: 31, name: "Adventure", slug: "adventure"},
+                    {id: 25, name: "Survival", slug: "survival"}
+                ],
+                sessions: 15,  // Nombre de sessions
+            }
+        ]
+    };
+
+    const formatPlayTime = (minutes) => {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours} h ${mins} min`;
+    };
+
+    const games = fakeGames[selectedFilter]?.slice(0, 5) || [];
 
     return (
         <Box style={{padding: '2px'}}>
@@ -242,7 +238,6 @@ const ListsPage = () => {
                             ))}
                         </Box>
                     </Box>
-
                 </Grid>
                 <Grid item md={4}>
                     {/* Box pour les boutons de gestion d'affichage*/}
@@ -264,7 +259,7 @@ const ListsPage = () => {
                                 boxShadow: '0px 0px 7px #000000',
                             }}
                         >
-                            {/* Bouton 1 : Liste */}
+                            {/* Bouton : Liste */}
                             <Button
                                 variant="text"
                                 onClick={() => setViewMode('list')}
@@ -279,29 +274,10 @@ const ListsPage = () => {
                                     },
                                 }}
                             >
-                                <GridViewIcon/>
-                            </Button>
-
-                            {/* Bouton 2 : Grid */}
-
-
-                            {/* Bouton 3 : Table */}
-                            <Button
-                                variant="text"
-                                onClick={() => setViewMode('table')}
-                                sx={{
-                                    backgroundColor: viewMode === 'table' ? '#e0e0e0' : 'transparent',
-                                    color: '#000',
-                                    borderRadius: 0,
-                                    minWidth: 0,
-                                    padding: '0 8px',
-                                    '&:hover': {
-                                        backgroundColor: '#d0d0d0',
-                                    },
-                                }}
-                            >
                                 <FormatListBulletedIcon/>
                             </Button>
+
+                            {/* Bouton : Grid */}
                             <Button
                                 variant="text"
                                 onClick={() => setViewMode('grid')}
@@ -316,14 +292,32 @@ const ListsPage = () => {
                                     },
                                 }}
                             >
+                                <GridViewIcon/>
+                            </Button>
+
+                            {/* Bouton : Table */}
+                            <Button
+                                variant="text"
+                                onClick={() => setViewMode('table')}
+                                sx={{
+                                    backgroundColor: viewMode === 'table' ? '#e0e0e0' : 'transparent',
+                                    color: '#000',
+                                    borderRadius: 0,
+                                    minWidth: 0,
+                                    padding: '0 8px',
+                                    '&:hover': {
+                                        backgroundColor: '#d0d0d0',
+                                    },
+                                }}
+                            >
                                 <ViewWeekIcon/>
                             </Button>
                         </Box>
                     </Box>
                 </Grid>
-
             </Grid>
 
+            {/* Vue Grille */}
             {viewMode === 'grid' && (
                 <Box
                     sx={{
@@ -346,28 +340,19 @@ const ListsPage = () => {
                     ))}
                 </Box>
             )}
+
+            {/* Vue Liste */}
             {viewMode === 'list' && (
-                <Grid
-                    container
-                    spacing={2}
-                    justifyContent="center"
-                    sx={{mt: "20px"}}
-                >
+                <Grid container spacing={2} justifyContent="center" sx={{mt: "20px"}}>
                     {games.map((game) => (
-                        <Grid
-                            item
-                            key={game.igdb_game_id}
-                            xs={12}
-                            sm={6}
-                            md={5.5} // Réduit légèrement la taille des cartes
-                        >
+                        <Grid item key={game.igdb_game_id} xs={12} sm={6} md={5.5}>
                             <ListImageCard
                                 id={game.igdb_game_id}
                                 image={game.cover}
                                 title={game.title}
                                 rating={game.userRating || game.averageRating || "—"}
-                                genres={game.genres.map(genre => genre.name).join(', ') || '—'}
-                                platform={game.platform || "—"}
+                                genres={game.genres || []}
+                                platform={game.platform || "Non spécifiée"}
                             />
                         </Grid>
                     ))}
@@ -400,6 +385,8 @@ const ListsPage = () => {
                                         borderRight: '1px solid #000',
                                         textAlign: 'center'
                                     }}>{game.title}</TableCell>
+
+                                    {/* Filter: finished */}
                                     {selectedFilter === 'finish' && (
                                         <>
                                             <TableCell sx={{
@@ -410,12 +397,15 @@ const ListsPage = () => {
                                                 {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform}
+                                                {game.platform || 'Non spécifiée'}
                                             </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.userRating || 0}/></TableCell>
+                                            <TableCell sx={{textAlign: 'center'}}>
+                                                <StarRating rating={game.userRating || 0}/>
+                                            </TableCell>
                                         </>
                                     )}
+
+                                    {/* Filter: playing */}
                                     {selectedFilter === 'playing' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
@@ -428,36 +418,45 @@ const ListsPage = () => {
                                                 {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform}
+                                                {game.platform || 'Non spécifiée'}
                                             </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.userRating || 0}/></TableCell>
+                                            <TableCell sx={{textAlign: 'center'}}>
+                                                <StarRating rating={game.userRating || 0}/>
+                                            </TableCell>
                                         </>
                                     )}
+
+                                    {/* Filter: library */}
                                     {selectedFilter === 'library' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres.map(genre => genre.name).join(', ') || '—'}
+                                                {game.genres ? game.genres.map(genre => genre.name).join(', ') : '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform || '—'}
+                                                {game.platform || 'Non spécifiée'}
                                             </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}><StarRating
-                                                rating={game.averageRating || 0}/></TableCell>
+                                            <TableCell sx={{textAlign: 'center'}}>
+                                                <StarRating rating={game.averageRating || 0}/>
+                                            </TableCell>
                                         </>
                                     )}
+
+                                    {/* Filter: wishlist */}
                                     {selectedFilter === 'wishlist' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres.map(genre => genre.name).join(', ') || '—'}
+                                                {game.genres ? game.genres.map(genre => genre.name).join(', ') : '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.releaseDate || '—'}
                                             </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}><StarRating
-                                                rating={game.averageRating || 0}/></TableCell>
+                                            <TableCell sx={{textAlign: 'center'}}>
+                                                <StarRating rating={game.averageRating || 0}/>
+                                            </TableCell>
                                         </>
                                     )}
+
+                                    {/* Filter: paused */}
                                     {selectedFilter === 'paused' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
@@ -470,12 +469,15 @@ const ListsPage = () => {
                                                 {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform}
+                                                {game.platform || 'Non spécifiée'}
                                             </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.userRating || 0}/></TableCell>
+                                            <TableCell sx={{textAlign: 'center'}}>
+                                                <StarRating rating={game.userRating || 0}/>
+                                            </TableCell>
                                         </>
                                     )}
+
+                                    {/* Filter: stopped */}
                                     {selectedFilter === 'stopped' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
@@ -488,10 +490,11 @@ const ListsPage = () => {
                                                 {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform}
+                                                {game.platform || 'Non spécifiée'}
                                             </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.userRating || 0}/></TableCell>
+                                            <TableCell sx={{textAlign: 'center'}}>
+                                                <StarRating rating={game.userRating || 0}/>
+                                            </TableCell>
                                         </>
                                     )}
                                 </TableRow>
@@ -500,7 +503,6 @@ const ListsPage = () => {
                     </Table>
                 </TableContainer>
             )}
-
 
         </Box>
     );
