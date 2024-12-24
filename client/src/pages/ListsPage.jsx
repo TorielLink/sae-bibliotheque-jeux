@@ -10,7 +10,9 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridViewIcon from '@mui/icons-material/GridView';
@@ -19,16 +21,16 @@ import GameCardTitle from "../components/GameCardTitle.jsx";
 import ListImageCard from "../components/ListImageCard.jsx";
 import StarRating from "../components/StarRating.jsx";
 
-
 const ListsPage = () => {
     const {user} = useContext(AuthContext);
     const userId = user?.id;
 
-    // vue par défaut
     const [selectedFilter, setSelectedFilter] = useState('finish');
     const [viewMode, setViewMode] = useState('grid');
 
-    // Options de tri
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const filters = [
         {id: 'finish', label: 'Terminés'},
         {id: 'playing', label: 'En cours'},
@@ -39,14 +41,13 @@ const ListsPage = () => {
     ];
 
     const tableHeaders = {
-        finish: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // Terminés
-        playing: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // En cours
-        library: ['Nom du jeu', 'Genres', 'Plateforme', 'Note moyenne'], // Dans la bibliothèque
-        wishlist: ['Nom du jeu', 'Genres', 'Date de sortie', 'Note moyenne'], // Liste de souhaits
-        paused: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // En pause
-        stopped: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // Abandonnés
+        finish: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
+        playing: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
+        library: ['Nom du jeu', 'Genres', 'Plateforme', 'Note moyenne'],
+        wishlist: ['Nom du jeu', 'Genres', 'Date de sortie', 'Note moyenne'],
+        paused: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
+        stopped: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
     };
-
 
     const handleFilterChange = (filter) => {
         setSelectedFilter(filter);
@@ -68,7 +69,7 @@ const ListsPage = () => {
                     {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
                     {id: 31, name: "Adventure", slug: "adventure"}
                 ],
-                sessions: 12,  // Nombre de sessions
+                sessions: 12,
             },
             {
                 igdb_game_id: 2958,
@@ -84,7 +85,7 @@ const ListsPage = () => {
                     {id: 31, name: "Adventure", slug: "adventure"},
                     {id: 15, name: "Shooter", slug: "shooter"}
                 ],
-                sessions: 25,  // Nombre de sessions
+                sessions: 25,
             }
         ],
         playing: [
@@ -102,79 +103,7 @@ const ListsPage = () => {
                     {id: 24, name: "Indie", slug: "indie"},
                     {id: 31, name: "Adventure", slug: "adventure"}
                 ],
-                sessions: 5,  // Nombre de sessions
-            }
-        ],
-        library: [
-            {
-                igdb_game_id: 8761,
-                platform: "PC",
-                lastSessionDate: null,
-                timePlayed: 0,
-                userRating: null,
-                averageRating: "4.2",
-                title: "Elden Ring",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6eldenring.png",
-                releaseDate: "25-02-2022",
-                genres: [
-                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ],
-                sessions: 0,  // Nombre de sessions
-            }
-        ],
-        wishlist: [
-            {
-                igdb_game_id: 9021,
-                platform: "PlayStation",
-                lastSessionDate: null,
-                timePlayed: 0,
-                userRating: null,
-                averageRating: "3.8",
-                title: "Final Fantasy XVI",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7ffxvi.png",
-                releaseDate: "22-06-2023",
-                genres: [
-                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ],
-                sessions: 0,  // Nombre de sessions
-            }
-        ],
-        paused: [
-            {
-                igdb_game_id: 3045,
-                platform: "Xbox",
-                lastSessionDate: "05-12-2024",
-                timePlayed: 45,
-                userRating: 5,
-                averageRating: "2.5",
-                title: "Anthem",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1anthem.png",
-                releaseDate: "22-02-2019",
-                genres: [
-                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
-                    {id: 31, name: "Adventure", slug: "adventure"}
-                ],
-                sessions: 7,  // Nombre de sessions
-            }
-        ],
-        stopped: [
-            {
-                igdb_game_id: 4563,
-                platform: "PC",
-                lastSessionDate: "30-11-2024",
-                timePlayed: 120,
-                userRating: 5,
-                averageRating: "5.0",
-                title: "Fallout 76",
-                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4fallout.png",
-                releaseDate: "14-11-2018",
-                genres: [
-                    {id: 31, name: "Adventure", slug: "adventure"},
-                    {id: 25, name: "Survival", slug: "survival"}
-                ],
-                sessions: 15,  // Nombre de sessions
+                sessions: 5,
             }
         ]
     };
@@ -188,10 +117,9 @@ const ListsPage = () => {
     const games = fakeGames[selectedFilter]?.slice(0, 5) || [];
 
     return (
-        <Box style={{padding: '2px'}}>
-            {/* Conteneur principal */}
+        <Box style={{padding: '2px', overflowX: 'hidden', overflowY: 'auto'}}>
             <Grid container sx={{m: 1}} alignItems='flex-start' columnSpacing={2}>
-                <Grid item md={8}>
+                <Grid item xs={12} md={8}>
                     <Box
                         sx={{
                             display: 'flex',
@@ -201,24 +129,24 @@ const ListsPage = () => {
                             boxShadow: '0px 0px 7px #000000',
                             borderRadius: '5px',
                             padding: '0 10px',
-                            height: '45px'
+                            height: '45px',
                         }}
                     >
-                        {/* Barre de filtres alignée horizontalement */}
                         <Box
                             sx={{
                                 display: 'flex',
                                 flex: 1,
                                 alignItems: 'center',
                                 justifyContent: 'space-around',
+                                flexWrap: isMobile ? 'wrap' : 'nowrap',
+                                fontSize: isMobile ? '12px' : '14px',
                             }}
                         >
                             {filters.map((filter) => (
                                 <Box
                                     key={filter.id}
                                     sx={{
-                                        width: '100%',
-                                        margin: '0 auto',
+                                        margin: '0 5px',
                                         padding: '8px 16px',
                                         cursor: 'pointer',
                                         backgroundColor: selectedFilter === filter.id ? '#D6BBFB' : 'transparent',
@@ -227,10 +155,6 @@ const ListsPage = () => {
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        borderRight: '1px solid #E0E0E0',
-                                        '&:last-child': {
-                                            borderRight: 'none',
-                                        },
                                     }}
                                     onClick={() => handleFilterChange(filter.id)}
                                 >
@@ -240,85 +164,78 @@ const ListsPage = () => {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item md={4}>
-                    {/* Box pour les boutons de gestion d'affichage*/}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 1,
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-around',
-                                width: '150px',
-                                backgroundColor: 'D9D9D9',
-                                borderRadius: '5px',
-                                height: '45px',
-                                boxShadow: '0px 0px 7px #000000',
-                            }}
-                        >
-                            {/* Bouton : Liste */}
-                            <Button
-                                variant="text"
-                                onClick={() => setViewMode('list')}
-                                sx={{
-                                    backgroundColor: viewMode === 'list' ? '#e0e0e0' : 'transparent',
-                                    color: '#000',
-                                    borderRadius: 90,
-                                    minWidth: 0,
-                                    padding: '0 8px',
-                                    '&:hover': {
-                                        backgroundColor: '#d0d0d0',
-                                    },
-                                }}
-                            >
-                                <FormatListBulletedIcon/>
-                            </Button>
 
-                            {/* Bouton : Grid */}
-                            <Button
-                                variant="text"
-                                onClick={() => setViewMode('grid')}
+                {!isMobile && (
+                    <Grid item md={4}>
+                        <Box sx={{display: 'flex', gap: 1}}>
+                            <Box
                                 sx={{
-                                    backgroundColor: viewMode === 'grid' ? '#e0e0e0' : 'transparent',
-                                    color: '#000',
-                                    borderRadius: 0,
-                                    minWidth: 0,
-                                    padding: '0 8px',
-                                    '&:hover': {
-                                        backgroundColor: '#d0d0d0',
-                                    },
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-around',
+                                    width: '150px',
+                                    backgroundColor: 'D9D9D9',
+                                    borderRadius: '5px',
+                                    height: '45px',
+                                    boxShadow: '0px 0px 7px #000000',
                                 }}
                             >
-                                <GridViewIcon/>
-                            </Button>
+                                <Button
+                                    variant="text"
+                                    onClick={() => setViewMode('list')}
+                                    sx={{
+                                        backgroundColor: viewMode === 'list' ? '#e0e0e0' : 'transparent',
+                                        color: '#000',
+                                        borderRadius: 90,
+                                        minWidth: 0,
+                                        padding: '0 8px',
+                                        '&:hover': {
+                                            backgroundColor: '#d0d0d0',
+                                        },
+                                    }}
+                                >
+                                    <FormatListBulletedIcon/>
+                                </Button>
 
-                            {/* Bouton : Table */}
-                            <Button
-                                variant="text"
-                                onClick={() => setViewMode('table')}
-                                sx={{
-                                    backgroundColor: viewMode === 'table' ? '#e0e0e0' : 'transparent',
-                                    color: '#000',
-                                    borderRadius: 0,
-                                    minWidth: 0,
-                                    padding: '0 8px',
-                                    '&:hover': {
-                                        backgroundColor: '#d0d0d0',
-                                    },
-                                }}
-                            >
-                                <ViewWeekIcon/>
-                            </Button>
+                                <Button
+                                    variant="text"
+                                    onClick={() => setViewMode('grid')}
+                                    sx={{
+                                        backgroundColor: viewMode === 'grid' ? '#e0e0e0' : 'transparent',
+                                        color: '#000',
+                                        borderRadius: 0,
+                                        minWidth: 0,
+                                        padding: '0 8px',
+                                        '&:hover': {
+                                            backgroundColor: '#d0d0d0',
+                                        },
+                                    }}
+                                >
+                                    <GridViewIcon/>
+                                </Button>
+
+                                <Button
+                                    variant="text"
+                                    onClick={() => setViewMode('table')}
+                                    sx={{
+                                        backgroundColor: viewMode === 'table' ? '#e0e0e0' : 'transparent',
+                                        color: '#000',
+                                        borderRadius: 0,
+                                        minWidth: 0,
+                                        padding: '0 8px',
+                                        '&:hover': {
+                                            backgroundColor: '#d0d0d0',
+                                        },
+                                    }}
+                                >
+                                    <ViewWeekIcon/>
+                                </Button>
+                            </Box>
                         </Box>
-                    </Box>
-                </Grid>
+                    </Grid>
+                )}
             </Grid>
 
-            {/* Vue Grille */}
             {viewMode === 'grid' && (
                 <Box
                     sx={{
@@ -342,7 +259,6 @@ const ListsPage = () => {
                 </Box>
             )}
 
-            {/* Vue Liste */}
             {viewMode === 'list' && (
                 <Grid container spacing={2} justifyContent="center" sx={{mt: "20px"}}>
                     {games.map((game) => (
@@ -388,138 +304,8 @@ const ListsPage = () => {
                                         {game.title}
                                     </TableCell>
 
-                                    {/* Filter: finished */}
                                     {selectedFilter === 'finish' && (
                                         <>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.sessions || '—'}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {formatPlayTime(game.timePlayed)}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform || 'Non spécifiée'}
-                                            </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}>
-                                                <StarRating rating={game.userRating || 0}/>
-                                            </TableCell>
-                                        </>
-                                    )}
-
-                                    {/* Filter: playing */}
-                                    {selectedFilter === 'playing' && (
-                                        <>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.lastSessionDate || '—'}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.sessions || '—'}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {formatPlayTime(game.timePlayed)}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform || 'Non spécifiée'}
-                                            </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}>
-                                                <StarRating rating={game.userRating || 0}/>
-                                            </TableCell>
-                                        </>
-                                    )}
-
-                                    {/* Filter: library */}
-                                    {selectedFilter === 'library' && (
-                                        <>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres ? (
-                                                    game.genres.map((genre, index) => (
-                                                        <span
-                                                            key={index}
-                                                            style={{
-                                                                background: '#FE4A49',
-                                                                boxShadow: '0px 0px 2px #000000',
-                                                                borderRadius: '2px',
-                                                                padding: '2px 6px',
-                                                                marginRight: '4px',
-                                                                color: '#fff',
-                                                            }}
-                                                        >
-                                                {genre.name}
-                                            </span>
-                                                    ))
-                                                ) : (
-                                                    '—'
-                                                )}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform || 'Non spécifiée'}
-                                            </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}>
-                                                <StarRating rating={game.averageRating || 0}/>
-                                            </TableCell>
-                                        </>
-                                    )}
-
-                                    {/* Filter: wishlist */}
-                                    {selectedFilter === 'wishlist' && (
-                                        <>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres ? (
-                                                    game.genres.map((genre, index) => (
-                                                        <span
-                                                            key={index}
-                                                            style={{
-                                                                background: '#FE4A49',
-                                                                boxShadow: '0px 0px 2px #000000',
-                                                                borderRadius: '2px',
-                                                                padding: '2px 6px',
-                                                                marginRight: '4px',
-                                                                color: '#fff',
-                                                            }}
-                                                        >
-                                                {genre.name}
-                                            </span>
-                                                    ))
-                                                ) : (
-                                                    '—'
-                                                )}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.releaseDate || '—'}
-                                            </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}>
-                                                <StarRating rating={game.averageRating || 0}/>
-                                            </TableCell>
-                                        </>
-                                    )}
-
-                                    {/* Filter: paused */}
-                                    {selectedFilter === 'paused' && (
-                                        <>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.lastSessionDate || '—'}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.sessions || '—'}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {formatPlayTime(game.timePlayed)}
-                                            </TableCell>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform || 'Non spécifiée'}
-                                            </TableCell>
-                                            <TableCell sx={{textAlign: 'center'}}>
-                                                <StarRating rating={game.userRating || 0}/>
-                                            </TableCell>
-                                        </>
-                                    )}
-
-                                    {/* Filter: stopped */}
-                                    {selectedFilter === 'stopped' && (
-                                        <>
-                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.lastSessionDate || '—'}
-                                            </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.sessions || '—'}
                                             </TableCell>
