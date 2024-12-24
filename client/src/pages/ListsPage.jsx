@@ -14,10 +14,11 @@ import {
 } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridViewIcon from '@mui/icons-material/GridView';
-import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 // On importe la carte overlay
-import {OverlayGameCard} from '../components/GameCard';
+import GameCardTitle from "../components/GameCardTitle.jsx";
 import StarRating from "../components/StarRating.jsx";
+import ViewWeekIcon from '@mui/icons-material/ViewWeek';
+import ListImageCard from "../components/ListImageCard.jsx";
 
 const ListsPage = () => {
     const {user} = useContext(AuthContext);
@@ -51,6 +52,7 @@ const ListsPage = () => {
                 playTime: 3012,
                 platform: 'PS5',
                 rating: 4.5,
+                genres: ['RPG', 'Fantasy'],
             },
             {
                 id: 2,
@@ -60,6 +62,7 @@ const ListsPage = () => {
                 playTime: 730,
                 platform: 'PS5',
                 rating: 4,
+                genres: ['RPG', 'Fantasy'],
             }
         ],
         en_cours: [
@@ -67,7 +70,8 @@ const ListsPage = () => {
                 id: 4,
                 cover: 'https://via.placeholder.com/150',
                 name: 'Elden Ring',
-                lastSessionDate: '2024-01-02',
+                lastSessionDate: '01-10-2023',
+                genres: ['RPG', 'Fantasy'],
                 sessions: 10,
                 playTime: 1200,
                 platform: 'PC',
@@ -77,11 +81,12 @@ const ListsPage = () => {
                 id: 5,
                 cover: 'https://via.placeholder.com/150',
                 name: 'Hades',
-                lastSessionDate: '2023-12-15',
+                lastSessionDate: '01-10-2023',
                 sessions: 15,
                 playTime: 800,
                 platform: 'Switch',
                 rating: 4,
+                genres: ['RPG', 'Fantasy'],
             }
         ],
         a_jouer: [
@@ -89,7 +94,7 @@ const ListsPage = () => {
                 id: 7,
                 cover: 'https://via.placeholder.com/150',
                 name: 'Final Fantasy XVI',
-                genres: ['RPG'],
+                genres: ['RPG', 'Fantasy'],
                 platform: 'PS5',
                 aggregatedRating: 3,
             }
@@ -109,11 +114,12 @@ const ListsPage = () => {
                 id: 13,
                 cover: 'https://via.placeholder.com/150',
                 name: 'The Witcher 3: Wild Hunt',
-                lastSessionDate: '2024-01-10',
+                lastSessionDate: '01-10-2023',
                 sessions: 20,
                 playTime: 2000,
                 platform: 'PC',
                 rating: 1,
+                genres: ['RPG', 'Fantasy'],
             }
         ],
         abandonnes: [
@@ -126,6 +132,7 @@ const ListsPage = () => {
                 playTime: 300,
                 platform: 'PC',
                 rating: 2,
+                genres: ['RPG', 'Fantasy'],
             }
         ],
     };
@@ -245,7 +252,7 @@ const ListsPage = () => {
                                     },
                                 }}
                             >
-                                <ViewColumnIcon/>
+                                <GridViewIcon/>
                             </Button>
 
                             {/* Bouton 2 : Grid */}
@@ -282,7 +289,7 @@ const ListsPage = () => {
                                     },
                                 }}
                             >
-                                <GridViewIcon/>
+                                <ViewWeekIcon/>
                             </Button>
                         </Box>
                     </Box>
@@ -302,7 +309,7 @@ const ListsPage = () => {
                     }}
                 >
                     {games.map((game) => (
-                        <OverlayGameCard
+                        <GameCardTitle
                             key={game.id}
                             id={game.id}
                             image={game.cover}
@@ -312,86 +319,35 @@ const ListsPage = () => {
                     ))}
                 </Box>
             )}
-
             {viewMode === 'list' && (
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, mt: '80px'}}>
+                <Grid
+                    container
+                    spacing={2}
+                    justifyContent="center"
+                    sx={{mt: "20px"}}
+                >
                     {games.map((game) => (
-                        <Box
+                        <Grid
+                            item
                             key={game.id}
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                border: '1px solid #ddd',
-                                padding: 2,
-                            }}
+                            xs={12}
+                            sm={6}
+                            md={5.5} // Réduit légèrement la taille des cartes
                         >
-                            <img
-                                src={game.cover}
-                                alt={game.name}
-                                style={{width: '80px', height: '80px', marginRight: '10px'}}
+                            <ListImageCard
+                                id={game.id}
+                                image={game.cover}
+                                title={game.name}
+                                rating={game.rating || game.aggregatedRating || "—"}
+                                genres={game.genres || []}
+                                platform={game.platform || "—"}
                             />
-                            <Box>
-                                <h3 style={{margin: '0', fontSize: '14px'}}>{game.name}</h3>
-
-                                {selectedFilter === 'termines' && (
-                                    <>
-                                        <p>Nombre de sessions: {game.sessions || '—'}</p>
-                                        <p>Temps de jeu: {formatPlayTime(game.playTime || 0)}</p>
-                                        <p>Plateforme: {game.platform || '—'}</p>
-                                        <p>Ma note: <StarRating rating={game.rating || 0}/>
-                                        </p>
-                                    </>
-                                )}
-                                {selectedFilter === 'en_cours' && (
-                                    <>
-                                        <p>Dernière session: {game.lastSessionDate || '—'}</p>
-                                        <p>Nombre de sessions: {game.sessions || '—'}</p>
-                                        <p>Temps de jeu: {formatPlayTime(game.playTime || 0)}</p>
-                                        <p>Plateforme: {game.platform || '—'}</p>
-                                        <p>Ma note: <StarRating rating={game.rating || 0}/>
-                                        </p>
-                                    </>
-                                )}
-                                {selectedFilter === 'a_jouer' && (
-                                    <>
-                                        <p>Genres: {game.genres?.join(', ') || '—'}</p>
-                                        <p>Plateforme: {game.platform || '—'}</p>
-                                        <p>Note moyenne: <StarRating rating={game.aggregatedRating || 0}/></p>
-                                    </>
-                                )}
-                                {selectedFilter === 'liste_de_souhaits' && (
-                                    <>
-                                        <p>Genres: {game.genres?.join(', ') || '—'}</p>
-                                        <p>Date de sortie: {game.releaseDate || '—'}</p>
-                                        <p>Note moyenne: <StarRating rating={game.rating || 0}/>
-                                        </p>
-                                    </>
-                                )}
-                                {selectedFilter === 'en_pause' && (
-                                    <>
-                                        <p>Dernière session: {game.lastSessionDate || '—'}</p>
-                                        <p>Nombre de sessions: {game.sessions || '—'}</p>
-                                        <p>Temps de jeu: {formatPlayTime(game.playTime || 0)}</p>
-                                        <p>Plateforme: {game.platform || '—'}</p>
-                                        <p>Ma note: <StarRating rating={game.rating || 0}/>
-                                        </p>
-                                    </>
-                                )}
-                                {selectedFilter === 'abandonnes' && (
-                                    <>
-                                        <p>Dernière session: {game.lastSessionDate || '—'}</p>
-                                        <p>Nombre de sessions: {game.sessions || '—'}</p>
-                                        <p>Temps de jeu: {formatPlayTime(game.playTime || 0)}</p>
-                                        <p>Plateforme: {game.platform || '—'}</p>
-                                        <p>Ma note: <StarRating rating={game.rating || 0}/>
-                                        </p>
-                                    </>
-                                )}
-                            </Box>
-                        </Box>
+                        </Grid>
                     ))}
-                </Box>
+                </Grid>
+
             )}
+
 
             {viewMode === 'table' && (
                 <TableContainer component={Paper}

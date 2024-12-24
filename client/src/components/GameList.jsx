@@ -2,7 +2,7 @@ import React from "react";
 import {Box, Grid, useMediaQuery} from "@mui/material";
 import SectionTitle from "../components/SectionTitle.jsx";
 import {useTheme} from "@mui/material/styles";
-import {GameCard} from "./GameCard.jsx";
+import GameCard from "./GameCard.jsx";
 
 function GameList({title, games}) {
     const theme = useTheme();
@@ -15,7 +15,7 @@ function GameList({title, games}) {
 
             {isMobile ? (
                 <Grid container spacing={2} justifyContent="center" sx={{
-                    padding:'0.75em'
+                    padding: '0.75em'
                 }}> // TODO : passer de Grid (déprécié) à Grid2
                     {games.map((game) => (
                         <Grid
@@ -27,7 +27,7 @@ function GameList({title, games}) {
                                 padding: 0,
                                 display: "flex",
                                 justifyContent: "center"
-                        }}
+                            }}
                         >
                             {/* Ajout de l'ID ici */}
                             <GameCard

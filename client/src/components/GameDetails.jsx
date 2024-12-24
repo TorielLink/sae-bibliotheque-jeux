@@ -1,9 +1,9 @@
 import React from 'react';
-import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
+import {CalendarToday, ChildCare, SportsEsports} from '@mui/icons-material';
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import {useTheme} from "@mui/material/styles";
 import GameList from "./GameList.jsx";
-import {GameCard} from "./GameCard.jsx";
+import GameCard from "./GameCard.jsx";
 
 
 /**TODO :
@@ -12,9 +12,11 @@ import {GameCard} from "./GameCard.jsx";
  * - Limiter la taille des blocs (overflow: hidden)
  * - Ajouter les différentes listes supplémentaires (jeux similaires, DLC, Suites, etc.)
  */
-const GameDetails = ({name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
+const GameDetails = ({
+                         name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
-                         parentGame, similarGames}) => {
+                         parentGame, similarGames
+                     }) => {
     const theme = useTheme();
     const styles = getStyles(theme);
 
@@ -33,7 +35,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                 {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
                 <div style={styles.rightSection}>
-                    <GameDetailsNavBar activeSection={"details"} />
+                    <GameDetailsNavBar activeSection={"details"}/>
 
                     {/* Boutons d'actions rapides */}
                     <div style={styles.quickActions}>
@@ -89,19 +91,23 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                             {/* Détails et Notes */}
                             <div style={styles.detailsAndNotes}>
                                 {/* Détails */}
-                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['purple-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['purple-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Détails</h2>
                                     <ul style={styles.detailsList}>
                                         <li><SportsEsports style={styles.icon}/> {name || "Non disponible"}</li>
                                         <li><CalendarToday style={styles.icon}/> {
                                             releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() :
                                                 "Non disponible"}</li>
-                                        <li><ChildCare style={styles.icon} /> {ageRating || "Non précisé"}</li>
+                                        <li><ChildCare style={styles.icon}/> {ageRating || "Non précisé"}</li>
                                     </ul>
                                 </div>
 
                                 {/* Notes */}
-                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
+                                <div
+                                    style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
                                     <h2 style={styles.categoryHeader}>Note</h2>
                                     <div style={styles.ratings}>
                                         <div style={styles.ratingItem}>
@@ -118,15 +124,19 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                             {/* Synopsis ou Description */}
                             {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
-                                <div style={{...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['yellow-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['yellow-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Synopsis</h2>
                                     <p style={styles.synopsisText}>{detailedSynopsis}</p>
                                 </div>
                             ) : (
                                 description && (
-                                    <div style={{...styles.box,
-                                        backgroundColor: theme.palette.transparentColors['yellow-50']}}>
+                                    <div style={{
+                                        ...styles.box,
+                                        backgroundColor: theme.palette.transparentColors['yellow-50']
+                                    }}>
                                         <h2 style={styles.categoryHeader}>Résumé</h2>
                                         <p style={styles.synopsisText}>{description}</p>
                                     </div>
@@ -138,8 +148,10 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         <div style={styles.platformsAndGenres}>
                             {/* Plateformes */}
                             {platforms && platforms.length > 0 && (
-                                <div style={{...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['green-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['green-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Plateformes</h2>
                                     <ul style={styles.platformList}>
                                         {platforms.map((platform) => (
@@ -153,8 +165,10 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                             {/* Genres */}
                             {genres && genres.length > 0 && (
-                                <div style={{...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['blue-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['blue-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Genres</h2>
                                     <ul style={styles.genreList}>
                                         {genres.map((genre) => (
@@ -172,17 +186,17 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
             {/*Listes des jeux similiares, extensions, etc.*/}
             {dlcs && dlcs.length > 0 && (
-                <GameList title="DLC" games={dlcs} />)}
+                <GameList title="DLC" games={dlcs}/>)}
             {expansions && expansions.length > 0 && (
-                <GameList title="Extensions" games={expansions} />)}
+                <GameList title="Extensions" games={expansions}/>)}
             {remakes && remakes.length > 0 && (
-                <GameList title="Remakes" games={remakes} />)}
+                <GameList title="Remakes" games={remakes}/>)}
             {remasters && remasters.length > 0 && (
-                <GameList title="Remasters" games={remasters} />)}
+                <GameList title="Remasters" games={remasters}/>)}
             {standaloneExpansions && standaloneExpansions.length > 0 && (
-                <GameList title="Standalones" games={standaloneExpansions} />)}
+                <GameList title="Standalones" games={standaloneExpansions}/>)}
             {franchises && franchises.length > 0 && (
-                <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games} />)}
+                <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games}/>)}
             {parentGame && (
                 <GameCard
                     id={parentGame.id}
@@ -193,7 +207,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                 />)}
 
             {similarGames && similarGames.length > 0 && (
-                <GameList title= "Jeux similaires" games={similarGames} />)}
+                <GameList title="Jeux similaires" games={similarGames}/>)}
         </div>
     );
 };
