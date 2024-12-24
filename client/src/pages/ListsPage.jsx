@@ -29,13 +29,14 @@ const ListsPage = () => {
 
     // Options de tri
     const filters = [
-        {id: 'termines', label: 'Terminés'},
-        {id: 'en_cours', label: 'En cours'},
-        {id: 'a_jouer', label: 'À jouer'},
-        {id: 'liste_de_souhaits', label: 'Liste de souhaits'},
-        {id: 'en_pause', label: 'En pause'},
-        {id: 'abandonnes', label: 'Abandonnés'},
+        {id: 'finish', label: 'Terminés'},          // Finish
+        {id: 'playing', label: 'En cours'},        // Playing
+        {id: 'library', label: 'Dans la bibliothèque'}, // Library
+        {id: 'wishlist', label: 'Liste de souhaits'},   // Wishlist
+        {id: 'paused', label: 'En pause'},         // Paused
+        {id: 'stopped', label: 'Abandonnés'},      // Stopped
     ];
+
 
     const handleFilterChange = (filter) => {
         setSelectedFilter(filter);
@@ -43,98 +44,123 @@ const ListsPage = () => {
 
     // Jeux factices
     const fakeGames = {
-        termines: [
+        finish: [
             {
-                id: 1,
-                cover: 'https://via.placeholder.com/150',
-                name: 'Cyberpunk 2077',
-                sessions: 26,
-                playTime: 3012,
-                platform: 'PS5',
-                rating: 4.5,
-                genres: ['RPG', 'Fantasy'],
+                igdb_game_id: 1942,
+                platform: "PlayStation",
+                lastSessionDate: "18-12-2024",
+                timePlayed: 152,
+                userRating: 8,
+                averageRating: "8.0",
+                title: "The Witcher 3: Wild Hunt",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1wyy.png",
+                releaseDate: "19-05-2015",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ]
             },
             {
-                id: 2,
-                cover: 'https://via.placeholder.com/150',
-                name: 'Astro Bot',
-                sessions: 12,
-                playTime: 730,
-                platform: 'PS5',
-                rating: 4,
-                genres: ['RPG', 'Fantasy'],
+                igdb_game_id: 2958,
+                platform: "PC",
+                lastSessionDate: "15-12-2024",
+                timePlayed: 200,
+                userRating: 9,
+                averageRating: "9.0",
+                title: "Cyberpunk 2077",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4wyy.png",
+                releaseDate: "10-12-2020",
+                genres: [
+                    {id: 31, name: "Adventure", slug: "adventure"},
+                    {id: 15, name: "Shooter", slug: "shooter"}
+                ]
             }
         ],
-        en_cours: [
+        playing: [
             {
-                id: 4,
-                cover: 'https://via.placeholder.com/150',
-                name: 'Elden Ring',
-                lastSessionDate: '01-10-2023',
-                genres: ['RPG', 'Fantasy'],
-                sessions: 10,
-                playTime: 1200,
-                platform: 'PC',
-                rating: 4,
-            },
-            {
-                id: 5,
-                cover: 'https://via.placeholder.com/150',
-                name: 'Hades',
-                lastSessionDate: '01-10-2023',
-                sessions: 15,
-                playTime: 800,
-                platform: 'Switch',
-                rating: 4,
-                genres: ['RPG', 'Fantasy'],
+                igdb_game_id: 5896,
+                platform: "Switch",
+                lastSessionDate: "01-12-2024",
+                timePlayed: 50,
+                userRating: 7,
+                averageRating: "7.5",
+                title: "Hades",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co5hades.png",
+                releaseDate: "17-09-2020",
+                genres: [
+                    {id: 24, name: "Indie", slug: "indie"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ]
             }
         ],
-        a_jouer: [
+        library: [
             {
-                id: 7,
-                cover: 'https://via.placeholder.com/150',
-                name: 'Final Fantasy XVI',
-                genres: ['RPG', 'Fantasy'],
-                platform: 'PS5',
-                aggregatedRating: 3,
+                igdb_game_id: 8761,
+                platform: "PC",
+                lastSessionDate: null,
+                timePlayed: 0,
+                userRating: null,
+                averageRating: "8.2",
+                title: "Elden Ring",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6eldenring.png",
+                releaseDate: "25-02-2022",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ]
             }
         ],
-        liste_de_souhaits: [
+        wishlist: [
             {
-                id: 10,
-                cover: 'https://via.placeholder.com/150',
-                name: 'Starfield',
-                genres: ['RPG', 'Sci-Fi'],
-                releaseDate: '2024-02-15',
-                aggregatedRating: 0,
+                igdb_game_id: 9021,
+                platform: "PlayStation",
+                lastSessionDate: null,
+                timePlayed: 0,
+                userRating: null,
+                averageRating: "7.8",
+                title: "Final Fantasy XVI",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co7ffxvi.png",
+                releaseDate: "22-06-2023",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ]
             }
         ],
-        en_pause: [
+        paused: [
             {
-                id: 13,
-                cover: 'https://via.placeholder.com/150',
-                name: 'The Witcher 3: Wild Hunt',
-                lastSessionDate: '01-10-2023',
-                sessions: 20,
-                playTime: 2000,
-                platform: 'PC',
-                rating: 1,
-                genres: ['RPG', 'Fantasy'],
+                igdb_game_id: 3045,
+                platform: "Xbox",
+                lastSessionDate: "05-12-2024",
+                timePlayed: 45,
+                userRating: 6,
+                averageRating: "6.5",
+                title: "Anthem",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1anthem.png",
+                releaseDate: "22-02-2019",
+                genres: [
+                    {id: 12, name: "Role-playing (RPG)", slug: "role-playing-rpg"},
+                    {id: 31, name: "Adventure", slug: "adventure"}
+                ]
             }
         ],
-        abandonnes: [
+        stopped: [
             {
-                id: 16,
-                cover: 'https://via.placeholder.com/150',
-                name: 'Anthem',
-                lastSessionDate: '2023-12-15',
-                sessions: 5,
-                playTime: 300,
-                platform: 'PC',
-                rating: 2,
-                genres: ['RPG', 'Fantasy'],
+                igdb_game_id: 4563,
+                platform: "PC",
+                lastSessionDate: "30-11-2024",
+                timePlayed: 120,
+                userRating: 5,
+                averageRating: "5.8",
+                title: "Fallout 76",
+                cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co4fallout.png",
+                releaseDate: "14-11-2018",
+                genres: [
+                    {id: 31, name: "Adventure", slug: "adventure"},
+                    {id: 25, name: "Survival", slug: "survival"}
+                ]
             }
-        ],
+        ]
     };
 
     const formatPlayTime = (minutes) => {
@@ -146,13 +172,14 @@ const ListsPage = () => {
     const games = fakeGames[selectedFilter]?.slice(0, 5) || [];
 
     const tableHeaders = {
-        termines: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
-        en_cours: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
-        a_jouer: ['Nom du jeu', 'Genres', 'Plateforme', 'Note moyenne'],
-        liste_de_souhaits: ['Nom du jeu', 'Genres', 'Date de sortie', 'Note moyenne'],
-        en_pause: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps de jeu', 'Plateforme', 'Ma note'],
-        abandonnes: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps de jeu', 'Plateforme', 'Ma note'],
+        finish: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // Terminés
+        playing: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // En cours
+        library: ['Nom du jeu', 'Genres', 'Plateforme', 'Note moyenne'], // Dans la bibliothèque
+        wishlist: ['Nom du jeu', 'Genres', 'Date de sortie', 'Note moyenne'], // Liste de souhaits
+        paused: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // En pause
+        stopped: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'], // Abandonnés
     };
+
 
     const filterColors = {
         termines: '#D6BBFB',
@@ -310,11 +337,11 @@ const ListsPage = () => {
                 >
                     {games.map((game) => (
                         <GameCardTitle
-                            key={game.id}
-                            id={game.id}
+                            key={game.igdb_game_id}
+                            id={game.igdb_game_id}
                             image={game.cover}
-                            title={game.name}
-                            rating={game.rating || game.aggregatedRating || '—'}
+                            title={game.title}
+                            rating={game.userRating || game.averageRating || '—'}
                         />
                     ))}
                 </Box>
@@ -329,25 +356,23 @@ const ListsPage = () => {
                     {games.map((game) => (
                         <Grid
                             item
-                            key={game.id}
+                            key={game.igdb_game_id}
                             xs={12}
                             sm={6}
                             md={5.5} // Réduit légèrement la taille des cartes
                         >
                             <ListImageCard
-                                id={game.id}
+                                id={game.igdb_game_id}
                                 image={game.cover}
-                                title={game.name}
-                                rating={game.rating || game.aggregatedRating || "—"}
-                                genres={game.genres || []}
+                                title={game.title}
+                                rating={game.userRating || game.averageRating || "—"}
+                                genres={game.genres.map(genre => genre.name).join(', ') || '—'}
                                 platform={game.platform || "—"}
                             />
                         </Grid>
                     ))}
                 </Grid>
-
             )}
-
 
             {viewMode === 'table' && (
                 <TableContainer component={Paper}
@@ -370,103 +395,103 @@ const ListsPage = () => {
                         </TableHead>
                         <TableBody>
                             {games.map((game) => (
-                                <TableRow key={game.id}>
+                                <TableRow key={game.igdb_game_id}>
                                     <TableCell sx={{
                                         borderRight: '1px solid #000',
                                         textAlign: 'center'
-                                    }}>{game.name}</TableCell>
-                                    {selectedFilter === 'termines' && (
+                                    }}>{game.title}</TableCell>
+                                    {selectedFilter === 'finish' && (
                                         <>
                                             <TableCell sx={{
                                                 borderRight: '1px solid #000',
                                                 textAlign: 'center'
-                                            }}>{game.sessions}</TableCell>
+                                            }}>{game.sessions || '—'}</TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {formatPlayTime(game.playTime)}
+                                                {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.platform}
                                             </TableCell>
                                             <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.rating || 0}/></TableCell>
+                                                rating={game.userRating || 0}/></TableCell>
                                         </>
                                     )}
-                                    {selectedFilter === 'en_cours' && (
+                                    {selectedFilter === 'playing' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.lastSessionDate}
+                                                {game.lastSessionDate || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.sessions}
+                                                {game.sessions || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {formatPlayTime(game.playTime)}
+                                                {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.platform}
                                             </TableCell>
                                             <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.rating || 0}/></TableCell>
+                                                rating={game.userRating || 0}/></TableCell>
                                         </>
                                     )}
-                                    {selectedFilter === 'a_jouer' && (
+                                    {selectedFilter === 'library' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres?.join(', ')}
+                                                {game.genres.map(genre => genre.name).join(', ') || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.platform}
+                                                {game.platform || '—'}
                                             </TableCell>
                                             <TableCell sx={{textAlign: 'center'}}><StarRating
-                                                rating={game.aggregatedRating || 0}/></TableCell>
+                                                rating={game.averageRating || 0}/></TableCell>
                                         </>
                                     )}
-                                    {selectedFilter === 'liste_de_souhaits' && (
+                                    {selectedFilter === 'wishlist' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres?.join(', ')}
+                                                {game.genres.map(genre => genre.name).join(', ') || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.releaseDate}
+                                                {game.releaseDate || '—'}
                                             </TableCell>
                                             <TableCell sx={{textAlign: 'center'}}><StarRating
-                                                rating={game.aggregatedRating || 0}/></TableCell>
+                                                rating={game.averageRating || 0}/></TableCell>
                                         </>
                                     )}
-                                    {selectedFilter === 'en_pause' && (
+                                    {selectedFilter === 'paused' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.lastSessionDate}
+                                                {game.lastSessionDate || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.sessions}
+                                                {game.sessions || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {formatPlayTime(game.playTime)}
+                                                {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.platform}
                                             </TableCell>
                                             <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.rating || 0}/></TableCell>
+                                                rating={game.userRating || 0}/></TableCell>
                                         </>
                                     )}
-                                    {selectedFilter === 'abandonnes' && (
+                                    {selectedFilter === 'stopped' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.lastSessionDate}
+                                                {game.lastSessionDate || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.sessions}
+                                                {game.sessions || '—'}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {formatPlayTime(game.playTime)}
+                                                {formatPlayTime(game.timePlayed)}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.platform}
                                             </TableCell>
                                             <TableCell sx={{textAlign: 'center'}}> <StarRating
-                                                rating={game.rating || 0}/></TableCell>
+                                                rating={game.userRating || 0}/></TableCell>
                                         </>
                                     )}
                                 </TableRow>
@@ -475,6 +500,8 @@ const ListsPage = () => {
                     </Table>
                 </TableContainer>
             )}
+
+
         </Box>
     );
 };
