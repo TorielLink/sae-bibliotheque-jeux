@@ -104,4 +104,7 @@ router.get('/user/:userId', gameStatusController.getGameStatusesByUser);
  */
 router.get('/game/:igdb_game_id', gameStatusController.getGameStatusesByGame);
 
+
+router.get('/games-by-status', gameStatusController.getGamesWithSessions);
+
 module.exports = router;
