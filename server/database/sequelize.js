@@ -50,13 +50,14 @@ const friends = friendsModel(sequelize, DataTypes);
 const userLists = userListsModel(sequelize, DataTypes);
 
 
-sequelize.sync({force: false}) // Si vous ne voulez pas supprimer les données existantes, mettez force: false
-    .then(() => {
-        console.log('La base de données a été synchronisée avec succès.');
-    })
-    .catch((error) => {
-        console.error('Erreur lors de la synchronisation de la base de données :', error);
-    });
+// sequelize.sync({force: false}) // Si vous ne voulez pas supprimer les données existantes, mettez force: false
+//     .then(() => {
+//         console.log('La base de données a été synchronisée avec succès.');
+//     })
+//     .catch((error) => {
+//         console.error('Erreur lors de la synchronisation de la base de données :', error);
+//     });
+
 // Associations
 const associateModels = () => {
     // Privacy Settings → Users (One-to-Many)

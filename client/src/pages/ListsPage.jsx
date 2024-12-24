@@ -24,7 +24,8 @@ const ListsPage = () => {
     const {user} = useContext(AuthContext);
     const userId = user?.id;
 
-    const [selectedFilter, setSelectedFilter] = useState('termines');
+    // vue par défaut
+    const [selectedFilter, setSelectedFilter] = useState('finish');
     const [viewMode, setViewMode] = useState('grid');
 
     // Options de tri
@@ -360,8 +361,10 @@ const ListsPage = () => {
             )}
 
             {viewMode === 'table' && (
-                <TableContainer component={Paper}
-                                sx={{width: '80%', margin: '0 auto', boxShadow: '0px 0px 7px #000000', mt: '80px'}}>
+                <TableContainer
+                    component={Paper}
+                    sx={{width: '80%', margin: '0 auto', boxShadow: '0px 0px 7px #000000', mt: '80px'}}
+                >
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -381,18 +384,16 @@ const ListsPage = () => {
                         <TableBody>
                             {games.map((game) => (
                                 <TableRow key={game.igdb_game_id}>
-                                    <TableCell sx={{
-                                        borderRight: '1px solid #000',
-                                        textAlign: 'center'
-                                    }}>{game.title}</TableCell>
+                                    <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
+                                        {game.title}
+                                    </TableCell>
 
                                     {/* Filter: finished */}
                                     {selectedFilter === 'finish' && (
                                         <>
-                                            <TableCell sx={{
-                                                borderRight: '1px solid #000',
-                                                textAlign: 'center'
-                                            }}>{game.sessions || '—'}</TableCell>
+                                            <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
+                                                {game.sessions || '—'}
+                                            </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {formatPlayTime(game.timePlayed)}
                                             </TableCell>
@@ -430,7 +431,25 @@ const ListsPage = () => {
                                     {selectedFilter === 'library' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres ? game.genres.map(genre => genre.name).join(', ') : '—'}
+                                                {game.genres ? (
+                                                    game.genres.map((genre, index) => (
+                                                        <span
+                                                            key={index}
+                                                            style={{
+                                                                background: '#FE4A49',
+                                                                boxShadow: '0px 0px 2px #000000',
+                                                                borderRadius: '2px',
+                                                                padding: '2px 6px',
+                                                                marginRight: '4px',
+                                                                color: '#fff',
+                                                            }}
+                                                        >
+                                                {genre.name}
+                                            </span>
+                                                    ))
+                                                ) : (
+                                                    '—'
+                                                )}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.platform || 'Non spécifiée'}
@@ -445,7 +464,25 @@ const ListsPage = () => {
                                     {selectedFilter === 'wishlist' && (
                                         <>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
-                                                {game.genres ? game.genres.map(genre => genre.name).join(', ') : '—'}
+                                                {game.genres ? (
+                                                    game.genres.map((genre, index) => (
+                                                        <span
+                                                            key={index}
+                                                            style={{
+                                                                background: '#FE4A49',
+                                                                boxShadow: '0px 0px 2px #000000',
+                                                                borderRadius: '2px',
+                                                                padding: '2px 6px',
+                                                                marginRight: '4px',
+                                                                color: '#fff',
+                                                            }}
+                                                        >
+                                                {genre.name}
+                                            </span>
+                                                    ))
+                                                ) : (
+                                                    '—'
+                                                )}
                                             </TableCell>
                                             <TableCell sx={{borderRight: '1px solid #000', textAlign: 'center'}}>
                                                 {game.releaseDate || '—'}
@@ -503,7 +540,6 @@ const ListsPage = () => {
                     </Table>
                 </TableContainer>
             )}
-
         </Box>
     );
 };
