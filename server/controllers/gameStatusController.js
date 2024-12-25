@@ -91,6 +91,7 @@ const formatDateToFrench = (date) => {
     return `${day}-${month}-${year}`;
 };
 
+
 controller.getGamesWithSessions = async (req, res) => {
     try {
         const {userId, gameStatusName} = req.query;
@@ -100,15 +101,27 @@ controller.getGamesWithSessions = async (req, res) => {
             return res.status(400).json({message: 'userId et gameStatusName sont requis.'});
         }
 
-        // Récupérer les statuts des jeux pour l'utilisateur donné
+        // Ajouter un log pour vérifier les paramètres reçus
+        console.log(`Récupération des jeux pour l'utilisateur ID: ${userId} avec le statut: ${gameStatusName}`);
+
+        // Récupérer les gameStatus pour l'utilisateur donné et le statut spécifié
         const gameStatuses = await gameStatus.findAll({
-            where: {user_id: userId}, // Filtrage par userId
+            where: {
+                user_id: userId, // Filtrage par userId
+            },
             include: [
+                {
+                    model: status,
+                    as: 'status',
+                    where: {name: gameStatusName}, // Filtrage par gameStatusName via l'association avec status
+                    attributes: ['name'],
+                    required: true, // Assure que seul les gameStatus avec ce statut sont récupérés
+                },
                 {
                     model: gameRatings,
                     as: 'ratings',
-                    where: {user_id: userId}, // Filtrage par l'ID de l'utilisateur
                     attributes: ['rating_value'], // Récupérer uniquement la note de l'utilisateur
+                    required: false, // Permet de récupérer les jeux même sans note
                 },
                 {
                     model: gameLogs,
@@ -126,12 +139,14 @@ controller.getGamesWithSessions = async (req, res) => {
                         }
                     ],
                     attributes: ['igdb_game_id'],
+                    required: false, // Permet de récupérer les jeux même sans logs
                 },
             ],
             attributes: ['igdb_game_id', 'user_id'],
+            distinct: true, // Pour éviter les doublons si associations multiples
         });
 
-        // Si aucun jeu n'est trouvé pour cet utilisateur et ce statut
+        // Vérifier si des jeux ont été trouvés
         if (!gameStatuses || gameStatuses.length === 0) {
             return res.status(404).json({message: 'Aucun jeu trouvé pour cet utilisateur et ce statut.'});
         }
@@ -155,12 +170,12 @@ controller.getGamesWithSessions = async (req, res) => {
                 // Récupération de la note de l'utilisateur
                 const userRating = entry.ratings?.[0]?.rating_value || null; // Récupérer la note de l'utilisateur
 
-                // Récupérer la dernière session de jeu de l'utilisateur pour ce jeu et statut
-                const gameSessions = entry.status_game_logs?.[0]?.game_sessions || [];
+                // Récupérer toutes les sessions de jeu pour ce jeu et statut
+                const gameSessions = entry.status_game_logs?.flatMap(log => log.game_sessions) || [];
                 const lastSessionDate = gameSessions.length > 0
                     ? gameSessions.reduce((latest, session) => {
                         return new Date(session.session_date) > new Date(latest) ? session.session_date : latest;
-                    }, null)
+                    }, gameSessions[0].session_date)
                     : null;
 
                 // Calculer le total du temps joué pour ce jeu
@@ -216,7 +231,6 @@ controller.getGamesWithSessions = async (req, res) => {
         res.status(500).json({message: 'Erreur serveur', error: error.message});
     }
 };
-
 
 module.exports = controller;
 
