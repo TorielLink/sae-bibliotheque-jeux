@@ -9,7 +9,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
 
     const handleCardClick = () => {
         console.log("Navigating to details with ID:", id);
-        navigate(`/details/${id}`);  // Utiliser navigate pour la navigation
+        navigate(`/details/${id}`); // Naviguer vers la page de détails
     };
 
     // Assurer que genres est un tableau
