@@ -1,7 +1,12 @@
-import React from 'react';
-import {CalendarToday, ChildCare, SportsEsports} from '@mui/icons-material';
+import React, { useContext } from 'react';
+import { useTheme } from "@mui/material/styles";
+import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
+import PersonIcon from '@mui/icons-material/Person';
+import GroupIcon from '@mui/icons-material/Group';
+import { useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { AuthContext } from "./AuthContext.jsx";
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
-import {useTheme} from "@mui/material/styles";
 import GameList from "./GameList.jsx";
 import GameCard from "./GameCard.jsx";
 
@@ -10,15 +15,14 @@ import GameCard from "./GameCard.jsx";
  * - Coder les actions des boutons d'actions rapides
  * - Mettre en forme les informations dans les blocs (commencé)
  * - Limiter la taille des blocs (overflow: hidden)
- * - Ajouter les différentes listes supplémentaires (jeux similaires, DLC, Suites, etc.)
  */
-const GameDetails = ({
-                         name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
+const GameDetails = ({name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
-                         parentGame, similarGames
-                     }) => {
+                         parentGame, similarGames}) => {
     const theme = useTheme();
-    const styles = getStyles(theme);
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const { isAuthenticated } = useContext(AuthContext);
+    const styles = getStyles(theme, isMobile);
 
     return (
         <div style={styles.container}>
@@ -35,108 +39,126 @@ const GameDetails = ({
 
                 {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
                 <div style={styles.rightSection}>
-                    <GameDetailsNavBar activeSection={"details"}/>
+                    { !isMobile && (<GameDetailsNavBar activeSection={"details"} />)}
 
                     {/* Boutons d'actions rapides */}
-                    <div style={styles.quickActions}>
-                        <button
-                            style={{...styles.quickActionButton, ...styles.reviewButton}}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = theme.palette.colors.blue;
-                                e.target.style.color = theme.palette.text.contrast;
-                                e.target.style.borderColor = 'transparent';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = theme.palette.background.default;
-                                e.target.style.color = theme.palette.text.primary;
-                                e.target.style.borderColor = theme.palette.colors.blue;
-                            }}
-                        >
-                            Ajouter un avis
-                        </button>
-                        <button
-                            style={{...styles.quickActionButton, ...styles.noteButton}}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = theme.palette.colors.green;
-                                e.target.style.color = theme.palette.text.contrast;
-                                e.target.style.borderColor = 'transparent';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = theme.palette.background.default;
-                                e.target.style.color = theme.palette.text.primary;
-                                e.target.style.borderColor = theme.palette.colors.green;
-                            }}
-                        >
-                            Ajouter une note
-                        </button>
-                        <button
-                            style={{...styles.quickActionButton, ...styles.logButton}}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = theme.palette.colors.yellow;
-                                e.target.style.color = theme.palette.text.contrast;
-                                e.target.style.borderColor = 'transparent';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = theme.palette.background.default;
-                                e.target.style.color = theme.palette.text.primary;
-                                e.target.style.borderColor = theme.palette.colors.yellow;
-                            }}
-                        >
-                            Ajouter un journal
-                        </button>
-                    </div>
+                    { !isMobile && isAuthenticated && (
+                        <div style={styles.quickActions}>
+                            <button
+                                style={{...styles.quickActionButton, ...styles.reviewButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.blue;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.blue;
+                                }}
+                            >
+                                Ajouter un avis
+                            </button>
+                            <button
+                                style={{...styles.quickActionButton, ...styles.noteButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.green;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.green;
+                                }}
+                            >
+                                Ajouter une note
+                            </button>
+                            <button
+                                style={{...styles.quickActionButton, ...styles.logButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.yellow;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.yellow;
+                                }}
+                            >
+                                Ajouter un journal
+                            </button>
+                        </div>
+                    )}
 
                     <div style={styles.mainContainer}>
                         <div style={styles.mainContent}>
                             {/* Détails et Notes */}
                             <div style={styles.detailsAndNotes}>
                                 {/* Détails */}
-                                <div style={{
-                                    ...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['purple-50']
-                                }}>
+                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['purple-50']}}>
                                     <h2 style={styles.categoryHeader}>Détails</h2>
                                     <ul style={styles.detailsList}>
                                         <li><SportsEsports style={styles.icon}/> {name || "Non disponible"}</li>
                                         <li><CalendarToday style={styles.icon}/> {
                                             releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() :
                                                 "Non disponible"}</li>
-                                        <li><ChildCare style={styles.icon}/> {ageRating || "Non précisé"}</li>
+                                        <li><ChildCare style={styles.icon} /> {ageRating || "Non précisé"}</li>
                                     </ul>
                                 </div>
 
                                 {/* Notes */}
-                                <div
-                                    style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
+                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
                                     <h2 style={styles.categoryHeader}>Note</h2>
                                     <div style={styles.ratings}>
-                                        <div style={styles.ratingItem}>
-                                            <strong>Ma Note</strong>
-                                            <div style={styles.ratingValue}>{"-"}</div>
-                                        </div>
-                                        <div style={styles.ratingItem}>
-                                            <strong>Note des joueurs</strong>
-                                            <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
-                                        </div>
+                                        {isMobile ? (
+                                            <>
+                                                <div style={styles.ratingItem}>
+                                                    <div style={styles.ratingValue}>
+                                                        {"-"}
+                                                    </div>
+                                                    <div style={styles.icon}>
+                                                        <PersonIcon style={{ fontSize: "1.5rem" }} />
+                                                    </div>
+                                                </div>
+                                                {/* Note des joueurs - Mobile */}
+                                                <div style={styles.ratingItem}>
+                                                    <div style={styles.ratingValue}>
+                                                        {rating ? `${rating}` : "-"}
+                                                    </div>
+                                                    <div style={styles.icon}>
+                                                        <GroupIcon style={{ fontSize: "1.5rem" }} />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div style={styles.ratingItem}>
+                                                    <strong>Ma Note</strong>
+                                                    <div style={styles.ratingValue}>{"-"}</div>
+                                                </div>
+                                                <div style={styles.ratingItem}>
+                                                    <strong>Note des joueurs</strong>
+                                                    <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </div>
 
                             {/* Synopsis ou Description */}
                             {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
-                                <div style={{
-                                    ...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['yellow-50']
-                                }}>
+                                <div style={{...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['yellow-50']}}>
                                     <h2 style={styles.categoryHeader}>Synopsis</h2>
                                     <p style={styles.synopsisText}>{detailedSynopsis}</p>
                                 </div>
                             ) : (
                                 description && (
-                                    <div style={{
-                                        ...styles.box,
-                                        backgroundColor: theme.palette.transparentColors['yellow-50']
-                                    }}>
+                                    <div style={{...styles.box,
+                                        backgroundColor: theme.palette.transparentColors['yellow-50']}}>
                                         <h2 style={styles.categoryHeader}>Résumé</h2>
                                         <p style={styles.synopsisText}>{description}</p>
                                     </div>
@@ -148,10 +170,8 @@ const GameDetails = ({
                         <div style={styles.platformsAndGenres}>
                             {/* Plateformes */}
                             {platforms && platforms.length > 0 && (
-                                <div style={{
-                                    ...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['green-50']
-                                }}>
+                                <div style={{...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['green-50']}}>
                                     <h2 style={styles.categoryHeader}>Plateformes</h2>
                                     <ul style={styles.platformList}>
                                         {platforms.map((platform) => (
@@ -165,10 +185,8 @@ const GameDetails = ({
 
                             {/* Genres */}
                             {genres && genres.length > 0 && (
-                                <div style={{
-                                    ...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['blue-50']
-                                }}>
+                                <div style={{...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['blue-50']}}>
                                     <h2 style={styles.categoryHeader}>Genres</h2>
                                     <ul style={styles.genreList}>
                                         {genres.map((genre) => (
@@ -185,34 +203,115 @@ const GameDetails = ({
             </div>
 
             {/*Listes des jeux similiares, extensions, etc.*/}
-            {dlcs && dlcs.length > 0 && (
-                <GameList title="DLC" games={dlcs}/>)}
-            {expansions && expansions.length > 0 && (
-                <GameList title="Extensions" games={expansions}/>)}
-            {remakes && remakes.length > 0 && (
-                <GameList title="Remakes" games={remakes}/>)}
-            {remasters && remasters.length > 0 && (
-                <GameList title="Remasters" games={remasters}/>)}
-            {standaloneExpansions && standaloneExpansions.length > 0 && (
-                <GameList title="Standalones" games={standaloneExpansions}/>)}
-            {franchises && franchises.length > 0 && (
-                <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games}/>)}
-            {parentGame && (
-                <GameCard
-                    id={parentGame.id}
-                    image={parentGame.cover}
-                    title={parentGame.name}
-                    rating={parentGame.aggregated_rating}
-                    categories={parentGame.genres}
-                />)}
-
-            {similarGames && similarGames.length > 0 && (
-                <GameList title="Jeux similaires" games={similarGames}/>)}
+            { isMobile ? (
+                <>
+                    { dlcs && dlcs.length > 0 && (
+                        <Accordion>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="dlc-header">
+                                <Typography>DLC ({dlcs.length})</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="DLC" games={dlcs} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { expansions && expansions.length > 0 && (
+                        <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} id="expansions-header">
+                                <Typography>Extensions ({expansions.length})</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Extensions" games={expansions} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { remakes && remakes.length > 0 && (
+                        <Accordion>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remakes-header">
+                                <Typography>Remakes ({remakes.length})</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Remakes" games={remakes} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { remasters && remasters.length > 0 && (
+                        <Accordion>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remasters-header">
+                                <Typography>Remasters ({remasters.length})</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Remasters" games={remasters} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { standaloneExpansions && standaloneExpansions.length > 0 && (
+                        <Accordion>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="standalone-expansions-header">
+                                <Typography>Standalones ({standaloneExpansions.length})</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Standalones" games={standaloneExpansions} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { franchises && franchises.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="franchises-header">
+                                <Typography>Franchise - {franchises[0].name} ({franchises[0].games.length})</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Franchise" games={franchises[0].games} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                    { parentGame && (
+                        <GameCard
+                            id={parentGame.id}
+                            image={parentGame.cover}
+                            title={parentGame.name}
+                            rating={parentGame.aggregated_rating}
+                            categories={parentGame.genres}
+                        />
+                    )}
+                     { similarGames && similarGames.length > 0 && (
+                         <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="similar-games-header">
+                                <Typography>Jeux similaires</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <GameList title="Jeux Similaires" games={similarGames} />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
+                </>
+            ) : (
+                <>
+                    { dlcs && dlcs.length > 0 && (<GameList title="DLC" games={dlcs} />)}
+                    { expansions && expansions.length > 0 && (<GameList title="Extensions" games={expansions} />)}
+                    { remakes && remakes.length > 0 && (<GameList title="Remakes" games={remakes} />)}
+                    { remasters && remasters.length > 0 && (<GameList title="Remasters" games={remasters} />)}
+                    { standaloneExpansions && standaloneExpansions.length > 0 && (
+                        <GameList title="Standalones" games={standaloneExpansions} />)}
+                    { franchises && franchises.length > 0 && (
+                        <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games} />)}
+                    { parentGame && (
+                        <GameCard
+                            id={parentGame.id}
+                            image={parentGame.cover}
+                            title={parentGame.name}
+                            rating={parentGame.aggregated_rating}
+                            categories={parentGame.genres}
+                        />)}
+                    { similarGames && similarGames.length > 0 && (
+                        <GameList title= "Jeux similaires" games={similarGames} />)}
+                </>
+            )}
         </div>
     );
 };
 
-const getStyles = (theme) => ({
+const getStyles = (theme, isMobile) => ({
     container: {
         height: '100%',
         display: 'flex',
@@ -221,18 +320,22 @@ const getStyles = (theme) => ({
         gap: '1.25rem',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
-        paddingBlock: '3.75rem 5rem',
-        paddingInline: '3.125rem',
+        paddingBlock: isMobile ? '1rem' : '3.75rem 5rem',
+        paddingInline: isMobile ? '0.938rem' : '3.125rem',
     },
     detailsContainer: {
         height: '100%',
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'stretch',
         gap: '1.25rem',
         color: theme.palette.text.primary,
         marginBottom: '2rem',
     },
     leftSection: {
+        width: isMobile ? '100%' : 'auto',
+        marginBottom: isMobile ? '1rem' : '0',
+        paddingInline: isMobile ? '2rem' : '0',
         display: 'flex',
         flex: '1',
         flexDirection: 'column',
@@ -241,7 +344,7 @@ const getStyles = (theme) => ({
     },
     coverImage: {
         width: '100%',
-        height: '40.625rem',
+        height: isMobile ? 'auto' : '40.625rem',
         borderRadius: '0.625rem',
         boxShadow: '0 0.25rem 0.5rem rgba(0, 0, 0, 0.1)',
     },
@@ -252,7 +355,7 @@ const getStyles = (theme) => ({
         height: '100%',
         gap: '2.5rem',
         flex: '2',
-        alignItems: 'flex-start',
+        alignItems: isMobile ? 'center' : 'flex-start',
     },
     quickActions: {
         width: '100%',
@@ -285,6 +388,7 @@ const getStyles = (theme) => ({
         flex: '2',
         gap: '1.25rem',
         alignItems: 'stretch',
+        flexDirection: isMobile ? 'column' : 'row',
     },
     mainContent: {
         flex: '3',
@@ -296,7 +400,8 @@ const getStyles = (theme) => ({
         fontSize: '1.125rem',
         fontWeight: 'bold',
         color: theme.palette.text.primary,
-        marginBottom: '0.625rem',
+        marginBottom: isMobile ? '0.313' : '0.625rem',
+        marginTop: isMobile ? '0' : 'auto',
     },
     box: {
         flex: '1',
@@ -311,7 +416,7 @@ const getStyles = (theme) => ({
     },
     detailsList: {
         listStyle: 'none',
-        paddingLeft: '0.9375rem',
+        paddingLeft: isMobile ? '0.125rem' : '0.9375rem',
         margin: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -331,19 +436,19 @@ const getStyles = (theme) => ({
     },
     ratingItem: {
         flex: '1',
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: isMobile ? 'transparent' : theme.palette.background.paper,
         textAlign: 'center',
         borderRadius: '0.3125rem',
         padding: '0.625rem',
         boxShadow: '0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1)',
     },
     ratingValue: {
-        fontSize: '1.5rem',
+        fontSize: isMobile ? '1rem' : '1.5rem',
         fontWeight: 'bold',
         color: theme.palette.colors.red,
     },
     synopsisText: {
-        paddingLeft: '1.25rem',
+        paddingLeft: isMobile ? '0.125rem' : '1.25rem',
         fontSize: '0.875rem',
         lineHeight: '1.6',
     },
@@ -361,7 +466,7 @@ const getStyles = (theme) => ({
         margin: 0,
     },
     platformItem: {
-        padding: '0.3125rem 0',
+        padding: isMobile ? '0.125rem 0' : '0.3125rem 0',
     },
     genreList: {
         listStyleType: 'none',

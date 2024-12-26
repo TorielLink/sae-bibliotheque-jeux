@@ -9,3 +9,4 @@ server/.env
 # Ignorer les fichiers PNG (si cela s'applique en dehors de ce dossier)
 *.png
 
+server/uploads/profile_pictures/profile_picture-1733753693406-193304891.jpeg
