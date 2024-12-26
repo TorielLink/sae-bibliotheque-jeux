@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Box, Typography, CircularProgress, useMediaQuery, Tabs, Tab} from "@mui/material";
+import {Box, Typography, CircularProgress, useMediaQuery} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
@@ -10,7 +10,6 @@ function HomePage() {
     const [popularGames, setPopularGames] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [selectedTab, setSelectedTab] = useState(0);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -62,14 +61,6 @@ function HomePage() {
         fetchAllGames();
     }, []);
 
-    // Gestion des changements d'onglets
-    const handleTabChange = (event, newValue) => {
-        setSelectedTab(newValue);
-    };
-
-    // Données affichées en fonction de l'onglet sélectionné
-    const currentGames =
-        selectedTab === 0 ? recentGames : selectedTab === 1 ? popularGames : [];
 
     return (
         <Box sx={{padding: "0"}}>
@@ -98,14 +89,8 @@ function HomePage() {
                         marginLeft: "0.25em",
                     }}
                 >
-                    {isMobile ? tabTitles[selectedTab] : ""}
                 </Typography>
             </Box>
-
-            {/* Mobile Tabs */}
-            {isMobile && (
-                <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
-            )}
 
 
             {/* Loading or Error */}
@@ -132,11 +117,9 @@ function HomePage() {
                 </Box>
             ) : (
                 <>
-                    {/* Mobile View */}
-                    {isMobile ? (
-                        <GameList
-                            games={currentGames}
-                        />
+                    {/* Mobile Tabs */}
+                    { isMobile ? (
+                        <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
                     ) : (
                         /* Desktop View */
                         <>
