@@ -1,20 +1,13 @@
 import React, { useState, useContext } from 'react';
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Button,
-  Box,
-} from '@mui/material';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import { Link, useLocation } from 'react-router-dom';
+import { AppBar, Toolbar, IconButton, Typography, Button, Box } from '@mui/material';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeContext } from '../theme/ThemeContext';
-import SearchBar from './SearchBar';
 import { AuthContext } from './AuthContext';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import SearchBar from './SearchBar';
 import UserMenu from "./UserMenu.jsx";
 
 function Navbar() {
@@ -22,6 +15,7 @@ function Navbar() {
   const { toggleTheme, mode } = useContext(ThemeContext);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { isAuthenticated } = useContext(AuthContext); // AuthContext pour vérifier l'état de connexion
 
@@ -47,6 +41,8 @@ function Navbar() {
 
   const handleGameSelect = (game) => {
     console.log('Jeu sélectionné :', game.name, game.id);
+
+    navigate(`/details/${game.id}`);
     setSelectedGame(game);
     setSearchActive(false);
   };

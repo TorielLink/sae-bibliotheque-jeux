@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
-import { CssBaseline } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import { ThemeContext } from './theme/ThemeContext.jsx';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, {useContext} from 'react';
+import {CssBaseline} from '@mui/material';
+import {ThemeProvider} from '@mui/material/styles';
+import {ThemeContext} from './theme/ThemeContext.jsx';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 // Pages
 import Navbar from './components/Navbar.jsx';
 import Footer from "./components/Footer.jsx";
@@ -31,91 +31,91 @@ import SettingsPage from './pages/SettingsPage.jsx';
 
 
 function App() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+    const {theme, toggleTheme} = useContext(ThemeContext);
 
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Navbar />
-        {/* Définition des routes pour les pages */}
-        <Routes>
-          <Route path="/" element={<HomePage />} /> {/* Route pour la page d'accueil */}
-          <Route path="/catalogue" element={<CataloguePage />} /> {/* Route pour la page "Catalogue" */}
-          <Route path="/avis" element={<OpinionPage />} />  {/* Route pour la page "Avis" */}
-          <Route path="/login" element={<LoginPage />} />  {/* Route pour la page "Se connecter" */}
-          <Route path="/details/:id" element={<GameDetailsPage />} /> {/* Route dynamique */}
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <Router>
+                <Navbar/>
+                {/* Définition des routes pour les pages */}
+                <Routes>
+                    <Route path="/" element={<HomePage/>}/> {/* Route pour la page d'accueil */}
+                    <Route path="/catalogue" element={<CataloguePage/>}/> {/* Route pour la page "Catalogue" */}
+                    <Route path="/avis" element={<OpinionPage/>}/> {/* Route pour la page "Avis" */}
+                    <Route path="/login" element={<LoginPage/>}/> {/* Route pour la page "Se connecter" */}
+                    <Route path="/details/:id" element={<GameDetailsPage/>}/> {/* Route dynamique */}
 
-          {/*-- Pages du pied de page --*/}
-          <Route path="/team" element={<Team />} />
-          <Route path="/institution" element={<Establishment />} />
-          <Route path="/project" element={<Project />} />
-          <Route path="/mentorship" element={<Mentorship />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/contact" element={<Contacts />} />
+                    {/*-- Pages du pied de page --*/}
+                    <Route path="/team" element={<Team/>}/>
+                    <Route path="/institution" element={<Establishment/>}/>
+                    <Route path="/project" element={<Project/>}/>
+                    <Route path="/mentorship" element={<Mentorship/>}/>
+                    <Route path="/terms" element={<Terms/>}/>
+                    <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
+                    <Route path="/contact" element={<Contacts/>}/>
 
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/stats"
-            element={
-              <ProtectedRoute>
-                <StatsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/lists"
-            element={
-              <ProtectedRoute>
-                <ListsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/journals"
-            element={
-              <ProtectedRoute>
-                <JournalsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/reviews"
-            element={
-              <ProtectedRoute>
-                <ReviewsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/custom-lists"
-            element={
-              <ProtectedRoute>
-                <CustomListsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <SettingsPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
-      <Footer/>
-    </ThemeProvider>
-  );
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <ProfilePage/>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/stats"
+                        element={
+                            <ProtectedRoute>
+                                <StatsPage/>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/lists"
+                        element={
+                            <ProtectedRoute>
+                                <ListsPage/>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/journals"
+                        element={
+                            <ProtectedRoute>
+                                <JournalsPage/>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/reviews"
+                        element={
+                            <ProtectedRoute>
+                                <ReviewsPage/>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/custom-lists"
+                        element={
+                            <ProtectedRoute>
+                                <CustomListsPage/>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/settings"
+                        element={
+                            <ProtectedRoute>
+                                <SettingsPage/>
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </Router>
+            <Footer/>
+        </ThemeProvider>
+    );
 }
 
 export default App;
