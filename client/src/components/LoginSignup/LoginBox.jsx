@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Paper from "@mui/material/Paper";
 
 import {useTheme} from "@mui/material/styles";
 
@@ -20,21 +21,23 @@ function LoginBox({
   const theme = useTheme();
   
   return (
+    <Paper elevation={3} style={{
+      fontFamily: 'Inter, Arial, sans-serif',
+      position: 'absolute', left: '50%', top: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: '10px',
+      paddingTop:40,paddingBottom:40,paddingLeft:80,paddingRight:80,
+      textAlign:"center",
+      }}>
       <form onSubmit={handleLoginSubmit}
       container
       spacing = {1} 
       direction="column"
-      style={{
-        fontFamily: 'Inter, Arial, sans-serif',
-        position: 'absolute', left: '50%', top: '50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: '10px',
+      style = {{
         display: "flex",
-        flexDirection:"column",
-        paddingTop:40,paddingBottom:40,paddingLeft:80,paddingRight:80,
-        textAlign:"center",
-        }}>
+        flexDirection:"column",}}
+      >
           <TextField style={{paddingBottom:15,}}
             id="username-input"
             label="Username"
@@ -69,6 +72,7 @@ function LoginBox({
               Créer un compte
             </Button>
       </form>
+    </Paper>
   )
 }
 

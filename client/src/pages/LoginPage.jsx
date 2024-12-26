@@ -2,6 +2,8 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../components/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
+import LoginBg from "../components/LoginBg"
+
 import LoginBox from "../components/LoginSignup/LoginBox"
 import SignupBox from "../components/LoginSignup/SignupBox"
 
@@ -150,9 +152,8 @@ const handleLoginSubmit = async (e) => {
 
   return (
     <>
-    <canvas id="bg" style = {{position: "fixed",top: 0,left:0,}}></canvas>
-    
-    <div style={{marginTop:"100vh"}}>
+    <LoginBg/>
+    <div>
       {showSignup ? <SignupBox {...stateVariables}/> : <LoginBox {...stateVariables} />}
     </div>
     </>
