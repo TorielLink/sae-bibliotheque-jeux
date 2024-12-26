@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../components/AuthContext';
+import { AuthContext } from '../../components/AuthContext.jsx';
 
 const SettingsPage = () => {
   const { user } = useContext(AuthContext);

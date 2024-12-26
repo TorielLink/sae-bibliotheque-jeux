@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../components/AuthContext';
+import { AuthContext } from '../../components/AuthContext.jsx';
 
-const CustomListsPage = () => {
+const MyCollectionPage = () => {
   const { user } = useContext(AuthContext);
   const userId = user?.id; // Stocker l'ID de l'utilisateur dans une variable
 
@@ -18,4 +18,4 @@ const CustomListsPage = () => {
   );
 };
 
-export default CustomListsPage;
+export default MyCollectionPage;
