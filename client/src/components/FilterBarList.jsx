@@ -1,18 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useTheme} from '@mui/material/styles';
-import {Box, useMediaQuery} from '@mui/material';
+import {Box, Tab, Tabs, useMediaQuery} from '@mui/material';
 
+// liste des filtres pour la page de listes de jeux
 export default function FilterBarList({filters, selectedFilter, onFilterChange}) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [selectedTab, setSelectedTab] = useState(0);
-
-    const currentIndex = filters.findIndex((f) => f.id === selectedFilter);
-    const tabValue = currentIndex >= 0 ? currentIndex : 0;
-
     const handleTabChange = (event, newIndex) => {
-        setSelectedTab(newIndex);
         onFilterChange(filters[newIndex].id);
     };
 
@@ -38,74 +33,88 @@ export default function FilterBarList({filters, selectedFilter, onFilterChange})
     return (
         <Box
             sx={{
-                display: isMobile ? 'block' : 'flex',
-                justifyContent: isMobile ? 'center' : 'space-between',
-                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: isMobile ? 'flex-start' : 'center',
                 width: '100%',
-                border: isMobile ? 'none' : '0.0625em solid #D0D0D0',
-                borderRadius: '0.3125em',
-                overflow: 'hidden',
-                boxShadow: isMobile ? 'none' : '0em 0em 0.3125em rgba(0, 0, 0, 0.1)',
                 backgroundColor: '#FFFFFF',
+                padding: isMobile ? '0 0.5em' : '0',
             }}
         >
-            {isMobile && (
-                <Box
+            {isMobile ? (
+                <Tabs
+                    value={filters.findIndex((filter) => filter.id === selectedFilter)}
+                    onChange={handleTabChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    textColor="primary"
+                    indicatorColor="primary"
                     sx={{
-                        margin: '0.5em 0',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)', // 2 colonnes en version mobile
-                        gap: '0.5em', // Espacement entre les items
+                        width: '100%',
+                        '& .MuiTab-root': {
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
+                            margin: '0 0.5em',
+                            padding: '0.5em 0.75em',
+                            minHeight: 'auto',
+                            backgroundColor: '#FFFFFF',
+                            border: `0.2em solid ${theme.palette.colors?.green || '#00FF00'}`,
+                            borderRadius: '0.5em 0.5em 0 0',
+                            color: '#555555',
+                        },
+                        '& .Mui-selected': {
+                            color: theme.palette.colors?.red || '#FF0000',
+                        },
                     }}
                 >
-                    {filters.map((filterItem) => (
-                        <Box
-                            key={filterItem.id}
-                            onClick={() => onFilterChange(filterItem.id)}
+                    {filters.map((filter) => (
+                        <Tab
+                            key={filter.id}
+                            label={filter.label}
                             sx={{
+                                backgroundColor: selectedFilter === filter.id ? getFilterColor(filter.id) : '#FFFFFF',
+                            }}
+                        />
+                    ))}
+                </Tabs>
+            ) : (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%',
+                        border: '0.0625em solid #D0D0D0',
+                        borderRadius: '0.3125em',
+                        overflow: 'hidden',
+                        boxShadow: '0em 0em 0.3125em rgba(0, 0, 0, 0.1)',
+                    }}
+                >
+                    {filters.map((filter, index) => (
+                        <Box
+                            key={filter.id}
+                            onClick={() => onFilterChange(filter.id)}
+                            sx={{
+                                flex: '1 1 auto',
                                 textAlign: 'center',
                                 cursor: 'pointer',
-                                padding: '0.5em',
-                                fontWeight: selectedFilter === filterItem.id ? 'bold' : 'normal',
-                                color: selectedFilter === filterItem.id ? '#000000' : '#555555',
-                                backgroundColor: selectedFilter === filterItem.id ? getFilterColor(filterItem.id) : '#FFFFFF',
-                                border: `0.125em solid ${theme.palette.colors?.green || '#00FF00'}`,
-                                borderRadius: '0.5em',
-                                boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)',
+                                padding: '0.625em 1.25em',
+                                fontWeight: selectedFilter === filter.id ? 'bold' : 'normal',
+                                color: selectedFilter === filter.id ? '#000000' : '#555555',
+                                backgroundColor: selectedFilter === filter.id ? getFilterColor(filter.id) : '#FFFFFF',
+                                borderLeft: index > 0 ? '0.0625em solid #D0D0D0' : 'none',
+                                borderRight: index < filters.length - 1 ? '0.0625em solid #D0D0D0' : 'none',
                                 '&:hover': {
                                     backgroundColor: '#F0F0F0',
                                 },
                             }}
                         >
-                            {filterItem.label}
+                            {filter.label}
                         </Box>
                     ))}
                 </Box>
             )}
-
-            {!isMobile &&
-                filters.map((filter, index) => (
-                    <Box
-                        key={filter.id}
-                        onClick={() => onFilterChange(filter.id)}
-                        sx={{
-                            flex: '1 1 auto',
-                            textAlign: 'center',
-                            cursor: 'pointer',
-                            padding: '0.625em 1.25em',
-                            fontWeight: selectedFilter === filter.id ? 'bold' : 'normal',
-                            color: selectedFilter === filter.id ? '#000000' : '#555555',
-                            backgroundColor: selectedFilter === filter.id ? getFilterColor(filter.id) : '#FFFFFF',
-                            borderLeft: index > 0 ? '0.0625em solid #D0D0D0' : 'none',
-                            borderRight: index < filters.length - 1 ? '0.0625em solid #D0D0D0' : 'none',
-                            '&:hover': {
-                                backgroundColor: '#F0F0F0',
-                            },
-                        }}
-                    >
-                        {filter.label}
-                    </Box>
-                ))}
         </Box>
     );
 }

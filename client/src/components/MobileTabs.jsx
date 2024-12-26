@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Box, Tabs, Tab, CircularProgress } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import React, {useState} from "react";
+import {Box, CircularProgress, Tab, Tabs} from "@mui/material";
+import {useTheme} from "@mui/material/styles";
 
-function MobileTabs({ tabTitles, tabContents }) {
+function MobileTabs({tabTitles, tabContents}) {
     const [selectedTab, setSelectedTab] = useState(0);
     const theme = useTheme();
 
@@ -11,35 +11,45 @@ function MobileTabs({ tabTitles, tabContents }) {
     };
 
     return (
-        <Box sx={{ margin: "0.5em 0", position: "relative"}}>
+        <Box sx={{margin: "0.5em 0", position: "relative"}}>
             <Tabs
                 value={selectedTab}
                 onChange={handleTabChange}
-                centered
                 textColor="primary"
-                indicatorColor="blue"
+                indicatorColor="primary"
+                variant={tabTitles.length > 4 ? "scrollable" : "standard"}
+                scrollButtons="auto"
                 sx={{
+                    "& .MuiTabs-flexContainer": {
+                        display: "flex",
+                        justifyContent: tabTitles.length > 4 ? "flex-start" : "center", // Centrer si pas de scroll
+                    },
                     "& .MuiTab-root": {
                         textTransform: "none",
                         fontWeight: "bold",
-                        fontSize: "0.8em",
+                        fontSize: "clamp(0.8rem, 1.5vw, 1rem)", // Taille de texte adaptable
                         margin: "0 0.5em",
-                        padding: '0.5em 0.75em',
+                        padding: "0.5em 0.75em",
                         minHeight: "auto",
+                        minWidth: "auto",
+                        display: "flex",
+                        alignItems: "center", // Centre le contenu verticalement
+                        justifyContent: "center", // Centre le contenu horizontalement
+                        textAlign: "center", // Aligne le texte horizontalement
+                        whiteSpace: "normal", // Permet au texte de passer à la ligne
                         background: theme.palette.background.default,
                         color: theme.palette.text.primary,
-                        border: `0.2em solid ${theme.palette.colors.green}`,
-                        borderRadius: '0.5em 0.5em 0 0',
+                        border: `0.2em solid ${theme.palette.colors.green || "#00FF00"}`,
+                        borderRadius: "0.5em 0.5em 0 0",
                     },
                     "& .Mui-selected": {
-                        color: theme.palette.colors.red,
-                        borderBottom: 0,
+                        color: theme.palette.colors.red || "#FF0000",
                         fontWeight: "bold",
                     },
                 }}
             >
                 {tabTitles.map((title, index) => (
-                    <Tab key={index} label={title} />
+                    <Tab key={index} label={title}/>
                 ))}
             </Tabs>
             <hr
@@ -47,19 +57,20 @@ function MobileTabs({ tabTitles, tabContents }) {
                     position: "absolute",
                     width: "100%",
                     top: "1.975rem",
-                    border: 'none',
-                    height: '0.10em',
-                    backgroundColor: theme.palette.colors.green,
+                    border: "none",
+                    height: "0.10em",
+                    backgroundColor: theme.palette.colors.green || "#00FF00",
                     margin: 0,
                     zIndex: 0,
                 }}
             />
-            {/* Affichage du contenu de l'onglet sélectionné */}
-            {tabContents[selectedTab] ? (
-                tabContents[selectedTab]
-            ) : (
-                <CircularProgress sx={{ display: 'block', margin: 'auto' }} />
-            )}
+            <Box sx={{marginTop: "1rem"}}>
+                {tabContents[selectedTab] ? (
+                    tabContents[selectedTab]
+                ) : (
+                    <CircularProgress sx={{display: "block", margin: "auto"}}/>
+                )}
+            </Box>
         </Box>
     );
 }

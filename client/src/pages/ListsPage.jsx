@@ -1,4 +1,3 @@
-// pages/ListsPage.jsx
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../components/AuthContext';
 import {
@@ -142,16 +141,32 @@ const ListsPage = () => {
 
     return (
         <Box style={{padding: '0.125em', overflowX: 'hidden', overflowY: 'auto'}}>
+            {/* Navigation en haut */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '0.5em',
+                    fontSize: '1em',
+                    color: theme.palette.colors?.red || '#FF0000',
+                }}
+            >
+                <Typography variant="body1" sx={{color: '#555', marginRight: '0.5em'}}>
+                    Listes de jeux
+                </Typography>
+                <Typography variant="body1" sx={{color: theme.palette.colors?.red || '#FF0000'}}>
+                    &gt; {filters.find((f) => f.id === selectedFilter)?.label || ''}
+                </Typography>
+            </Box>
             <Grid2
                 container
                 sx={{
-                    marginLeft: '1.25em',
-                    marginRight: '1.25em',
+                    padding: '0.5em',
                     alignItems: 'center',
                     display: 'grid',
                     gridTemplateColumns: isMobile ? '1fr' : '8fr 2fr',
                     columnGap: '1em',
-                    minHeight: '3em', // Hauteur minimale pour stabiliser la barre
+                    minHeight: '3em',
                 }}
             >
                 {/* Barre de filtres */}
