@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import {Box, Typography, CircularProgress, useMediaQuery, Tabs, Tab} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {Box, CircularProgress, Tab, Tabs, Typography, useMediaQuery} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
-import MobileTabs from "../components/MobileTabs.jsx";
 
 function HomePage() {
     const [recentGames, setRecentGames] = useState([]);
@@ -16,9 +15,9 @@ function HomePage() {
 
     const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
     const tabContents = [
-        <GameList key="recent" games={recentGames} />,
-        <GameList key="popular" games={popularGames} />,
-        <Box sx={{ textAlign: "center", color: theme.palette.text.secondary }}>
+        <GameList key="recent" games={recentGames}/>,
+        <GameList key="popular" games={popularGames}/>,
+        <Box sx={{textAlign: "center", color: theme.palette.text.secondary}}>
             <Typography variant="body1">
                 Les avis récents seront bientôt disponibles !
             </Typography>
@@ -48,9 +47,11 @@ function HomePage() {
         try {
             const recent = await fetchGamesByFilter("by-date");
             const popular = await fetchGamesByFilter("by-popularity");
-            setRecentGames(recent.length ? recent : recentGames);
-            setPopularGames(popular.length ? popular : popularGames);
+
+            setRecentGames(recent || []); // Toujours définir un tableau, même s'il est vide
+            setPopularGames(popular || []); // Idem
         } catch (err) {
+            console.error(err);
             setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
         } finally {
             setLoading(false);
@@ -59,8 +60,11 @@ function HomePage() {
 
     // Chargement initial des jeux
     useEffect(() => {
-        fetchAllGames();
+        if (!recentGames.length || !popularGames.length) {
+            fetchAllGames();
+        }
     }, []);
+
 
     // Gestion des changements d'onglets
     const handleTabChange = (event, newValue) => {
@@ -72,7 +76,7 @@ function HomePage() {
         selectedTab === 0 ? recentGames : selectedTab === 1 ? popularGames : [];
 
     return (
-        <Box sx={{ padding: "0" }}>
+        <Box sx={{padding: "0"}}>
             {/* Breadcrumb */}
             <Box
                 sx={{
@@ -104,7 +108,7 @@ function HomePage() {
 
             {/* Mobile Tabs */}
             {isMobile && (
-                <Box sx={{ margin: "0.5em 0" }}>
+                <Box sx={{margin: "0.5em 0"}}>
                     <Tabs
                         value={selectedTab}
                         onChange={handleTabChange}
@@ -131,9 +135,9 @@ function HomePage() {
                             },
                         }}
                     >
-                        <Tab label="Sorties récentes" />
-                        <Tab label="Jeux populaires" />
-                        <Tab label="Avis récents" />
+                        <Tab label="Sorties récentes"/>
+                        <Tab label="Jeux populaires"/>
+                        <Tab label="Avis récents"/>
                     </Tabs>
                     <hr
                         style={{
@@ -153,7 +157,7 @@ function HomePage() {
 
 
             {/* Loading or Error */}
-            { loading ? (
+            {loading ? (
                 <Box
                     sx={{
                         display: "flex",
@@ -162,46 +166,46 @@ function HomePage() {
                         height: "50vh",
                     }}
                 >
-                    <CircularProgress />
+                    <CircularProgress/>
                 </Box>
-                ) : error ? (
-                    <Box
-                        sx={{
-                            textAlign: "center",
-                            color: theme.palette.colors.red,
-                            marginTop: "20px",
-                        }}
-                    >
-                        <Typography variant="h6">{error}</Typography>
-                    </Box>
-                ) : (
-                    <>
-                        {/* Mobile View */}
-                        { isMobile ? (
-                            <GameList
-                                games={currentGames}
-                            />
-                        ) : (
-                            /* Desktop View */
-                            <>
-                                <Box sx={{
-                                    marginTop: "2em"
-                                }}>
-                                    <GameList
-                                        title="Sorties récentes"
-                                        games={recentGames}
-                                    />
-                                </Box>
-                                {/*
+            ) : error ? (
+                <Box
+                    sx={{
+                        textAlign: "center",
+                        color: theme.palette.colors.red,
+                        marginTop: "20px",
+                    }}
+                >
+                    <Typography variant="h6">{error}</Typography>
+                </Box>
+            ) : (
+                <>
+                    {/* Mobile View */}
+                    {isMobile ? (
+                        <GameList
+                            games={currentGames}
+                        />
+                    ) : (
+                        /* Desktop View */
+                        <>
+                            <Box sx={{
+                                marginTop: "2em"
+                            }}>
+                                <GameList
+                                    title="Sorties récentes"
+                                    games={recentGames}
+                                />
+                            </Box>
+                            {/*
                             */}
 
-                                <Box sx={{}}>
-                                    <GameList
-                                        title="Jeux populaires"
-                                        games={popularGames}
-                                    />
-                                </Box>
-                            <SectionTitle title="Avis récents" />
+                            <Box sx={{}}>
+                                <GameList
+                                    title="Jeux populaires"
+                                    games={popularGames}
+                                />
+                            </Box>
+                            <SectionTitle title="Avis récents"/>
                             <Box
                                 sx={{
                                     textAlign: "center",

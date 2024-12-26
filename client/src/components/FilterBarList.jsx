@@ -2,7 +2,6 @@ import React from 'react';
 import {useTheme} from '@mui/material/styles';
 import {Box, Tab, Tabs, useMediaQuery} from '@mui/material';
 
-// liste des filtres pour la page de listes de jeux
 export default function FilterBarList({filters, selectedFilter, onFilterChange}) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -14,17 +13,17 @@ export default function FilterBarList({filters, selectedFilter, onFilterChange})
     const getFilterColor = (filterId) => {
         switch (filterId) {
             case 'finish':
-                return '#D6BBFB';
+                return theme.palette.colors.purple;
             case 'playing':
-                return '#FFEEAA';
+                return theme.palette.colors.yellow;
             case 'library':
-                return '#AEC6FF';
+                return theme.palette.colors.blue;
             case 'wishlist':
-                return '#C8F7C8';
+                return theme.palette.colors.green;
             case 'paused':
-                return '#FFDFAF';
+                return theme.palette.colors.lightGray;
             case 'stopped':
-                return '#FFBABA';
+                return theme.palette.colors.red;
             default:
                 return '#FFFFFF';
         }
@@ -106,7 +105,9 @@ export default function FilterBarList({filters, selectedFilter, onFilterChange})
                                 borderLeft: index > 0 ? '0.0625em solid #D0D0D0' : 'none',
                                 borderRight: index < filters.length - 1 ? '0.0625em solid #D0D0D0' : 'none',
                                 '&:hover': {
-                                    backgroundColor: '#F0F0F0',
+                                    backgroundColor: selectedFilter === filter.id
+                                        ? getFilterColor(filter.id)
+                                        : '#F0F0F0',
                                 },
                             }}
                         >
