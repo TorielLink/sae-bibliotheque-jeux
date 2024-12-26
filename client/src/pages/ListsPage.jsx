@@ -213,7 +213,7 @@ const ListsPage = () => {
                                     minWidth: 0,
                                     width: '33%',
                                     height: '100%',
-                                    padding: 0, // Assure une taille constante
+                                    padding: 0,
                                 }}
                             >
                                 <FormatListBulletedIcon fontSize="small"/>
@@ -223,7 +223,7 @@ const ListsPage = () => {
                                 onClick={() => setViewMode('grid')}
                                 sx={{
                                     backgroundColor: viewMode === 'grid' ? '#B0B0B0' : '#E0E0E0',
-                                    color: '#000',
+                                    color: theme.palette.text.primary,
                                     borderRadius: '0.3125em',
                                     minWidth: 0,
                                     width: '33%',
@@ -238,7 +238,7 @@ const ListsPage = () => {
                                 onClick={() => setViewMode('table')}
                                 sx={{
                                     backgroundColor: viewMode === 'table' ? '#B0B0B0' : '#E0E0E0',
-                                    color: '#000',
+                                    color: theme.palette.text.primary,
                                     borderRadius: '0.3125em',
                                     minWidth: 0,
                                     width: '33%',
@@ -485,11 +485,11 @@ const ListsPage = () => {
                                                                                 <Box
                                                                                     key={index}
                                                                                     sx={{
-                                                                                        background: '#FE4A49',
+                                                                                        background: theme.palette.colors.red,
                                                                                         boxShadow: '0px 0px 2px #000000',
                                                                                         borderRadius: '5px',
                                                                                         padding: '3px 6px',
-                                                                                        color: '#FFFFFF',
+                                                                                        color: theme.palette.text.contrast,
                                                                                         fontSize: '0.75em',
                                                                                         fontWeight: 'bold',
                                                                                         margin: '1px',
@@ -537,11 +537,11 @@ const ListsPage = () => {
                                                                                 <Box
                                                                                     key={index}
                                                                                     sx={{
-                                                                                        background: '#FE4A49',
+                                                                                        background: theme.palette.colors.red,
                                                                                         boxShadow: '0px 0px 2px #000000',
                                                                                         borderRadius: '5px',
                                                                                         padding: '3px 6px',
-                                                                                        color: '#FFFFFF',
+                                                                                        color: theme.palette.text.contrast,
                                                                                         fontSize: '0.75em',
                                                                                         fontWeight: 'bold',
                                                                                         margin: '1px',

@@ -22,21 +22,21 @@ function MobileTabs({tabTitles, tabContents}) {
                 sx={{
                     "& .MuiTabs-flexContainer": {
                         display: "flex",
-                        justifyContent: tabTitles.length > 4 ? "flex-start" : "center", // Centrer si pas de scroll
+                        justifyContent: tabTitles.length > 4 ? "flex-start" : "center",
                     },
                     "& .MuiTab-root": {
                         textTransform: "none",
                         fontWeight: "bold",
-                        fontSize: "clamp(0.8rem, 1.5vw, 1rem)", // Taille de texte adaptable
+                        fontSize: "clamp(0.8rem, 1.5vw, 1rem)",
                         margin: "0 0.5em",
                         padding: "0.5em 0.75em",
                         minHeight: "auto",
                         minWidth: "auto",
                         display: "flex",
-                        alignItems: "center", // Centre le contenu verticalement
-                        justifyContent: "center", // Centre le contenu horizontalement
-                        textAlign: "center", // Aligne le texte horizontalement
-                        whiteSpace: "normal", // Permet au texte de passer à la ligne
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
+                        whiteSpace: "normal",
                         background: theme.palette.background.default,
                         color: theme.palette.text.primary,
                         border: `0.2em solid ${theme.palette.colors.green || "#00FF00"}`,
