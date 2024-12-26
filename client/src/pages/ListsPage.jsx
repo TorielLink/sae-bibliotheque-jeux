@@ -196,7 +196,7 @@ const ListsPage = () => {
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
                                 width: '9em',
-                                backgroundColor: theme.backgroundColor.default,
+                                backgroundColor: theme.backgroundColor,
                                 borderRadius: '0.625em',
                                 height: '2.5625em',
                                 boxShadow: '0em 0em 0.4375em rgba(0, 0, 0, 0.2)',
