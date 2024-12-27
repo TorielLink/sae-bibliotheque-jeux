@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Accordion, AccordionDetails, AccordionSummary, Box, Rating, Typography} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {useTheme} from '@mui/material/styles';
 
 const GameAccordion = ({game, selectedFilter}) => {
     const [expanded, setExpanded] = useState(false);
@@ -15,13 +16,27 @@ const GameAccordion = ({game, selectedFilter}) => {
         return `${hours} h ${mins} min`;
     };
 
+    const theme = useTheme();
+
     return (
-        <Accordion expanded={expanded} onChange={handleChange} sx={{width: '100%', marginBottom: '10px'}}>
+        <Accordion
+            expanded={expanded}
+            onChange={handleChange}
+            sx={{
+                width: '100%',
+                marginBottom: '10px',
+                backgroundColor: theme.palette.background.paper,
+                boxShadow: `0px 0px 8px ${theme.palette.colors['blue-50']}`
+            }}
+        >
             <AccordionSummary
-                expandIcon={<ExpandMoreIcon/>}
+                expandIcon={<ExpandMoreIcon sx={{color: theme.palette.text.primary}}/>}
                 aria-controls={`panel-${game.igdb_game_id}-content`}
                 id={`panel-${game.igdb_game_id}-header`}
-                sx={{backgroundColor: '#f5f5f5'}}
+                sx={{
+                    backgroundColor: theme.palette.colors['lightGray'],
+                    color: theme.palette.text.primary,
+                }}
             >
                 <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
                     <img src={game.cover} alt={game.title} width={60} height={90}/>
@@ -45,8 +60,12 @@ const GameAccordion = ({game, selectedFilter}) => {
                             </Typography>
                             <Box sx={{display: 'flex', alignItems: 'center'}}>
                                 <strong>Ma note:</strong>
-                                <Rating value={game.userRating || 0} precision={0.5} readOnly
-                                        sx={{marginLeft: '10px'}}/>
+                                <Rating
+                                    value={game.userRating || 0}
+                                    precision={0.5}
+                                    readOnly
+                                    sx={{marginLeft: '10px', color: theme.palette.colors.yellow}}
+                                />
                             </Box>
                         </>
                     )}
@@ -68,8 +87,12 @@ const GameAccordion = ({game, selectedFilter}) => {
                             </Typography>
                             <Box sx={{display: 'flex', alignItems: 'center'}}>
                                 <strong>Ma note:</strong>
-                                <Rating value={game.userRating || 0} precision={0.5} readOnly
-                                        sx={{marginLeft: '10px'}}/>
+                                <Rating
+                                    value={game.userRating || 0}
+                                    precision={0.5}
+                                    readOnly
+                                    sx={{marginLeft: '10px', color: theme.palette.colors.yellow}}
+                                />
                             </Box>
                         </>
                     )}
@@ -119,11 +142,16 @@ const GameAccordion = ({game, selectedFilter}) => {
                             </Typography>
                             <Box sx={{display: 'flex', alignItems: 'center'}}>
                                 <strong>Ma note:</strong>
-                                <Rating value={game.userRating || 0} precision={0.5} readOnly
-                                        sx={{marginLeft: '10px'}}/>
+                                <Rating
+                                    value={game.userRating || 0}
+                                    precision={0.5}
+                                    readOnly
+                                    sx={{marginLeft: '10px', color: theme.palette.colors.yellow}}
+                                />
                             </Box>
                         </>
                     )}
+
                 </Box>
             </AccordionDetails>
         </Accordion>

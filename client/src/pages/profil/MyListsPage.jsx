@@ -167,6 +167,7 @@ const MyListsPage = () => {
                     gridTemplateColumns: isMobile ? '1fr' : '8fr 2fr',
                     columnGap: '1em',
                     minHeight: '3em',
+                    backgroundColor: theme.backgroundColor,
                 }}
             >
                 {/* Barre de filtres */}
@@ -256,12 +257,12 @@ const MyListsPage = () => {
             {/* Conteneur pour l'affichage conditionnel avec une hauteur minimale pour éviter les changements de layout */}
             <Box
                 sx={{
-                    minHeight: '200px', // Ajustez cette valeur selon vos besoins
+                    minHeight: '200px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     mt: '2em',
-                    transition: 'all 0.3s ease-in-out', // Optionnel: Ajout d'une transition douce
+                    transition: 'all 0.3s ease-in-out',
                 }}
             >
                 {loading ? (

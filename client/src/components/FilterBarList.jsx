@@ -36,7 +36,7 @@ export default function FilterBarList({filters, selectedFilter, onFilterChange})
                 flexDirection: 'column',
                 alignItems: isMobile ? 'flex-start' : 'center',
                 width: '100%',
-                backgroundColor: '#FFFFFF',
+                
                 padding: isMobile ? '0 0.5em' : '0',
             }}
         >
