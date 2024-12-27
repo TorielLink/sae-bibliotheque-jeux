@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {Box, CircularProgress, Tab, Tabs, Typography, useMediaQuery} from "@mui/material";
+import {Box, Typography, CircularProgress, useMediaQuery} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
+import MobileTabs from "../components/MobileTabs.jsx";
 
 function HomePage() {
     const [recentGames, setRecentGames] = useState([]);
     const [popularGames, setPopularGames] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [selectedTab, setSelectedTab] = useState(0);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -47,11 +47,9 @@ function HomePage() {
         try {
             const recent = await fetchGamesByFilter("by-date");
             const popular = await fetchGamesByFilter("by-popularity");
-
-            setRecentGames(recent || []); // Toujours définir un tableau, même s'il est vide
-            setPopularGames(popular || []); // Idem
+            setRecentGames(recent.length ? recent : recentGames); // Préserver les anciennes données si vides
+            setPopularGames(popular.length ? popular : popularGames);
         } catch (err) {
-            console.error(err);
             setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
         } finally {
             setLoading(false);
@@ -60,20 +58,9 @@ function HomePage() {
 
     // Chargement initial des jeux
     useEffect(() => {
-        if (!recentGames.length || !popularGames.length) {
-            fetchAllGames();
-        }
+        fetchAllGames();
     }, []);
 
-
-    // Gestion des changements d'onglets
-    const handleTabChange = (event, newValue) => {
-        setSelectedTab(newValue);
-    };
-
-    // Données affichées en fonction de l'onglet sélectionné
-    const currentGames =
-        selectedTab === 0 ? recentGames : selectedTab === 1 ? popularGames : [];
 
     return (
         <Box sx={{padding: "0"}}>
@@ -102,58 +89,8 @@ function HomePage() {
                         marginLeft: "0.25em",
                     }}
                 >
-                    {isMobile ? tabTitles[selectedTab] : ""}
                 </Typography>
             </Box>
-
-            {/* Mobile Tabs */}
-            {isMobile && (
-                <Box sx={{margin: "0.5em 0"}}>
-                    <Tabs
-                        value={selectedTab}
-                        onChange={handleTabChange}
-                        centered
-                        textColor="primary"
-                        indicatorColor="blue"
-                        sx={{
-                            "& .MuiTab-root": {
-                                textTransform: "none",
-                                fontWeight: "bold",
-                                fontSize: "0.8em",
-                                margin: "0 0.5em",
-                                padding: '0.5em 0.75em',
-                                minHeight: "auto",
-                                background: theme.palette.background.default,
-                                color: theme.palette.text.primary,
-                                borderRadius: '0.5em 0.5em 0 0',
-                                border: "0.2em solid ${theme.palette.colors.green}",
-                            },
-                            "& .Mui-selected": {
-                                color: theme.palette.colors.red,
-                                borderBottom: `0`,
-                                fontWeight: "bold",
-                            },
-                        }}
-                    >
-                        <Tab label="Sorties récentes"/>
-                        <Tab label="Jeux populaires"/>
-                        <Tab label="Avis récents"/>
-                    </Tabs>
-                    <hr
-                        style={{
-                            position: "absolute",
-                            bottom: 0,
-                            left: 0,
-                            width: "100%",
-                            border: 'none',
-                            height: '0.15em',
-                            backgroundColor: theme.palette.colors.green,
-                            margin: 0,
-                            zIndex: 0,
-                        }}
-                    />
-                </Box>
-            )}
 
 
             {/* Loading or Error */}
@@ -180,11 +117,9 @@ function HomePage() {
                 </Box>
             ) : (
                 <>
-                    {/* Mobile View */}
-                    {isMobile ? (
-                        <GameList
-                            games={currentGames}
-                        />
+                    {/* Mobile Tabs */}
+                    { isMobile ? (
+                        <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
                     ) : (
                         /* Desktop View */
                         <>

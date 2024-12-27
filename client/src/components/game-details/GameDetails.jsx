@@ -5,10 +5,10 @@ import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 import { useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AuthContext } from "./AuthContext.jsx";
+import { AuthContext } from "../AuthContext.jsx";
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
-import GameList from "./GameList.jsx";
-import GameCard from "./GameCard.jsx";
+import GameList from "../GameList.jsx";
+import GameCard from "../GameCard.jsx";
 
 
 /**TODO :

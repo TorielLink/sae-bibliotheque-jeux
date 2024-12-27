@@ -26,7 +26,7 @@ import StarRating from '../components/StarRating.jsx';
 import FilterBarList from '../components/FilterBarList.jsx';
 import GameAccordion from '../components/GameAccordion.jsx';
 
-const ListsPage = () => {
+const MyListsPage = () => {
     const {user} = useContext(AuthContext);
     const userId = user?.id;
 
@@ -643,4 +643,4 @@ const ListsPage = () => {
     );
 };
 
-export default ListsPage;
+export default MyListsPage;

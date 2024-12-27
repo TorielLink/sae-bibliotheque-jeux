@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom"; // pour récupérer les paramètres de l'URL
-import GameDetails from "../components/GameDetails.jsx";
-import GameReviews from "../components/GameReviews.jsx";
-import GameMedias from "../components/GameMedias.jsx";
+import GameDetails from "../components/game-details/GameDetails.jsx";
+import GameReviews from "../components/game-details/GameReviews.jsx";
+import GameMedias from "../components/game-details/GameMedias.jsx";
 import {Typography, useMediaQuery} from "@mui/material";
-import GameMobileQuickActions from "../components/GameMobileQuickActions.jsx";
+import GameMobileQuickActions from "../components/game-details/GameMobileQuickActions.jsx";
 import {useTheme} from "@mui/material/styles";
 import MobileTabs from "../components/MobileTabs.jsx";
 // import GameLogs from '../components/GameLogs.jsx';
