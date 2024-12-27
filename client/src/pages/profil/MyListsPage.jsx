@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {AuthContext} from '../components/AuthContext';
+import {AuthContext} from '../../components/AuthContext';
 import {
     Box,
     Button,
@@ -20,11 +20,11 @@ import {
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewWeekIcon from '@mui/icons-material/ViewWeek';
-import GameCardTitle from '../components/GameCardTitle.jsx';
-import ListImageCard from '../components/ListImageCard.jsx';
-import StarRating from '../components/StarRating.jsx';
-import FilterBarList from '../components/FilterBarList.jsx';
-import GameAccordion from '../components/GameAccordion.jsx';
+import GameCardTitle from '../../components/GameCardTitle.jsx';
+import ListImageCard from '../../components/ListImageCard.jsx';
+import StarRating from '../../components/StarRating.jsx';
+import FilterBarList from '../../components/FilterBarList.jsx';
+import GameAccordion from '../../components/GameAccordion.jsx';
 
 const MyListsPage = () => {
     const {user} = useContext(AuthContext);
