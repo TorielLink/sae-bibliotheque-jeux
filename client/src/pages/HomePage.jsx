@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {Box, Typography, CircularProgress, useMediaQuery, Tabs, Tab} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {Box, Typography, CircularProgress, useMediaQuery} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
@@ -10,15 +10,14 @@ function HomePage() {
     const [popularGames, setPopularGames] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [selectedTab, setSelectedTab] = useState(0);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
     const tabContents = [
-        <GameList key="recent" games={recentGames} />,
-        <GameList key="popular" games={popularGames} />,
-        <Box sx={{ textAlign: "center", color: theme.palette.text.secondary }}>
+        <GameList key="recent" games={recentGames}/>,
+        <GameList key="popular" games={popularGames}/>,
+        <Box sx={{textAlign: "center", color: theme.palette.text.secondary}}>
             <Typography variant="body1">
                 Les avis récents seront bientôt disponibles !
             </Typography>
@@ -62,17 +61,9 @@ function HomePage() {
         fetchAllGames();
     }, []);
 
-    // Gestion des changements d'onglets
-    const handleTabChange = (event, newValue) => {
-        setSelectedTab(newValue);
-    };
-
-    // Données affichées en fonction de l'onglet sélectionné
-    const currentGames =
-        selectedTab === 0 ? recentGames : selectedTab === 1 ? popularGames : [];
 
     return (
-        <Box sx={{ padding: "0" }}>
+        <Box sx={{padding: "0"}}>
             {/* Breadcrumb */}
             <Box
                 sx={{
@@ -98,62 +89,12 @@ function HomePage() {
                         marginLeft: "0.25em",
                     }}
                 >
-                    {isMobile ? tabTitles[selectedTab] : ""}
                 </Typography>
             </Box>
 
-            {/* Mobile Tabs */}
-            {isMobile && (
-                <Box sx={{ margin: "0.5em 0" }}>
-                    <Tabs
-                        value={selectedTab}
-                        onChange={handleTabChange}
-                        centered
-                        textColor="primary"
-                        indicatorColor="blue"
-                        sx={{
-                            "& .MuiTab-root": {
-                                textTransform: "none",
-                                fontWeight: "bold",
-                                fontSize: "0.8em",
-                                margin: "0 0.5em",
-                                padding: '0.5em 0.75em',
-                                minHeight: "auto",
-                                background: theme.palette.background.default,
-                                color: theme.palette.text.primary,
-                                borderRadius: '0.5em 0.5em 0 0',
-                                border: "0.2em solid ${theme.palette.colors.green}",
-                            },
-                            "& .Mui-selected": {
-                                color: theme.palette.colors.red,
-                                borderBottom: `0`,
-                                fontWeight: "bold",
-                            },
-                        }}
-                    >
-                        <Tab label="Sorties récentes" />
-                        <Tab label="Jeux populaires" />
-                        <Tab label="Avis récents" />
-                    </Tabs>
-                    <hr
-                        style={{
-                            position: "absolute",
-                            bottom: 0,
-                            left: 0,
-                            width: "100%",
-                            border: 'none',
-                            height: '0.15em',
-                            backgroundColor: theme.palette.colors.green,
-                            margin: 0,
-                            zIndex: 0,
-                        }}
-                    />
-                </Box>
-            )}
-
 
             {/* Loading or Error */}
-            { loading ? (
+            {loading ? (
                 <Box
                     sx={{
                         display: "flex",
@@ -162,46 +103,44 @@ function HomePage() {
                         height: "50vh",
                     }}
                 >
-                    <CircularProgress />
+                    <CircularProgress/>
                 </Box>
-                ) : error ? (
-                    <Box
-                        sx={{
-                            textAlign: "center",
-                            color: theme.palette.colors.red,
-                            marginTop: "20px",
-                        }}
-                    >
-                        <Typography variant="h6">{error}</Typography>
-                    </Box>
-                ) : (
-                    <>
-                        {/* Mobile View */}
-                        { isMobile ? (
-                            <GameList
-                                games={currentGames}
-                            />
-                        ) : (
-                            /* Desktop View */
-                            <>
-                                <Box sx={{
-                                    marginTop: "2em"
-                                }}>
-                                    <GameList
-                                        title="Sorties récentes"
-                                        games={recentGames}
-                                    />
-                                </Box>
-                                {/*
+            ) : error ? (
+                <Box
+                    sx={{
+                        textAlign: "center",
+                        color: theme.palette.colors.red,
+                        marginTop: "20px",
+                    }}
+                >
+                    <Typography variant="h6">{error}</Typography>
+                </Box>
+            ) : (
+                <>
+                    {/* Mobile Tabs */}
+                    { isMobile ? (
+                        <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
+                    ) : (
+                        /* Desktop View */
+                        <>
+                            <Box sx={{
+                                marginTop: "2em"
+                            }}>
+                                <GameList
+                                    title="Sorties récentes"
+                                    games={recentGames}
+                                />
+                            </Box>
+                            {/*
                             */}
 
-                                <Box sx={{}}>
-                                    <GameList
-                                        title="Jeux populaires"
-                                        games={popularGames}
-                                    />
-                                </Box>
-                            <SectionTitle title="Avis récents" />
+                            <Box sx={{}}>
+                                <GameList
+                                    title="Jeux populaires"
+                                    games={popularGames}
+                                />
+                            </Box>
+                            <SectionTitle title="Avis récents"/>
                             <Box
                                 sx={{
                                     textAlign: "center",

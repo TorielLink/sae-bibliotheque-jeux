@@ -18,15 +18,6 @@ const generateTransparentColors = (colorMap, transparency) => {
   );
 };
 
-// TODO : ne fonctionne pas
-const loadGoogleFont = (fontName) => {
-  const link = document.createElement('link');
-  link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}&display=swap`;
-  link.rel = 'stylesheet';
-  document.head.appendChild(link);
-};
-loadGoogleFont('Jacquard');
-
 export const baseTheme = {
   palette: {
     colors,
@@ -37,7 +28,6 @@ export const baseTheme = {
   },
   typography: {
     fontFamily: 'Inter, Arial, sans-serif',
-    titleFontFamily: 'Jacquard, Arial, sans-serif',
   },
 };
 
@@ -55,6 +45,7 @@ export const lightTheme = createTheme({
       secondary: '#666', // Texte secondaire gris
       contrast: '#F5F5F5', // Texte blanc
     },
+    logo: '/images/light-logo.png',
   },
 });
 
@@ -71,5 +62,6 @@ export const darkTheme = createTheme({
       primary: '#FFF',
       secondary: '#B3B3B3', // Texte secondaire gris clair
     },
+    logo: '/images/dark-logo.png',
   },
 });
