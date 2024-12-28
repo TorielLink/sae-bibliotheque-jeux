@@ -32,6 +32,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
             const data = await response.json()
             setData(data.data)
+            return data.data
         } catch (err) {
             console.error('Erreur lors de la récupération des données du status :', err)
             setError('Impossible de charger le status.')
@@ -55,9 +56,10 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         setCurrentLog(log)
         handleCurrentPrivacySettingChange(log.privacy)
         handleCurrentPlatform(log.platform)
-        fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions)
-        handleCurrentSessionChange(-1)
-        calculateTime(timeCalculationMethod, log, sessions)
+        fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(newSessions => {
+            handleCurrentSessionChange(-1)
+            // calculateTime(timeCalculationMethod, log, newSessions)
+        })
     }
 
     const [privacySettings, setPrivacySettings] = useState([])
@@ -104,17 +106,16 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     const [timeCalculationMethod, setTimeCalculationMethod] = useState(0)
     const handleTimeCalculationMethodChange = (value) => {
+        console.log('method changed')
         setTimeCalculationMethod(value)
-        calculateTime(1, null, sessions)
+        calculateTime(value, currentLog)
     }
 
-    const calculateTime = (method, journal, sessionsJournal) => {
-        console.log(sessions)
+    const calculateTime = (method, journal) => {
         if (method === 1) {
             handlePlaytimeChange(sessionsPlaytime)
         } else {
-            setPlaytime(journal.time_played)
-            handlePlaytimeChange(playtime)
+            handlePlaytimeChange(journal?.time_played || 0)
         }
     }
 
@@ -123,9 +124,13 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         sessions.map(session => {
             time += session.time_played
         })
-        console.log(time)
         setSessionsPlaytime(time)
     }, [sessions]);
+
+    useEffect(() => {
+        calculateTime(timeCalculationMethod, currentLog)
+    }, [sessionsPlaytime]);
+
 
     return (
         <div style={styles.container}>
