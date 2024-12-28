@@ -21,6 +21,12 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
         </div>
     )
 
+    function formatDate(date) {
+        const [year, month, day] = date.split('-')
+        const formattedDate = `${day}/${month}/${year}`
+        return formattedDate
+    }
+
     return (
         <div style={styles.container}>
             <div style={styles.sessionsContainer}>
@@ -36,7 +42,7 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
                             ...(currentSession === session ? styles.selectedSession : {})
                         }}>
                             <div style={styles.informations}>
-                                <p style={styles.date}>{session.session_date}</p>
+                                <p style={styles.date}>{formatDate(session.session_date)}</p>
                                 <h4 style={styles.title}>{session.title}</h4>
                             </div>
                             <div style={styles.actions}>
@@ -135,7 +141,7 @@ const getStyles = (theme) => ({
     date: {
         fontSize: '0.8rem',
         margin: '0',
-        color: theme.palette.transparentColors[`black-70`]
+        color: theme.palette.transparentColors[`black-70`],
     },
     title: {
         margin: '0.2rem 0 0 0',

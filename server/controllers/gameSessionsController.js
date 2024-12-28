@@ -18,6 +18,9 @@ controller.getAllByLog = async (req, res) => {
         const {logId} = req.params
         const sessions = await gameSession.findAll({
             where: {game_log_id: logId},
+            order: [
+                ['session_date', 'DESC']
+            ],
             attributes: ['game_session_id', 'session_date', 'title', 'content', 'time_played', 'game_log_id'],
         })
         res.status(200).json({message: 'Game sessions fetched successfully', data: sessions})
