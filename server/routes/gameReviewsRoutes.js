@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/gameReviewsController');
+const verifyToken = require('../middleware/auth'); // Assurez-vous que c'est le bon chemin
 
 /**
  * @swagger
@@ -226,5 +227,53 @@ router.get('/game/:id', controller.getReviewsByGameId);
  *         description: Erreur serveur
  */
 router.get('/user/:id', controller.getReviewsByUserId);
+
+/**
+ * @swagger
+ * /reviews:
+ *   post:
+ *     summary: Ajouter une critique et une note pour un jeu
+ *     tags:
+ *       - Reviews
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_id:
+ *                 type: integer
+ *                 description: ID de l'utilisateur
+ *               igdb_game_id:
+ *                 type: integer
+ *                 description: ID du jeu (IGDB)
+ *               review_text:
+ *                 type: string
+ *                 description: Texte de la critique
+ *               rating_value:
+ *                 type: number
+ *                 format: float
+ *                 description: Note du jeu
+ *               privacy_id:
+ *                 type: integer
+ *                 description: ID du paramètre de confidentialité
+ *             required:
+ *               - user_id
+ *               - igdb_game_id
+ *               - review_text
+ *     responses:
+ *       201:
+ *         description: Critique ajoutée avec succès
+ *       400:
+ *         description: Données de requête manquantes ou invalides
+ *       404:
+ *         description: Utilisateur ou jeu non trouvé
+ *       500:
+ *         description: Erreur serveur
+ */
+router.post('/', verifyToken, controller.addReview);
 
 module.exports = router;

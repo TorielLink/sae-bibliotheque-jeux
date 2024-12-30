@@ -17,10 +17,6 @@ module.exports = (sequelize, DataTypes) => {
         igdb_game_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            references: {
-                model: 'games', // Supposons qu'il existe une table `games`
-                key: 'igdb_game_id',
-            },
         },
         content: {
             type: DataTypes.TEXT,
@@ -33,7 +29,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         date_published: {
             type: DataTypes.DATE,
-            allowNull: false, // Obligatoire
+            allowNull: false,
+            defaultValue: DataTypes.NOW, // Utilise la date et l'heure actuelles
         },
         privacy_setting_id: {
             type: DataTypes.INTEGER,

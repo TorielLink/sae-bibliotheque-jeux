@@ -188,7 +188,7 @@ controller.getGamesWithSessions = async (req, res) => {
 
                 // Calculer la note moyenne des utilisateurs pour ce jeu
                 const avgRatingResult = await gameRatings.findOne({
-                    where: {igdb_game_id: igdbGameId}, // On filtre par le jeu
+                    where: {igdb_game_id: igdbGameId},
                     attributes: [
                         [sequelize.fn('AVG', sequelize.col('rating_value')), 'averageRating'], // Calcul de la moyenne
                     ],
