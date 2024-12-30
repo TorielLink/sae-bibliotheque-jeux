@@ -276,4 +276,10 @@ router.get('/user/:id', controller.getReviewsByUserId);
  */
 router.post('/', verifyToken, controller.addReview);
 
+// Mettre à jour une critique
+router.put('/:id', verifyToken, controller.updateReview);
+
+// Supprimer une critique
+router.delete('/:id', verifyToken, controller.deleteReview);
+
 module.exports = router;

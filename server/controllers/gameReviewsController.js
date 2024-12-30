@@ -14,25 +14,12 @@ const gameCache = new Map();
 // Ajout d'une critique avec une note
 controller.addReview = async (req, res) => {
     try {
-        const {user_id, igdb_game_id, content, rating_value, privacy_setting_id} = req.body;
+        const {user_id, igdb_game_id, content, rating_value, privacy_setting_id, spoiler} = req.body;
 
         // Vérifier si l'utilisateur existe
         const user = await users.findOne({where: {user_id}});
         if (!user) {
             return res.status(404).json({message: 'Utilisateur non trouvé'});
-        }
-
-        // Vérifier les données du jeu via une API externe
-        try {
-            const gameData = await getGameData(igdb_game_id);
-            if (!gameData) {
-                console.warn(`Le jeu avec igdb_game_id ${igdb_game_id} n'a pas été trouvé via l'API.`);
-            }
-        } catch (error) {
-            console.error(
-                `Erreur lors de la récupération des données de jeu pour igdb_game_id ${igdb_game_id}:`,
-                error.message
-            );
         }
 
         // Créer la critique
@@ -41,7 +28,8 @@ controller.addReview = async (req, res) => {
             igdb_game_id,
             content,
             privacy_setting_id,
-            date_published: new Date(), // Ajouter la date actuelle
+            spoiler: spoiler || false, // Défaut à false si non fourni
+            date_published: new Date(),
         });
 
         // Ajouter une note si elle est fournie
@@ -54,10 +42,7 @@ controller.addReview = async (req, res) => {
             });
         }
 
-        res.status(201).json({
-            message: 'Critique ajoutée avec succès',
-            data: review,
-        });
+        res.status(201).json({message: 'Critique ajoutée avec succès', data: review});
     } catch (error) {
         console.error("Erreur lors de l'ajout de la critique :", error);
         res.status(500).json({message: "Erreur lors de l'ajout de la critique", error: error.message});
@@ -75,6 +60,53 @@ async function getGameData(igdb_game_id) {
     gameCache.set(igdb_game_id, gameData);
     return gameData;
 }
+
+// Mettre à jour une critique
+controller.updateReview = async (req, res) => {
+    try {
+        const {id} = req.params; // ID de la critique à modifier
+        const {content, privacy_setting_id, spoiler} = req.body;
+
+        // Trouver la critique existante
+        const review = await gameReview.findOne({where: {id}});
+        if (!review) {
+            return res.status(404).json({message: 'Critique non trouvée'});
+        }
+
+        // Mettre à jour les champs fournis
+        const updatedReview = await review.update({
+            content: content !== undefined ? content : review.content,
+            privacy_setting_id: privacy_setting_id !== undefined ? privacy_setting_id : review.privacy_setting_id,
+            spoiler: spoiler !== undefined ? spoiler : review.spoiler,
+        });
+
+        res.status(200).json({message: 'Critique mise à jour avec succès', data: updatedReview});
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de la critique :", error);
+        res.status(500).json({message: "Erreur lors de la mise à jour de la critique", error: error.message});
+    }
+};
+
+// Supprimer une critique
+controller.deleteReview = async (req, res) => {
+    try {
+        const {id} = req.params; // ID de la critique à supprimer
+
+        // Trouver la critique existante
+        const review = await gameReview.findOne({where: {id}});
+        if (!review) {
+            return res.status(404).json({message: 'Critique non trouvée'});
+        }
+
+        // Supprimer la critique
+        await review.destroy();
+
+        res.status(200).json({message: 'Critique supprimée avec succès'});
+    } catch (error) {
+        console.error("Erreur lors de la suppression de la critique :", error);
+        res.status(500).json({message: "Erreur lors de la suppression de la critique", error: error.message});
+    }
+};
 
 /**
  * Obtenir toutes les critiques
