@@ -25,13 +25,17 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     )
 
 
-    const fetchData = async (url, setData) => {
+    const fetchData = async (url, setData, optionalId = false) => {
         try {
             const response = await fetch(url)
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
             const data = await response.json()
-            setData(data.data)
+            if (optionalId) {
+                setData(data.data[optionalId])
+            } else {
+                setData(data.data)
+            }
             return data.data
         } catch (err) {
             console.error('Erreur lors de la récupération des données du status :', err)
@@ -40,7 +44,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     useEffect(() => {
-        fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${gameId}`, handleStatusChange)
+        fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${gameId}`, handleStatusChange, "game_status_id")
         fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${gameId}`, setLogs)
         fetchData(`http://localhost:8080/privacy-settings`, setPrivacySettings)
     }, [])
@@ -53,10 +57,9 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [logs, setLogs] = useState([])
     const [currentLog, setCurrentLog] = useState(null)
     const handleCurrentLogChange = (log) => {
-        console.log(log)
         setCurrentLog(log)
-        handleCurrentPrivacySettingChange(log.privacy)
-        handleCurrentPlatform(log.platform)
+        handleCurrentPrivacySettingChange(log.privacy_setting_id)
+        setCurrentPlatform(log.platform_id)
         fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(newSessions => {
             handleCurrentSessionChange(-1)
         })
@@ -64,16 +67,29 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     const [privacySettings, setPrivacySettings] = useState([])
     const [currentPrivacySetting, setCurrentPrivacySetting] = useState(null)
-    const handleCurrentPrivacySettingChange = (privacySetting) => {
-        setCurrentPrivacySetting(privacySetting)
+    const handleCurrentPrivacySettingChange = (privacySettingId) => {
+        setCurrentPrivacySetting(privacySettings.find((privacySetting) => privacySetting.privacy_setting_id === privacySettingId))
     }
 
     const [currentPlatform, setCurrentPlatform] = useState(0)
-    const handleCurrentPlatform = (platform) => {
-        setCurrentPlatform(platform)
+    const handlePlatformChange = (platformId) => {
+        setCurrentPlatform(platformId)
+        savePlatformChange(platformId)
     }
 
-    const [playtime, setPlaytime] = useState(0)
+    const savePlatformChange = (platformId) => {
+        currentLog.platform_id = platformId
+    }
+
+    useEffect(() => {
+        logs.forEach((log) => {
+            if (currentLog && log.game_log_id === currentLog.game_log_id) {
+                log = currentLog
+            }
+        })
+    }, [JSON.stringify(currentLog)]);
+
+    const [playtime, setPlaytime] = useState('')
     const handlePlaytimeChange = (playtime) => {
         setPlaytime(playtime)
     }
@@ -167,7 +183,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                             setCurrentPrivacySetting={handleCurrentPrivacySettingChange}
 
                             currentPlatform={currentPlatform}
-                            setCurrentPlatform={handleCurrentPlatform}
+                            setCurrentPlatform={handlePlatformChange}
 
                             playtime={playtime}
                             setPlaytime={setPlaytime}

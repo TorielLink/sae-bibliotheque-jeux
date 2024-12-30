@@ -34,7 +34,8 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
     if (error) return <div>{error}</div>;
 
     const handleItemChange = (event) => {
-        setSelectedItem(data.find((item) => item[idName] === Number(event.target.value)))
+        // setSelectedItem(data.find((item) => item[idName] === Number(event.target.value)))
+        setSelectedItem(Number(event.target.value))
     }
 
     return (
@@ -72,7 +73,7 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
                                                         <IconComponent size={'2rem'}/>
                                                     }
                                                     value={item[idName]}
-                                                    checked={selectedItem[idName] === item[idName]}
+                                                    checked={selectedItem === item[idName]}
                                                     disableTouchRipple
                                                     style={styles.icon}
                                                     sx={{

@@ -108,6 +108,7 @@ router.get('/user/:userId', gameStatusController.getGameStatusByUser);
  *         description: Erreur serveur
  */
 router.get('/user/:userId/game/:gameId', gameStatusController.getStatusByUserAndGame);
+
 /**
  * @swagger
  * /gameStatus/game/{igdb_game_id}:

@@ -60,17 +60,6 @@ controller.getByUserAndGame = async (req, res) => {
                 user_id: userId,
                 igdb_game_id: gameId
             },
-            include: [
-                {
-                    model: gamePlatforms,
-                    as: 'platform',
-                },
-                {
-                    model: privacySettings,
-                    as: 'privacy',
-                }
-            ],
-            // attributes: ['game_log_id', 'igdb_game_id', 'time_played'],
         })
         if (logs.length === 0) {
             return res.status(404).json({message: 'No game logs found for this user and game'})

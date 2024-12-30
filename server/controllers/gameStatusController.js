@@ -74,20 +74,14 @@ controller.getStatusByUserAndGame = async (req, res) => {
             where: {
                 user_id: userId,
                 igdb_game_id: gameId
-            },
-            include: {
-                model: status,
-                as: 'status',
-                attributes: ['game_status_id', 'name', 'icon'],
-            },
-            attributes: [],
+            }
         });
 
         if (!gameStatusData) {
             return res.status(404).json({message: 'No game status found for this game and user'});
         }
 
-        res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData.status});
+        res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData});
     } catch (error) {
         console.error('Error fetching game status :', error);
         res.status(500).json({message: 'Error fetching game status', error: error.message});

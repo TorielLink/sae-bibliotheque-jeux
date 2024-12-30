@@ -35,7 +35,7 @@ function GameLogDetails({
         setPlaytime(Number(event.target.value) * 60 + minutes)
     }
 
-    const [minutes, setMinutes] = useState(null)
+    const [minutes, setMinutes] = useState('')
     const handleMinutesChange = (event) => {
         setMinutes(Number(event.target.value))
         setPlaytime(Number(event.target.value) + 60 * hours)
