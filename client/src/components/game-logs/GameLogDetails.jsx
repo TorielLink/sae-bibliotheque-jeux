@@ -47,13 +47,18 @@ function GameLogDetails({
 
     useEffect(() => {
         if (playtime !== 0) {
-            setHours(playtime > 60 ? Math.floor(playtime / 60) : '')
+            setHours(playtime >= 60 ? Math.floor(playtime / 60) : '')
             setMinutes(playtime % 60)
         } else {
             setHours('')
             setMinutes('')
         }
     }, [playtime])
+
+    const savePlaytime = (event) => {
+        const newPlaytime = Number(hours) * 60 + Number(minutes)
+        currentLog.time_played = newPlaytime
+    }
 
     return (
         <div style={styles.container}>
@@ -138,6 +143,7 @@ function GameLogDetails({
                                 setHours={handleHoursChange}
                                 minutes={minutes}
                                 setMinutes={handleMinutesChange}
+                                savePlaytime={savePlaytime}
                                 timeCalculationMethod={timeCalculationMethod} // autre chose que 1 ou 0 pour le playtime dans la session
                             />
                         </div>

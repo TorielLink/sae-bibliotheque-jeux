@@ -1,16 +1,16 @@
 import React, {useEffect, useContext, useState} from "react"
 import {useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import GameLogsTab from "./log-details-content/GameLogsTab.jsx";
-import {Info, FormatListBulleted} from "@mui/icons-material";
-import GameLogDetails from "./GameLogDetails.jsx";
-import {AuthContext} from "../AuthContext.jsx";
-import GameLogSessions from "./GameLogSessions.jsx";
-import SessionEditor from "./SessionEditor.jsx";
+import GameLogsTab from "./log-details-content/GameLogsTab.jsx"
+import {Info, FormatListBulleted} from "@mui/icons-material"
+import GameLogDetails from "./GameLogDetails.jsx"
+import {AuthContext} from "../AuthContext.jsx"
+import GameLogSessions from "./GameLogSessions.jsx"
+import SessionEditor from "./SessionEditor.jsx"
 
 function GameLogs({gameId, gameName, gameCoverImage}) {
-    const theme = useTheme();
-    const styles = getStyles(theme);
+    const theme = useTheme()
+    const styles = getStyles(theme)
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const {isAuthenticated, user} = useContext(AuthContext)
     const [error, setError] = useState(null)
@@ -53,12 +53,12 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [logs, setLogs] = useState([])
     const [currentLog, setCurrentLog] = useState(null)
     const handleCurrentLogChange = (log) => {
+        console.log(log)
         setCurrentLog(log)
         handleCurrentPrivacySettingChange(log.privacy)
         handleCurrentPlatform(log.platform)
         fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(newSessions => {
             handleCurrentSessionChange(-1)
-            // calculateTime(timeCalculationMethod, log, newSessions)
         })
     }
 
@@ -85,6 +85,12 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         setSessionsPlaytime(playtime)
     }
 
+    const [updatedSession, setUpdatedSession] = useState(false)
+    const handleSessionUpdate = (value) => {
+        setUpdatedSession(value)
+        getSessionsPlaytime()
+    }
+
     const [currentSession, setCurrentSession] = useState(-1)
     const handleCurrentSessionChange = (newSession) => {
         setCurrentSession(newSession)
@@ -106,12 +112,11 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     const [timeCalculationMethod, setTimeCalculationMethod] = useState(0)
     const handleTimeCalculationMethodChange = (value) => {
-        console.log('method changed')
         setTimeCalculationMethod(value)
-        calculateTime(value, currentLog)
+        displayPlaytime(value, currentLog)
     }
 
-    const calculateTime = (method, journal) => {
+    const displayPlaytime = (method, journal) => {
         if (method === 1) {
             handlePlaytimeChange(sessionsPlaytime)
         } else {
@@ -120,17 +125,20 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     useEffect(() => {
+        getSessionsPlaytime()
+    }, [sessions])
+
+    function getSessionsPlaytime() {
         let time = 0
         sessions.map(session => {
             time += session.time_played
         })
         setSessionsPlaytime(time)
-    }, [sessions]);
+    }
 
     useEffect(() => {
-        calculateTime(timeCalculationMethod, currentLog)
-    }, [sessionsPlaytime]);
-
+        displayPlaytime(timeCalculationMethod, currentLog)
+    }, [sessionsPlaytime])
 
     return (
         <div style={styles.container}>
@@ -192,6 +200,9 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
                 <div style={styles.editor}>
                     <SessionEditor session={currentSession}
+
+                                   updatedSession={updatedSession}
+                                   setUpdatedSession={handleSessionUpdate}
 
                                    sessionContent={sessionContent}
                                    setSessionContent={handleSessionContentChange}

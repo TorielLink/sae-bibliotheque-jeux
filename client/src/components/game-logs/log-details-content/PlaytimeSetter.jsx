@@ -2,12 +2,15 @@ import React from "react"
 import {TextField} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 
-function PlaytimeSetter({hours, setHours, minutes, setMinutes, timeCalculationMethod}) {
+function PlaytimeSetter({hours, setHours, minutes, setMinutes, savePlaytime, timeCalculationMethod}) {
     const theme = useTheme()
     const styles = getStyles(theme)
 
     return (
-        <div style={styles.inputContainer}>
+        <div
+            style={styles.inputContainer}
+            onBlur={savePlaytime}
+        >
 
             <TextField
                 style={styles.input}

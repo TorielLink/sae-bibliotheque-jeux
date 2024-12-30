@@ -7,10 +7,9 @@ import {TextField} from "@mui/material";
 
 function SessionEditor({
                            session,
-                           sessionContent,
-                           setSessionContent,
-                           sessionTitle,
-                           setSessionTitle,
+                           updatedSession, setUpdatedSession,
+                           sessionContent, setSessionContent,
+                           sessionTitle, setSessionTitle,
                            collapseButtonSize
                        }) {
     const theme = useTheme();
@@ -38,12 +37,28 @@ function SessionEditor({
         setMinutes(Number(event.target.value))
     }
 
-    const handleEditorChange = (value) => {
+    const handleSessionContentChange = (value) => {
         setSessionContent(value)
+    }
+
+    const saveSessionContent = (value) => {
+        session.content = sessionContent
+        setUpdatedSession(!updatedSession)
     }
 
     const handleTitleChange = (event) => {
         setSessionTitle(event.target.value)
+    }
+
+    const saveNewTitle = () => {
+        session.title = sessionTitle
+        setUpdatedSession(!updatedSession)
+    }
+
+    const savePlaytime = (event) => {
+        const newPlaytime = Number(hours) * 60 + Number(minutes)
+        session.time_played = newPlaytime
+        setUpdatedSession(!updatedSession)
     }
 
     if (session === -1) return (
@@ -61,6 +76,7 @@ function SessionEditor({
                     id="title"
                     value={sessionTitle}
                     onChange={handleTitleChange}
+                    onBlur={saveNewTitle}
                     placeholder="Titre de la session"
                     slotProps={{
                         htmlInput: {
@@ -77,13 +93,14 @@ function SessionEditor({
                         },
                     }}
                 />
-                {/*<h1>{session.title}</h1>*/}
+
                 <div style={styles.playtime}>
                     <PlaytimeSetter
                         hours={hours}
                         setHours={handleHoursChange}
                         minutes={minutes}
                         setMinutes={handleMinutesChange}
+                        savePlaytime={savePlaytime}
                         timeCalculationMethod={-1}
                     />
                 </div>
@@ -92,7 +109,8 @@ function SessionEditor({
             <MDEditor
                 style={styles.editor}
                 value={sessionContent}
-                onChange={handleEditorChange}
+                onChange={handleSessionContentChange}
+                onBlur={saveSessionContent}
                 commands={[]}
                 visibleDragbar={false}
                 toolbarBottom

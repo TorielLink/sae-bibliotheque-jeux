@@ -70,7 +70,7 @@ controller.getByUserAndGame = async (req, res) => {
                     as: 'privacy',
                 }
             ],
-            attributes: ['game_log_id', 'igdb_game_id', 'time_played'],
+            // attributes: ['game_log_id', 'igdb_game_id', 'time_played'],
         })
         if (logs.length === 0) {
             return res.status(404).json({message: 'No game logs found for this user and game'})
@@ -80,6 +80,10 @@ controller.getByUserAndGame = async (req, res) => {
         console.error('Error fetching game logs :', error)
         res.status(500).json({message: 'Error fetching game logs', error: error.message})
     }
+}
+
+controller.save = async (req, res) => {
+
 }
 
 module.exports = controller;
