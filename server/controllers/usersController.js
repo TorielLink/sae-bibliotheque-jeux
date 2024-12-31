@@ -38,7 +38,7 @@ controller.login = async (req, res) => {
         const token = jwt.sign(
             {user_id: user.user_id, username: user.username},
             SECRET,
-            {expiresIn: '1h'} // Optionnel : définir une expiration
+            //{expiresIn: '1h'} //TODO: Décommentez cette ligne à la fin du projet
         );
 
         res.status(200).json({
