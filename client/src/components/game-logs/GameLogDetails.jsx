@@ -13,7 +13,7 @@ function GameLogDetails({
                             privacySettings,
                             currentPrivacySetting, setCurrentPrivacySetting,
                             currentPlatform, setCurrentPlatform,
-                            playtime, setPlaytime,
+                            playtime, setPlaytime, savePlaytime,
                             timeCalculationMethod, setTimeCalculationMethod
                         }) {
     const theme = useTheme();
@@ -25,7 +25,7 @@ function GameLogDetails({
     }
 
     const handlePrivacyChange = (event) => {
-        setCurrentPrivacySetting(privacySettings.find((privacySetting) => privacySetting.privacy_setting_id === Number(event.target.value)))
+        setCurrentPrivacySetting(Number(event.target.value))
     }
 
     const [hours, setHours] = useState('')
@@ -55,9 +55,9 @@ function GameLogDetails({
         }
     }, [playtime])
 
-    const savePlaytime = (event) => {
+    const saveNewPlaytime = (event) => {
         const newPlaytime = Number(hours) * 60 + Number(minutes)
-        currentLog.time_played = newPlaytime
+        savePlaytime(newPlaytime)
     }
 
     return (
@@ -93,6 +93,7 @@ function GameLogDetails({
                                     itemId={"privacy_setting_id"}
                                     selectedItem={currentPrivacySetting}
                                     setSelectedItem={handlePrivacyChange}
+                                    isIndex={true}
                                     defaultValue={1}
                                     size={"small"}
                                     value={"name"}
@@ -143,7 +144,7 @@ function GameLogDetails({
                                 setHours={handleHoursChange}
                                 minutes={minutes}
                                 setMinutes={handleMinutesChange}
-                                savePlaytime={savePlaytime}
+                                savePlaytime={saveNewPlaytime}
                                 timeCalculationMethod={timeCalculationMethod} // autre chose que 1 ou 0 pour le playtime dans la session
                             />
                         </div>

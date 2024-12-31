@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         time_played: {
-            type: DataTypes.INTEGER, // En minutes ou heures selon votre besoin
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         privacy_setting_id: {

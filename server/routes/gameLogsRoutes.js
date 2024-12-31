@@ -120,5 +120,43 @@ router.get('/user/:userId', gameLogsController.getByUserId);
  */
 router.get('/user/:userId/game/:gameId', gameLogsController.getByUserAndGame);
 
+/**
+ * @swagger
+ * /gameLogs/{logId}:
+ *   put:
+ *     summary: Mettre à jour un journal de jeu spécifique
+ *     description: >
+ *       Cette route met à jour un journal de jeu spécifique avec les données fournies.
+ *     tags:
+ *       - Game Logs
+ *     parameters:
+ *       - in: path
+ *         name: logId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: L'ID du journal de jeu
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               privacy_setting_id:
+ *                 type: integer
+ *               platform_id:
+ *                 type: integer
+ *               time_played:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Journal de jeu mis à jour avec succès
+ *       404:
+ *         description: Journal de jeu introuvable
+ *       500:
+ *         description: Erreur serveur
+ */
+router.put('/:logId', gameLogsController.updateLog);
 
 module.exports = router;

@@ -6,8 +6,8 @@ function HorizontalSelector({
                                 label,
                                 items,
                                 itemId,
-                                selectedItem,
-                                setSelectedItem,
+                                selectedItem, setSelectedItem,
+                                isIndex,
                                 defaultValue,
                                 size,
                                 value,
@@ -22,7 +22,7 @@ function HorizontalSelector({
                 <Select
                     style={{...styles.selector}}
                     id="log-selector"
-                    value={selectedItem ? selectedItem[itemId] : defaultValue}
+                    value={isIndex ? selectedItem : (selectedItem ? selectedItem[itemId] : defaultValue)}
                     size={size}
                     label={label}
                     variant="outlined"

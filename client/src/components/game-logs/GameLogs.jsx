@@ -1,8 +1,8 @@
-import React, {useEffect, useContext, useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import GameLogsTab from "./log-details-content/GameLogsTab.jsx"
-import {Info, FormatListBulleted} from "@mui/icons-material"
+import {FormatListBulleted, Info} from "@mui/icons-material"
 import GameLogDetails from "./GameLogDetails.jsx"
 import {AuthContext} from "../AuthContext.jsx"
 import GameLogSessions from "./GameLogSessions.jsx"
@@ -58,7 +58,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [currentLog, setCurrentLog] = useState(null)
     const handleCurrentLogChange = (log) => {
         setCurrentLog(log)
-        handleCurrentPrivacySettingChange(log.privacy_setting_id)
+        setCurrentPrivacySetting(log.privacy_setting_id)
         setCurrentPlatform(log.platform_id)
         fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(newSessions => {
             handleCurrentSessionChange(-1)
@@ -66,9 +66,14 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     const [privacySettings, setPrivacySettings] = useState([])
-    const [currentPrivacySetting, setCurrentPrivacySetting] = useState(null)
+    const [currentPrivacySetting, setCurrentPrivacySetting] = useState(1)
     const handleCurrentPrivacySettingChange = (privacySettingId) => {
-        setCurrentPrivacySetting(privacySettings.find((privacySetting) => privacySetting.privacy_setting_id === privacySettingId))
+        setCurrentPrivacySetting(privacySettingId)
+        savePrivacyChange(privacySettingId)
+    }
+
+    const savePrivacyChange = (privacySettingId) => {
+        currentLog.privacy_setting_id = privacySettingId
     }
 
     const [currentPlatform, setCurrentPlatform] = useState(0)
@@ -81,18 +86,59 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         currentLog.platform_id = platformId
     }
 
-    useEffect(() => {
-        logs.forEach((log) => {
-            if (currentLog && log.game_log_id === currentLog.game_log_id) {
-                log = currentLog
-            }
-        })
-    }, [JSON.stringify(currentLog)]);
-
     const [playtime, setPlaytime] = useState('')
     const handlePlaytimeChange = (playtime) => {
         setPlaytime(playtime)
     }
+
+    const savePlaytime = (playtime) => {
+        currentLog.time_played = playtime
+    }
+
+    const updateLog = async (logId, updatedData) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-logs/${logId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to update game log: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+            // console.log('Game log updated successfully:', result)
+        } catch (error) {
+            console.error('Error updating game log:', error)
+        }
+    }
+
+
+    useEffect(() => {
+        if (currentLog) {
+
+            logs.forEach((log) => {
+                if (log.game_log_id === currentLog.game_log_id) {
+                    log = currentLog
+                }
+            })
+
+            updateLog(
+                currentLog.game_log_id,
+                {
+                    privacy_setting_id: currentLog.privacy_setting_id,
+                    platform_id: currentLog.platform_id,
+                    time_played: currentLog.time_played
+                }
+            )
+        }
+
+    }, [JSON.stringify(currentLog)])
+
+    //------------------------------Changements sauvegardés------------------------------\\
 
     const [sessions, setSessions] = useState([])
 
@@ -187,6 +233,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
                             playtime={playtime}
                             setPlaytime={setPlaytime}
+                            savePlaytime={savePlaytime}
 
                             timeCalculationMethod={timeCalculationMethod}
                             setTimeCalculationMethod={handleTimeCalculationMethodChange}
