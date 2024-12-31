@@ -30,10 +30,10 @@ controller.getContentsByListId = async (req, res) => {
             where: {game_list_id: id},
             include: {
                 model: listContent,
-                as: 'contents', // Alias défini dans Sequelize
-                attributes: ['igdb_game_id'], // Champs spécifiques des contenus
+                as: 'contents',
+                attributes: ['igdb_game_id'],
             },
-            attributes: ['game_list_id', 'name', 'description'], // Champs spécifiques de la liste
+            attributes: ['game_list_id', 'name', 'description'],
         });
 
         if (!listWithContents) {

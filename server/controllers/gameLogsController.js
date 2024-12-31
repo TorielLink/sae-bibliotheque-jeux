@@ -1,4 +1,4 @@
-const { gameLogs, users, gamePlatforms, privacySettings } = require('../database/sequelize');
+const {gameLogs, users, gamePlatforms, privacySettings} = require('../database/sequelize');
 
 const controller = {};
 
@@ -9,26 +9,26 @@ controller.getAll = async (req, res) => {
             include: [
                 {
                     model: users,
-                    as: 'user', // Alias défini dans les relations Sequelize
-                    attributes: ['username', 'mail'], // Champs spécifiques à récupérer
+                    as: 'user',
+                    attributes: ['username', 'mail'],
                 },
                 {
                     model: gamePlatforms,
-                    as: 'platform', // Alias défini dans les relations Sequelize
-                    attributes: ['name', 'short_name'], // Champs spécifiques à récupérer
+                    as: 'platform',
+                    attributes: ['name', 'short_name'],
                 },
                 {
                     model: privacySettings,
-                    as: 'privacy', // Alias défini dans les relations Sequelize
-                    attributes: ['name'], // Champs spécifiques à récupérer
+                    as: 'privacy',
+                    attributes: ['name'],
                 }
             ],
-            attributes: ['game_log_id', 'igdb_game_id', 'time_played'], // Champs spécifiques des journaux
+            attributes: ['game_log_id', 'igdb_game_id', 'time_played'],
         });
-        res.status(200).json({ message: 'Game logs fetched successfully', data: logs });
+        res.status(200).json({message: 'Game logs fetched successfully', data: logs});
     } catch (error) {
         console.error('Error fetching game logs:', error);
-        res.status(500).json({ message: 'Error fetching game logs', error: error.message });
+        res.status(500).json({message: 'Error fetching game logs', error: error.message});
     }
 };
 

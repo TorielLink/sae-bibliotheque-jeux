@@ -105,34 +105,7 @@ router.delete('/:id', verifyToken, gameListController.deleteGameList);
 
 /**
  * @swagger
- * /game-lists/user/{id}:
- *   get:
- *     summary: Récupérer toutes les listes d'un utilisateur
- *     description: Retourne toutes les listes appartenant à un utilisateur connecté.
- *     tags:
- *       - Game Lists
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID de l'utilisateur
- *     responses:
- *       200:
- *         description: Listes récupérées avec succès
- *       404:
- *         description: Aucune liste trouvée pour cet utilisateur
- *       500:
- *         description: Erreur serveur
- */
-router.get('/user/:id', verifyToken, gameListController.getListsByUser);
-
-/**
- * @swagger
- * /game-lists/{id}/details:
+ * /contentList/{idList}:
  *   get:
  *     summary: Récupérer les détails d'une liste de jeux
  *     description: Retourne les informations d'une liste et les données enrichies des jeux associés.
@@ -141,7 +114,7 @@ router.get('/user/:id', verifyToken, gameListController.getListsByUser);
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
+ *       - name: idList
  *         in: path
  *         required: true
  *         schema:
@@ -155,7 +128,7 @@ router.get('/user/:id', verifyToken, gameListController.getListsByUser);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/:id/details', verifyToken, gameListController.getGameListWithDetails);
+router.get('/contentList/:idList', verifyToken, gameListController.getGameListWithDetails);
 
 /**
  * @swagger
@@ -195,5 +168,58 @@ router.get('/:id/details', verifyToken, gameListController.getGameListWithDetail
  *         description: Erreur serveur
  */
 router.post('/:id/games', verifyToken, gameListController.addGameToList);
+
+/**
+ * @swagger
+ * /game-lists:
+ *   get:
+ *     summary: Récupérer les listes de jeux de l'utilisateur
+ *     description: Retourne toutes les listes de jeux associées à l'utilisateur connecté, avec les détails des jeux contenus.
+ *     tags:
+ *       - Game Lists
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Listes récupérées avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Listes récupérées avec succès"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       game_list_id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Ma liste de jeux préférés"
+ *                       games:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             igdb_game_id:
+ *                               type: integer
+ *                               example: 12345
+ *                             title:
+ *                               type: string
+ *                               example: "Uncharted"
+ *                             cover:
+ *                               type: string
+ *                               example: "https://example.com/cover.jpg"
+ *       404:
+ *         description: Aucune liste trouvée pour cet utilisateur
+ *       500:
+ *         description: Erreur serveur
+ */
+router.get('/', verifyToken, gameListController.getUserGameLists);
 
 module.exports = router;

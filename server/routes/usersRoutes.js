@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { uploadProfilePicture } = require('../middleware/upload'); // Middleware pour l'upload
+const {uploadProfilePicture} = require('../middleware/upload');
 const controller = require('../controllers/usersController');
-const verifyToken = require('../middleware/auth'); // Assurez-vous que c'est le bon chemin
+const verifyToken = require('../middleware/auth');
 
 /**
  * @swagger

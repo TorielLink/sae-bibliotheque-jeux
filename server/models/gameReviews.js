@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
                 model: 'users',
                 key: 'user_id',
             },
-            onDelete: 'SET NULL', // Les critiques ne seront pas supprimées, mais user_id sera mis à NULL
+            onDelete: 'SET NULL',
         },
         igdb_game_id: {
             type: DataTypes.INTEGER,
@@ -25,21 +25,21 @@ module.exports = (sequelize, DataTypes) => {
         spoiler: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: false, // Par défaut : pas de spoiler
+            defaultValue: false,
         },
         date_published: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: DataTypes.NOW, // Utilise la date et l'heure actuelles
+            defaultValue: DataTypes.NOW,
         },
         privacy_setting_id: {
             type: DataTypes.INTEGER,
-            allowNull: true, // Peut être NULL pour gérer les suppressions de privacy settings
+            allowNull: true,
             references: {
                 model: 'privacy_settings',
                 key: 'privacy_setting_id',
             },
-            onDelete: 'SET NULL', // Met à NULL si une privacy setting est supprimée
+            onDelete: 'SET NULL',
         },
     }, {
         freezeTableName: true, // Empêche la pluralisation automatique du nom de la table

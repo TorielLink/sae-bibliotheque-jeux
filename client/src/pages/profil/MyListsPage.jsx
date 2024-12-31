@@ -100,7 +100,6 @@ const MyListsPage = () => {
                     const response = await fetch(apiUrl, {
                         headers: {
                             'Content-Type': 'application/json',
-                            // 'Authorization': `Bearer ${user.token}`, // Décommentez si nécessaire
                         },
                     });
 

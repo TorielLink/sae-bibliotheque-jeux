@@ -7,7 +7,7 @@ const {
     friends,
     userLists,
 } = require('../database/sequelize');
-const { Op } = require('sequelize');
+const {Op} = require('sequelize');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SECRET = process.env.SECRET;
@@ -15,30 +15,30 @@ const controller = {};
 
 // Connexion d'un utilisateur
 controller.login = async (req, res) => {
-    const { username, password } = req.body;
+    const {username, password} = req.body;
 
     try {
         // Vérifiez si l'utilisateur existe et n'est pas supprimé
         const user = await users.findOne({
             where: {
                 username,
-                isDeleted: false // Ajout de cette condition
+                isDeleted: false
             }
         });
 
         if (!user) {
-            return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect." });
+            return res.status(401).json({message: "Nom d'utilisateur ou mot de passe incorrect."});
         }
 
         if (user.password !== password) { // Note : Pensez à hasher et comparer les mots de passe
-            return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect." });
+            return res.status(401).json({message: "Nom d'utilisateur ou mot de passe incorrect."});
         }
 
         // Génération du token JWT
         const token = jwt.sign(
-            { id: user.user_id, username: user.username },
+            {user_id: user.user_id, username: user.username},
             SECRET,
-            { expiresIn: '1h' } // Optionnel : définir une expiration
+            {expiresIn: '1h'} // Optionnel : définir une expiration
         );
 
         res.status(200).json({
@@ -53,31 +53,31 @@ controller.login = async (req, res) => {
 
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
-        res.status(500).json({ message: 'Erreur serveur.', error: error.message });
+        res.status(500).json({message: 'Erreur serveur.', error: error.message});
     }
 };
 
 // Création d'un utilisateur
 controller.create = async (req, res) => {
     try {
-        const { username, mail, password, isDeleted, privacy_setting_id } = req.body;
+        const {username, mail, password, isDeleted, privacy_setting_id} = req.body;
 
         // Vérification des champs requis
         if (!username || !mail || !password) {
-            return res.status(400).json({ message: 'Les champs username, mail et password sont requis.' });
+            return res.status(400).json({message: 'Les champs username, mail et password sont requis.'});
         }
 
         // Vérification de l'existence d'un utilisateur avec le même username ou email
         const existingUser = await users.findOne({
             where: {
-                [Op.or]: [{ username }, { mail }]
+                [Op.or]: [{username}, {mail}]
             }
         });
 
         if (existingUser) {
             return res.status(400).json({
                 message: 'Nom d’utilisateur ou adresse e-mail déjà utilisé.',
-                data: { username, mail }
+                data: {username, mail}
             });
         }
 
@@ -97,10 +97,10 @@ controller.create = async (req, res) => {
             privacy_setting_id: privacy_setting_id || 1
         });
 
-        res.status(201).json({ message: 'Utilisateur créé avec succès', data: newUser });
+        res.status(201).json({message: 'Utilisateur créé avec succès', data: newUser});
     } catch (error) {
         console.error('Erreur interne lors de la création de l’utilisateur :', error);
-        res.status(500).json({ message: 'Erreur interne lors de la création de l’utilisateur', error: error.message });
+        res.status(500).json({message: 'Erreur interne lors de la création de l’utilisateur', error: error.message});
     }
 };
 
@@ -110,21 +110,21 @@ controller.update = async (req, res) => {
     console.log("UPDATE USER: req.file", req.file);
 
     try {
-        const { id } = req.params;
-        const { username, mail, password, isDeleted, privacy_setting_id } = req.body;
+        const {id} = req.params;
+        const {username, mail, password, isDeleted, privacy_setting_id} = req.body;
 
         // Vérification de l'existence de l'utilisateur
-        const user = await users.findOne({ where: { user_id: id } });
+        const user = await users.findOne({where: {user_id: id}});
         if (!user) {
             console.log("UPDATE USER: Utilisateur introuvable, id =", id);
-            return res.status(404).json({ message: "Utilisateur introuvable." });
+            return res.status(404).json({message: "Utilisateur introuvable."});
         }
 
         // Vérifier si le username ou le mail sont déjà utilisés par un autre utilisateur
         if (username || mail) {
             const conditions = [];
-            if (username) conditions.push({ username });
-            if (mail) conditions.push({ mail });
+            if (username) conditions.push({username});
+            if (mail) conditions.push({mail});
 
             const existingUser = await users.findOne({
                 where: {
@@ -136,7 +136,7 @@ controller.update = async (req, res) => {
                 console.log("UPDATE USER: Username ou email déjà utilisé");
                 return res.status(400).json({
                     message: 'Nom d’utilisateur ou adresse e-mail déjà utilisé.',
-                    data: { username, mail }
+                    data: {username, mail}
                 });
             }
         }
@@ -172,22 +172,22 @@ controller.update = async (req, res) => {
             privacy_setting_id: user.privacy_setting_id,
         };
 
-        res.status(200).json({ message: 'Utilisateur mis à jour avec succès', data: updatedUser });
+        res.status(200).json({message: 'Utilisateur mis à jour avec succès', data: updatedUser});
     } catch (error) {
         console.error('UPDATE USER: Erreur lors de la mise à jour de l’utilisateur :', error);
-        res.status(500).json({ message: 'Erreur lors de la mise à jour de l’utilisateur', error: error.message });
+        res.status(500).json({message: 'Erreur lors de la mise à jour de l’utilisateur', error: error.message});
     }
 };
 
 // Récupérer un utilisateur par son ID
 controller.getById = async (req, res) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
 
         // Recherche de l'utilisateur dans la base de données
         const user = await users.findOne({
             attributes: ['user_id', 'username', 'mail', 'profile_picture', 'isDeleted'],
-            where: { user_id: id, isDeleted: false },
+            where: {user_id: id, isDeleted: false},
             include: {
                 model: privacySettings,
                 as: 'default_privacy',
@@ -197,80 +197,80 @@ controller.getById = async (req, res) => {
 
         // Vérification si l'utilisateur existe
         if (!user) {
-            return res.status(404).json({ message: "Utilisateur introuvable." });
+            return res.status(404).json({message: "Utilisateur introuvable."});
         }
 
-        res.status(200).json({ message: 'Utilisateur récupéré avec succès', data: user });
+        res.status(200).json({message: 'Utilisateur récupéré avec succès', data: user});
     } catch (error) {
         console.error('Erreur lors de la récupération de l’utilisateur :', error);
-        res.status(500).json({ message: 'Erreur lors de la récupération de l’utilisateur', error: error.message });
+        res.status(500).json({message: 'Erreur lors de la récupération de l’utilisateur', error: error.message});
     }
 };
 
 // Ajoutez cette méthode dans votre usersController.js
 controller.delete = async (req, res) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
 
         // Trouver l'utilisateur à supprimer
-        const user = await users.findOne({ where: { user_id: id } });
+        const user = await users.findOne({where: {user_id: id}});
         if (!user) {
-            return res.status(404).json({ message: "Utilisateur introuvable." });
+            return res.status(404).json({message: "Utilisateur introuvable."});
         }
 
         // ID de l'utilisateur générique
         const userDeleteId = 9999;
 
         // Vérifier que l'utilisateur générique existe
-        const userDelete = await users.findOne({ where: { user_id: userDeleteId } });
+        const userDelete = await users.findOne({where: {user_id: userDeleteId}});
         if (!userDelete) {
-            return res.status(500).json({ message: "Utilisateur générique introuvable. Veuillez le créer." });
+            return res.status(500).json({message: "Utilisateur générique introuvable. Veuillez le créer."});
         }
 
         // Transférer les données liées en gérant les conflits
         await Promise.all([
             // Transférer les critiques
             gameReview.update(
-                { user_id: userDeleteId },
-                { where: { user_id: id } }
+                {user_id: userDeleteId},
+                {where: {user_id: id}}
             ),
 
             // Transférer les notes
             gameRatings.update(
-                { user_id: userDeleteId },
-                { where: { user_id: id } }
+                {user_id: userDeleteId},
+                {where: {user_id: id}}
             ),
 
             // Transférer les journaux de jeux
             gameLogs.update(
-                { user_id: userDeleteId },
-                { where: { user_id: id } }
+                {user_id: userDeleteId},
+                {where: {user_id: id}}
             ),
 
             // Transférer les statuts de jeux
             gameStatus.update(
-                { user_id: userDeleteId },
-                { where: { user_id: id } }
+                {user_id: userDeleteId},
+                {where: {user_id: id}}
             ),
 
             // Supprimer les relations d'amis
             friends.destroy({
-                where: { [Op.or]: [{ user_id: id }, { user_id_1: id }] }
+                where: {[Op.or]: [{user_id: id}, {user_id_1: id}]}
             }),
 
             // Supprimer les listes associées
             userLists.destroy({
-                where: { user_id: id }
+                where: {user_id: id}
             }),
         ]);
 
         // Supprimer définitivement l'utilisateur
         await user.destroy();
 
-        res.status(200).json({ message: "Utilisateur supprimé et données réassignées avec succès." });
+        res.status(200).json({message: "Utilisateur supprimé et données réassignées avec succès."});
     } catch (error) {
         console.error('Erreur lors de la suppression de l’utilisateur :', error);
-        res.status(500).json({ message: 'Erreur lors de la suppression de l’utilisateur.', error: error.message });
+        res.status(500).json({message: 'Erreur lors de la suppression de l’utilisateur.', error: error.message});
     }
 };
 

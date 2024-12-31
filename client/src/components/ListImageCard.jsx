@@ -185,6 +185,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                         height: "1.5em",
                     }}
                 >
+                    {/*TODO : Remplacer l'image par le logo de la plateforme */}
                     <Box
                         component="img"
                         src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"

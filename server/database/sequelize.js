@@ -74,7 +74,7 @@ const associateModels = () => {
 
     // Game Logs → Users (Many-to-One)
     gameLogs.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
-    users.hasMany(gameLogs, {foreignKey: 'user_id', as: 'user_game_logs'}); // Changement d'alias
+    users.hasMany(gameLogs, {foreignKey: 'user_id', as: 'user_game_logs'});
 
     // Game Logs → Game Platforms (Many-to-One)
     gameLogs.belongsTo(gamePlatforms, {foreignKey: 'platform_id', as: 'platform'});
@@ -88,6 +88,9 @@ const associateModels = () => {
     gameLogs.hasMany(gameSession, {foreignKey: 'game_log_id', as: 'game_sessions'});
     gameSession.belongsTo(gameLogs, {foreignKey: 'game_log_id', as: 'game_log'});
 
+    // Game Reviews → Game Logs (One-to-Many)
+    gameReview.hasMany(gameLogs, {foreignKey: 'igdb_game_id', as: 'game_logs'});
+    gameLogs.belongsTo(gameReview, {foreignKey: 'igdb_game_id', as: 'game_review'});
 
     // Users ↔ Friends (Many-to-Many)
     users.belongsToMany(users, {

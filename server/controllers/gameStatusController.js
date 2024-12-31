@@ -19,8 +19,8 @@ controller.getAllGameStatuses = async (req, res) => {
         const gameStatuses = await gameStatus.findAll({
             include: {
                 model: status,
-                as: 'status', // Alias pour l'association avec status
-                attributes: ['game_status_id', 'name'], // Attributs de la table status
+                as: 'status',
+                attributes: ['game_status_id', 'name'],
             },
         });
         res.status(200).json({message: 'Game statuses fetched successfully', data: gameStatuses});
@@ -33,13 +33,13 @@ controller.getAllGameStatuses = async (req, res) => {
 // Récupérer les statuts de jeu pour un utilisateur spécifique
 controller.getGameStatusesByUser = async (req, res) => {
     try {
-        const {userId} = req.params; // ID de l'utilisateur
+        const {userId} = req.params;
         const userGameStatuses = await gameStatus.findAll({
             where: {user_id: userId},
             include: {
                 model: status,
-                as: 'status', // Alias pour l'association avec status
-                attributes: ['game_status_id', 'name'], // Attributs de la table status
+                as: 'status',
+                attributes: ['game_status_id', 'name'],
             },
         });
 
@@ -57,13 +57,13 @@ controller.getGameStatusesByUser = async (req, res) => {
 // Récupérer les statuts de jeu pour un jeu spécifique
 controller.getGameStatusesByGame = async (req, res) => {
     try {
-        const {igdb_game_id} = req.params; // ID du jeu (igdb_game_id)
+        const {igdb_game_id} = req.params;
         const gameStatuses = await gameStatus.findAll({
             where: {igdb_game_id: igdb_game_id},
             include: {
                 model: status,
-                as: 'status', // Alias pour l'association avec status
-                attributes: ['game_status_id', 'name'], // Attributs de la table status
+                as: 'status',
+                attributes: ['game_status_id', 'name'],
             },
         });
 
@@ -113,37 +113,37 @@ controller.getGamesWithSessions = async (req, res) => {
                 {
                     model: status,
                     as: 'status',
-                    where: {name: gameStatusName}, // Filtrage par gameStatusName via l'association avec status
+                    where: {name: gameStatusName},
                     attributes: ['name'],
-                    required: true, // Assure que seul les gameStatus avec ce statut sont récupérés
+                    required: true,
                 },
                 {
                     model: gameRatings,
                     as: 'ratings',
-                    attributes: ['rating_value'], // Récupérer uniquement la note de l'utilisateur
-                    required: false, // Permet de récupérer les jeux même sans note
+                    attributes: ['rating_value'],
+                    required: false,
                 },
                 {
                     model: gameLogs,
-                    as: 'status_game_logs', // Alias pour l'association avec game_logs
+                    as: 'status_game_logs',
                     include: [
                         {
                             model: gameSession,
-                            as: 'game_sessions', // Alias pour l'association avec game_sessions
-                            attributes: ['session_date', 'time_played'], // Récupérer le temps joué et la date de session
+                            as: 'game_sessions',
+                            attributes: ['session_date', 'time_played'],
                         },
                         {
                             model: gamePlatforms,
-                            as: 'platform', // Alias pour l'association avec gamePlatforms
-                            attributes: ['name'], // Récupérer le nom de la plateforme
+                            as: 'platform',
+                            attributes: ['name'],
                         }
                     ],
                     attributes: ['igdb_game_id'],
-                    required: false, // Permet de récupérer les jeux même sans logs
+                    required: false,
                 },
             ],
             attributes: ['igdb_game_id', 'user_id'],
-            distinct: true, // Pour éviter les doublons si associations multiples
+            distinct: true,
         });
 
         // Vérifier si des jeux ont été trouvés
@@ -162,7 +162,7 @@ controller.getGamesWithSessions = async (req, res) => {
                 let gameInfo = null;
 
                 try {
-                    gameInfo = await dataRetriever.getGameInfo(igdbGameId); // Récupérer les informations du jeu depuis l'API IGDB
+                    gameInfo = await dataRetriever.getGameInfo(igdbGameId);
                 } catch (error) {
                     console.error(`Erreur lors de la récupération des informations du jeu ID: ${igdbGameId}`, error.message);
                 }
@@ -180,17 +180,17 @@ controller.getGamesWithSessions = async (req, res) => {
 
                 // Calculer le total du temps joué pour ce jeu
                 const totalTimePlayed = gameSessions.reduce((total, session) => {
-                    return total + (session.time_played || 0); // Additionner le temps joué dans chaque session
+                    return total + (session.time_played || 0);
                 }, 0);
 
                 // Calculer le nombre de sessions
-                const sessionCount = gameSessions.length; // Compter le nombre de sessions
+                const sessionCount = gameSessions.length;
 
                 // Calculer la note moyenne des utilisateurs pour ce jeu
                 const avgRatingResult = await gameRatings.findOne({
                     where: {igdb_game_id: igdbGameId},
                     attributes: [
-                        [sequelize.fn('AVG', sequelize.col('rating_value')), 'averageRating'], // Calcul de la moyenne
+                        [sequelize.fn('AVG', sequelize.col('rating_value')), 'averageRating'],
                     ],
                     raw: true,
                 });
@@ -209,7 +209,7 @@ controller.getGamesWithSessions = async (req, res) => {
                     igdb_game_id: igdbGameId,
                     title: gameInfo?.name || null,
                     cover: gameInfo?.cover?.url || null,
-                    releaseDate: formattedReleaseDate, // Date de sortie formatée en français
+                    releaseDate: formattedReleaseDate,
                     genres: gameInfo?.genres || [],
                     userRating: userRating, // Note de l'utilisateur
                     lastSessionDate: formattedLastSessionDate, // Dernière session formatée en français
