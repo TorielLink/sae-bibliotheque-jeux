@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {Button, IconButton, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,6 +21,7 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
         </div>
     )
 
+
     function formatDate(date) {
         const [year, month, day] = date.split('-')
         const formattedDate = `${day}/${month}/${year}`
@@ -39,7 +40,7 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
                             handleCurrentSessionChange(session)
                         }} style={{
                             ...styles.session,
-                            ...(currentSession === session ? styles.selectedSession : {})
+                            ...(currentSession && currentSession.game_session_id === session.game_session_id ? styles.selectedSession : {})
                         }}>
                             <div style={styles.informations}>
                                 <p style={styles.date}>{formatDate(session.session_date)}</p>

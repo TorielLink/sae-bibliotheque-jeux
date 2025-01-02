@@ -7,9 +7,9 @@ import {TextField} from "@mui/material";
 
 function SessionEditor({
                            session,
-                           updatedSession, setUpdatedSession,
-                           sessionContent, setSessionContent,
-                           sessionTitle, setSessionTitle,
+                           sessionContent, setSessionContent, saveSessionContent,
+                           sessionTitle, setSessionTitle, saveSessionTitle,
+                           saveSessionPlaytime,
                            collapseButtonSize
                        }) {
     const theme = useTheme();
@@ -41,24 +41,21 @@ function SessionEditor({
         setSessionContent(value)
     }
 
-    const saveSessionContent = (value) => {
-        session.content = sessionContent
-        setUpdatedSession(!updatedSession)
+    const handleSessionContentSave = () => {
+        saveSessionContent()
     }
 
     const handleTitleChange = (event) => {
         setSessionTitle(event.target.value)
     }
 
-    const saveNewTitle = () => {
-        session.title = sessionTitle
-        setUpdatedSession(!updatedSession)
+    const handleSessionTitleSave = () => {
+        saveSessionTitle()
     }
 
-    const savePlaytime = (event) => {
+    const handleSessionPlaytimeSave = (event) => {
         const newPlaytime = Number(hours) * 60 + Number(minutes)
-        session.time_played = newPlaytime
-        setUpdatedSession(!updatedSession)
+        saveSessionPlaytime(newPlaytime)
     }
 
     if (session === -1) return (
@@ -67,16 +64,15 @@ function SessionEditor({
         </div>
     )
 
-
     return (
         <div style={styles.container} data-color-mode={theme.palette.mode}>
             <div style={styles.sessionInformations}>
                 <TextField
                     style={styles.title}
                     id="title"
-                    value={sessionTitle}
+                    value={sessionTitle || ''}
                     onChange={handleTitleChange}
-                    onBlur={saveNewTitle}
+                    onBlur={handleSessionTitleSave}
                     placeholder="Titre de la session"
                     slotProps={{
                         htmlInput: {
@@ -100,7 +96,7 @@ function SessionEditor({
                         setHours={handleHoursChange}
                         minutes={minutes}
                         setMinutes={handleMinutesChange}
-                        savePlaytime={savePlaytime}
+                        savePlaytime={handleSessionPlaytimeSave}
                         timeCalculationMethod={-1}
                     />
                 </div>
@@ -110,7 +106,7 @@ function SessionEditor({
                 style={styles.editor}
                 value={sessionContent}
                 onChange={handleSessionContentChange}
-                onBlur={saveSessionContent}
+                onBlur={handleSessionContentSave}
                 commands={[]}
                 visibleDragbar={false}
                 toolbarBottom

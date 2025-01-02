@@ -15,7 +15,7 @@ function PlaytimeSetter({hours, setHours, minutes, setMinutes, savePlaytime, tim
             <TextField
                 style={styles.input}
                 id="hours"
-                value={hours}
+                value={String(hours)}
                 onChange={setHours}
                 placeholder="HH"
                 size="small"
@@ -45,7 +45,7 @@ function PlaytimeSetter({hours, setHours, minutes, setMinutes, savePlaytime, tim
                 style={styles.input}
                 id="minutes"
                 placeholder="MM"
-                value={minutes}
+                value={String(minutes)}
                 onChange={setMinutes}
                 size="small"
                 disabled={timeCalculationMethod === 1}

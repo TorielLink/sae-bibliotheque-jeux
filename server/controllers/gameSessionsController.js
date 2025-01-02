@@ -30,4 +30,43 @@ controller.getAllByLog = async (req, res) => {
     }
 }
 
+controller.updateSession = async (req, res) => {
+    try {
+        const {sessionId} = req.params;
+        const {title, content, time_played} = req.body
+
+        if (!title || !content || typeof time_played !== 'number') {
+            return res.status(400).json({
+                message: 'Title, content, and time_played are required',
+            })
+        }
+
+        const updatedSession = await gameSession.update(
+            {title, content, time_played},
+            {
+                where: {game_session_id: sessionId},
+                returning: true,
+                plain: true,
+            }
+        )
+
+        if (!updatedSession[1]) {
+            return res.status(404).json({
+                message: 'Session not found',
+            })
+        }
+
+        res.status(200).json({
+            message: 'Game session updated successfully',
+            data: updatedSession[1],
+        })
+    } catch (error) {
+        console.error('Error updating game session:', error)
+        res.status(500).json({
+            message: 'Error updating game session',
+            error: error.message,
+        })
+    }
+}
+
 module.exports = controller

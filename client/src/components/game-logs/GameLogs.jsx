@@ -150,7 +150,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
             }
 
             const result = await response.json()
-            // console.log('Game log updated successfully:', result)
         } catch (error) {
             console.error('Error updating game log:', error)
         }
@@ -178,7 +177,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }, [JSON.stringify(currentLog)])
 
     //------------------------------Changements sauvegardés------------------------------\\
-
     const [sessions, setSessions] = useState([])
 
     const [sessionsPlaytime, setSessionsPlaytime] = useState(0)
@@ -186,10 +184,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         setSessionsPlaytime(playtime)
     }
 
-    const [updatedSession, setUpdatedSession] = useState(false)
-    const handleSessionUpdate = (value) => {
-        setUpdatedSession(value)
-        getSessionsPlaytime()
+    const saveSessionPlaytime = (newPlaytime) => {
+        setCurrentSession({...currentSession, time_played: newPlaytime})
     }
 
     const [currentSession, setCurrentSession] = useState(-1)
@@ -201,20 +197,22 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         }
     }
 
-    const [sessionContent, setSessionContent] = useState(currentSession.content)
+    const [sessionContent, setSessionContent] = useState(currentSession?.content || '')
     const handleSessionContentChange = (newContent) => {
         setSessionContent(newContent)
     }
 
-    const [sessionTitle, setSessionTitle] = useState(currentSession.title)
+    const saveSessionContent = () => {
+        setCurrentSession({...currentSession, content: sessionContent})
+    }
+
+    const [sessionTitle, setSessionTitle] = useState(currentSession?.title || '')
     const handleSessionTitleChange = (newTitle) => {
         setSessionTitle(newTitle)
     }
 
-    const [timeCalculationMethod, setTimeCalculationMethod] = useState(0)
-    const handleTimeCalculationMethodChange = (value) => {
-        setTimeCalculationMethod(value)
-        displayPlaytime(value, currentLog)
+    const saveSessionTitle = () => {
+        setCurrentSession({...currentSession, title: sessionTitle})
     }
 
     const displayPlaytime = (method, journal) => {
@@ -225,10 +223,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         }
     }
 
-    useEffect(() => {
-        getSessionsPlaytime()
-    }, [sessions])
-
     function getSessionsPlaytime() {
         let time = 0
         sessions.map(session => {
@@ -237,9 +231,65 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         setSessionsPlaytime(time)
     }
 
+    const [timeCalculationMethod, setTimeCalculationMethod] = useState(0)
+    const handleTimeCalculationMethodChange = (value) => {
+        setTimeCalculationMethod(value)
+        displayPlaytime(value, currentLog)
+    }
+
+    useEffect(() => {
+        getSessionsPlaytime()
+    }, [sessions])
+
     useEffect(() => {
         displayPlaytime(timeCalculationMethod, currentLog)
     }, [sessionsPlaytime])
+
+    useEffect(() => {
+        if (currentSession !== -1) {
+            const updatedSessions = sessions.map((session) => {
+                if (session.game_session_id === currentSession.game_session_id) {
+                    return {...session, ...currentSession}
+                }
+                return session
+            })
+
+            if (JSON.stringify(updatedSessions) !== JSON.stringify(sessions)) {
+
+                setSessions(updatedSessions)
+
+                saveSessionChanges(
+                    currentSession.game_session_id,
+                    {
+                        title: currentSession.title,
+                        content: currentSession.content,
+                        time_played: currentSession.time_played
+                    }
+                )
+            }
+        }
+
+    }, [currentSession])
+
+    const saveSessionChanges = async (sessionId, updatedData) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-sessions/update/${sessionId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to update game session: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+        } catch (error) {
+            console.error('Error updating game session:', error)
+        }
+    }
 
     return (
         <div style={styles.container}>
@@ -307,14 +357,15 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 <div style={styles.editor}>
                     <SessionEditor session={currentSession}
 
-                                   updatedSession={updatedSession}
-                                   setUpdatedSession={handleSessionUpdate}
-
                                    sessionContent={sessionContent}
                                    setSessionContent={handleSessionContentChange}
+                                   saveSessionContent={saveSessionContent}
 
                                    sessionTitle={sessionTitle}
                                    setSessionTitle={handleSessionTitleChange}
+                                   saveSessionTitle={saveSessionTitle}
+
+                                   saveSessionPlaytime={saveSessionPlaytime}
 
                                    collapseButtonSize={collapseButtonSize}
                     />
