@@ -157,7 +157,7 @@ router.get('/user/:userId/game/:gameId', gameLogsController.getByUserAndGame);
  *       500:
  *         description: Erreur serveur
  */
-router.put('/update/:logId', gameLogsController.updateLog);
+router.put('/update/:logId', gameLogsController.updateLog)
 
 /**
  * @swagger
@@ -183,6 +183,39 @@ router.put('/update/:logId', gameLogsController.updateLog);
  *       500:
  *         description: Erreur serveur
  */
-router.delete('/delete/:logId', gameLogsController.deleteLog);
+router.delete('/delete/:logId', gameLogsController.deleteLog)
+
+/**
+ * @swagger
+ * /gameLogs/create/user/{userId}/game/{gameId}:
+ *   post:
+ *     summary: Créer un nouveau journal de jeu
+ *     description: >
+ *       Cette route permet de créer un nouveau journal de jeu avec les IDs utilisateur et jeu spécifiés en tant que paramètres.
+ *     tags:
+ *       - Game Logs
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'utilisateur
+ *       - in: path
+ *         name: gameId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du jeu
+ *     responses:
+ *       201:
+ *         description: Journal de jeu créé avec succès
+ *       400:
+ *         description: Données manquantes ou invalides
+ *       500:
+ *         description: Erreur serveur
+ */
+router.post('/create/user/:userId/game/:gameId', gameLogsController.createLog);
+
 
 module.exports = router;

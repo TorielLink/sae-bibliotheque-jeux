@@ -83,6 +83,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     const [logs, setLogs] = useState([])
     const handleLogsChange = (newLogs) => {
+        console.log(newLogs)
         setLogs(newLogs)
     }
 
@@ -172,7 +173,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 }
             )
         }
-
     }, [JSON.stringify(currentLog)])
 
     //------------------------------Changements sauvegardés------------------------------\\
@@ -249,6 +249,9 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                     tabIcon={<Info/>}
                     tabContent={
                         <GameLogDetails
+                            userId={user.id}
+                            gameId={gameId}
+
                             gameName={gameName}
                             gameCoverImage={gameCoverImage}
 

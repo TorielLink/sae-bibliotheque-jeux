@@ -109,4 +109,28 @@ controller.deleteLog = async (req, res) => {
     }
 }
 
+controller.createLog = async (req, res) => {
+    try {
+        const {userId, gameId} = req.params
+
+        if (!userId || !gameId) {
+            return res.status(400).json({message: 'Missing required fields: userId and gameId'})
+        }
+
+        const newLog = await gameLogs.create({
+            user_id: Number(userId),
+            igdb_game_id: Number(gameId),
+            time_played: 0,
+            privacy_setting_id: 1,
+            platform_id: 1
+        });
+
+        res.status(201).json({message: 'Game log created successfully', data: newLog})
+    } catch (error) {
+        console.error('Error creating game log:', error)
+        res.status(500).json({message: 'Error creating game log', error: error.message})
+    }
+}
+
+
 module.exports = controller;

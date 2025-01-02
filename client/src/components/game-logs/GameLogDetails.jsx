@@ -7,6 +7,8 @@ import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
 import {Add, AddBox, Delete, Edit, PlusOne} from "@mui/icons-material";
 
 function GameLogDetails({
+                            userId,
+                            gameId,
                             gameName, gameCoverImage,
                             currentStatus, setCurrentStatus,
                             logs, setLogs,
@@ -88,6 +90,33 @@ function GameLogDetails({
         }
     }
 
+    const handleCreateLog = () => {
+        createLog(userId, gameId)
+    }
+
+    const createLog = async (userId, gameId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-logs/create/user/${userId}/game/${gameId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to create log: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+            const newLogs = [...logs, result.data]
+            setLogs(newLogs)
+            setCurrentLog(result.data)
+            console.log('Log created successfully:', result)
+        } catch (error) {
+            console.error('Error creating log:', error)
+        }
+    }
+
     return (
         <div style={styles.container}>
             <img
@@ -121,6 +150,7 @@ function GameLogDetails({
 
                         <IconButton
                             disableTouchRipple
+                            onClick={handleCreateLog}
                             style={styles.actionButton}
                             sx={{
                                 color: theme.palette.colors.green,
