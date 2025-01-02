@@ -53,13 +53,11 @@ const getStyles = (theme, fontSize) => ({
     form: {
         display: 'flex',
         alignItems: 'center',
-        padding: '0 1.5rem'
     },
     selector: {
         boxShadow: `0 0 0.2em 0.05em ${theme.palette.text.primary}`,
         borderRadius: '0.3rem',
         background: theme.palette.background.default,
-        marginBottom: '0.5rem',
         fontSize: fontSize
     },
 })

@@ -52,17 +52,54 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     const [currentStatus, setCurrentStatus] = useState(0)
     const handleStatusChange = (status) => {
         setCurrentStatus(status)
+        saveStatusChange(
+            user.id,
+            gameId,
+            {
+                game_status_id: status
+            }
+        )
+    }
+
+    const saveStatusChange = async (userId, gameId, body) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-status/update/${userId}/${gameId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to update game status: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+        } catch (error) {
+            console.error('Error updating game status:', error)
+        }
     }
 
     const [logs, setLogs] = useState([])
+    const handleLogsChange = (newLogs) => {
+        setLogs(newLogs)
+    }
+
     const [currentLog, setCurrentLog] = useState(null)
     const handleCurrentLogChange = (log) => {
         setCurrentLog(log)
-        setCurrentPrivacySetting(log.privacy_setting_id)
-        setCurrentPlatform(log.platform_id)
-        fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(newSessions => {
+        if (!log) {
+            setCurrentPrivacySetting(1)
+            setCurrentPlatform(-1)
             handleCurrentSessionChange(-1)
-        })
+        } else {
+            setCurrentPrivacySetting(log.privacy_setting_id)
+            setCurrentPlatform(log.platform_id)
+            fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(newSessions => {
+                handleCurrentSessionChange(-1)
+            })
+        }
     }
 
     const [privacySettings, setPrivacySettings] = useState([])
@@ -95,9 +132,9 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         currentLog.time_played = playtime
     }
 
-    const updateLog = async (logId, updatedData) => {
+    const saveLogChanges = async (logId, updatedData) => {
         try {
-            const response = await fetch(`http://localhost:8080/game-logs/${logId}`, {
+            const response = await fetch(`http://localhost:8080/game-logs/update/${logId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,7 +163,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 }
             })
 
-            updateLog(
+            saveLogChanges(
                 currentLog.game_log_id,
                 {
                     privacy_setting_id: currentLog.privacy_setting_id,
@@ -216,6 +253,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                             gameCoverImage={gameCoverImage}
 
                             logs={logs}
+                            setLogs={handleLogsChange}
                             sessions={sessions}
 
                             currentStatus={currentStatus}

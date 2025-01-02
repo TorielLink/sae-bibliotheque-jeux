@@ -34,7 +34,6 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
     if (error) return <div>{error}</div>;
 
     const handleItemChange = (event) => {
-        // setSelectedItem(data.find((item) => item[idName] === Number(event.target.value)))
         setSelectedItem(Number(event.target.value))
     }
 

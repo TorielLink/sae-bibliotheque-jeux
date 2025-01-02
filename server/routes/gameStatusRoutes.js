@@ -147,4 +147,48 @@ router.get('/user/:userId/game/:gameId', gameStatusController.getStatusByUserAnd
  */
 router.get('/game/:igdb_game_id', gameStatusController.getGameByGame);
 
-module.exports = router;
+/**
+ * @swagger
+ * /gameStatus/update/{userId}/{gameId}:
+ *   put:
+ *     summary: Mettre à jour un statut de jeu spécifique
+ *     description: >
+ *       Cette route permet de mettre à jour un statut de jeu avec un nouvel ID de statut fourni.
+ *     tags:
+ *       - Game Status
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'utilisateur
+ *       - in: path
+ *         name: gameId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du jeu
+ *     requestBody:
+ *       description: Les données à mettre à jour pour le statut de jeu
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               game_status_id:
+ *                 type: integer
+ *             example:
+ *               game_status_id: 2
+ *     responses:
+ *       200:
+ *         description: Statut de jeu mis à jour avec succès
+ *       404:
+ *         description: Statut de jeu introuvable
+ *       500:
+ *         description: Erreur serveur
+ */
+router.put('/update/:userId/:gameId', gameStatusController.updateGameStatus);
+
+module.exports = router

@@ -1,14 +1,16 @@
 import React, {useState, useEffect} from "react"
-import {RadioGroup, Radio, FormControl, useMediaQuery, FormLabel} from "@mui/material"
+import {RadioGroup, Radio, FormControl, useMediaQuery, FormLabel, IconButton} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import ButtonSelector from "./log-details-content/ButtonSelector.jsx";
 import HorizontalSelector from "./log-details-content/HorizontalSelector.jsx";
 import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
+import {Add, AddBox, Delete, Edit, PlusOne} from "@mui/icons-material";
 
 function GameLogDetails({
                             gameName, gameCoverImage,
                             currentStatus, setCurrentStatus,
-                            logs, sessions,
+                            logs, setLogs,
+                            sessions,
                             currentLog, setCurrentLog,
                             privacySettings,
                             currentPrivacySetting, setCurrentPrivacySetting,
@@ -60,6 +62,32 @@ function GameLogDetails({
         savePlaytime(newPlaytime)
     }
 
+    const handleDeleteLog = () => {
+        if (confirm(`Voulez-vous vraiment supprimer ce journal ?`)) {
+            deleteLog(currentLog.game_log_id)
+        }
+    }
+
+    const deleteLog = async (logId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-logs/delete/${logId}`, {
+                method: 'DELETE',
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete log: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+            const newLogs = logs.filter((log) => log.game_log_id !== logId)
+            setLogs(newLogs)
+            setCurrentLog(null)
+            console.log('Log deleted successfully:', result)
+        } catch (error) {
+            console.error('Error deleting log:', error)
+        }
+    }
+
     return (
         <div style={styles.container}>
             <img
@@ -78,27 +106,64 @@ function GameLogDetails({
             <hr style={styles.separator}/>
 
             <div style={styles.logInformationsContainer}>
-                <HorizontalSelector label={"Journal"}
-                                    items={logs}
-                                    itemId={"game_log_id"}
-                                    selectedItem={currentLog}
-                                    setSelectedItem={handleLogChange}
-                                    defaultValue={-1}
-                                    size={"small"}
-                                    fontSize={"large"}
-                />
 
-                <HorizontalSelector label={"Visibilité"}
-                                    items={privacySettings}
-                                    itemId={"privacy_setting_id"}
-                                    selectedItem={currentPrivacySetting}
-                                    setSelectedItem={handlePrivacyChange}
-                                    isIndex={true}
-                                    defaultValue={1}
-                                    size={"small"}
-                                    value={"name"}
-                />
+                <div style={styles.horizontalContainers}>
+                    <div style={styles.logActionsContainer}>
+                        <HorizontalSelector label={"Journal"}
+                                            items={logs}
+                                            itemId={"game_log_id"}
+                                            selectedItem={currentLog}
+                                            setSelectedItem={handleLogChange}
+                                            defaultValue={-1}
+                                            size={"small"}
+                                            fontSize={"large"}
+                        />
 
+                        <IconButton
+                            disableTouchRipple
+                            style={styles.actionButton}
+                            sx={{
+                                color: theme.palette.colors.green,
+                                '&:hover': {
+                                    background: 'none',
+                                    transform: 'scale(1.2)',
+                                },
+                                '&:active': {
+                                    transform: 'scale(1)',
+                                },
+                            }}>
+                            <AddBox fontSize="large"/>
+                        </IconButton>
+
+                        <IconButton
+                            disableTouchRipple
+                            onClick={handleDeleteLog}
+                            style={styles.actionButton}
+                            sx={{
+                                color: theme.palette.colors.red,
+                                '&:hover': {
+                                    background: 'none',
+                                    transform: 'scale(1.2)',
+                                },
+                                '&:active': {
+                                    transform: 'scale(1)',
+                                },
+                            }}>
+                            <Delete fontSize="large"/>
+                        </IconButton>
+                    </div>
+
+                    <HorizontalSelector label={"Visibilité"}
+                                        items={privacySettings}
+                                        itemId={"privacy_setting_id"}
+                                        selectedItem={currentPrivacySetting}
+                                        setSelectedItem={handlePrivacyChange}
+                                        isIndex={true}
+                                        defaultValue={1}
+                                        size={"small"}
+                                        value={"name"}
+                    />
+                </div>
                 <ButtonSelector
                     selectedItem={currentPlatform}
                     setSelectedItem={setCurrentPlatform}
@@ -109,7 +174,8 @@ function GameLogDetails({
                 <div style={styles.playtime.container}>
                     <FormControl style={styles.playtime.form}>
 
-                        <FormLabel id="playtime-label" style={{...styles.playtime.label, ...styles.playtime.formTitle}}>
+                        <FormLabel id="playtime-label"
+                                   style={{...styles.playtime.label, ...styles.playtime.formTitle}}>
                             Temps de jeu
                         </FormLabel>
 
@@ -128,7 +194,8 @@ function GameLogDetails({
                                     />
                                 </div>
                                 <div style={styles.playtime.radio}>
-                                    <FormLabel id="sessions-label" style={styles.playtime.label}>Sessions</FormLabel>
+                                    <FormLabel id="sessions-label"
+                                               style={styles.playtime.label}>Sessions</FormLabel>
                                     <Radio
                                         aria-labelledby="sessions-label"
                                         value={1}
@@ -191,6 +258,24 @@ const getStyles = (theme) => ({
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
         marginTop: '1.5em',
+    },
+    horizontalContainers: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem',
+        marginBottom: '0.5rem',
+    },
+    logActionsContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '0.5rem'
+    },
+    actionButton: {
+        height: '100%',
+        padding: '0',
+        transition: 'transform 0.1s',
     },
     playtime: {
         container: {

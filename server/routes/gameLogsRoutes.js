@@ -122,7 +122,7 @@ router.get('/user/:userId/game/:gameId', gameLogsController.getByUserAndGame);
 
 /**
  * @swagger
- * /gameLogs/{logId}:
+ * /gameLogs/update/{logId}:
  *   put:
  *     summary: Mettre à jour un journal de jeu spécifique
  *     description: >
@@ -157,6 +157,32 @@ router.get('/user/:userId/game/:gameId', gameLogsController.getByUserAndGame);
  *       500:
  *         description: Erreur serveur
  */
-router.put('/:logId', gameLogsController.updateLog);
+router.put('/update/:logId', gameLogsController.updateLog);
+
+/**
+ * @swagger
+ * /gameLogs/delete/{logId}:
+ *   delete:
+ *     summary: Supprimer un journal de jeu spécifique
+ *     description: >
+ *       Cette route permet de supprimer un journal de jeu avec l'ID spécifié.
+ *     tags:
+ *       - Game Logs
+ *     parameters:
+ *       - in: path
+ *         name: logId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du journal de jeu à supprimer
+ *     responses:
+ *       200:
+ *         description: Journal de jeu supprimé avec succès
+ *       404:
+ *         description: Journal de jeu introuvable
+ *       500:
+ *         description: Erreur serveur
+ */
+router.delete('/delete/:logId', gameLogsController.deleteLog);
 
 module.exports = router;

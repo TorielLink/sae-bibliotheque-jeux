@@ -73,20 +73,39 @@ controller.getByUserAndGame = async (req, res) => {
 
 controller.updateLog = async (req, res) => {
     try {
-        const { logId } = req.params
-        const { privacy_setting_id, platform_id, time_played } = req.body
+        const {logId} = req.params
+        const {privacy_setting_id, platform_id, time_played} = req.body
 
         const log = await gameLogs.findByPk(logId);
         if (!log) {
             return res.status(404).json({message: 'Game log not found'})
         }
 
-        await log.update({ privacy_setting_id, platform_id, time_played })
+        await log.update({privacy_setting_id, platform_id, time_played})
 
-        res.status(200).json({ message: 'Game log updated successfully', data: log })
+        res.status(200).json({message: 'Game log updated successfully', data: log})
     } catch (error) {
         console.error('Error updating game log:', error)
-        res.status(500).json({ message: 'Error updating game log', error: error.message })
+        res.status(500).json({message: 'Error updating game log', error: error.message})
+    }
+}
+
+controller.deleteLog = async (req, res) => {
+    try {
+        const {logId} = req.params
+
+        const log = await gameLogs.findByPk(logId)
+        console.log(log)
+        if (!log) {
+            return res.status(404).json({message: 'Log not found'})
+        }
+
+        await log.destroy()
+
+        res.status(200).json({message: 'Log deleted successfully'})
+    } catch (error) {
+        console.error('Error deleting log:', error)
+        res.status(500).json({message: 'Error deleting log', error: error.message})
     }
 }
 

@@ -1,4 +1,4 @@
-const {gameStatus, status} = require('../database/sequelize'); // Assurez-vous d'importer les bons modèles
+const {gameStatus, status, gameLogs} = require('../database/sequelize'); // Assurez-vous d'importer les bons modèles
 
 const controller = {};
 
@@ -85,6 +85,37 @@ controller.getStatusByUserAndGame = async (req, res) => {
     } catch (error) {
         console.error('Error fetching game status :', error);
         res.status(500).json({message: 'Error fetching game status', error: error.message});
+    }
+}
+
+controller.updateGameStatus = async (req, res) => {
+    try {
+        const {userId, gameId} = req.params
+        const {game_status_id} = req.body
+
+        if (!game_status_id) {
+            return res.status(400).json({ message: 'game_status_id is required' })
+        }
+
+        const game_status = await gameStatus.findOne({
+            where: {
+                user_id: userId,
+                igdb_game_id: gameId,
+            },
+        })
+
+        if (!game_status) {
+            return res.status(404).json({message: 'No status found'})
+        }
+
+        game_status.game_status_id = game_status_id
+
+        await game_status.save()
+
+        res.status(200).json({message: 'Game status updated successfully', data: game_status})
+    } catch (error) {
+        console.error('Error updating game status:', error)
+        res.status(500).json({message: 'Error updating game statu', error: error.message})
     }
 }
 
