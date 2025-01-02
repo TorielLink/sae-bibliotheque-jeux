@@ -70,7 +70,7 @@ controller.getGameByGame = async (req, res) => {
 controller.getStatusByUserAndGame = async (req, res) => {
     try {
         const {userId, gameId} = req.params
-        const gameStatusData = await gameStatus.findOne({
+        let gameStatusData = await gameStatus.findOne({
             where: {
                 user_id: userId,
                 igdb_game_id: gameId
@@ -78,7 +78,7 @@ controller.getStatusByUserAndGame = async (req, res) => {
         });
 
         if (!gameStatusData) {
-            return res.status(404).json({message: 'No game status found for this game and user'});
+            gameStatusData = null
         }
 
         res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData});
@@ -94,10 +94,10 @@ controller.updateGameStatus = async (req, res) => {
         const {game_status_id} = req.body
 
         if (!game_status_id) {
-            return res.status(400).json({ message: 'game_status_id is required' })
+            return res.status(400).json({message: 'game_status_id is required'})
         }
 
-        const game_status = await gameStatus.findOne({
+        let game_status = await gameStatus.findOne({
             where: {
                 user_id: userId,
                 igdb_game_id: gameId,
@@ -105,7 +105,16 @@ controller.updateGameStatus = async (req, res) => {
         })
 
         if (!game_status) {
-            return res.status(404).json({message: 'No status found'})
+            game_status = await gameStatus.create({
+                user_id: Number(userId),
+                igdb_game_id: Number(gameId),
+                game_status_id: game_status_id,
+            })
+
+            return res.status(201).json({
+                message: 'Game status created successfully',
+                data: game_status,
+            })
         }
 
         game_status.game_status_id = game_status_id
@@ -115,7 +124,7 @@ controller.updateGameStatus = async (req, res) => {
         res.status(200).json({message: 'Game status updated successfully', data: game_status})
     } catch (error) {
         console.error('Error updating game status:', error)
-        res.status(500).json({message: 'Error updating game statu', error: error.message})
+        res.status(500).json({message: 'Error updating game status', error: error.message})
     }
 }
 

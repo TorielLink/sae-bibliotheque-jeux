@@ -38,8 +38,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
             }
             return data.data
         } catch (err) {
-            console.error('Erreur lors de la récupération des données du status :', err)
-            setError('Impossible de charger le status.')
+            setData(null)
+            return null
         }
     }
 
@@ -51,6 +51,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     const [currentStatus, setCurrentStatus] = useState(0)
     const handleStatusChange = (status) => {
+        if (!status)
+            return
         setCurrentStatus(status)
         saveStatusChange(
             user.id,

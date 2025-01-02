@@ -61,9 +61,7 @@ controller.getByUserAndGame = async (req, res) => {
                 igdb_game_id: gameId
             },
         })
-        if (logs.length === 0) {
-            return res.status(404).json({message: 'No game logs found for this user and game'})
-        }
+
         res.status(200).json({message: 'Game logs fetched successfully', data: logs})
     } catch (error) {
         console.error('Error fetching game logs :', error)
