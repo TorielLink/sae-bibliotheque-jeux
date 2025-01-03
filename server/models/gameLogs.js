@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('game_logs', {
+    const GameLog = sequelize.define('game_logs', {
         game_log_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -41,4 +41,13 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         timestamps: false
     });
+
+    GameLog.associate = function (models) {
+        GameLog.hasMany(models.game_sessions, {
+            foreignKey: 'game_log_id',
+            onDelete: 'CASCADE'
+        })
+    }
+
+    return GameLog
 };

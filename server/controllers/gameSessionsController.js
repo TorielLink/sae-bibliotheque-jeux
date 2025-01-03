@@ -32,10 +32,10 @@ controller.getAllByLog = async (req, res) => {
 
 controller.updateSession = async (req, res) => {
     try {
-        const {sessionId} = req.params;
+        const {sessionId} = req.params
         const {title, content, time_played} = req.body
 
-        if (!title || !content || typeof time_played !== 'number') {
+        if (!title || typeof time_played !== 'number') {
             return res.status(400).json({
                 message: 'Title, content, and time_played are required',
             })
@@ -64,6 +64,65 @@ controller.updateSession = async (req, res) => {
         console.error('Error updating game session:', error)
         res.status(500).json({
             message: 'Error updating game session',
+            error: error.message,
+        })
+    }
+}
+
+controller.createSession = async (req, res) => {
+    try {
+        const {logId} = req.params
+
+        const date = new Date()
+        const day = String(date.getDate()).padStart(2, '0')
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const year = date.getFullYear()
+        const newSessionData = {
+            title: `Session du ${day}/${month}/${year}`,
+            content: '',
+            time_played: 0,
+            session_date: date,
+        }
+
+        const newSession = await gameSession.create({
+            ...newSessionData,
+            game_log_id: logId,
+        })
+
+        res.status(201).json({
+            message: 'Game session created successfully',
+            data: newSession,
+        })
+
+    } catch (error) {
+        console.error('Error creating game session:', error)
+        res.status(500).json({
+            message: 'Error creating game session',
+            error: error.message,
+        })
+    }
+}
+
+controller.deleteSession = async (req, res) => {
+    try {
+        const { sessionId } = req.params
+
+        const session = await gameSession.findByPk(sessionId)
+
+        if (!session) {
+            return res.status(404).json({ message: 'Session not found' })
+        }
+
+        await session.destroy()
+
+        res.status(200).json({
+            message: 'Game session deleted successfully',
+        })
+
+    } catch (error) {
+        console.error('Error deleting game session:', error)
+        res.status(500).json({
+            message: 'Error deleting game session',
             error: error.message,
         })
     }

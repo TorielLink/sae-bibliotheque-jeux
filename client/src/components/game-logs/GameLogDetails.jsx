@@ -101,7 +101,7 @@ function GameLogDetails({
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            });
+            })
 
             if (!response.ok) {
                 throw new Error(`Failed to create log: ${response.statusText}`)

@@ -85,7 +85,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     const [logs, setLogs] = useState([])
     const handleLogsChange = (newLogs) => {
-        console.log(newLogs)
         setLogs(newLogs)
     }
 
@@ -176,8 +175,11 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         }
     }, [JSON.stringify(currentLog)])
 
-    //------------------------------Changements sauvegardés------------------------------\\
     const [sessions, setSessions] = useState([])
+    const handleSessionsChange = (newSessions) => {
+        const sortedSessions = newSessions.sort((a, b) => new Date(b.session_date) - new Date(a.session_date))
+        setSessions(sortedSessions)
+    }
 
     const [sessionsPlaytime, setSessionsPlaytime] = useState(0)
     const handleSessionsPlaytimeChange = (playtime) => {
@@ -194,6 +196,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
         if (newSession !== -1) {
             handleSessionContentChange(newSession.content)
+        } else {
+            handleSessionContentChange('')
         }
     }
 
@@ -291,6 +295,53 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         }
     }
 
+    const createNewSession = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-sessions/create/${currentLog.game_log_id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+
+
+            if (!response.ok) {
+                throw new Error(`Failed to create session: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+            const newSessions = [...sessions, result.data]
+            handleSessionsChange(newSessions)
+            handleCurrentSessionChange(result.data)
+            console.log('Session created successfully:', result)
+
+        } catch (error) {
+            console.error('Unexpected error:', error)
+        }
+    }
+
+    const deleteSession = async (sessionId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-sessions/delete/${sessionId}`, {
+                method: 'DELETE',
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete session: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+            const newSessions = sessions.filter((session) => session.game_session_id !== sessionId)
+            handleSessionsChange(newSessions)
+            if (currentSession?.game_session_id === sessionId)
+                setCurrentSession(-1)
+            console.log('Session deleted successfully:', result)
+        } catch (error) {
+            console.error('Error deleting log:', error)
+        }
+    }
+
+
     return (
         <div style={styles.container}>
             <div style={styles.logsContainer}>
@@ -347,7 +398,10 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                             log={currentLog}
                             sessions={sessions}
                             currentSession={currentSession}
-                            setCurrentSession={handleCurrentSessionChange}/>
+                            setCurrentSession={handleCurrentSessionChange}
+                            createNewSession={createNewSession}
+                            deleteSession={deleteSession}
+                        />
                     }
                     additionalStyles={{
                         overflow: 'visible',
@@ -399,7 +453,8 @@ const getStyles = (theme) => ({
         position: 'relative',
     },
     editor: {
-        width: '100%'
+        minWidth:'40rem',
+        width: '100%',
     }
 })
 

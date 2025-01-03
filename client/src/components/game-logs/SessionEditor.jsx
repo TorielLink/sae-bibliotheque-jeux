@@ -112,7 +112,6 @@ function SessionEditor({
                 toolbarBottom
                 preview="live"
                 height={'100%'}
-                autoFocus
                 textareaProps={{
                     placeholder: 'Informations de la session',
                 }}
@@ -134,6 +133,10 @@ const getStyles = (theme, collapseButtonSize) => ({
         padding: '1.5rem 0',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
+    },
+    title: {
+        width: '100%',
+        marginRight: '2rem',
     },
     container: {
         height: '100%',

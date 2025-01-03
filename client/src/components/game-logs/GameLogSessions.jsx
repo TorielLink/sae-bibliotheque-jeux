@@ -4,11 +4,11 @@ import {useTheme} from "@mui/material/styles"
 import DeleteIcon from '@mui/icons-material/Delete';
 import {AddBox, Edit} from "@mui/icons-material";
 
-function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
+function GameLogSessions({log, sessions, currentSession, setCurrentSession, createNewSession, deleteSession}) {
     const theme = useTheme();
     const styles = getStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null)
 
     const handleCurrentSessionChange = (newSession) => {
         setCurrentSession(newSession)
@@ -21,17 +21,32 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
         </div>
     )
 
-
     function formatDate(date) {
-        const [year, month, day] = date.split('-')
-        const formattedDate = `${day}/${month}/${year}`
-        return formattedDate
+        const d = new Date(date)
+        const day = String(d.getDate()).padStart(2, '0')
+        const month = String(d.getMonth() + 1).padStart(2, '0')
+        const year = d.getFullYear()
+        return `${day}/${month}/${year}`
+    }
+
+    function handleNewSessionClick() {
+        createNewSession()
+    }
+
+    function handleDeleteSessionClick(sessionId) {
+        deleteSession(sessionId)
     }
 
     return (
         <div style={styles.container}>
             <div style={styles.sessionsContainer}>
-                <Button variant="outlined" size="large" startIcon={<AddBox/>} style={styles.newSession}>
+                <Button
+                    variant="outlined"
+                    size="large"
+                    startIcon={<AddBox/>}
+                    style={styles.newSession}
+                    onClick={handleNewSessionClick}
+                >
                     Nouvelle session
                 </Button>
                 {
@@ -47,24 +62,21 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession}) {
                                 <h4 style={styles.title}>{session.title}</h4>
                             </div>
                             <div style={styles.actions}>
-                                <IconButton size="medium" sx={{
-                                    padding: '0',
-                                    transition: 'transform 0.1s',
-                                    '&:hover': {
-                                        transform: 'scale(1.1)',
-                                        color: theme.palette.colors.blue
-                                    },
-                                }}>
-                                    <Edit fontSize="inherit"/>
-                                </IconButton>
-                                <IconButton size="medium" sx={{
-                                    padding: '0',
-                                    transition: 'transform 0.1s',
-                                    '&:hover': {
-                                        transform: 'scale(1.1)',
-                                        color: theme.palette.colors.red
-                                    },
-                                }}>
+                                <IconButton
+                                    size="medium"
+                                    sx={{
+                                        padding: '0',
+                                        transition: 'transform 0.1s',
+                                        '&:hover': {
+                                            transform: 'scale(1.1)',
+                                            color: theme.palette.colors.red
+                                        },
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleDeleteSessionClick(session.game_session_id)
+                                    }}
+                                >
                                     <DeleteIcon fontSize="inherit"/>
                                 </IconButton>
                             </div>
@@ -152,7 +164,8 @@ const getStyles = (theme) => ({
         display: 'flex',
         position: 'absolute',
         top: '5%',
-        right: '5%'
+        right: '5%',
+        zIndex: 5,
     }
 })
 

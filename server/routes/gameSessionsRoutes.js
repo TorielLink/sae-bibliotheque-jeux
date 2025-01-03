@@ -126,6 +126,75 @@ router.get('/log/:logId', gameSessionController.getAllByLog)
 
 router.put('/update/:sessionId', gameSessionController.updateSession)
 
+/**
+ * @swagger
+ * /create/{logId}:
+ *   summary: Créer une nouvelle session de jeu
+ *   description: >
+ *     Cette route permet de créer une nouvelle session de jeu pour un journal spécifique.
+ *   tags:
+ *     - Game Sessions
+ *   parameters:
+ *     - in: path
+ *       name: logId
+ *       required: true
+ *       schema:
+ *         type: integer
+ *       description: L'ID du journal pour lequel la session est créée
+ *   responses:
+ *     201:
+ *       description: Session de jeu créée avec succès
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: Game session created successfully
+ *               data:
+ *                 $ref: '#/components/schemas/GameSession'
+ *     400:
+ *       description: Mauvaise demande ou données manquantes
+ *     500:
+ *       description: Erreur serveur
+ */
+
+router.post('/create/:logId', gameSessionController.createSession)
+
+/**
+ * @swagger
+ * /delete/{sessionId}:
+ *   summary: Supprimer une session de jeu
+ *   description: >
+ *     Cette route permet de supprimer une session de jeu en utilisant son ID.
+ *   tags:
+ *     - Game Sessions
+ *   parameters:
+ *     - in: path
+ *       name: sessionId
+ *       required: true
+ *       schema:
+ *         type: integer
+ *       description: L'ID de la session à supprimer
+ *   responses:
+ *     200:
+ *       description: Session supprimée avec succès
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: "Session deleted successfully"
+ *     404:
+ *       description: La session spécifiée n'a pas été trouvée
+ *     500:
+ *       description: Erreur serveur
+ */
+
+router.delete('/delete/:sessionId', gameSessionController.deleteSession)
+
 
 module.exports = router;
-
