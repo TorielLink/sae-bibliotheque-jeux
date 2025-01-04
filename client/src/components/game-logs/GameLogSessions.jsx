@@ -1,12 +1,12 @@
 import React, {useState} from "react"
 import {Button, IconButton, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import DeleteIcon from '@mui/icons-material/Delete';
-import {AddBox} from "@mui/icons-material";
+import DeleteIcon from '@mui/icons-material/Delete'
+import {AddBox} from "@mui/icons-material"
 
 function GameLogSessions({log, sessions, currentSession, setCurrentSession, createNewSession, deleteSession}) {
-    const theme = useTheme();
-    const styles = getStyles(theme);
+    const theme = useTheme()
+    const styles = getStyles(theme)
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [error, setError] = useState(null)
 

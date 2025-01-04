@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from "react"
 import {RadioGroup, Radio, FormControl, useMediaQuery, FormLabel, IconButton} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import ButtonSelector from "./log-details-content/ButtonSelector.jsx";
-import HorizontalSelector from "./log-details-content/HorizontalSelector.jsx";
-import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
-import {AddBox, Delete} from "@mui/icons-material";
+import ButtonSelector from "./log-details-content/ButtonSelector.jsx"
+import HorizontalSelector from "./log-details-content/HorizontalSelector.jsx"
+import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx"
+import {AddBox, Delete} from "@mui/icons-material"
 
 function GameLogDetails({
                             userId,
@@ -19,8 +19,8 @@ function GameLogDetails({
                             playtime, setPlaytime, savePlaytime,
                             timeCalculationMethod, setTimeCalculationMethod
                         }) {
-    const theme = useTheme();
-    const styles = getStyles(theme);
+    const theme = useTheme()
+    const styles = getStyles(theme)
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
     const handleLogChange = (event) => {

@@ -31,7 +31,7 @@ function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idNa
         })()
     }, [fetchUrl])
 
-    if (error) return <div>{error}</div>;
+    if (error) return <div>{error}</div>
 
     const handleItemChange = (event) => {
         setSelectedItem(Number(event.target.value))

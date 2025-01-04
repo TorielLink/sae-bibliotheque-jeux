@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react"
 import MDEditor from '@uiw/react-md-editor'
-import rehypeSanitize from "rehype-sanitize";
-import {useTheme} from "@mui/material/styles";
-import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
-import {TextField, useMediaQuery} from "@mui/material";
+import rehypeSanitize from "rehype-sanitize"
+import {useTheme} from "@mui/material/styles"
+import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx"
+import {TextField, useMediaQuery} from "@mui/material"
 
 function SessionEditor({
                            session,

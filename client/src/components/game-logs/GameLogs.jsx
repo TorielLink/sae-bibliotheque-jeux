@@ -7,7 +7,7 @@ import GameLogDetails from "./GameLogDetails.jsx"
 import {AuthContext} from "../AuthContext.jsx"
 import GameLogSessions from "./GameLogSessions.jsx"
 import SessionEditor from "./SessionEditor.jsx"
-import GameDetailsNavBar from "../GameDetailsNavBar.jsx";
+import GameDetailsNavBar from "../GameDetailsNavBar.jsx"
 
 function GameLogs({game}) {
     const theme = useTheme()
