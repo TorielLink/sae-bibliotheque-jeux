@@ -8,7 +8,7 @@ const swaggerOptions = {
     info: {
       title: 'Bibliothèque de Jeux API',
       version: '1.0.0',
-      description: 'Documentation pour l\'API de gestion de jeux',
+      description: 'Documentation pour l\'API de gestion de jeux, incluant les cardinalités entre les modèles.',
     },
     servers: [
       {
@@ -20,7 +20,7 @@ const swaggerOptions = {
         // Modèle User
         User: {
           type: 'object',
-          description: 'Représente un utilisateur. Chaque utilisateur est associé à un paramètre de confidentialité.',
+          description: 'Représente un utilisateur. Chaque utilisateur est associé à un paramètre de confidentialité (Many-to-One avec `PrivacySettings`). Un utilisateur peut avoir plusieurs critiques (`gameReview`, One-to-Many), plusieurs GameLogs (One-to-Many), et être lié à plusieurs listes de jeux via une relation Many-to-Many avec `GameList`.',
           properties: {
             user_id: {
               type: 'integer',
@@ -39,11 +39,11 @@ const swaggerOptions = {
             },
             privacy_setting: {
               $ref: '#/components/schemas/PrivacySettings',
-              description: 'Paramètre de confidentialité associé à l\'utilisateur',
+              description: 'Paramètre de confidentialité associé à l\'utilisateur (Many-to-One)',
             },
             game_lists: {
               type: 'array',
-              description: 'Listes de jeux associées à cet utilisateur.',
+              description: 'Listes de jeux associées à cet utilisateur (Many-to-Many via `userLists`).',
               items: {
                 $ref: '#/components/schemas/GameList',
               },
@@ -53,7 +53,7 @@ const swaggerOptions = {
         // Modèle PrivacySettings
         PrivacySettings: {
           type: 'object',
-          description: 'Paramètre de confidentialité utilisé par plusieurs utilisateurs ou objets.',
+          description: 'Paramètre de confidentialité (One-to-Many vers Users, GameReviews, GameLogs, etc.) : un PrivacySetting peut être associé à plusieurs utilisateurs, critiques, journaux de jeux...',
           properties: {
             privacy_setting_id: {
               type: 'integer',
@@ -70,7 +70,7 @@ const swaggerOptions = {
         // Modèle GameList
         GameList: {
           type: 'object',
-          description: 'Liste de jeux créée par un utilisateur ou partagée avec d\'autres utilisateurs.',
+          description: 'Liste de jeux créée par un utilisateur ou partagée avec d\'autres (Many-to-Many avec Users, One-to-Many avec ListContent).',
           properties: {
             game_list_id: {
               type: 'integer',
@@ -89,14 +89,14 @@ const swaggerOptions = {
             },
             contents: {
               type: 'array',
-              description: 'Contenus de la liste (relation One-to-Many avec `ListContent`).',
+              description: 'Contenus de la liste (One-to-Many avec `ListContent`).',
               items: {
                 $ref: '#/components/schemas/ListContent',
               },
             },
             users: {
               type: 'array',
-              description: 'Utilisateurs associés à cette liste (relation Many-to-Many via `user_lists`).',
+              description: 'Utilisateurs associés à cette liste (Many-to-Many via `userLists`).',
               items: {
                 $ref: '#/components/schemas/User',
               },
@@ -106,7 +106,7 @@ const swaggerOptions = {
         // Modèle ListContent
         ListContent: {
           type: 'object',
-          description: 'Contenu d\'une liste de jeux, associé à un jeu spécifique.',
+          description: 'Contenu d\'une liste de jeux, associé à un jeu spécifique (Many-to-One vers `GameList`).',
           properties: {
             list_content_id: {
               type: 'integer',
@@ -115,7 +115,7 @@ const swaggerOptions = {
             },
             game_list_id: {
               type: 'integer',
-              description: 'ID de la liste de jeux à laquelle appartient ce contenu',
+              description: 'ID de la liste de jeux à laquelle appartient ce contenu (Many-to-One)',
               example: 42,
             },
             igdb_game_id: {
@@ -128,7 +128,7 @@ const swaggerOptions = {
         // Modèle GameLog
         GameLog: {
           type: 'object',
-          description: 'Journal de jeu enregistré par un utilisateur.',
+          description: 'Journal de jeu enregistré par un utilisateur. Chaque GameLog est associé à un utilisateur (Many-to-One), une plateforme (Many-to-One), et un paramètre de confidentialité (Many-to-One).',
           properties: {
             game_log_id: {
               type: 'integer',
@@ -137,22 +137,22 @@ const swaggerOptions = {
             },
             user: {
               $ref: '#/components/schemas/User',
-              description: 'Utilisateur associé au journal.',
+              description: 'Utilisateur associé au journal (Many-to-One).',
             },
             platform: {
               $ref: '#/components/schemas/GamePlatform',
-              description: 'Plateforme utilisée pour ce journal.',
+              description: 'Plateforme utilisée pour ce journal (Many-to-One).',
             },
             privacy_setting: {
               $ref: '#/components/schemas/PrivacySettings',
-              description: 'Paramètre de confidentialité du journal.',
+              description: 'Paramètre de confidentialité du journal (Many-to-One).',
             },
           },
         },
         // Modèle GamePlatform
         GamePlatform: {
           type: 'object',
-          description: 'Plateforme de jeu, comme PC, PlayStation, ou Xbox.',
+          description: 'Plateforme de jeu (ex: PC, PlayStation). Une plateforme peut être liée à plusieurs GameLogs (One-to-Many).',
           properties: {
             platform_id: {
               type: 'integer',
@@ -169,7 +169,7 @@ const swaggerOptions = {
         // Modèle GameSession
         GameSession: {
           type: 'object',
-          description: 'Session de jeu enregistrée par un utilisateur.',
+          description: 'Session de jeu enregistrée par un utilisateur. Une GameSession est associée à un GameLog (Many-to-One).',
           properties: {
             game_session_id: {
               type: 'integer',
@@ -199,7 +199,7 @@ const swaggerOptions = {
             },
             game_log_id: {
               type: 'integer',
-              description: 'ID du journal de jeu associé.',
+              description: 'ID du journal de jeu associé (Many-to-One).',
               example: 500,
             },
           },

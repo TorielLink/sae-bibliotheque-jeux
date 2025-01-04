@@ -1,20 +1,13 @@
-import React, {useState, useContext} from 'react';
-import {
-    AppBar,
-    Toolbar,
-    IconButton,
-    Typography,
-    Button,
-    Box,
-} from '@mui/material';
+import React, { useState, useContext, useEffect } from 'react';
+import { AppBar, Toolbar, IconButton, Typography, Button, Box } from '@mui/material';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { ThemeContext } from '../theme/ThemeContext';
+import { AuthContext } from './AuthContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import {Link, useLocation} from 'react-router-dom';
-import {useTheme} from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import {ThemeContext} from '../theme/ThemeContext';
 import SearchBar from './SearchBar';
-import {AuthContext} from './AuthContext';
 import UserMenu from "./UserMenu.jsx";
 
 function Navbar() {
@@ -22,15 +15,36 @@ function Navbar() {
     const {toggleTheme, mode} = useContext(ThemeContext);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
+    const navigate = useNavigate();
 
-    const {isAuthenticated} = useContext(AuthContext); // AuthContext pour vérifier l'état de connexion
+    const {isAuthenticated} = useContext(AuthContext); // Pour vérifier l'état de connexion
 
     const isCatalogue = location.pathname === '/catalogue';
     const isAvis = location.pathname === '/avis';
 
+    const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
     const [isSearchActive, setSearchActive] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const [selectedGame, setSelectedGame] = useState(null);
+    const [, setSelectedGame] = useState(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > lastScrollY)
+                // Si on défile vers le bas, cacher la barre
+                setIsNavbarVisible(false);
+            else
+                // Si on défile vers le haut, afficher la barre
+                setIsNavbarVisible(true);
+            setLastScrollY(window.scrollY);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [lastScrollY]);
 
     const handleSearchBack = () => {
         setSearchActive(false);
@@ -47,17 +61,21 @@ function Navbar() {
 
     const handleGameSelect = (game) => {
         console.log('Jeu sélectionné :', game.name, game.id);
+
+        navigate(`/details/${game.id}`);
         setSelectedGame(game);
         setSearchActive(false);
     };
 
     return (
         <AppBar
-            position="static"
+            position="sticky"
             sx={{
                 backgroundColor: theme.palette.background.paper,
+                boxShadow: isNavbarVisible ? '0px 4px 8px rgba(0, 0, 0, 0.2)' : 'none',
                 padding: isMobile ? '4px' : '8px',
-                boxShadow: `0px 4px 8px ${theme.palette.colors['blue-50']}`, // Ombre bleue transparente
+                transition: 'top 0.3s',
+                top: isNavbarVisible ? 0 : '-80px',
             }}
         >
             <Toolbar
@@ -69,7 +87,7 @@ function Navbar() {
                     minHeight: isMobile ? '50px' : 'auto',
                 }}
             >
-                {/* Logo et texte SCRIB à gauche */}
+                {/* Logo du site à gauche */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -83,35 +101,18 @@ function Navbar() {
                         aria-label="logo"
                         component={Link}
                         to="/"
-                        sx={{marginRight: isMobile ? 0.5 : 1}}
+                        sx={{ marginRight: isMobile ? 0.5 : 1 }}
                     >
                         <img
-                            src="/logo.png"
+                            src={theme.palette.logo}
                             alt="logo"
                             style={{
-                                width: isMobile ? 20 : 50,
-                                height: isMobile ? 20 : 50,
+                                width: isMobile ? '60px' : '120px',
+                                height: 'auto',
+                                objectFit: 'contain',
                             }}
                         />
                     </IconButton>
-                    <Typography
-                        variant="h6"
-                        component={Link}
-                        to="/"
-                        sx={{
-                            fontFamily: theme.typography.titleFontFamily,
-                            fontWeight: 700,
-                            color: theme.palette.text.primary,
-                            fontSize: isMobile ? '1rem' : '1.8rem',
-                            textTransform: 'uppercase',
-                            whiteSpace: 'nowrap',
-                            textDecoration: 'none',
-                            display: 'block',
-                            marginLeft: isMobile ? '-2px' : '8px',
-                        }}
-                    >
-                        SCRIB
-                    </Typography>
                 </Box>
 
                 {/* Spacer pour pousser les éléments suivants à droite */}

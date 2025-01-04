@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Grid, useMediaQuery} from "@mui/material";
+import {Box, Grid2, useMediaQuery} from "@mui/material";
 import GameCard from "../components/GameCard.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 import {useTheme} from "@mui/material/styles";
@@ -14,20 +14,15 @@ function GameList({title, games}) {
             {!isMobile && <SectionTitle title={title}/>}
 
             {isMobile ? (
-                <Grid container spacing={2} justifyContent="center" sx={{
-                    padding:'0.75em'
-                }}> // TODO : passer de Grid (déprécié) à Grid2
+                <Grid2 container spacing={2} justifyContent="center" sx={{ padding: isMobile ? '0' : '0.75em' }}>
                     {games.map((game) => (
-                        <Grid
-                            item
-                            xs={6}
-                            sm={4}
-                            key={game.id}
-                            sx={{
+                        <Grid2 xs={6} sm={4} key={game.id} sx={{
                                 padding: 0,
                                 display: "flex",
-                                justifyContent: "center"
-                        }}
+                                justifyContent: "center",
+                                maxWidth: 'calc(50% - 1em)',
+                                boxSizing: 'border-box',
+                            }}
                         >
                             {/* Ajout de l'ID ici */}
                             <GameCard
@@ -37,9 +32,9 @@ function GameList({title, games}) {
                                 rating={game.aggregated_rating}
                                 categories={game.genres}
                             />
-                        </Grid>
+                        </Grid2>
                     ))}
-                </Grid>
+                </Grid2>
             ) : (
                 <Box
                     sx={{
@@ -50,11 +45,11 @@ function GameList({title, games}) {
                         marginBottom: "4em",
                         padding: "1.5em",
                         scrollbarWidth: "none",
-                        "&::-webkit-scrollbar": {display: "none"},
+                        "&::-webkit-scrollbar": { display: "none" },
                     }}
                 >
                     {games.map((game) => (
-                        <Box key={game.id} sx={{flex: "0 0 auto"}}>
+                        <Box key={game.id} sx={{ flex: "0 0 auto" }}>
                             <GameCard
                                 id={game.id}
                                 image={game.cover}

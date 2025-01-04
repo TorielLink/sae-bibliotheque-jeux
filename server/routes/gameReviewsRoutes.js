@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/gameReviewsController');
+
 /**
  * @swagger
  * /gameReviews:
  *   get:
  *     summary: Récupérer toutes les critiques
  *     description: >
- *       Cette route retourne toutes les critiques de jeux avec leurs paramètres de confidentialité.
+ *       Cette route retourne toutes les critiques de jeux avec leurs paramètres de confidentialité,
+ *       les informations de l'utilisateur (username, profile_picture), la note (si existante),
+ *       et les détails du jeu (titre et couverture) via l'API IGDB.
  *     tags:
  *       - Game Reviews
  *     responses:
@@ -24,18 +27,59 @@ const controller = require('../controllers/gameReviewsController');
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/GameReview'
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       user_id:
+ *                         type: integer
+ *                       igdb_game_id:
+ *                         type: integer
+ *                       content:
+ *                         type: string
+ *                       spoiler:
+ *                         type: boolean
+ *                       date_published:
+ *                         type: string
+ *                         format: date-time
+ *                       review_privacy:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           username:
+ *                             type: string
+ *                           profile_picture:
+ *                             type: string
+ *                             format: uri
+ *                       rating:
+ *                         type: integer
+ *                         description: Note de l'utilisateur pour ce jeu
+ *                       game:
+ *                         type: object
+ *                         properties:
+ *                           title:
+ *                             type: string
+ *                           cover:
+ *                             type: string
+ *                             format: uri
  *       500:
  *         description: Erreur serveur
  */
 router.get('/', controller.getAllReviews);
+
 /**
  * @swagger
  * /gameReviews/game/{id}:
  *   get:
  *     summary: Récupérer les critiques d'un jeu spécifique
  *     description: >
- *       Cette route retourne toutes les critiques pour un jeu donné, identifiées par `igdb_game_id`.
+ *       Cette route retourne toutes les critiques pour un jeu donné (identifié par `igdb_game_id`),
+ *       avec les informations de l'utilisateur (username, profile_picture), la note (si existante),
+ *       les paramètres de confidentialité, et les détails du jeu (titre et couverture) via l'API IGDB.
  *     tags:
  *       - Game Reviews
  *     parameters:
@@ -44,7 +88,7 @@ router.get('/', controller.getAllReviews);
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID du jeu
+ *         description: ID du jeu (igdb_game_id)
  *     responses:
  *       200:
  *         description: Critiques récupérées avec succès
@@ -59,7 +103,45 @@ router.get('/', controller.getAllReviews);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/GameReview'
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       user_id:
+ *                         type: integer
+ *                       igdb_game_id:
+ *                         type: integer
+ *                       content:
+ *                         type: string
+ *                       spoiler:
+ *                         type: boolean
+ *                       date_published:
+ *                         type: string
+ *                         format: date-time
+ *                       review_privacy:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           username:
+ *                             type: string
+ *                           profile_picture:
+ *                             type: string
+ *                             format: uri
+ *                       rating:
+ *                         type: integer
+ *                         description: Note de l'utilisateur pour ce jeu
+ *                       game:
+ *                         type: object
+ *                         properties:
+ *                           title:
+ *                             type: string
+ *                           cover:
+ *                             type: string
+ *                             format: uri
  *       404:
  *         description: Aucune critique trouvée pour ce jeu
  *       500:
@@ -73,7 +155,9 @@ router.get('/game/:id', controller.getReviewsByGameId);
  *   get:
  *     summary: Récupérer les critiques d'un utilisateur spécifique
  *     description: >
- *       Cette route retourne toutes les critiques faites par un utilisateur donné.
+ *       Cette route retourne toutes les critiques faites par un utilisateur (identifié par son ID),
+ *       avec les paramètres de confidentialité, la note (si existante),
+ *       et les détails du jeu (titre, couverture) via l'API IGDB.
  *     tags:
  *       - Game Reviews
  *     parameters:
@@ -97,7 +181,45 @@ router.get('/game/:id', controller.getReviewsByGameId);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/GameReview'
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       user_id:
+ *                         type: integer
+ *                       igdb_game_id:
+ *                         type: integer
+ *                       content:
+ *                         type: string
+ *                       spoiler:
+ *                         type: boolean
+ *                       date_published:
+ *                         type: string
+ *                         format: date-time
+ *                       review_privacy:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           username:
+ *                             type: string
+ *                           profile_picture:
+ *                             type: string
+ *                             format: uri
+ *                       rating:
+ *                         type: integer
+ *                         description: Note de l'utilisateur pour ce jeu
+ *                       game:
+ *                         type: object
+ *                         properties:
+ *                           title:
+ *                             type: string
+ *                           cover:
+ *                             type: string
+ *                             format: uri
  *       404:
  *         description: Aucune critique trouvée pour cet utilisateur
  *       500:
