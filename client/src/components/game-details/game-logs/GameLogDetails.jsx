@@ -21,7 +21,6 @@ function GameLogDetails({
                         }) {
     const theme = useTheme()
     const styles = getStyles(theme)
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
     const handleLogChange = (event) => {
         setCurrentLog(logs.find((log) => log.game_log_id === Number(event.target.value)))

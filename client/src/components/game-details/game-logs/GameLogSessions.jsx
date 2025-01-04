@@ -7,7 +7,6 @@ import {AddBox} from "@mui/icons-material"
 function GameLogSessions({log, sessions, currentSession, setCurrentSession, createNewSession, deleteSession}) {
     const theme = useTheme()
     const styles = getStyles(theme)
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [error, setError] = useState(null)
 
     const handleCurrentSessionChange = (newSession) => {

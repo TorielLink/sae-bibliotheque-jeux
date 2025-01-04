@@ -6,7 +6,6 @@ import {KeyboardDoubleArrowLeft} from "@mui/icons-material"
 function GameLogsTab({tabNumber, tabBackground, tabIcon, tabContent, additionalStyles, collapseButtonSize}) {
     const theme = useTheme()
     const styles = getStyles(theme, tabNumber, tabBackground, collapseButtonSize, additionalStyles)
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const [isTabOpen, setIsTabOpen] = useState(true)
 
     const handleToggleTab = () => {

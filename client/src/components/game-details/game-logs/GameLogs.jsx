@@ -4,7 +4,7 @@ import {useTheme} from "@mui/material/styles"
 import GameLogsTab from "./log-details-content/GameLogsTab.jsx"
 import {FormatListBulleted, Info} from "@mui/icons-material"
 import GameLogDetails from "./GameLogDetails.jsx"
-import {AuthContext} from "../AuthContext.jsx"
+import {AuthContext} from "../../AuthContext.jsx"
 import GameLogSessions from "./GameLogSessions.jsx"
 import SessionEditor from "./SessionEditor.jsx"
 import GameDetailsNavBar from "../GameDetailsNavBar.jsx"
@@ -354,9 +354,11 @@ function GameLogs({game}) {
             ...styles.container,
             ...(isMobile ? styles.mobile.container : {})
         }}>
-            <div style={styles.navContainer}>
-                <GameDetailsNavBar activeSection={"logs"}/>
-            </div>
+            {!isMobile && (
+                <div style={styles.navContainer}>
+                    <GameDetailsNavBar activeSection={"logs"}/>
+                </div>
+            )}
 
             <div style={{
                 ...styles.logsContainer,
@@ -463,7 +465,7 @@ const getStyles = (theme) => ({
     navContainer: {
         alignSelf: 'flex-end',
         marginBottom: '2%',
-        paddingTop: '2%'
+        marginTop: '2%'
     },
     logsContainer: {
         width: '100%',
@@ -486,8 +488,7 @@ const getStyles = (theme) => ({
         },
         navContainer: {},
         logsContainer: {},
-        editor: {
-        }
+        editor: {}
     },
 })
 

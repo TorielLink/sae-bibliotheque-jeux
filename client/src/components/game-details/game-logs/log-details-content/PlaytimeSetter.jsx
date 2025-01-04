@@ -4,7 +4,6 @@ import {useTheme} from "@mui/material/styles"
 
 function PlaytimeSetter({disabled, hours, setHours, minutes, setMinutes, savePlaytime, timeCalculationMethod}) {
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme)
 
     const handlePlaytimeSave = () => {
