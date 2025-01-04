@@ -2,14 +2,18 @@ import React from "react"
 import {TextField} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 
-function PlaytimeSetter({hours, setHours, minutes, setMinutes, savePlaytime, timeCalculationMethod}) {
+function PlaytimeSetter({disabled, hours, setHours, minutes, setMinutes, savePlaytime, timeCalculationMethod}) {
     const theme = useTheme()
     const styles = getStyles(theme)
+
+    const handlePlaytimeSave = () => {
+        savePlaytime()
+    }
 
     return (
         <div
             style={styles.inputContainer}
-            onBlur={savePlaytime}
+            onBlur={handlePlaytimeSave}
         >
 
             <TextField
@@ -19,7 +23,7 @@ function PlaytimeSetter({hours, setHours, minutes, setMinutes, savePlaytime, tim
                 onChange={setHours}
                 placeholder="HH"
                 size="small"
-                disabled={timeCalculationMethod === 1}
+                disabled={timeCalculationMethod === 1 || disabled}
                 slotProps={{
                     htmlInput: {
                         pattern: "\\d*",
@@ -48,7 +52,7 @@ function PlaytimeSetter({hours, setHours, minutes, setMinutes, savePlaytime, tim
                 value={String(minutes)}
                 onChange={setMinutes}
                 size="small"
-                disabled={timeCalculationMethod === 1}
+                disabled={timeCalculationMethod === 1 || disabled}
                 slotProps={{
                     htmlInput: {
                         maxLength: 2,

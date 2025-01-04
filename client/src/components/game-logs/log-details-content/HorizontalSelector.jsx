@@ -3,6 +3,7 @@ import {FormControl, Select, MenuItem} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 
 function HorizontalSelector({
+                                disabled,
                                 label,
                                 items,
                                 itemId,
@@ -27,6 +28,7 @@ function HorizontalSelector({
                     label={label}
                     variant="outlined"
                     onChange={setSelectedItem}
+                    disabled={disabled}
                     sx={{
                         '& .MuiOutlinedInput-notchedOutline': {
                             border: 'none',

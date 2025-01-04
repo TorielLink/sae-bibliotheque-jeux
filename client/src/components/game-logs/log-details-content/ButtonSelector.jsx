@@ -9,7 +9,7 @@ import * as BsIcons from 'react-icons/bs'
 import * as Io5Icons from 'react-icons/io5'
 import * as PiIcons from 'react-icons/pi'
 
-function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
+function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idName}) {
     const theme = useTheme()
     const styles = getStyles(theme)
     const [error, setError] = useState(null)
@@ -74,6 +74,7 @@ function ButtonSelector({selectedItem, setSelectedItem, fetchUrl, idName}) {
                                                     value={item[idName]}
                                                     checked={selectedItem === item[idName]}
                                                     disableTouchRipple
+                                                    disabled={disabled}
                                                     style={styles.icon}
                                                     sx={{
                                                         transition: 'transform 0.1s',

@@ -7,13 +7,13 @@ import GameLogDetails from "./GameLogDetails.jsx"
 import {AuthContext} from "../AuthContext.jsx"
 import GameLogSessions from "./GameLogSessions.jsx"
 import SessionEditor from "./SessionEditor.jsx"
+import GameDetailsNavBar from "../GameDetailsNavBar.jsx";
 
-function GameLogs({gameId, gameName, gameCoverImage}) {
+function GameLogs({game}) {
     const theme = useTheme()
     const styles = getStyles(theme)
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const {isAuthenticated, user} = useContext(AuthContext)
-    const [error, setError] = useState(null)
     const collapseButtonSize = 3
 
     if (!isAuthenticated) return (
@@ -44,23 +44,25 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     useEffect(() => {
-        fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${gameId}`, handleStatusChange, "game_status_id")
-        fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${gameId}`, setLogs)
+        console.log('Game changed')
+        fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${game.id}`, handleStatusChange, "game_status_id")
+        fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${game.id}`, handleLogsChange)
+        handleCurrentLogChange(null)
         fetchData(`http://localhost:8080/privacy-settings`, setPrivacySettings)
-    }, [])
+    }, [game])
 
     const [currentStatus, setCurrentStatus] = useState(0)
     const handleStatusChange = (status) => {
-        if (!status)
-            return
-        setCurrentStatus(status)
-        saveStatusChange(
-            user.id,
-            gameId,
-            {
-                game_status_id: status
-            }
-        )
+        setCurrentStatus(status || 0)
+        if (status) {
+            saveStatusChange(
+                user.id,
+                game.id,
+                {
+                    game_status_id: status
+                }
+            )
+        }
     }
 
     const saveStatusChange = async (userId, gameId, body) => {
@@ -77,7 +79,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 throw new Error(`Failed to update game status: ${response.statusText}`)
             }
 
-            const result = await response.json()
+            await response.json()
         } catch (error) {
             console.error('Error updating game status:', error)
         }
@@ -98,7 +100,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         } else {
             setCurrentPrivacySetting(log.privacy_setting_id)
             setCurrentPlatform(log.platform_id)
-            fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(newSessions => {
+            fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(() => {
                 handleCurrentSessionChange(-1)
             })
         }
@@ -112,7 +114,10 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     const savePrivacyChange = (privacySettingId) => {
-        currentLog.privacy_setting_id = privacySettingId
+        setCurrentLog({
+            ...currentLog,
+            privacy_setting_id: privacySettingId,
+        })
     }
 
     const [currentPlatform, setCurrentPlatform] = useState(0)
@@ -122,7 +127,10 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     const savePlatformChange = (platformId) => {
-        currentLog.platform_id = platformId
+        setCurrentLog({
+            ...currentLog,
+            platform_id: platformId,
+        })
     }
 
     const [playtime, setPlaytime] = useState('')
@@ -131,7 +139,10 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     const savePlaytime = (playtime) => {
-        currentLog.time_played = playtime
+        setCurrentLog({
+            ...currentLog,
+            time_played: playtime,
+        })
     }
 
     const saveLogChanges = async (logId, updatedData) => {
@@ -148,7 +159,8 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 throw new Error(`Failed to update game log: ${response.statusText}`)
             }
 
-            const result = await response.json()
+            await response.json()
+            console.log("Log updated successfully")
         } catch (error) {
             console.error('Error updating game log:', error)
         }
@@ -157,7 +169,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
 
     useEffect(() => {
         if (currentLog) {
-
             logs.forEach((log) => {
                 if (log.game_log_id === currentLog.game_log_id) {
                     log = currentLog
@@ -173,7 +184,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 }
             )
         }
-    }, [JSON.stringify(currentLog)])
+    }, [currentLog])
 
     const [sessions, setSessions] = useState([])
     const handleSessionsChange = (newSessions) => {
@@ -182,9 +193,6 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
     }
 
     const [sessionsPlaytime, setSessionsPlaytime] = useState(0)
-    const handleSessionsPlaytimeChange = (playtime) => {
-        setSessionsPlaytime(playtime)
-    }
 
     const saveSessionPlaytime = (newPlaytime) => {
         setCurrentSession({...currentSession, time_played: newPlaytime})
@@ -289,7 +297,7 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                 throw new Error(`Failed to update game session: ${response.statusText}`)
             }
 
-            const result = await response.json()
+            await response.json()
         } catch (error) {
             console.error('Error updating game session:', error)
         }
@@ -341,9 +349,12 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
         }
     }
 
-
     return (
         <div style={styles.container}>
+            <div style={styles.navContainer}>
+                <GameDetailsNavBar activeSection={"logs"}/>
+            </div>
+
             <div style={styles.logsContainer}>
                 <GameLogsTab
                     collapseButtonSize={collapseButtonSize}
@@ -353,14 +364,13 @@ function GameLogs({gameId, gameName, gameCoverImage}) {
                     tabContent={
                         <GameLogDetails
                             userId={user.id}
-                            gameId={gameId}
+                            gameId={game.id}
 
-                            gameName={gameName}
-                            gameCoverImage={gameCoverImage}
+                            gameName={game.name}
+                            gameCoverImage={game.cover.url}
 
                             logs={logs}
                             setLogs={handleLogsChange}
-                            sessions={sessions}
 
                             currentStatus={currentStatus}
                             setCurrentStatus={handleStatusChange}
@@ -434,11 +444,17 @@ const getStyles = (theme) => ({
         width: '100%',
         height: 'auto',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         paddingBlock: '0rem',
         paddingInline: '5rem',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
+    },
+    navContainer: {
+        alignSelf: 'flex-end',
+        marginBottom: '2%',
+        paddingTop:'2%'
     },
     logsContainer: {
         width: '100%',
@@ -453,7 +469,7 @@ const getStyles = (theme) => ({
         position: 'relative',
     },
     editor: {
-        minWidth:'40rem',
+        minWidth: '40rem',
         width: '100%',
     }
 })

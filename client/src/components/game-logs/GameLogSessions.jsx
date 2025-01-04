@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react"
+import React, {useState} from "react"
 import {Button, IconButton, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import DeleteIcon from '@mui/icons-material/Delete';
-import {AddBox, Edit} from "@mui/icons-material";
+import {AddBox} from "@mui/icons-material";
 
 function GameLogSessions({log, sessions, currentSession, setCurrentSession, createNewSession, deleteSession}) {
     const theme = useTheme();

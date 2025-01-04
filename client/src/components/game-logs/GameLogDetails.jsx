@@ -4,7 +4,7 @@ import {useTheme} from "@mui/material/styles"
 import ButtonSelector from "./log-details-content/ButtonSelector.jsx";
 import HorizontalSelector from "./log-details-content/HorizontalSelector.jsx";
 import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
-import {Add, AddBox, Delete, Edit, PlusOne} from "@mui/icons-material";
+import {AddBox, Delete} from "@mui/icons-material";
 
 function GameLogDetails({
                             userId,
@@ -12,7 +12,6 @@ function GameLogDetails({
                             gameName, gameCoverImage,
                             currentStatus, setCurrentStatus,
                             logs, setLogs,
-                            sessions,
                             currentLog, setCurrentLog,
                             privacySettings,
                             currentPrivacySetting, setCurrentPrivacySetting,
@@ -59,7 +58,7 @@ function GameLogDetails({
         }
     }, [playtime])
 
-    const saveNewPlaytime = (event) => {
+    const saveNewPlaytime = () => {
         const newPlaytime = Number(hours) * 60 + Number(minutes)
         savePlaytime(newPlaytime)
     }
@@ -127,6 +126,7 @@ function GameLogDetails({
             <hr style={styles.separator}/>
 
             <ButtonSelector
+                disabled={false}
                 selectedItem={currentStatus}
                 setSelectedItem={setCurrentStatus}
                 fetchUrl={`http://localhost:8080/status`}
@@ -138,7 +138,8 @@ function GameLogDetails({
 
                 <div style={styles.horizontalContainers}>
                     <div style={styles.logActionsContainer}>
-                        <HorizontalSelector label={"Journal"}
+                        <HorizontalSelector disabled={false}
+                                            label={"Journal"}
                                             items={logs}
                                             itemId={"game_log_id"}
                                             selectedItem={currentLog}
@@ -169,6 +170,7 @@ function GameLogDetails({
                             disableTouchRipple
                             onClick={handleDeleteLog}
                             style={styles.actionButton}
+                            disabled={!currentLog}
                             sx={{
                                 color: theme.palette.colors.red,
                                 '&:hover': {
@@ -183,7 +185,8 @@ function GameLogDetails({
                         </IconButton>
                     </div>
 
-                    <HorizontalSelector label={"Visibilité"}
+                    <HorizontalSelector disabled={!currentLog}
+                                        label={"Visibilité"}
                                         items={privacySettings}
                                         itemId={"privacy_setting_id"}
                                         selectedItem={currentPrivacySetting}
@@ -195,6 +198,7 @@ function GameLogDetails({
                     />
                 </div>
                 <ButtonSelector
+                    disabled={!currentLog}
                     selectedItem={currentPlatform}
                     setSelectedItem={setCurrentPlatform}
                     fetchUrl={'http://localhost:8080/game-platforms'}
@@ -237,6 +241,7 @@ function GameLogDetails({
 
                         <div style={styles.playtime.texts}>
                             <PlaytimeSetter
+                                disabled={!currentLog}
                                 hours={hours}
                                 setHours={handleHoursChange}
                                 minutes={minutes}
@@ -247,11 +252,7 @@ function GameLogDetails({
                         </div>
                     </FormControl>
                 </div>
-
             </div>
-
-            {/*<hr style={styles.separator}/>*/}
-
         </div>
     )
 }

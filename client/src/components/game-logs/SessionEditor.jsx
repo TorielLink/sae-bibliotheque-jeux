@@ -18,7 +18,7 @@ function SessionEditor({
     useEffect(() => {
         setSessionTitle(session.title)
         if (session.time_played !== 0) {
-            setHours(session.time_played > 60 ? Math.floor(session.time_played / 60) : '')
+            setHours(session.time_played >= 60 ? Math.floor(session.time_played / 60) : '')
             setMinutes(session.time_played % 60)
         } else {
             setHours('')
@@ -53,7 +53,7 @@ function SessionEditor({
         saveSessionTitle()
     }
 
-    const handleSessionPlaytimeSave = (event) => {
+    const handleSessionPlaytimeSave = () => {
         const newPlaytime = Number(hours) * 60 + Number(minutes)
         saveSessionPlaytime(newPlaytime)
     }

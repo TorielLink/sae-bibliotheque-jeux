@@ -79,9 +79,7 @@ export default function GamesDetailsPage() {
             {/* TODO: si l'utilisateur est connecté : montrer "GameLogs" */}
             <div id="logs">
                 <GameLogs
-                    gameId={gameData.id}
-                    gameName={gameData.name}
-                    gameCoverImage={gameData.cover.url}
+                    game={gameData}
                 />
                 <div style={styles.separatorContainerL}>
                     <div style={styles.separator}></div>
