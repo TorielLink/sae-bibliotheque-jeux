@@ -57,7 +57,7 @@ const getStyles = (theme, fontSize) => ({
         alignItems: 'center',
     },
     selector: {
-        boxShadow: `0 0 0.2em 0.05em ${theme.palette.text.primary}`,
+        boxShadow: `0 0 0.25em${theme.palette.colors.black}`,
         borderRadius: '0.3rem',
         background: theme.palette.background.default,
         fontSize: fontSize

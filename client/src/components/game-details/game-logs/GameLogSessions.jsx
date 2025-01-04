@@ -33,7 +33,8 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession, crea
     }
 
     function handleDeleteSessionClick(sessionId) {
-        deleteSession(sessionId)
+        if (confirm('Voulez-vous vraiment supprime cette session ?'))
+            deleteSession(sessionId)
     }
 
     return (
@@ -144,7 +145,7 @@ const getStyles = (theme) => ({
         width: '102%',
         alignSelf: 'flex-start',
         borderRadius: '0 0.25rem 0.25rem 0',
-        boxShadow: `0 0 0.5rem ${theme.palette.text.primary}`,
+        boxShadow: `0 0 0.25rem ${theme.palette.text.primary}`,
         cursor: 'auto'
     },
     informations: {
@@ -153,7 +154,7 @@ const getStyles = (theme) => ({
     date: {
         fontSize: '0.8rem',
         margin: '0',
-        color: theme.palette.transparentColors[`black-70`],
+        opacity:'70%'
     },
     title: {
         margin: '0.2rem 0 0 0',

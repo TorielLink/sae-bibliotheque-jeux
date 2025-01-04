@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import {RadioGroup, Radio, FormControl, useMediaQuery, FormLabel, IconButton} from "@mui/material"
+import {RadioGroup, Radio, FormControl, useMediaQuery, FormLabel, IconButton, Tooltip} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import ButtonSelector from "./log-details-content/ButtonSelector.jsx"
 import HorizontalSelector from "./log-details-content/HorizontalSelector.jsx"
@@ -148,40 +148,43 @@ function GameLogDetails({
                                             fontSize={"large"}
                         />
 
-                        <IconButton
-                            disableTouchRipple
-                            onClick={handleCreateLog}
-                            style={styles.actionButton}
-                            sx={{
-                                color: theme.palette.colors.green,
-                                '&:hover': {
-                                    background: 'none',
-                                    transform: 'scale(1.2)',
-                                },
-                                '&:active': {
-                                    transform: 'scale(1)',
-                                },
-                            }}>
-                            <AddBox fontSize="large"/>
-                        </IconButton>
-
-                        <IconButton
-                            disableTouchRipple
-                            onClick={handleDeleteLog}
-                            style={styles.actionButton}
-                            disabled={!currentLog}
-                            sx={{
-                                color: theme.palette.colors.red,
-                                '&:hover': {
-                                    background: 'none',
-                                    transform: 'scale(1.2)',
-                                },
-                                '&:active': {
-                                    transform: 'scale(1)',
-                                },
-                            }}>
-                            <Delete fontSize="large"/>
-                        </IconButton>
+                        <Tooltip title={"Ajouter un journal"} placement="top" arrow enterDelay={500}>
+                            <IconButton
+                                disableTouchRipple
+                                onClick={handleCreateLog}
+                                style={styles.actionButton}
+                                sx={{
+                                    color: theme.palette.colors.green,
+                                    '&:hover': {
+                                        background: 'none',
+                                        transform: 'scale(1.2)',
+                                    },
+                                    '&:active': {
+                                        transform: 'scale(1)',
+                                    },
+                                }}>
+                                <AddBox fontSize="large"/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={"Supprimer le journal"} placement="top" arrow enterDelay={500}>
+                            <IconButton
+                                disableTouchRipple
+                                onClick={handleDeleteLog}
+                                style={styles.actionButton}
+                                disabled={!currentLog}
+                                sx={{
+                                    color: theme.palette.colors.red,
+                                    '&:hover': {
+                                        background: 'none',
+                                        transform: 'scale(1.2)',
+                                    },
+                                    '&:active': {
+                                        transform: 'scale(1)',
+                                    },
+                                }}>
+                                <Delete fontSize="large"/>
+                            </IconButton>
+                        </Tooltip>
                     </div>
 
                     <HorizontalSelector disabled={!currentLog}
@@ -219,21 +222,28 @@ function GameLogDetails({
                         >
                             <div style={styles.playtime.radios}>
                                 <div style={styles.playtime.radio}>
+
                                     <FormLabel id="manual-label" style={styles.playtime.label}>Manuel</FormLabel>
-                                    <Radio
-                                        aria-labelledby="manual-label"
-                                        value={0}
-                                        disableTouchRipple
-                                    />
+                                    <Tooltip title={"Entrer le temps de jeu manuellement"} placement="top" arrow
+                                             enterDelay={500}>
+                                        <Radio
+                                            aria-labelledby="manual-label"
+                                            value={0}
+                                            disableTouchRipple
+                                        />
+                                    </Tooltip>
                                 </div>
                                 <div style={styles.playtime.radio}>
                                     <FormLabel id="sessions-label"
                                                style={styles.playtime.label}>Sessions</FormLabel>
-                                    <Radio
-                                        aria-labelledby="sessions-label"
-                                        value={1}
-                                        disableTouchRipple
-                                    />
+                                    <Tooltip title={"Calculer le temps de jeu automatiquement depuis les sessions"}
+                                             placement="top" arrow>
+                                        <Radio
+                                            aria-labelledby="sessions-label"
+                                            value={1}
+                                            disableTouchRipple
+                                        />
+                                    </Tooltip>
                                 </div>
                             </div>
                         </RadioGroup>
@@ -270,7 +280,7 @@ const getStyles = (theme) => ({
         maxHeight: '20%',
         marginBottom: '1.5em',
         borderRadius: '0.625em',
-        boxShadow: '0 0.25em 0.5em rgba(0, 0, 0, 0.1)',
+        boxShadow: `0em 0em 0.5em ${theme.palette.colors.black}`,
     },
     separator: {
         height: '0.15em',
@@ -344,13 +354,6 @@ const getStyles = (theme) => ({
             justifyContent: 'center',
             width: '100%'
         },
-        text: {
-            margin: '0.2rem 0.5rem',
-            width: '5rem',
-            boxShadow: `0 0 0.2em 0.05em ${theme.palette.text.primary}`,
-            borderRadius: '0.3rem',
-            background: theme.palette.background.default,
-        }
     }
 })
 

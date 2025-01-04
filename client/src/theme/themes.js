@@ -7,7 +7,8 @@ const colors = {
   red: '#FF4436',
   green: '#2FC75A',
   purple: '#9534D5',
-  black:'#222222'
+  black:'#222222',
+  white:'#F5F5F5'
 };
 
 const generateTransparentColors = (colorMap, transparency) => {

@@ -85,7 +85,7 @@ const getStyles = (theme, tabNumber, tabBackground, collapseButtonSize, addition
         height: `${collapseButtonSize}rem`,
         padding: '0',
         background: theme.palette.transparentColors[`${tabBackground}-70`],
-        boxShadow: `0.125em 0 0.125em ${theme.palette.text.primary}`,
+        boxShadow: `0.125em 0 0.125em ${theme.palette.text.secondary}`,
         borderRadius: '0 0.3em 0.3em 0',
         cursor: 'pointer',
         position: 'absolute',

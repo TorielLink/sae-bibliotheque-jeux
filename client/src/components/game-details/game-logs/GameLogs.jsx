@@ -96,6 +96,7 @@ function GameLogs({game}) {
         if (!log) {
             setCurrentPrivacySetting(1)
             setCurrentPlatform(-1)
+            handlePlaytimeChange(0)
             handleCurrentSessionChange(-1)
         } else {
             setCurrentPrivacySetting(log.privacy_setting_id)
