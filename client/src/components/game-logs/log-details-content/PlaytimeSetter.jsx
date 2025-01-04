@@ -1,10 +1,11 @@
 import React from "react"
-import {TextField} from "@mui/material"
+import {TextField, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 
 function PlaytimeSetter({disabled, hours, setHours, minutes, setMinutes, savePlaytime, timeCalculationMethod}) {
     const theme = useTheme()
-    const styles = getStyles(theme)
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const styles = getStyles(theme, isMobile)
 
     const handlePlaytimeSave = () => {
         savePlaytime()
@@ -72,7 +73,7 @@ function PlaytimeSetter({disabled, hours, setHours, minutes, setMinutes, savePla
     )
 }
 
-const getStyles = (theme) => ({
+const getStyles = (theme, isMobile) => ({
     inputContainer: {
         display: 'flex',
         flexDirection: 'row',

@@ -350,12 +350,18 @@ function GameLogs({game}) {
     }
 
     return (
-        <div style={styles.container}>
+        <div style={{
+            ...styles.container,
+            ...(isMobile ? styles.mobile.container : {})
+        }}>
             <div style={styles.navContainer}>
                 <GameDetailsNavBar activeSection={"logs"}/>
             </div>
 
-            <div style={styles.logsContainer}>
+            <div style={{
+                ...styles.logsContainer,
+                ...(isMobile ? styles.mobile.logsContainer : {})
+            }}>
                 <GameLogsTab
                     collapseButtonSize={collapseButtonSize}
                     tabNumber={0}
@@ -418,7 +424,10 @@ function GameLogs({game}) {
                     }}
                 />
 
-                <div style={styles.editor}>
+                <div style={{
+                    ...styles.editor,
+                    ...(isMobile ? styles.mobile.editor : {})
+                }}>
                     <SessionEditor session={currentSession}
 
                                    sessionContent={sessionContent}
@@ -454,7 +463,7 @@ const getStyles = (theme) => ({
     navContainer: {
         alignSelf: 'flex-end',
         marginBottom: '2%',
-        paddingTop:'2%'
+        paddingTop: '2%'
     },
     logsContainer: {
         width: '100%',
@@ -469,9 +478,17 @@ const getStyles = (theme) => ({
         position: 'relative',
     },
     editor: {
-        minWidth: '40rem',
         width: '100%',
-    }
+    },
+    mobile: {
+        container: {
+            paddingInline: '1rem',
+        },
+        navContainer: {},
+        logsContainer: {},
+        editor: {
+        }
+    },
 })
 
 export default GameLogs

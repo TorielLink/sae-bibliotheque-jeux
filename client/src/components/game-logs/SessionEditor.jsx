@@ -3,7 +3,7 @@ import MDEditor from '@uiw/react-md-editor'
 import rehypeSanitize from "rehype-sanitize";
 import {useTheme} from "@mui/material/styles";
 import PlaytimeSetter from "./log-details-content/PlaytimeSetter.jsx";
-import {TextField} from "@mui/material";
+import {TextField, useMediaQuery} from "@mui/material";
 
 function SessionEditor({
                            session,
@@ -12,8 +12,9 @@ function SessionEditor({
                            saveSessionPlaytime,
                            collapseButtonSize
                        }) {
-    const theme = useTheme();
-    const styles = getStyles(theme, collapseButtonSize);
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const styles = getStyles(theme, collapseButtonSize, isMobile)
 
     useEffect(() => {
         setSessionTitle(session.title)
@@ -65,8 +66,16 @@ function SessionEditor({
     )
 
     return (
-        <div style={styles.container} data-color-mode={theme.palette.mode}>
-            <div style={styles.sessionInformations}>
+        <div style={{
+            ...styles.container,
+            ...styles.mobile.container,
+        }}
+             data-color-mode={theme.palette.mode}
+        >
+            <div style={{
+                ...styles.sessionInformations,
+                ...(isMobile ? styles.mobile.sessionInformations : {}),
+            }}>
                 <TextField
                     style={styles.title}
                     id="title"
@@ -77,7 +86,7 @@ function SessionEditor({
                     slotProps={{
                         htmlInput: {
                             style: {
-                                fontSize: '2rem',
+                                fontSize: (isMobile ? '1.5rem' : '2rem'),
                                 fontWeight: 'bold',
                                 padding: '0.25rem 0.5rem',
                             }
@@ -90,7 +99,9 @@ function SessionEditor({
                     }}
                 />
 
-                <div style={styles.playtime}>
+                <div style={{
+                    ...(isMobile ? styles.mobile.playtime : {}),
+                }}>
                     <PlaytimeSetter
                         hours={hours}
                         setHours={handleHoursChange}
@@ -123,7 +134,7 @@ function SessionEditor({
     )
 }
 
-const getStyles = (theme, collapseButtonSize) => ({
+const getStyles = (theme, collapseButtonSize, isMobile) => ({
     noSession: {
         display: 'flex',
         flexDirection: 'column',
@@ -136,7 +147,6 @@ const getStyles = (theme, collapseButtonSize) => ({
     },
     title: {
         width: '100%',
-        marginRight: '2rem',
     },
     container: {
         height: '100%',
@@ -149,15 +159,24 @@ const getStyles = (theme, collapseButtonSize) => ({
     sessionInformations: {
         display: 'flex',
         maxWidth: '100%',
+        marginRight: (isMobile ? '0.5rem' : '2rem'),
         flexDirection: 'row',
         height: `${2 * collapseButtonSize + 2}rem`,
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: `1rem ${collapseButtonSize + 1}rem`
+        padding: `1rem 0  1rem ${collapseButtonSize + (isMobile ? 0 : 1)}rem`
     },
     editor: {
         borderRadius: '0',
         width: '100%',
+    },
+    mobile: {
+        playtime: {
+            alignSelf: 'end',
+        },
+        sessionInformations: {
+            flexDirection: 'column',
+        },
     },
 })
 
