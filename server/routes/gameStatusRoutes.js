@@ -28,7 +28,7 @@ const gameStatusController = require('../controllers/gameStatusController');
  *       500:
  *         description: Erreur serveur
  */
-router.get('/', gameStatusController.getAllGameStatus);
+router.get('/', gameStatusController.getAllGameStatuses);
 /**
  * @swagger
  * /gameStatus/user/{userId}:
@@ -65,7 +65,7 @@ router.get('/', gameStatusController.getAllGameStatus);
 *       500:
 *         description: Erreur serveur
 */
-router.get('/user/:userId', gameStatusController.getGameStatusByUser);
+router.get('/user/:userId', gameStatusController.getGameStatusesByUser);
 /**
  * @swagger
  * /gameStatus/user/{userId}/game/{gameId}:
@@ -145,7 +145,7 @@ router.get('/user/:userId/game/:gameId', gameStatusController.getStatusByUserAnd
  *       500:
  *         description: Erreur serveur
  */
-router.get('/game/:igdb_game_id', gameStatusController.getGameByGame);
+router.get('/game/:igdb_game_id', gameStatusController.getGameStatusesByGame);
 
 /**
  * @swagger

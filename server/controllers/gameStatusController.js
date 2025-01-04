@@ -3,27 +3,27 @@ const {gameStatus, status, gameLogs} = require('../database/sequelize'); // Assu
 const controller = {};
 
 // Récupérer tous les statuts de jeu avec leur statut générique associé
-controller.getAllGameStatus = async (req, res) => {
+controller.getAllGameStatuses = async (req, res) => {
     try {
-        const gameStatusData = await gameStatusData.findAll({
+        const gameStatuses = await gameStatus.findAll({
             include: {
                 model: status,
                 as: 'status',
                 attributes: ['game_status_id', 'name', 'icon'],
             },
         });
-        res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData});
+        res.status(200).json({message: 'Game statuses fetched successfully', data: gameStatuses});
     } catch (error) {
-        console.error('Error fetching game status:', error);
-        res.status(500).json({message: 'Error fetching game status', error: error.message});
+        console.error('Error fetching game statuses:', error);
+        res.status(500).json({message: 'Error fetching game statuses', error: error.message});
     }
 };
 
 // Récupérer les statuts de jeu pour un utilisateur spécifique
-controller.getGameStatusByUser = async (req, res) => {
+controller.getGameStatusesByUser = async (req, res) => {
     try {
         const {userId} = req.params; // ID de l'utilisateur
-        const userGameStatus = await gameStatus.findAll({
+        const userGameStatuses = await gameStatus.findAll({
             where: {user_id: userId},
             include: {
                 model: status,
@@ -32,22 +32,22 @@ controller.getGameStatusByUser = async (req, res) => {
             },
         });
 
-        if (!userGameStatus || userGameStatus.length === 0) {
-            return res.status(404).json({message: 'No game status found for this user'});
+        if (!userGameStatuses || userGameStatuses.length === 0) {
+            return res.status(404).json({message: 'No game statuses found for this user'});
         }
 
-        res.status(200).json({message: 'User game status fetched successfully', data: userGameStatus});
+        res.status(200).json({message: 'User game statuses fetched successfully', data: userGameStatuses});
     } catch (error) {
-        console.error('Error fetching user game status:', error);
-        res.status(500).json({message: 'Error fetching user game status', error: error.message});
+        console.error('Error fetching user game statuses:', error);
+        res.status(500).json({message: 'Error fetching user game statuses', error: error.message});
     }
 };
 
 // Récupérer les statuts de jeu pour un jeu spécifique
-controller.getGameByGame = async (req, res) => {
+controller.getGameStatusesByGame = async (req, res) => {
     try {
         const {igdb_game_id} = req.params; // ID du jeu (igdb_game_id)
-        const gameStatusData = await gameStatus.findAll({
+        const gameStatuses = await gameStatus.findAll({
             where: {igdb_game_id: igdb_game_id},
             include: {
                 model: status,
@@ -56,14 +56,14 @@ controller.getGameByGame = async (req, res) => {
             },
         });
 
-        if (!gameStatusData || gameStatusData.length === 0) {
-            return res.status(404).json({message: 'No game status found for this game'});
+        if (!gameStatuses || gameStatuses.length === 0) {
+            return res.status(404).json({message: 'No game statuses found for this game'});
         }
 
-        res.status(200).json({message: 'Game status fetched successfully', data: gameStatusData});
+        res.status(200).json({message: 'Game statuses fetched successfully', data: gameStatuses});
     } catch (error) {
-        console.error('Error fetching game status by game ID:', error);
-        res.status(500).json({message: 'Error fetching game status by game ID', error: error.message});
+        console.error('Error fetching game statuses by game ID:', error);
+        res.status(500).json({message: 'Error fetching game statuses by game ID', error: error.message});
     }
 }
 
