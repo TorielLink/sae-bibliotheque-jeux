@@ -18,6 +18,7 @@ const friendsRoutes = require('./routes/friendsRoutes');
 const userListsRoutes = require('./routes/userListsRoutes');
 const {swaggerUi, swaggerDocs} = require('./middleware/swagger'); // Importez la configuration
 const gamesRoutes = require('./routes/gamesRoutes');
+const privacySettingsRoutes = require('./routes/privacySettingsRoutes')
 
 // Création de l'application Express
 const app = express();
@@ -62,6 +63,7 @@ app.use('/game-platforms', gamePlatformsRoutes);
 app.use('/game-lists', gameListRoutes);
 app.use('/list-content', listContentRoutes);
 app.use('/game-logs', gameLogsRoutes);
+app.use('/privacy-settings', privacySettingsRoutes);
 app.use('/game-sessions', gameSessionRoutes);
 app.use('/game-reviews', gameReviewRoutes);
 app.use('/game-ratings', gameRatingsRoutes);

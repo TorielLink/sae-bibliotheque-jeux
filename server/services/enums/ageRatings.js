@@ -18,7 +18,7 @@ module.exports = {
         12: 5,
     },
     PEGI: {
-        0: "Non précisé",
+        0: "Non prÃ©cisÃ©",
         1: "PEGI3",
         2: "PEGI7",
         3: "PEGI12",

@@ -26,7 +26,7 @@ class APIRequests {
         const headers = {
             'Client-ID': this.#clientId,
             'Authorization': `Bearer ${this.#accessToken}`,
-            'Content-Type': 'text/plain'
+            'Content-Type': 'input/plain'
         };
 
         try {

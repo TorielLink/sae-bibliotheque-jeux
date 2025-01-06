@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('game_logs', {
+    const GameLog = sequelize.define('game_logs', {
         game_log_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         time_played: {
-            type: DataTypes.INTEGER, // En minutes ou heures selon votre besoin
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         privacy_setting_id: {
@@ -41,4 +41,13 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         timestamps: false
     });
+
+    GameLog.associate = function (models) {
+        GameLog.hasMany(models.game_sessions, {
+            foreignKey: 'game_log_id',
+            onDelete: 'CASCADE'
+        })
+    }
+
+    return GameLog
 };

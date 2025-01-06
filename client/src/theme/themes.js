@@ -8,6 +8,8 @@ const colors = {
     green: '#2FC75A',
     purple: '#9534D5',
     lightGray: '#E6E6E6',
+    black: '#222222',
+    white: '#F5F5F5'
 };
 
 const generateTransparentColors = (colorMap, transparency) => {
@@ -20,16 +22,17 @@ const generateTransparentColors = (colorMap, transparency) => {
 };
 
 export const baseTheme = {
-    palette: {
-        colors,
-        transparentColors: {
-            ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
-            ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
-        },
+  palette: {
+    colors,
+    transparentColors: {
+      ...generateTransparentColors(colors, 1),
+      ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
+      ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
     },
-    typography: {
-        fontFamily: 'Inter, Arial, sans-serif',
-    },
+  },
+  typography: {
+    fontFamily: 'Inter, Arial, sans-serif',
+  },
 };
 
 export const lightTheme = createTheme({
