@@ -1,43 +1,48 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('game_reviews', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true, // Nouvelle clé primaire unique
+        },
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true,
             references: {
                 model: 'users',
                 key: 'user_id',
-                onDelete: 'CASCADE' // Si un utilisateur est supprimé, ses critiques sont supprimées
-            }
+            },
+            onDelete: 'SET NULL',
         },
         igdb_game_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true // Clé primaire composite avec user_id
         },
         content: {
             type: DataTypes.TEXT,
-            allowNull: true // Critiques longues autorisées
+            allowNull: true, // Texte optionnel
         },
         spoiler: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: false // Valeur par défaut : pas de spoiler
+            defaultValue: false,
         },
         date_published: {
             type: DataTypes.DATE,
-            allowNull: false // Date obligatoire
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
         },
         privacy_setting_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'privacy_settings',
-                key: 'privacy_setting_id' // Pas de suppression en cascade
-            }
-        }
+                key: 'privacy_setting_id',
+            },
+            onDelete: 'SET NULL',
+        },
     }, {
-        freezeTableName: true, // Le nom de la table ne sera pas pluralisé automatiquement
-        timestamps: false // Pas de createdAt/updatedAt
+        freezeTableName: true, // Empêche la pluralisation automatique du nom de la table
+        timestamps: false, // Pas de createdAt/updatedAt
     });
 };

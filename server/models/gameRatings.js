@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         igdb_game_id: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true // Clé primaire composite avec user_id
         },

@@ -1,10 +1,10 @@
 import React from "react";
-import {Box, Card, CardMedia, Chip, Typography, useMediaQuery,} from "@mui/material";
+import {Box, Card, CardMedia, Typography, useMediaQuery} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import {useTheme} from "@mui/material/styles";
 import {useNavigate} from "react-router-dom";
 
-function GameCard({id, image, title, rating, categories}) {
+function GameCardTitle({id, image, title, rating}) {
     const theme = useTheme();
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -26,9 +26,10 @@ function GameCard({id, image, title, rating, categories}) {
                 boxShadow: "0 0 0.5em #000000",
                 overflow: "hidden",
                 cursor: "pointer",
+                transition: "box-shadow 0.3s ease-in-out",
                 "&:hover": {
                     boxShadow: "0 0 1em #000000",
-                    "& .categories": {
+                    "& .titleOverlay": {
                         opacity: 1,
                     },
                 },
@@ -36,7 +37,7 @@ function GameCard({id, image, title, rating, categories}) {
             onClick={handleCardClick}
         >
             {/* Zone contenant l'image et l'évaluation */}
-            <Box sx={{position: "relative", height: "85%"}}>
+            <Box sx={{position: "relative", height: "100%"}}>
                 <CardMedia
                     component="img"
                     image={image}
@@ -44,9 +45,11 @@ function GameCard({id, image, title, rating, categories}) {
                     sx={{
                         objectFit: "cover",
                         width: "100%",
-                        height: "100%"
-                    }}/>
+                        height: "100%",
+                    }}
+                />
 
+                {/* Note (rating) en haut à droite */}
                 <Box
                     sx={{
                         position: "absolute",
@@ -78,64 +81,38 @@ function GameCard({id, image, title, rating, categories}) {
                     />
                 </Box>
 
-                {/* Catégories */}
+                {/* Titre en overlay */}
                 <Box
-                    className="categories"
+                    className="titleOverlay"
                     sx={{
                         position: "absolute",
-                        bottom: "0.5em",
-                        left: "0.5em",
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "0.3em",
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.6)",
+                        color: "#fff",
+                        padding: "0.4em",
+                        textAlign: "center",
                         opacity: isMobile ? 1 : 0,
                         transition: isMobile ? "none" : "opacity 0.3s ease-in-out",
                     }}
                 >
-                    {categories.map((category, index) => (
-                        <Chip
-                            key={index}
-                            label={category}
-                            size="small"
-                            sx={{
-                                backgroundColor: theme.palette.colors.red,
-                                color: theme.palette.text.contrast,
-                                fontSize: "0.8em",
-                                height: "1.5em",
-                                borderRadius: "0.325em",
-                            }}
-                        />
-                    ))}
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontSize: "0.85em",
+                            fontWeight: "bold",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                        }}
+                    >
+                        {title || "Titre non disponible"}
+                    </Typography>
                 </Box>
-            </Box>
-
-            {/* Titre du jeu */}
-            <Box
-                sx={{
-                    height: "15%",
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "0 0.5em",
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{
-                        fontSize: "0.85em",
-                        fontWeight: "bold",
-                        color: theme.palette.text.primary,
-                        whiteSpace: "nowrap",
-                        width: "100%",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                    }}
-                >
-                    {title || "Titre non disponible"}
-                </Typography>
             </Box>
         </Card>
     );
 }
 
-export default GameCard;
+export default GameCardTitle;

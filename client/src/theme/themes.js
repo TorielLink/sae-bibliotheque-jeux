@@ -1,23 +1,24 @@
-import { createTheme } from '@mui/material/styles';
+import {createTheme} from '@mui/material/styles';
 
 
 const colors = {
-  blue: '#36A0FC',
-  yellow: '#FFBB33',
-  red: '#FF4436',
-  green: '#2FC75A',
-  purple: '#9534D5',
-  black:'#222222',
-  white:'#F5F5F5'
+    blue: '#36A0FC',
+    yellow: '#FFBB33',
+    red: '#FF4436',
+    green: '#2FC75A',
+    purple: '#9534D5',
+    lightGray: '#E6E6E6',
+    black: '#222222',
+    white: '#F5F5F5'
 };
 
 const generateTransparentColors = (colorMap, transparency) => {
-  return Object.fromEntries(
-      Object.entries(colorMap).map(([colorName, hexValue]) => [
-        `${colorName}-${Math.round(transparency * 100)}`, // Exemple: 'yellow-50'
-        `${hexValue}${Math.round(transparency * 255).toString(16).padStart(2, '0')}`, // Exemple: FFBB3380
-      ])
-  );
+    return Object.fromEntries(
+        Object.entries(colorMap).map(([colorName, hexValue]) => [
+            `${colorName}-${Math.round(transparency * 100)}`, // Exemple: 'yellow-50'
+            `${hexValue}${Math.round(transparency * 255).toString(16).padStart(2, '0')}`, // Exemple: FFBB3380
+        ])
+    );
 };
 
 export const baseTheme = {
@@ -35,36 +36,36 @@ export const baseTheme = {
 };
 
 export const lightTheme = createTheme({
-  ...baseTheme,
-  palette: {
-    ...baseTheme.palette,
-    mode: 'light',
-    background: {
-      default: '#F5F5F5',
-      paper: '#FFF',
+    ...baseTheme,
+    palette: {
+        ...baseTheme.palette,
+        mode: 'light',
+        background: {
+            default: '#F5F5F5',
+            paper: '#FFF',
+        },
+        text: {
+            primary: '#222', // Texte principal noir
+            secondary: '#666', // Texte secondaire gris
+            contrast: '#F5F5F5', // Texte blanc
+        },
+        logo: '/images/light-logo.png',
     },
-    text: {
-      primary: '#222', // Texte principal noir
-      secondary: '#666', // Texte secondaire gris
-      contrast: '#F5F5F5', // Texte blanc
-    },
-    logo: '/images/light-logo.png',
-  },
 });
 
 export const darkTheme = createTheme({
-  ...baseTheme,
-  palette: {
-    ...baseTheme.palette,
-    mode: 'dark',
-    background: {
-      default: '#222',
-      paper: '#333',
+    ...baseTheme,
+    palette: {
+        ...baseTheme.palette,
+        mode: 'dark',
+        background: {
+            default: '#222',
+            paper: '#333',
+        },
+        text: {
+            primary: '#FFF',
+            secondary: '#B3B3B3', // Texte secondaire gris clair
+        },
+        logo: '/images/dark-logo.png',
     },
-    text: {
-      primary: '#FFF',
-      secondary: '#B3B3B3', // Texte secondaire gris clair
-    },
-    logo: '/images/dark-logo.png',
-  },
 });

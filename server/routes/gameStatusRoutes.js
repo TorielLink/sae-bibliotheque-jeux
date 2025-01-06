@@ -24,7 +24,7 @@ const gameStatusController = require('../controllers/gameStatusController');
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/LogPlatform'
+ *                     $ref: '#/components/schemas/GameStatus'
  *       500:
  *         description: Erreur serveur
  */
@@ -42,29 +42,29 @@ router.get('/', gameStatusController.getAllGameStatuses);
  *       - in: path
  *         name: userId
  *         required: true
-*         schema:
-*           type: integer
-*         description: ID de l'utilisateur
-*     responses:
-*       200:
-*         description: Statuts récupérés avec succès
-*         content:
-*           application/json:
-*             schema:
-    *               type: object
-*               properties:
-*                 message:
-    *                   type: string
-*                   example: Game statuses fetched successfully
-*                 data:
-*                   type: array
-*                   items:
-*                     $ref: '#/components/schemas/LogPlatform'
-*       404:
-*         description: Aucun statut trouvé pour cet utilisateur
-*       500:
-*         description: Erreur serveur
-*/
+ *         schema:
+ *           type: integer
+ *         description: ID de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Statuts récupérés avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game statuses fetched successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/GameStatus'
+ *       404:
+ *         description: Aucun statut trouvé pour cet utilisateur
+ *       500:
+ *         description: Erreur serveur
+ */
 router.get('/user/:userId', gameStatusController.getGameStatusesByUser);
 /**
  * @swagger
@@ -139,7 +139,7 @@ router.get('/user/:userId/game/:gameId', gameStatusController.getStatusByUserAnd
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/LogPlatform'
+ *                     $ref: '#/components/schemas/GameStatus'
  *       404:
  *         description: Aucun statut trouvé pour ce jeu
  *       500:
@@ -147,6 +147,77 @@ router.get('/user/:userId/game/:gameId', gameStatusController.getStatusByUserAnd
  */
 router.get('/game/:igdb_game_id', gameStatusController.getGameStatusesByGame);
 
+/**
+ * @swagger
+ * /games-by-status:
+ *   get:
+ *     summary: Récupère les jeux avec leurs sessions et informations enrichies.
+ *     tags:
+ *       - GameStatus
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: L'ID de l'utilisateur pour lequel récupérer les jeux.
+ *       - in: query
+ *         name: gameStatusName
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Le nom du statut des jeux à filtrer.
+ *     responses:
+ *       200:
+ *         description: Succès, retourne les jeux enrichis.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       igdb_game_id:
+ *                         type: string
+ *                       title:
+ *                         type: string
+ *                       cover:
+ *                         type: string
+ *                       releaseDate:
+ *                         type: string
+ *                         format: date
+ *                       genres:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                       userRating:
+ *                         type: number
+ *                       lastSessionDate:
+ *                         type: string
+ *                         format: date
+ *                       averageRating:
+ *                         type: number
+ *                       totalTimePlayed:
+ *                         type: number
+ *                       sessionCount:
+ *                         type: integer
+ *                       platform:
+ *                         type: string
+ *       400:
+ *         description: Mauvaise requête, paramètres manquants ou invalides.
+ *       404:
+ *         description: Aucun jeu trouvé pour l'utilisateur et le statut spécifié.
+ *       500:
+ *         description: Erreur interne du serveur.
+ */
+router.get('/games-by-status', gameStatusController.getGamesWithSessions);
+
+module.exports = router;
 /**
  * @swagger
  * /gameStatus/update/{userId}/{gameId}:

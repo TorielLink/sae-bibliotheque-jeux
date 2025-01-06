@@ -1,35 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/listContentController'); // Chemin correct vers le contrôleur
+const controller = require('../controllers/listContentController');
+const verifyToken = require('../middleware/auth');
 
-/**
- * @swagger
- * /listContent:
- *   get:
- *     summary: Récupérer tous les contenus de listes
- *     description: >
- *       Cette route retourne tous les contenus des listes de jeux.
- *     tags:
- *       - List Content
- *     responses:
- *       200:
- *         description: Liste des contenus récupérée avec succès
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Contents fetched successfully
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/ListContent'
- *       500:
- *         description: Erreur serveur
- */
-router.get('/', controller.getAllContents);
+
 /**
  * @swagger
  * /listContent/{id}:
@@ -64,6 +38,6 @@ router.get('/', controller.getAllContents);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/:id', controller.getContentsByListId);
+router.get('/:id', verifyToken, controller.getContentsByListId);
 
 module.exports = router;
