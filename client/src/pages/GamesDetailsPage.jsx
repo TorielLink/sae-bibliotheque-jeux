@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom"; // pour récupérer les paramètres de l'URL
+import React, {useState, useEffect} from 'react';
+import {useParams} from "react-router-dom"; // pour récupérer les paramètres de l'URL
 import GameDetails from "../components/game-details/GameDetails.jsx";
 import GameReviews from "../components/game-details/GameReviews.jsx";
 import GameMedias from "../components/game-details/GameMedias.jsx";
@@ -7,14 +7,14 @@ import {Typography, useMediaQuery} from "@mui/material";
 import GameMobileQuickActions from "../components/game-details/GameMobileQuickActions.jsx";
 import {useTheme} from "@mui/material/styles";
 import MobileTabs from "../components/MobileTabs.jsx";
-// import GameLogs from '../components/GameLogs.jsx';
+import GameLogs from '../components/game-details/game-logs/GameLogs.jsx';
 
 
 /** TODO :
  - Faire la version mobile
  */
 export default function GamesDetailsPage() {
-    const { id } = useParams(); // Récupère l'ID depuis l'URL
+    const {id} = useParams(); // Récupère l'ID depuis l'URL
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -45,7 +45,7 @@ export default function GamesDetailsPage() {
     if (loading) return <div>Chargement des données...</div>;
     if (error) return <div>{error}</div>;
 
-    const tabTitles = ["Détails", "Avis", "Médias"];
+    const tabTitles = ["Détails", "Avis", "Journaux", "Médias"];
     const tabContents = [
         <GameDetails
             name={gameData.name}
@@ -66,7 +66,10 @@ export default function GamesDetailsPage() {
             parentGame={gameData.parentGame}
             similarGames={gameData.similarGames}
         />,
-        <GameReviews />,
+        <GameReviews/>,
+        <GameLogs
+            game={gameData}
+        />,
         <GameMedias
             videos={gameData.videos}
             screenshots={gameData.screenshots}
@@ -81,8 +84,8 @@ export default function GamesDetailsPage() {
 
             {isMobile ? (
                 <>
-                    <GameMobileQuickActions /> {/* Boutons d'actions rapides */}
-                    <MobileTabs tabTitles={tabTitles} tabContents={tabContents} />
+                    <GameMobileQuickActions/> {/* Boutons d'actions rapides */}
+                    <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
                 </>
             ) : (
                 <>
@@ -98,8 +101,14 @@ export default function GamesDetailsPage() {
                             <div style={styles.separator}></div>
                         </div>
                     </div>
-                    <div id="medias">
+                    <div id="logs">
                         {tabContents[2]}
+                        <div style={styles.separatorContainerL}>
+                            <div style={styles.separator}></div>
+                        </div>
+                    </div>
+                    <div id="medias">
+                        {tabContents[3]}
                     </div>
                 </>
             )}

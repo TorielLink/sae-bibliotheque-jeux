@@ -7,6 +7,8 @@ const colors = {
   red: '#FF4436',
   green: '#2FC75A',
   purple: '#9534D5',
+  black:'#222222',
+  white:'#F5F5F5'
 };
 
 const generateTransparentColors = (colorMap, transparency) => {
@@ -22,6 +24,7 @@ export const baseTheme = {
   palette: {
     colors,
     transparentColors: {
+      ...generateTransparentColors(colors, 1),
       ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
       ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
     },

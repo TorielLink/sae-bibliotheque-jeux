@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('game_sessions', {
+    const GameSession =  sequelize.define('game_sessions', {
         game_session_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -33,4 +33,12 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         timestamps: false
     });
+
+    GameSession.associate = function(models) {
+        GameSession.belongsTo(models.game_logs, {
+            foreignKey: 'game_log_id'
+        })
+    }
+
+    return GameSession
 };

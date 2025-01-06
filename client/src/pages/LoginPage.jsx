@@ -121,7 +121,7 @@ const handleLoginSubmit = async (e) => {
             <label>
               Nom d'utilisateur :
               <input
-                type="text"
+                type="input"
                 name="username"
                 value={credentials.username}
                 onChange={handleLoginChange}
@@ -153,7 +153,7 @@ const handleLoginSubmit = async (e) => {
             <label>
               Nom d'utilisateur :
               <input
-                type="text"
+                type="input"
                 name="username"
                 value={signupData.username}
                 onChange={handleSignupChange}
