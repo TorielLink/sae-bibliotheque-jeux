@@ -20,7 +20,7 @@ export default function GamesDetailsPage() {
     const [error, setError] = useState(null);
 
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile);
 
     useEffect(() => {
