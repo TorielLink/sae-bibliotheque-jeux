@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../components/AuthContext.jsx';
 import {
+    Box,
     CircularProgress,
     FormControl, FormControlLabel,
     Grid2,
@@ -49,17 +50,34 @@ const MyLogsPage = () => {
         {label: "grid", icon: <Window/>},
     ]
     const [viewMode, setViewMode] = useState(0)
-    useEffect(() => {
-        console.log(viewMode)
-    }, [viewMode]);
+
+    const [games, setGames] = useState([])
 
     async function fetchData() {
         try {
-            const response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`)
+            let response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`)
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
-            const data = await response.json()
+            let data = await response.json()
             setLogs(data.data)
+
+            const gameIds = []
+            data.data.forEach((log) => {
+                gameIds.push(log.igdb_game_id)
+            })
+
+            response = await fetch('http://localhost:8080/games/specific', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    gameIds: gameIds,
+                }),
+            })
+
+            data = await response.json()
+            setGames(data)
         } catch (e) {
             setError(e)
         }
@@ -73,7 +91,7 @@ const MyLogsPage = () => {
         } finally {
             setLoading(false)
         }
-    }, [loading])
+    }, [])
 
     return (
         /*!isAuthenticated ? (
@@ -184,7 +202,12 @@ const MyLogsPage = () => {
                     <Grid2 container spacing={'2rem'} justifyContent="center">
                         {logs.map((item, index) => {
                                 return (
-                                    <LogCard logData={item}/>
+                                    <Box key={index}>
+                                        <LogCard
+                                            gameData={games.find((game) => game.id === item.igdb_game_id)}
+                                            logData={item}
+                                        />
+                                    </Box>
                                 )
                             }
                         )}
