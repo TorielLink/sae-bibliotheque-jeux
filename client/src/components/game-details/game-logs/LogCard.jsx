@@ -10,6 +10,7 @@ import * as BsIcons from "react-icons/bs";
 import * as Io5Icons from "react-icons/io5";
 import * as PiIcons from "react-icons/pi";
 import LockIcon from "@mui/icons-material/Lock";
+import LogSessions from "./LogSessions.jsx";
 
 
 function LogCard({gameData, logData}) {
@@ -43,7 +44,7 @@ function LogCard({gameData, logData}) {
             <img src={gameData.cover} style={styles.image}/>
             <div style={{
                 ...styles.informations,
-                ...styles.fixedInformations
+                ...styles.fixedInformations,
             }}>
                 <div style={styles.logInformations}>
                     <Icon style={styles.icon}>
@@ -84,6 +85,9 @@ function LogCard({gameData, logData}) {
                         </Icon>
                     </div>
                 </div>
+                <LogSessions
+                    logData={logData}
+                />
             </div>
         </div>
     )
@@ -98,7 +102,7 @@ const getStyles = (theme) => ({
         borderRadius: '1rem',
         width: '35rem',
         height: '20rem',
-        overflow:'hidden'
+        overflow: 'hidden'
     },
     image: {
         position: 'relative',
@@ -153,6 +157,9 @@ const getStyles = (theme) => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between'
+    },
+    sessionContainer: {
+        border: 'solid 1px red',
     },
 })
 
