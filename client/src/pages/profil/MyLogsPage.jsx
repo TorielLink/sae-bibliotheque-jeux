@@ -30,29 +30,6 @@ const MyLogsPage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile)
 
-    const userId = user?.id
-    const [logs, setLogs] = useState([])
-
-    const sortingOptions = [
-        // "Sessions",
-        "Jeux",
-        "Temps de jeu",
-        "Plateformes",
-        "Statut"
-    ]
-    const [sortingOption, setSortingOption] = useState(0)
-    // true : ascendant - false : descendant
-    const [sortingOrder, setSortingOrder] = useState(true)
-
-    const viewModes = [
-        {label: "details", icon: <Window/>},
-        {label: "list", icon: <FormatListBulletedIcon/>},
-        {label: "grid", icon: <Window/>},
-    ]
-    const [viewMode, setViewMode] = useState(0)
-
-    const [games, setGames] = useState([])
-
     async function fetchData() {
         try {
             setLoading(true)
@@ -85,6 +62,36 @@ const MyLogsPage = () => {
         }
     }
 
+    const userId = user?.id
+    const [logs, setLogs] = useState([])
+    const [games, setGames] = useState([])
+
+    function handleLogsChange(logs, resetSorting) {
+        setLogs(logs)
+        sortLogs(logs, 0, true)
+    }
+
+    function sortLogs(logs, sortingOption, sortingOrder) {
+        const selectedOption = sortingOptions[sortingOption];
+
+        const sortedLogs = [...logs].sort((a, b) => {
+            const aValue =
+                selectedOption?.secondaryId
+                    ? a[selectedOption.mainId][selectedOption.secondaryId]
+                    : a[selectedOption.mainId]
+            const bValue =
+                selectedOption?.secondaryId
+                    ? b[selectedOption.mainId][selectedOption.secondaryId]
+                    : b[selectedOption.mainId]
+
+            if (aValue < bValue) return sortingOrder ? -1 : 1
+            if (aValue > bValue) return sortingOrder ? 1 : -1
+            return 0
+        });
+
+        setLogs(sortedLogs)
+    }
+
     useEffect(() => {
         try {
             fetchData()
@@ -93,6 +100,45 @@ const MyLogsPage = () => {
             setLoading(false)
         }
     }, [])
+
+    useEffect(() => {
+        const betterLogs = logs.map((log) => {
+            let gameName;
+            games.forEach((game) => {
+                if (game.id === log.igdb_game_id)
+                    gameName = game.name
+            })
+            const betterLog = {
+                ...log,
+                game_name: gameName
+            }
+            return betterLog
+        })
+        handleLogsChange(betterLogs)
+    }, [games])
+
+
+    const sortingOptions = [
+        // "Sessions",
+        {label: "Jeux", mainId: "game_name"},
+        {label: "Temps de jeu", mainId: "time_played"},
+        {label: "Plateformes", mainId: "platform", secondaryId: 'platform_id'},
+    ]
+
+    const [sortingOption, setSortingOption] = useState(0)
+    // true : ascendant - false : descendant
+    const [sortingOrder, setSortingOrder] = useState(true)
+
+    useEffect(() => {
+        sortLogs(logs, sortingOption, sortingOrder)
+    }, [sortingOption, sortingOrder])
+
+    const viewModes = [
+        // {label: "details", icon: <Window/>},
+        // {label: "list", icon: <FormatListBulletedIcon/>},
+        {label: "grid", icon: <Window/>},
+    ]
+    const [viewMode, setViewMode] = useState(0)
 
     return (
         !isAuthenticated ? (
@@ -135,7 +181,7 @@ const MyLogsPage = () => {
                                                 {
                                                     sortingOptions && sortingOptions.map((item, index) => (
                                                         <MenuItem key={index} value={index}>
-                                                            {item}
+                                                            {item.label}
                                                         </MenuItem>
                                                     ))
                                                 }
@@ -211,6 +257,7 @@ const MyLogsPage = () => {
                                                         <LogCard
                                                             gameData={games.find((game) => game.id === item.igdb_game_id)}
                                                             logData={item}
+                                                            logIndex={index}
                                                         />
                                                     </Box>
                                                 )
@@ -267,6 +314,7 @@ const getStyles = (theme, isMobile) => ({
     viewModes: {
         borderRadius: '1rem',
         background: theme.palette.background.paper,
+        overflow: 'hidden',
         boxShadow: `0 0 0.25rem ${theme.palette.colors.black}`,
     },
     viewModeControlLabel: {
