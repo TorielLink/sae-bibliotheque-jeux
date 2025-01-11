@@ -89,7 +89,6 @@ function LogCard({gameData, logData, logIndex}) {
              onMouseLeave={() => setIsCardHovered(false)}
         >
             <div style={styles.background}></div>
-            {/*<img src={gameData.cover} style={styles.image}/>*/}
 
             <div style={styles.informations}>
                 <div onClick={handleNavigation}
@@ -97,16 +96,17 @@ function LogCard({gameData, logData, logIndex}) {
                      onMouseLeave={() => setIsIconHovered(false)}
                      style={{
                          ...styles.logInformations,
-                         top: '1rem',
-                         right: '1rem',
-                         display: isCardHovered ? 'block' : 'none',
+                         display: isCardHovered ? 'flex' : 'none',
+                         alignItems: 'center',
+                         justifyContent: 'center',
                          cursor: 'pointer',
-                         transform: isIconHovered ? 'scale(1.2)' : 'scale(1)',
+                         transform: isIconHovered ? 'scale(1.05)' : 'scale(1)',
                          transition: 'transform 0.1s',
                      }}>
-                    <Icon style={{...styles.icon}}>
+                    <Icon style={styles.icon}>
                         <OpenInBrowser/>
                     </Icon>
+                    <p style={styles.label}>Aller au jeu</p>
                 </div>
                 <div style={styles.logInformations}>
                     <Icon style={styles.icon}>
@@ -190,9 +190,6 @@ const getStyles = (theme, gameData) => ({
         boxShadow: `0 0 0.25rem ${theme.palette.colors.black}`,
     },
     informations: {
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
@@ -244,9 +241,6 @@ const getStyles = (theme, gameData) => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between'
-    },
-    sessionContainer: {
-        border: 'solid 1px red',
     },
 })
 

@@ -45,10 +45,6 @@ const getStyles = (theme) => ({
         background: theme.palette.background.default,
         overflow: 'hidden',
         overflowY: 'scroll',
-        // display: 'flex',
-        // flexDirection: 'row',
-        // alignItems: 'center',
-        // gap: '0.5rem',
     },
     session: {
         margin: '0',
