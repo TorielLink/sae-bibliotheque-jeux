@@ -1,10 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Button, Box } from '@mui/material';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import React, {useState, useContext, useEffect} from 'react';
+import {AppBar, Toolbar, IconButton, Typography, Button, Box} from '@mui/material';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {useTheme} from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { ThemeContext } from '../theme/ThemeContext';
-import { AuthContext } from './AuthContext';
+import {ThemeContext} from '../theme/ThemeContext';
+import {AuthContext} from './AuthContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SearchBar from './SearchBar';
@@ -103,7 +103,8 @@ function Navbar() {
                         aria-label="logo"
                         component={Link}
                         to="/"
-                        sx={{ marginRight: isMobile ? 0.5 : 1 }}
+                        disableRipple
+                        sx={{marginRight: isMobile ? 0.5 : 1}}
                     >
                         <img
                             src={logoUrl}
@@ -212,7 +213,9 @@ function Navbar() {
                                     fontSize: isMobile ? '20px' : '32px',
                                     color: theme.palette.text.primary,
                                 }}
-                                onClick={() => {setLogoUrl('/images/dark-logo.png')}}
+                                onClick={() => {
+                                    setLogoUrl('/images/dark-logo.png')
+                                }}
                             />
                         ) : (
                             <LightModeIcon
@@ -220,7 +223,9 @@ function Navbar() {
                                     fontSize: isMobile ? '20px' : '32px',
                                     color: theme.palette.colors.yellow,
                                 }}
-                                onClick={() => {setLogoUrl('/images/light-logo.png')}}
+                                onClick={() => {
+                                    setLogoUrl('/images/light-logo.png')
+                                }}
                             />
                         )}
                     </IconButton>
