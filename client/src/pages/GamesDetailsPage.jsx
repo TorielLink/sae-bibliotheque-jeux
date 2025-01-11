@@ -26,6 +26,7 @@ export default function GamesDetailsPage() {
     useEffect(() => {
         const fetchGameData = async () => {
             try {
+                setLoading(true);
                 console.log(`Fetching game data for ID: ${id}`); // log ID
                 const response = await fetch(`http://localhost:8080/games/${id}`);
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);

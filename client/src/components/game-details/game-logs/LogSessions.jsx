@@ -4,33 +4,13 @@ import {useTheme} from "@mui/material/styles"
 import DeleteIcon from "@mui/icons-material/Delete";
 
 
-function LogSessions({logData}) {
+function LogSessions({sessions}) {
     const theme = useTheme()
     const styles = getStyles(theme)
     const [error, setError] = useState(null)
 
     if (error) return <div>{error}</div>
 
-
-    const [sessions, setSessions] = useState([])
-    const handleSessionsChange = (newSessions) => {
-        const sortedSessions = newSessions.sort((a, b) => new Date(b.session_date) - new Date(a.session_date))
-        setSessions(sortedSessions)
-    }
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/game-sessions/log/${logData.game_log_id}`)
-
-            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
-
-            const data = await response.json()
-
-            handleSessionsChange(data.data)
-        } catch (err) {
-            setSessions(null)
-        }
-    }
 
     function formatDate(date) {
         const d = new Date(date)
@@ -39,10 +19,6 @@ function LogSessions({logData}) {
         const year = d.getFullYear()
         return `${day}/${month}/${year}`
     }
-
-    useEffect(() => {
-        fetchData()
-    }, [logData]);
 
     return (
         <div style={styles.container}>

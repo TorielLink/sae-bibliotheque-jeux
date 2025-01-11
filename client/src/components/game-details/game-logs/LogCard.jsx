@@ -3,7 +3,7 @@ import {RadioGroup, Radio, FormControl, FormControlLabel, Tooltip, Icon} from "@
 import {useTheme} from "@mui/material/styles"
 import {BsController, BsJournal, BsJournalText} from "react-icons/bs";
 import {IoGameController} from "react-icons/io5";
-import {AccessTime, FormatListBulleted, Lock, LockOpen, OpenInBrowser} from "@mui/icons-material";
+import {AccessTime, CalendarMonth, FormatListBulleted, Lock, LockOpen, OpenInBrowser} from "@mui/icons-material";
 import * as FaIcons from "react-icons/fa";
 import * as SiIcons from "react-icons/si";
 import * as BsIcons from "react-icons/bs";
@@ -58,29 +58,40 @@ function LogCard({gameData, logData, logIndex}) {
         return <IconComponent style={styles.icon.inside}/>
     }
 
+    /*const [sessions, setSessions] = useState([])
+    const handleSessionsChange = (newSessions) => {
+        const sortedSessions = newSessions.sort((a, b) => new Date(b.session_date) - new Date(a.session_date))
+        setSessions(sortedSessions)
+    }
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-sessions/log/${logData.game_log_id}`)
+
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+
+            const data = await response.json()
+
+            handleSessionsChange(data.data)
+        } catch (err) {
+            setSessions(null)
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [logData]);
+    */
+
     return (
         <div style={styles.container}
              onMouseEnter={() => setIsCardHovered(true)}
              onMouseLeave={() => setIsCardHovered(false)}
         >
-            <img src={gameData.cover} style={styles.image}/>
-            <div style={{
-                ...styles.fixedInformations,
-                top: '1rem',
-                left: '1rem',
-            }}>
-                <div style={styles.logInformations}>
-                    <Icon style={styles.icon}>
-                        {
-                            logData.privacy.privacy_setting_id === 1 ? (
+            <div style={styles.background}></div>
+            {/*<img src={gameData.cover} style={styles.image}/>*/}
 
-                                <Lock style={styles.icon.inside}/>
-                            ) : (
-                                <LockOpen style={styles.icon.inside}/>
-                            )
-                        }
-                    </Icon>
-                </div>
+            <div style={styles.informations}>
                 <div onClick={handleNavigation}
                      onMouseEnter={() => setIsIconHovered(true)}
                      onMouseLeave={() => setIsIconHovered(false)}
@@ -93,12 +104,10 @@ function LogCard({gameData, logData, logIndex}) {
                          transform: isIconHovered ? 'scale(1.2)' : 'scale(1)',
                          transition: 'transform 0.1s',
                      }}>
-                    <Icon style={{...styles.icon, transform: "rotate(90deg)"}}>
+                    <Icon style={{...styles.icon}}>
                         <OpenInBrowser/>
                     </Icon>
                 </div>
-            </div>
-            <div style={styles.informations}>
                 <div style={styles.logInformations}>
                     <Icon style={styles.icon}>
                         <IoGameController style={styles.icon.inside}/>
@@ -118,14 +127,35 @@ function LogCard({gameData, logData, logIndex}) {
                         </Icon>
                         <p style={styles.label}>{getFormattedTime()}</p>
                     </div>
-                    <div style={styles.logInformations}>
-                        <Icon style={styles.icon}>
-                            {getPlatformIcon()}
-                        </Icon>
+
+                    <div style={{...styles.doubleContainer, gap: '1rem'}}>
+                        <div style={styles.logInformations}>
+                            <Icon style={styles.icon}>
+                                {
+                                    logData.privacy.privacy_setting_id === 1 ? (
+
+                                        <Lock style={styles.icon.inside}/>
+                                    ) : (
+                                        <LockOpen style={styles.icon.inside}/>
+                                    )
+                                }
+                            </Icon>
+                        </div>
+                        <div style={styles.logInformations}>
+                            <Icon style={styles.icon}>
+                                {getPlatformIcon()}
+                            </Icon>
+                        </div>
                     </div>
                 </div>
+                <div style={styles.logInformations}>
+                    <Icon style={styles.icon}>
+                        <CalendarMonth style={styles.icon.inside}/>
+                    </Icon>
+                    <p style={styles.label}>{logData.sessions.length} sessions</p>
+                </div>
                 <LogSessions
-                    logData={logData}
+                    sessions={logData.sessions}
                 />
             </div>
         </div>
@@ -140,9 +170,19 @@ const getStyles = (theme, gameData) => ({
         background: theme.palette.background.paper,
         boxShadow: `0 0 0.5rem ${theme.palette.colors.black}`,
         borderRadius: '1rem',
-        width: '35rem',
-        height: '20rem',
+        height: '33rem',
+        width: '25rem',
         overflow: 'hidden'
+    },
+    background: {
+        position: 'absolute',
+        backgroundImage: `url(${gameData.cover})`,
+        height: '33rem',
+        width: '25rem',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        filter: 'blur(4px)',
     },
     image: {
         position: 'relative',

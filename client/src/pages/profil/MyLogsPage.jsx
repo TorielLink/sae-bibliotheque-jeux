@@ -38,13 +38,15 @@ const MyLogsPage = () => {
 
             let data = await response.json()
             setLogs(data.data)
-            console.log(data.data)
             if (data.data.length !== 0) {
 
+                const logIds = []
                 const gameIds = []
                 data.data.forEach((log) => {
                     gameIds.push(log.igdb_game_id)
+                    logIds.push(log.game_log_id)
                 })
+
                 response = await fetch('http://localhost:8080/games/specific', {
                     method: 'POST',
                     headers: {
@@ -57,8 +59,22 @@ const MyLogsPage = () => {
 
                 data = await response.json()
                 setGames(data)
+
+                response = await fetch('http://localhost:8080/game-sessions/logs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        logIds: logIds,
+                    }),
+                })
+
+                data = await response.json()
+                setSessions(data.data)
             } else {
                 setGames([])
+                setSessions([])
             }
             setLoading(false)
         } catch (e) {
@@ -69,6 +85,7 @@ const MyLogsPage = () => {
     const userId = user?.id
     const [logs, setLogs] = useState([])
     const [games, setGames] = useState([])
+    const [sessions, setSessions] = useState([])
 
     function handleLogsChange(logs, resetSorting) {
         setLogs(logs)
@@ -77,16 +94,22 @@ const MyLogsPage = () => {
 
     function sortLogs(logs, sortingOption, sortingOrder) {
         const selectedOption = sortingOptions[sortingOption];
+        console.log(selectedOption?.mainId)
 
         const sortedLogs = [...logs].sort((a, b) => {
             const aValue =
-                selectedOption?.secondaryId
-                    ? a[selectedOption.mainId][selectedOption.secondaryId]
-                    : a[selectedOption.mainId]
+                selectedOption?.mainId === "latest_session_date"
+                    ? new Date(a[selectedOption.mainId])
+                    : selectedOption?.secondaryId
+                        ? a[selectedOption.mainId][selectedOption.secondaryId]
+                        : a[selectedOption.mainId]
+
             const bValue =
-                selectedOption?.secondaryId
-                    ? b[selectedOption.mainId][selectedOption.secondaryId]
-                    : b[selectedOption.mainId]
+                selectedOption?.mainId === "latest_session_date"
+                    ? new Date(b[selectedOption.mainId])
+                    : selectedOption?.secondaryId
+                        ? b[selectedOption.mainId][selectedOption.secondaryId]
+                        : b[selectedOption.mainId]
 
             if (aValue < bValue) return sortingOrder ? -1 : 1
             if (aValue > bValue) return sortingOrder ? 1 : -1
@@ -112,21 +135,36 @@ const MyLogsPage = () => {
                 if (game.id === log.igdb_game_id)
                     gameName = game.name
             })
+
+            let logSessions = []
+            sessions.forEach((session) => {
+                if (session.game_log_id === log.game_log_id)
+                    logSessions.push(session)
+            })
+
+            const latestSessionDate = logSessions.reduce((latest, session) => {
+                const sessionDate = new Date(session.session_date)
+                return sessionDate > latest ? sessionDate : latest
+            }, new Date(0))
+
             const betterLog = {
                 ...log,
-                game_name: gameName
+                game_name: gameName,
+                sessions: logSessions,
+                latest_session_date: latestSessionDate.toISOString(),
             }
             return betterLog
         })
         handleLogsChange(betterLogs)
-    }, [games])
+    }, [games, sessions])
 
 
     const sortingOptions = [
-        // "Sessions",
-        {label: "Jeux", mainId: "game_name"},
+        {label: "Jeu", mainId: "game_name"},
         {label: "Temps de jeu", mainId: "time_played"},
-        {label: "Plateformes", mainId: "platform", secondaryId: 'platform_id'},
+        {label: "Plateforme", mainId: "platform", secondaryId: 'platform_id'},
+        {label: "Denière session", mainId: "latest_session_date"},
+        {label: "Nombre de session", mainId: "sessions", secondaryId: "length"},
     ]
 
     const [sortingOption, setSortingOption] = useState(0)
