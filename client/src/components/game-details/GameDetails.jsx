@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { useTheme } from "@mui/material/styles";
-import { CalendarToday, ChildCare, SportsEsports } from '@mui/icons-material';
+import React, {useContext} from 'react';
+import {useTheme} from "@mui/material/styles";
+import {CalendarToday, ChildCare, SportsEsports} from '@mui/icons-material';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
-import { useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
+import {useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AuthContext } from "../AuthContext.jsx";
+import {AuthContext} from "../AuthContext.jsx";
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import GameList from "../GameList.jsx";
 import GameCard from "../GameCard.jsx";
@@ -16,12 +16,14 @@ import GameCard from "../GameCard.jsx";
  * - Mettre en forme les informations dans les blocs (commencé)
  * - Limiter la taille des blocs (overflow: hidden)
  */
-const GameDetails = ({name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
+const GameDetails = ({
+                         name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
-                         parentGame, similarGames}) => {
+                         parentGame, similarGames
+                     }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    const { isAuthenticated } = useContext(AuthContext);
+    const {isAuthenticated} = useContext(AuthContext);
     const styles = getStyles(theme, isMobile);
 
     return (
@@ -39,10 +41,10 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                 {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
                 <div style={styles.rightSection}>
-                    {!isMobile && (<GameDetailsNavBar activeSection={"details"} />)}
+                    {!isMobile && (<GameDetailsNavBar activeSection={"details"}/>)}
 
                     {/* Boutons d'actions rapides */}
-                    { !isMobile && isAuthenticated && (
+                    {!isMobile && isAuthenticated && (
                         <div style={styles.quickActions}>
                             <button
                                 style={{...styles.quickActionButton, ...styles.reviewButton}}
@@ -97,19 +99,23 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                             {/* Détails et Notes */}
                             <div style={styles.detailsAndNotes}>
                                 {/* Détails */}
-                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['purple-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['purple-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Détails</h2>
                                     <ul style={styles.detailsList}>
                                         <li><SportsEsports style={styles.icon}/> {name || "Non disponible"}</li>
                                         <li><CalendarToday style={styles.icon}/> {
                                             releaseDate ? new Date(releaseDate * 1000).toLocaleDateString() :
                                                 "Non disponible"}</li>
-                                        <li><ChildCare style={styles.icon} /> {ageRating || "Non précisé"}</li>
+                                        <li><ChildCare style={styles.icon}/> {ageRating || "Non précisé"}</li>
                                     </ul>
                                 </div>
 
                                 {/* Notes */}
-                                <div style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
+                                <div
+                                    style={{...styles.box, backgroundColor: theme.palette.transparentColors['red-50']}}>
                                     <h2 style={styles.categoryHeader}>Note</h2>
                                     <div style={styles.ratings}>
                                         {isMobile ? (
@@ -119,16 +125,16 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                                                         {"-"}
                                                     </div>
                                                     <div style={styles.icon}>
-                                                        <PersonIcon style={{ fontSize: "1.5rem" }} />
+                                                        <PersonIcon style={{fontSize: "1.5rem"}}/>
                                                     </div>
                                                 </div>
                                                 {/* Note des joueurs - Mobile */}
                                                 <div style={styles.ratingItem}>
                                                     <div style={styles.ratingValue}>
-                                                        {rating ? `${rating}` : "-"}
+                                                        {rating ? `${Math.round(rating * 100.0) / 100.0}` : "-"}
                                                     </div>
                                                     <div style={styles.icon}>
-                                                        <GroupIcon style={{ fontSize: "1.5rem" }} />
+                                                        <GroupIcon style={{fontSize: "1.5rem"}}/>
                                                     </div>
                                                 </div>
                                             </>
@@ -140,7 +146,8 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                                                 </div>
                                                 <div style={styles.ratingItem}>
                                                     <strong>Note des joueurs</strong>
-                                                    <div style={styles.ratingValue}>{rating ? `${rating}` : "-"}</div>
+                                                    <div
+                                                        style={styles.ratingValue}>{rating ? `${Math.round(rating * 100.0) / 100.0}` : "-"}</div>
                                                 </div>
                                             </>
                                         )}
@@ -150,15 +157,19 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                             {/* Synopsis ou Description */}
                             {(detailedSynopsis && detailedSynopsis.trim() !== "") ? (
-                                <div style={{...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['yellow-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['yellow-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Synopsis</h2>
                                     <p style={styles.synopsisText}>{detailedSynopsis}</p>
                                 </div>
                             ) : (
                                 description && (
-                                    <div style={{...styles.box,
-                                        backgroundColor: theme.palette.transparentColors['yellow-50']}}>
+                                    <div style={{
+                                        ...styles.box,
+                                        backgroundColor: theme.palette.transparentColors['yellow-50']
+                                    }}>
                                         <h2 style={styles.categoryHeader}>Résumé</h2>
                                         <p style={styles.synopsisText}>{description}</p>
                                     </div>
@@ -170,8 +181,10 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                         <div style={styles.platformsAndGenres}>
                             {/* Plateformes */}
                             {platforms && platforms.length > 0 && (
-                                <div style={{...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['green-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['green-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Plateformes</h2>
                                     <ul style={styles.platformList}>
                                         {platforms.map((platform) => (
@@ -185,8 +198,10 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                             {/* Genres */}
                             {genres && genres.length > 0 && (
-                                <div style={{...styles.box,
-                                    backgroundColor: theme.palette.transparentColors['blue-50']}}>
+                                <div style={{
+                                    ...styles.box,
+                                    backgroundColor: theme.palette.transparentColors['blue-50']
+                                }}>
                                     <h2 style={styles.categoryHeader}>Genres</h2>
                                     <ul style={styles.genreList}>
                                         {genres.map((genre) => (
@@ -203,69 +218,69 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
             </div>
 
             {/*Listes des jeux similiares, extensions, etc.*/}
-            { isMobile ? (
+            {isMobile ? (
                 <>
-                    { dlcs && dlcs.length > 0 && (
+                    {dlcs && dlcs.length > 0 && (
                         <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="dlc-header">
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>} id="dlc-header">
                                 <Typography>DLC ({dlcs.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <GameList title="DLC" games={dlcs} />
+                                <GameList title="DLC" games={dlcs}/>
                             </AccordionDetails>
                         </Accordion>
                     )}
-                    { expansions && expansions.length > 0 && (
+                    {expansions && expansions.length > 0 && (
                         <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} id="expansions-header">
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>} id="expansions-header">
                                 <Typography>Extensions ({expansions.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <GameList title="Extensions" games={expansions} />
+                                <GameList title="Extensions" games={expansions}/>
                             </AccordionDetails>
                         </Accordion>
                     )}
-                    { remakes && remakes.length > 0 && (
+                    {remakes && remakes.length > 0 && (
                         <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remakes-header">
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>} id="remakes-header">
                                 <Typography>Remakes ({remakes.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <GameList title="Remakes" games={remakes} />
+                                <GameList title="Remakes" games={remakes}/>
                             </AccordionDetails>
                         </Accordion>
                     )}
-                    { remasters && remasters.length > 0 && (
+                    {remasters && remasters.length > 0 && (
                         <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="remasters-header">
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>} id="remasters-header">
                                 <Typography>Remasters ({remasters.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <GameList title="Remasters" games={remasters} />
+                                <GameList title="Remasters" games={remasters}/>
                             </AccordionDetails>
                         </Accordion>
                     )}
-                    { standaloneExpansions && standaloneExpansions.length > 0 && (
+                    {standaloneExpansions && standaloneExpansions.length > 0 && (
                         <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="standalone-expansions-header">
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>} id="standalone-expansions-header">
                                 <Typography>Standalones ({standaloneExpansions.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <GameList title="Standalones" games={standaloneExpansions} />
+                                <GameList title="Standalones" games={standaloneExpansions}/>
                             </AccordionDetails>
                         </Accordion>
                     )}
-                    { franchises && franchises.length > 0 && (
+                    {franchises && franchises.length > 0 && (
                         <Accordion style={{width: "100%"}}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="franchises-header">
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>} id="franchises-header">
                                 <Typography>Franchise - {franchises[0].name} ({franchises[0].games.length})</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <GameList title="Franchise" games={franchises[0].games} />
+                                <GameList title="Franchise" games={franchises[0].games}/>
                             </AccordionDetails>
                         </Accordion>
                     )}
-                    { parentGame && (
+                    {parentGame && (
                         <GameCard
                             id={parentGame.id}
                             image={parentGame.cover}
@@ -274,28 +289,28 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                             categories={parentGame.genres}
                         />
                     )}
-                     { similarGames && similarGames.length > 0 && (
-                         <Accordion style={{width: "100%"}}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />} id="similar-games-header">
+                    {similarGames && similarGames.length > 0 && (
+                        <Accordion style={{width: "100%"}}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon/>} id="similar-games-header">
                                 <Typography>Jeux similaires</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <GameList title="Jeux Similaires" games={similarGames} />
+                                <GameList title="Jeux Similaires" games={similarGames}/>
                             </AccordionDetails>
                         </Accordion>
                     )}
                 </>
             ) : (
                 <>
-                    { dlcs && dlcs.length > 0 && (<GameList title="DLC" games={dlcs} />)}
-                    { expansions && expansions.length > 0 && (<GameList title="Extensions" games={expansions} />)}
-                    { remakes && remakes.length > 0 && (<GameList title="Remakes" games={remakes} />)}
-                    { remasters && remasters.length > 0 && (<GameList title="Remasters" games={remasters} />)}
-                    { standaloneExpansions && standaloneExpansions.length > 0 && (
-                        <GameList title="Standalones" games={standaloneExpansions} />)}
-                    { franchises && franchises.length > 0 && (
-                        <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games} />)}
-                    { parentGame && (
+                    {dlcs && dlcs.length > 0 && (<GameList title="DLC" games={dlcs}/>)}
+                    {expansions && expansions.length > 0 && (<GameList title="Extensions" games={expansions}/>)}
+                    {remakes && remakes.length > 0 && (<GameList title="Remakes" games={remakes}/>)}
+                    {remasters && remasters.length > 0 && (<GameList title="Remasters" games={remasters}/>)}
+                    {standaloneExpansions && standaloneExpansions.length > 0 && (
+                        <GameList title="Standalones" games={standaloneExpansions}/>)}
+                    {franchises && franchises.length > 0 && (
+                        <GameList title={"Franchise - " + franchises[0].name} games={franchises[0].games}/>)}
+                    {parentGame && (
                         <GameCard
                             id={parentGame.id}
                             image={parentGame.cover}
@@ -303,8 +318,8 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                             rating={parentGame.aggregated_rating}
                             categories={parentGame.genres}
                         />)}
-                    { similarGames && similarGames.length > 0 && (
-                        <GameList title= "Jeux similaires" games={similarGames} />)}
+                    {similarGames && similarGames.length > 0 && (
+                        <GameList title="Jeux similaires" games={similarGames}/>)}
                 </>
             )}
         </div>

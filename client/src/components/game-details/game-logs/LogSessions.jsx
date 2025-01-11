@@ -62,7 +62,8 @@ const getStyles = (theme) => ({
     },
     title: {
         margin: '0.2rem 0 0 0',
-        width: '100%'
+        width: '100%',
+        fontWeight:'normal'
     },
 })
 

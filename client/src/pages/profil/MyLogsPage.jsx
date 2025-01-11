@@ -371,7 +371,7 @@ const getStyles = (theme, isMobile) => ({
     sortingOptionSelector: {
         boxShadow: `0 0 0.25em${theme.palette.colors.black}`,
         borderRadius: '1rem',
-        background: theme.palette.background.default,
+        background: theme.palette.background.paper,
         fontSize: "large"
     },
     sortingButton: {

@@ -27,6 +27,8 @@ function Navbar() {
     const [isSearchActive, setSearchActive] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [, setSelectedGame] = useState(null);
+    const [logoUrl, setLogoUrl] = useState('/images/light-logo.png')
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -104,7 +106,7 @@ function Navbar() {
                         sx={{ marginRight: isMobile ? 0.5 : 1 }}
                     >
                         <img
-                            src={theme.palette.logo}
+                            src={logoUrl}
                             alt="logo"
                             style={{
                                 width: isMobile ? '60px' : '120px',
@@ -210,6 +212,7 @@ function Navbar() {
                                     fontSize: isMobile ? '20px' : '32px',
                                     color: theme.palette.text.primary,
                                 }}
+                                onClick={() => {setLogoUrl('/images/dark-logo.png')}}
                             />
                         ) : (
                             <LightModeIcon
@@ -217,6 +220,7 @@ function Navbar() {
                                     fontSize: isMobile ? '20px' : '32px',
                                     color: theme.palette.colors.yellow,
                                 }}
+                                onClick={() => {setLogoUrl('/images/light-logo.png')}}
                             />
                         )}
                     </IconButton>
