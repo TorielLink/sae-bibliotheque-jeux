@@ -39,16 +39,16 @@ function GameLogSessions({log, sessions, currentSession, setCurrentSession, crea
 
     return (
         <div style={styles.container}>
+            <Button
+                variant="outlined"
+                size="large"
+                startIcon={<AddBox/>}
+                style={styles.newSession}
+                onClick={handleNewSessionClick}
+            >
+                Nouvelle session
+            </Button>
             <div style={styles.sessionsContainer}>
-                <Button
-                    variant="outlined"
-                    size="large"
-                    startIcon={<AddBox/>}
-                    style={styles.newSession}
-                    onClick={handleNewSessionClick}
-                >
-                    Nouvelle session
-                </Button>
                 {
                     sessions.map((session, index) => (
                         <div key={index} onClick={() => {
@@ -103,8 +103,7 @@ const getStyles = (theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem 0',
+        maxHeight: '100%',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
     },
@@ -116,12 +115,12 @@ const getStyles = (theme) => ({
         background: theme.palette.background.default,
         width: '100%',
         height: '3rem',
+        marginTop: '4rem',
         fontFamily: theme.typography.fontFamily,
         color: theme.palette.text.primary,
     },
     sessionsContainer: {
         borderColor: theme.palette.text.primary,
-        marginTop: '4rem',
         padding: '0',
         width: '100%',
         borderWidth: '0.1rem 0',
@@ -129,6 +128,7 @@ const getStyles = (theme) => ({
         borderRadius: '0',
         display: 'flex',
         flexDirection: 'column',
+        overflowY: 'scroll',
     },
     session: {
         margin: '0',
@@ -137,16 +137,15 @@ const getStyles = (theme) => ({
         borderStyle: 'solid',
         background: theme.palette.background.default,
         position: 'relative',
-        cursor: 'pointer'
+        cursor: 'pointer',
     },
     selectedSession: {
         position: 'relative',
         zIndex: 10,
-        width: '102%',
-        alignSelf: 'flex-start',
-        borderRadius: '0 0.25rem 0.25rem 0',
+        width: '100%',
+        background: theme.palette.background.paper,
         boxShadow: `0 0 0.25rem ${theme.palette.text.primary}`,
-        cursor: 'auto'
+        cursor: 'auto',
     },
     informations: {
         padding: '0.5rem 1rem',
@@ -154,7 +153,7 @@ const getStyles = (theme) => ({
     date: {
         fontSize: '0.8rem',
         margin: '0',
-        opacity:'70%'
+        opacity: '70%'
     },
     title: {
         margin: '0.2rem 0 0 0',
