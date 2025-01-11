@@ -101,7 +101,7 @@ class DataRetriever extends APIRequests {
                 releaseDate: game.first_release_date,
                 platforms: apiData.platforms,
                 ageRating: apiData.ageRating,
-                cover: apiData.cover,
+                cover: apiData?.cover || "https://placehold.co/1080x1920",
                 genres: apiData.genres,
                 screenshots: apiData.screenshots,
                 videos: apiData.videos,

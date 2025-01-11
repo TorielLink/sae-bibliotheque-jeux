@@ -41,8 +41,8 @@ function LogCard({gameData, logData, logIndex}) {
     const [isIconHovered, setIsIconHovered] = useState(false);
 
     function getFormattedTime() {
-        const hours = logData?.time_played % 60 || 0
-        const minutes = Math.floor(logData?.time_played / 60) || 0
+        const hours = Math.floor(logData?.time_played / 60) || 0
+        const minutes = logData?.time_played % 60 || 0
         return String(hours).padStart(2, '0') + "h" + String(minutes).padStart(2, '0')
     }
 

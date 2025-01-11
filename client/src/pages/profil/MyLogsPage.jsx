@@ -38,24 +38,28 @@ const MyLogsPage = () => {
 
             let data = await response.json()
             setLogs(data.data)
+            console.log(data.data)
+            if (data.data.length !== 0) {
 
-            const gameIds = []
-            data.data.forEach((log) => {
-                gameIds.push(log.igdb_game_id)
-            })
+                const gameIds = []
+                data.data.forEach((log) => {
+                    gameIds.push(log.igdb_game_id)
+                })
+                response = await fetch('http://localhost:8080/games/specific', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        gameIds: gameIds,
+                    }),
+                })
 
-            response = await fetch('http://localhost:8080/games/specific', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    gameIds: gameIds,
-                }),
-            })
-
-            data = await response.json()
-            setGames(data)
+                data = await response.json()
+                setGames(data)
+            } else {
+                setGames([])
+            }
             setLoading(false)
         } catch (e) {
             setError(e)
@@ -136,137 +140,152 @@ const MyLogsPage = () => {
     const viewModes = [
         // {label: "details", icon: <Window/>},
         // {label: "list", icon: <FormatListBulletedIcon/>},
-        {label: "grid", icon: <Window/>},
+        // {label: "grid", icon: <Window/>},
     ]
     const [viewMode, setViewMode] = useState(0)
 
     return (
-        !isAuthenticated ? (
-            <div style={{
-                textAlign: 'center'
-            }}>
-                <h1>Connectez-vous pour accéder à cette section</h1>
-            </div>
+        loading ? (
+            <Box
+                sx={{
+                    display: 'flex',
+                    flex: '1',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <CircularProgress/>
+            </Box>
+        ) : error ? (
+            <Box
+                sx={{
+                    display: 'flex',
+                    flex: '1',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <Typography color="error" style={styles.error}>Erreur</Typography>
+            </Box>
         ) : (
             <>
                 <Typography variant="subtitle2" style={styles.breadcrumb}>
                     Profil &gt; Journaux
                 </Typography>
+
                 <div style={styles.container}>
+                    <div style={styles.displayOptions}>
+                        <div style={styles.sortingOptions}>
+                            <Typography fontSize={"large"}>Trier par</Typography>
+                            <FormControl style={styles.sortingOptionForm}>
+                                <Select
+                                    style={styles.sortingOptionSelector}
+                                    id="sort-selector"
+                                    value={sortingOption}
+                                    size={"small"}
+                                    variant="outlined"
+                                    onChange={(e) => setSortingOption(e.target.value)}
+                                    sx={{
+                                        '& .MuiOutlinedInput-notchedOutline': {
+                                            border: 'none',
+                                        },
+                                    }}
+                                >
+                                    {
+                                        sortingOptions && sortingOptions.map((item, index) => (
+                                            <MenuItem key={index} value={index}>
+                                                {item.label}
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                            <IconButton
+                                disableTouchRipple
+                                onClick={(e) => setSortingOrder(!sortingOrder)}
+                                style={styles.sortingButton}
+                                sx={{
+                                    '&:hover': {
+                                        background: 'none',
+                                        transform: 'scale(1.2)',
+                                    },
+                                    '&:active': {
+                                        transform: 'scale(1)',
+                                    },
+                                }}
+                            >
+                                {sortingOrder ? (
+                                    <VerticalAlignBottom fontSize="large"></VerticalAlignBottom>
+                                ) : (
+                                    <VerticalAlignTop fontSize="large"></VerticalAlignTop>
+                                )}
+                            </IconButton>
+                        </div>
 
-                    {
-                        loading ? (
-                            <CircularProgress/>
-                        ) : error ? (
-                            <Typography color="error">Erreur</Typography>
-                        ) : (
-                            <>
-                                <div style={styles.displayOptions}>
-                                    <div style={styles.sortingOptions}>
-                                        <Typography fontSize={"large"}>Trier par</Typography>
-                                        <FormControl style={styles.sortingOptionForm}>
-                                            <Select
-                                                style={styles.sortingOptionSelector}
-                                                id="sort-selector"
-                                                value={sortingOption}
-                                                size={"small"}
-                                                variant="outlined"
-                                                onChange={(e) => setSortingOption(e.target.value)}
-                                                sx={{
-                                                    '& .MuiOutlinedInput-notchedOutline': {
-                                                        border: 'none',
-                                                    },
-                                                }}
-                                            >
-                                                {
-                                                    sortingOptions && sortingOptions.map((item, index) => (
-                                                        <MenuItem key={index} value={index}>
-                                                            {item.label}
-                                                        </MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </FormControl>
-                                        <IconButton
-                                            disableTouchRipple
-                                            onClick={(e) => setSortingOrder(!sortingOrder)}
-                                            style={styles.sortingButton}
-                                            sx={{
-                                                '&:hover': {
-                                                    background: 'none',
-                                                    transform: 'scale(1.2)',
-                                                },
-                                                '&:active': {
-                                                    transform: 'scale(1)',
-                                                },
-                                            }}
-                                        >
-                                            {sortingOrder ? (
-                                                <VerticalAlignBottom fontSize="large"></VerticalAlignBottom>
-                                            ) : (
-                                                <VerticalAlignTop fontSize="large"></VerticalAlignTop>
-                                            )}
-                                        </IconButton>
-                                    </div>
-
-                                    <div style={styles.viewModes}>
-                                        <RadioGroup
-                                            row
-                                            value={viewMode}
-                                            onChange={(event) => setViewMode(Number(event.target.value))}
-                                        >
-                                            <FormControl fullWidth>
-                                                {/*Utiliser le margin des FormControlLabel pour changer l'espacement*/}
-                                                <Grid2 container spacing={0} justifyContent="center">
-                                                    {viewModes.map((item, index) => {
-                                                        return (
-                                                            <Grid2 key={index}>
-                                                                <FormControlLabel
-                                                                    value={viewMode}
-                                                                    style={styles.viewModeControlLabel}
-                                                                    control={
-                                                                        <Radio
-                                                                            checkedIcon={item.icon}
-                                                                            icon={item.icon}
-                                                                            value={index}
-                                                                            checked={viewMode === index}
-                                                                            disableTouchRipple
-                                                                            style={styles.viewModeButton}
-                                                                            sx={{
-                                                                                borderRadius: `${index === 0 ? '1rem 0rem 0rem 1rem' : index === viewModes.length - 1 ? '0rem 1rem 1rem 0rem' : '0'}`,
-                                                                                '&.Mui-checked': {
-                                                                                    background: theme.palette.background.default,
-                                                                                }
-                                                                            }}
-                                                                        />
+                        <div style={styles.viewModes}>
+                            <RadioGroup
+                                row
+                                value={viewMode}
+                                onChange={(event) => setViewMode(Number(event.target.value))}
+                            >
+                                <FormControl fullWidth>
+                                    {/*Utiliser le margin des FormControlLabel pour changer l'espacement*/}
+                                    <Grid2 container spacing={0} justifyContent="center">
+                                        {viewModes.map((item, index) => {
+                                            return (
+                                                <Grid2 key={index}>
+                                                    <FormControlLabel
+                                                        value={viewMode}
+                                                        style={styles.viewModeControlLabel}
+                                                        control={
+                                                            <Radio
+                                                                checkedIcon={item.icon}
+                                                                icon={item.icon}
+                                                                value={index}
+                                                                checked={viewMode === index}
+                                                                disableTouchRipple
+                                                                style={styles.viewModeButton}
+                                                                sx={{
+                                                                    borderRadius: `${index === 0 ? '1rem 0rem 0rem 1rem' : index === viewModes.length - 1 ? '0rem 1rem 1rem 0rem' : '0'}`,
+                                                                    '&.Mui-checked': {
+                                                                        background: theme.palette.background.default,
                                                                     }
-                                                                />
-                                                            </Grid2>
-                                                        )
-                                                    })}
+                                                                }}
+                                                            />
+                                                        }
+                                                    />
                                                 </Grid2>
-                                            </FormControl>
-                                        </RadioGroup>
-                                    </div>
-                                </div>
-                                <div style={styles.logsContainer}>
-                                    <Grid2 container spacing={'2rem'} justifyContent="center">
-                                        {logs.map((item, index) => {
-                                                return (
-                                                    <Box key={index}>
-                                                        <LogCard
-                                                            gameData={games.find((game) => game.id === item.igdb_game_id)}
-                                                            logData={item}
-                                                            logIndex={index}
-                                                        />
-                                                    </Box>
-                                                )
-                                            }
-                                        )}
+                                            )
+                                        })}
                                     </Grid2>
-                                </div>
-                            </>
-                        )}
+                                </FormControl>
+                            </RadioGroup>
+                        </div>
+                    </div>
+
+                    <div style={styles.logsContainer}>
+                        {
+                            logs.length == 0 ? (
+                                <Typography style={styles.noLogs}>Vous n'avez aucun journal. Allez sur la page d'un jeu
+                                    afin
+                                    d'en créer un.</Typography>
+                            ) : (
+                                <Grid2 container spacing={'2rem'} justifyContent="center">
+                                    {logs.map((item, index) => {
+                                            return (
+                                                <Box key={index}>
+                                                    <LogCard
+                                                        gameData={games.find((game) => game.id === item.igdb_game_id)}
+                                                        logData={item}
+                                                        logIndex={index}
+                                                    />
+                                                </Box>
+                                            )
+                                        }
+                                    )}
+                                </Grid2>)
+                        }
+                    < /div>
                 </div>
             </>
         )
@@ -280,9 +299,21 @@ const getStyles = (theme, isMobile) => ({
         font: 'Inter',
         fontSize: isMobile ? "0.9em" : "1em",
     },
+    error: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: '4rem',
+    },
+    noLogs: {
+        flex: '1',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: '2rem',
+    },
     container: {
         paddingBlock: '2.5rem',
         paddingInline: '5rem',
+        flex: '1'
     },
     displayOptions: {
         display: 'flex',

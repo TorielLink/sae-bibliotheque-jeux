@@ -265,7 +265,15 @@ const MyListsPage = () => {
                 }}
             >
                 {loading ? (
-                    <CircularProgress/>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <CircularProgress/>
+                    </Box>
                 ) : error ? (
                     <Typography color="error">Erreur: {error}</Typography>
                 ) : (

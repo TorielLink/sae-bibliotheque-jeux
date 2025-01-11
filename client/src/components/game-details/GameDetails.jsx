@@ -31,7 +31,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
                 {/* Section gauche : Couverture du jeu */}
                 <div style={styles.leftSection}>
                     <img
-                        src={coverImage || 'https://via.placeholder.com/300x400'}
+                        src={coverImage}
                         alt={`${name} cover`}
                         style={styles.coverImage}
                     />
@@ -39,7 +39,7 @@ const GameDetails = ({name, description, releaseDate, ageRating, rating, detaile
 
                 {/* Section droite : Détails, Notes, Synopsis / Description, Plateformes, Genres  */}
                 <div style={styles.rightSection}>
-                    { !isMobile && (<GameDetailsNavBar activeSection={"details"} />)}
+                    {!isMobile && (<GameDetailsNavBar activeSection={"details"} />)}
 
                     {/* Boutons d'actions rapides */}
                     { !isMobile && isAuthenticated && (

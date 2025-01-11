@@ -21,6 +21,7 @@ function LogSessions({logData}) {
     const fetchData = async () => {
         try {
             const response = await fetch(`http://localhost:8080/game-sessions/log/${logData.game_log_id}`)
+
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
             const data = await response.json()
@@ -41,7 +42,7 @@ function LogSessions({logData}) {
 
     useEffect(() => {
         fetchData()
-    }, []);
+    }, [logData]);
 
     return (
         <div style={styles.container}>

@@ -42,9 +42,6 @@ controller.getByUserId = async (req, res) => {
             ],
             attributes: ['game_log_id', 'igdb_game_id', 'time_played'],
         })
-        if (logs.length === 0) {
-            return res.status(404).json({message: 'No game logs found for this user'})
-        }
         res.status(200).json({message: 'Game logs fetched successfully', data: logs})
     } catch (error) {
         console.error('Error fetching game logs for user:', error)
