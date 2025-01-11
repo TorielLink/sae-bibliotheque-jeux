@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from "react"
-import {Tooltip, Icon} from "@mui/material"
+import {Tooltip, Icon, useMediaQuery} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {IoGameController} from "react-icons/io5";
 import {AccessTime, CalendarMonth, Lock, LockOpen, OpenInBrowser} from "@mui/icons-material";
@@ -12,19 +12,21 @@ import LogSessions from "./LogSessions.jsx";
 import {useNavigate} from "react-router-dom";
 
 
-function LogCard({gameData, logData}) {
+function LogCard({logData}) {
     const theme = useTheme()
-    const styles = getStyles(theme, gameData)
+    const styles = getStyles(theme, logData)
     const navigate = useNavigate();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
     const textRef = useRef(null);
     const [isNameHidden, setIsNameHidden] = useState(false);
+
     useEffect(() => {
         if (textRef.current) {
             const element = textRef.current;
             setIsNameHidden(element.scrollWidth > element.clientWidth);
         }
-    }, [gameData.name]);
+    }, []);
 
     const [isCardHovered, setIsCardHovered] = useState(false);
 
@@ -52,35 +54,11 @@ function LogCard({gameData, logData}) {
         return <IconComponent style={styles.icon.inside}/>
     }
 
-    /*const [sessions, setSessions] = useState([])
-    const handleSessionsChange = (newSessions) => {
-        const sortedSessions = newSessions.sort((a, b) => new Date(b.session_date) - new Date(a.session_date))
-        setSessions(sortedSessions)
-    }
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/game-sessions/log/${logData.game_log_id}`)
-
-            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
-
-            const data = await response.json()
-
-            handleSessionsChange(data.data)
-        } catch (err) {
-            setSessions(null)
-        }
-    }
-
-    useEffect(() => {
-        fetchData()
-    }, [logData]);
-    */
-
     return (
         <div style={styles.container}
              onMouseEnter={() => setIsCardHovered(true)}
              onMouseLeave={() => setIsCardHovered(false)}
+             onClick={() => isMobile ? handleNavigation() : undefined}
         >
             <div style={styles.background}></div>
 
@@ -90,7 +68,7 @@ function LogCard({gameData, logData}) {
                      onMouseLeave={() => setIsIconHovered(false)}
                      style={{
                          ...styles.logInformations,
-                         display: isCardHovered ? 'flex' : 'none',
+                         display: isCardHovered ? (isMobile ? 'none' : 'flex') : 'none',
                          alignItems: 'center',
                          justifyContent: 'center',
                          cursor: 'pointer',
@@ -102,16 +80,17 @@ function LogCard({gameData, logData}) {
                     </Icon>
                     <p style={styles.label}>Aller au jeu</p>
                 </div>
+
                 <div style={styles.logInformations}>
                     <Icon style={styles.icon}>
                         <IoGameController style={styles.icon.inside}/>
                     </Icon>
                     {isNameHidden ? (
-                        <Tooltip title={gameData.name} arrow>
-                            <p ref={textRef} style={styles.label}>{gameData.name}</p>
+                        <Tooltip title={logData.game_name} arrow>
+                            <p ref={textRef} style={styles.label}>{logData.game_name}</p>
                         </Tooltip>
                     ) : (
-                        <p ref={textRef} style={styles.label}>{gameData.name}</p>
+                        <p ref={textRef} style={styles.label}>{logData.game_name}</p>
                     )}
                 </div>
                 <div style={styles.doubleContainer}>
@@ -121,32 +100,32 @@ function LogCard({gameData, logData}) {
                         </Icon>
                         <p style={styles.label}>{getFormattedTime()}</p>
                     </div>
+                    <div style={styles.logInformations}>
+                        <Icon style={styles.icon}>
+                            {
+                                logData.privacy.privacy_setting_id === 1 ? (
 
-                    <div style={{...styles.doubleContainer, gap: '1rem'}}>
-                        <div style={styles.logInformations}>
-                            <Icon style={styles.icon}>
-                                {
-                                    logData.privacy.privacy_setting_id === 1 ? (
-
-                                        <Lock style={styles.icon.inside}/>
-                                    ) : (
-                                        <LockOpen style={styles.icon.inside}/>
-                                    )
-                                }
-                            </Icon>
-                        </div>
-                        <div style={styles.logInformations}>
-                            <Icon style={styles.icon}>
-                                {getPlatformIcon()}
-                            </Icon>
-                        </div>
+                                    <Lock style={styles.icon.inside}/>
+                                ) : (
+                                    <LockOpen style={styles.icon.inside}/>
+                                )
+                            }
+                        </Icon>
                     </div>
                 </div>
-                <div style={styles.logInformations}>
-                    <Icon style={styles.icon}>
-                        <CalendarMonth style={styles.icon.inside}/>
-                    </Icon>
-                    <p style={styles.label}>{logData.sessions.length} sessions</p>
+                <div style={styles.doubleContainer}>
+                    <div style={styles.logInformations}>
+                        <Icon style={styles.icon}>
+                            <CalendarMonth style={styles.icon.inside}/>
+                        </Icon>
+                        <p style={styles.label}>{logData.sessions.length} sessions</p>
+                    </div>
+
+                    <div style={styles.logInformations}>
+                        <Icon style={styles.icon}>
+                            {getPlatformIcon()}
+                        </Icon>
+                    </div>
                 </div>
                 <LogSessions
                     sessions={logData.sessions}
@@ -156,7 +135,7 @@ function LogCard({gameData, logData}) {
     )
 }
 
-const getStyles = (theme, gameData) => ({
+const getStyles = (theme, logData) => ({
     container: {
         position: 'relative',
         display: 'flex',
@@ -170,7 +149,7 @@ const getStyles = (theme, gameData) => ({
     },
     background: {
         position: 'absolute',
-        backgroundImage: `url(${gameData.cover})`,
+        backgroundImage: `url(${logData.game_cover})`,
         height: '33rem',
         width: '25rem',
         backgroundSize: 'cover',

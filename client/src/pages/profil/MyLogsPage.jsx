@@ -4,12 +4,9 @@ import {
     Box,
     CircularProgress,
     FormControl,
-    FormControlLabel,
     Grid2,
     IconButton,
     MenuItem,
-    Radio,
-    RadioGroup,
     Select,
     Typography,
     useMediaQuery
@@ -28,15 +25,12 @@ const MyLogsPage = () => {
     const styles = getStyles(theme, isMobile)
 
     const [logs, setLogs] = useState([])
-    const [games, setGames] = useState([])
-    const [sessions, setSessions] = useState([])
 
     useEffect(() => {
         setError(null)
     }, [logs]);
 
     async function fetchData() {
-        console.log("--------------------------RELOAD--------------------------")
         try {
             setLoading(true)
             let response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`)
@@ -65,8 +59,7 @@ const MyLogsPage = () => {
                 })
 
                 data = await response.json()
-                const tempGames = data
-                setGames(tempGames)
+                const games = data
 
                 response = await fetch('http://localhost:8080/game-sessions/logs', {
                     method: 'POST',
@@ -79,11 +72,8 @@ const MyLogsPage = () => {
                 })
 
                 data = await response.json()
-                const tempSessions = data.data
-                sortLogs(enhanceLogs(tempLogs, tempGames, tempSessions), 0, false)
-            } else {
-                setGames([])
-                setSessions([])
+                const sessions = data.data
+                sortLogs(enhanceLogs(tempLogs, games, sessions), 0, false)
             }
             setLoading(false)
         } catch (e) {
@@ -92,11 +82,13 @@ const MyLogsPage = () => {
     }
 
     function enhanceLogs(logs, games, sessions) {
-        const enhancedLogs = logs.map((log) => {
-            let gameName;
+        return logs.map((log) => {
+            let gameName, gameCover;
             games.forEach((game) => {
-                if (game.id === log.igdb_game_id)
+                if (game.id === log.igdb_game_id) {
                     gameName = game.name
+                    gameCover = game.cover
+                }
             })
 
             let logSessions = []
@@ -113,14 +105,14 @@ const MyLogsPage = () => {
             return {
                 ...log,
                 game_name: gameName,
+                game_cover: gameCover,
                 sessions: logSessions,
                 latest_session_date: latestSessionDate.toISOString(),
             }
         })
-        return enhancedLogs
     }
 
-    function sortLogs(logs, sortingOption, sortingOrder, returns) {
+    function sortLogs(logs, sortingOption, sortingOrder) {
         const selectedOption = sortingOptions[sortingOption];
 
         const sortedLogs = [...logs].sort((a, b) => {
@@ -181,13 +173,6 @@ const MyLogsPage = () => {
         sortLogs(logs, sortingOption, sortingOrder)
     }, [sortingOption, sortingOrder])
 
-    const viewModes = [
-        // {label: "details", icon: <Window/>},
-        // {label: "list", icon: <FormatListBulletedIcon/>},
-        // {label: "grid", icon: <Window/>},
-    ]
-    const [viewMode, setViewMode] = useState(0)
-
     return (
         loading ? (
             <Box
@@ -218,10 +203,7 @@ const MyLogsPage = () => {
                 </Typography>
 
                 <div style={styles.container}>
-                    <div style={{
-                        ...styles.sortingOptions,
-                        // border: 'solid 1px red',
-                    }}>
+                    <div style={styles.sortingOptions}>
                         <Typography fontSize={"large"}>Trier par</Typography>
                         <FormControl style={styles.sortingOptionForm}>
                             <Select
@@ -267,48 +249,6 @@ const MyLogsPage = () => {
                             )}
                         </IconButton>
                     </div>
-                    {/*
-                    <div style={styles.viewModes}>
-                        <RadioGroup
-                            row
-                            value={viewMode}
-                            onChange={(event) => setViewMode(Number(event.target.value))}
-                        >
-                            <FormControl fullWidth>
-                                Utiliser le margin des FormControlLabel pour changer l'espacement
-                                <Grid2 container spacing={0} justifyContent="center">
-                                    {viewModes.map((item, index) => {
-                                        return (
-                                            <Grid2 key={index}>
-                                                <FormControlLabel
-                                                    value={viewMode}
-                                                    label={index}
-                                                    style={styles.viewModeControlLabel}
-                                                    control={
-                                                        <Radio
-                                                            checkedIcon={item.icon}
-                                                            icon={item.icon}
-                                                            value={index}
-                                                            checked={viewMode === index}
-                                                            disableTouchRipple
-                                                            style={styles.viewModeButton}
-                                                            sx={{
-                                                                borderRadius: `${index === 0 ? '1rem 0rem 0rem 1rem' : index === viewModes.length - 1 ? '0rem 1rem 1rem 0rem' : '0'}`,
-                                                                '&.Mui-checked': {
-                                                                    background: theme.palette.background.default,
-                                                                }
-                                                            }}
-                                                        />
-                                                    }
-                                                />
-                                            </Grid2>
-                                        )
-                                    })}
-                                </Grid2>
-                            </FormControl>
-                        </RadioGroup>
-                    </div>
-                    */}
 
                     <div style={styles.logsContainer}>
                         {
@@ -322,7 +262,6 @@ const MyLogsPage = () => {
                                             return (
                                                 <Box key={index}>
                                                     <LogCard
-                                                        gameData={games.find((game) => game.id === item.igdb_game_id)}
                                                         logData={item}
                                                     />
                                                 </Box>
@@ -359,18 +298,17 @@ const getStyles = (theme, isMobile) => ({
     },
     container: {
         paddingBlock: '2.5rem',
-        paddingInline: '5rem',
-        flex: '1'
-    },
-    displayOptions: {
+        paddingInline: isMobile ? '1rem' : '5rem',
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        flexDirection: 'column',
+        flex: '1'
     },
     sortingOptions: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'flex-start',
+        width: '100%',
         gap: '1rem',
     },
     sortingOptionForm: {
