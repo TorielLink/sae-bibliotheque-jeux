@@ -160,11 +160,11 @@ const MyLogsPage = () => {
 
 
     const sortingOptions = [
-        {label: "Jeu", mainId: "game_name"},
-        {label: "Temps de jeu", mainId: "time_played"},
-        {label: "Plateforme", mainId: "platform", secondaryId: 'platform_id'},
-        {label: "Denière session", mainId: "latest_session_date"},
-        {label: "Nombre de session", mainId: "sessions", secondaryId: "length"},
+        {label: "Jeu", defaultOrder: true, mainId: "game_name"},
+        {label: "Temps de jeu", defaultOrder: false, mainId: "time_played"},
+        {label: "Plateforme", defaultOrder: true, mainId: "platform", secondaryId: 'platform_id'},
+        {label: "Denière session", defaultOrder: false, mainId: "latest_session_date"},
+        {label: "Nombre de session", defaultOrder: false, mainId: "sessions", secondaryId: "length"},
     ]
 
     const [sortingOption, setSortingOption] = useState(0)
@@ -172,8 +172,12 @@ const MyLogsPage = () => {
     const [sortingOrder, setSortingOrder] = useState(true)
 
     useEffect(() => {
+        setSortingOrder(sortingOptions[sortingOption].defaultOrder)
+    }, [sortingOption])
+
+    useEffect(() => {
         sortLogs(logs, sortingOption, sortingOrder)
-    }, [sortingOption, sortingOrder])
+    }, [sortingOrder])
 
     const viewModes = [
         // {label: "details", icon: <Window/>},
