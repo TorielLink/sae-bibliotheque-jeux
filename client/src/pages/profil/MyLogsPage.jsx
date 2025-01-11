@@ -27,22 +27,32 @@ const MyLogsPage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile)
 
+    const [logs, setLogs] = useState([])
+    const [games, setGames] = useState([])
+    const [sessions, setSessions] = useState([])
+
+    useEffect(() => {
+        setError(null)
+    }, [logs]);
+
     async function fetchData() {
+        console.log("--------------------------RELOAD--------------------------")
         try {
             setLoading(true)
             let response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`)
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
             let data = await response.json()
-            setLogs(data.data)
-            if (data.data.length !== 0) {
+            const tempLogs = data.data
+            if (tempLogs.length !== 0) {
 
                 const logIds = []
                 const gameIds = []
-                data.data.forEach((log) => {
+                tempLogs.forEach((log) => {
                     gameIds.push(log.igdb_game_id)
                     logIds.push(log.game_log_id)
                 })
+
 
                 response = await fetch('http://localhost:8080/games/specific', {
                     method: 'POST',
@@ -55,7 +65,8 @@ const MyLogsPage = () => {
                 })
 
                 data = await response.json()
-                setGames(data)
+                const tempGames = data
+                setGames(tempGames)
 
                 response = await fetch('http://localhost:8080/game-sessions/logs', {
                     method: 'POST',
@@ -68,7 +79,8 @@ const MyLogsPage = () => {
                 })
 
                 data = await response.json()
-                setSessions(data.data)
+                const tempSessions = data.data
+                sortLogs(enhanceLogs(tempLogs, tempGames, tempSessions), 0, false)
             } else {
                 setGames([])
                 setSessions([])
@@ -79,18 +91,37 @@ const MyLogsPage = () => {
         }
     }
 
-    const [logs, setLogs] = useState([])
-    const [games, setGames] = useState([])
-    const [sessions, setSessions] = useState([])
+    function enhanceLogs(logs, games, sessions) {
+        const enhancedLogs = logs.map((log) => {
+            let gameName;
+            games.forEach((game) => {
+                if (game.id === log.igdb_game_id)
+                    gameName = game.name
+            })
 
-    function handleLogsChange(logs) {
-        setLogs(logs)
-        sortLogs(logs, 0, true)
+            let logSessions = []
+            sessions.forEach((session) => {
+                if (session.game_log_id === log.game_log_id)
+                    logSessions.push(session)
+            })
+
+            const latestSessionDate = logSessions.reduce((latest, session) => {
+                const sessionDate = new Date(session.session_date)
+                return sessionDate > latest ? sessionDate : latest
+            }, new Date(0))
+
+            return {
+                ...log,
+                game_name: gameName,
+                sessions: logSessions,
+                latest_session_date: latestSessionDate.toISOString(),
+            }
+        })
+        return enhancedLogs
     }
 
-    function sortLogs(logs, sortingOption, sortingOrder) {
+    function sortLogs(logs, sortingOption, sortingOrder, returns) {
         const selectedOption = sortingOptions[sortingOption];
-        console.log(selectedOption?.mainId)
 
         const sortedLogs = [...logs].sort((a, b) => {
             const aValue =
@@ -124,36 +155,6 @@ const MyLogsPage = () => {
         }
     }, [])
 
-    useEffect(() => {
-        const betterLogs = logs.map((log) => {
-            let gameName;
-            games.forEach((game) => {
-                if (game.id === log.igdb_game_id)
-                    gameName = game.name
-            })
-
-            let logSessions = []
-            sessions.forEach((session) => {
-                if (session.game_log_id === log.game_log_id)
-                    logSessions.push(session)
-            })
-
-            const latestSessionDate = logSessions.reduce((latest, session) => {
-                const sessionDate = new Date(session.session_date)
-                return sessionDate > latest ? sessionDate : latest
-            }, new Date(0))
-
-            return {
-                ...log,
-                game_name: gameName,
-                sessions: logSessions,
-                latest_session_date: latestSessionDate.toISOString(),
-            }
-        })
-        handleLogsChange(betterLogs)
-    }, [games, sessions])
-
-
     const sortingOptions = [
         {label: "Denière session", defaultOrder: false, mainId: "latest_session_date"},
         {label: "Nombre de session", defaultOrder: false, mainId: "sessions", secondaryId: "length"},
@@ -163,16 +164,22 @@ const MyLogsPage = () => {
     ]
 
     const [sortingOption, setSortingOption] = useState(0)
-    // true : ascendant - false : descendant
-    const [sortingOrder, setSortingOrder] = useState(true)
 
-    useEffect(() => {
-        setSortingOrder(sortingOptions[sortingOption].defaultOrder)
-    }, [sortingOption])
+    function handleSortingOptionChange(newValue) {
+        setSortingOption(newValue)
+        setSortingOrder(sortingOptions[newValue].defaultOrder)
+    }
+
+    // true : ascendant - false : descendant
+    const [sortingOrder, setSortingOrder] = useState(false)
+
+    function handleSortingOrderChange(newValue) {
+        setSortingOrder(newValue)
+    }
 
     useEffect(() => {
         sortLogs(logs, sortingOption, sortingOrder)
-    }, [sortingOrder])
+    }, [sortingOption, sortingOrder])
 
     const viewModes = [
         // {label: "details", icon: <Window/>},
@@ -211,95 +218,97 @@ const MyLogsPage = () => {
                 </Typography>
 
                 <div style={styles.container}>
-                    <div style={styles.displayOptions}>
-                        <div style={styles.sortingOptions}>
-                            <Typography fontSize={"large"}>Trier par</Typography>
-                            <FormControl style={styles.sortingOptionForm}>
-                                <Select
-                                    style={styles.sortingOptionSelector}
-                                    id="sort-selector"
-                                    value={sortingOption}
-                                    size={"small"}
-                                    variant="outlined"
-                                    onChange={(e) => setSortingOption(e.target.value)}
-                                    sx={{
-                                        '& .MuiOutlinedInput-notchedOutline': {
-                                            border: 'none',
-                                        },
-                                    }}
-                                >
-                                    {
-                                        sortingOptions && sortingOptions.map((item, index) => (
-                                            <MenuItem key={index} value={index}>
-                                                {item.label}
-                                            </MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            </FormControl>
-                            <IconButton
-                                disableTouchRipple
-                                onClick={() => setSortingOrder(!sortingOrder)}
-                                style={styles.sortingButton}
+                    <div style={{
+                        ...styles.sortingOptions,
+                        // border: 'solid 1px red',
+                    }}>
+                        <Typography fontSize={"large"}>Trier par</Typography>
+                        <FormControl style={styles.sortingOptionForm}>
+                            <Select
+                                style={styles.sortingOptionSelector}
+                                id="sort-selector"
+                                value={sortingOption}
+                                size={"small"}
+                                variant="outlined"
+                                onChange={(e) => handleSortingOptionChange(Number(e.target.value))}
                                 sx={{
-                                    '&:hover': {
-                                        background: 'none',
-                                        transform: 'scale(1.2)',
-                                    },
-                                    '&:active': {
-                                        transform: 'scale(1)',
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                        border: 'none',
                                     },
                                 }}
                             >
-                                {sortingOrder ? (
-                                    <VerticalAlignBottom fontSize="large"></VerticalAlignBottom>
-                                ) : (
-                                    <VerticalAlignTop fontSize="large"></VerticalAlignTop>
-                                )}
-                            </IconButton>
-                        </div>
-
-                        <div style={styles.viewModes}>
-                            <RadioGroup
-                                row
-                                value={viewMode}
-                                onChange={(event) => setViewMode(Number(event.target.value))}
-                            >
-                                <FormControl fullWidth>
-                                    {/*Utiliser le margin des FormControlLabel pour changer l'espacement*/}
-                                    <Grid2 container spacing={0} justifyContent="center">
-                                        {viewModes.map((item, index) => {
-                                            return (
-                                                <Grid2 key={index}>
-                                                    <FormControlLabel
-                                                        value={viewMode}
-                                                        label={index}
-                                                        style={styles.viewModeControlLabel}
-                                                        control={
-                                                            <Radio
-                                                                checkedIcon={item.icon}
-                                                                icon={item.icon}
-                                                                value={index}
-                                                                checked={viewMode === index}
-                                                                disableTouchRipple
-                                                                style={styles.viewModeButton}
-                                                                sx={{
-                                                                    borderRadius: `${index === 0 ? '1rem 0rem 0rem 1rem' : index === viewModes.length - 1 ? '0rem 1rem 1rem 0rem' : '0'}`,
-                                                                    '&.Mui-checked': {
-                                                                        background: theme.palette.background.default,
-                                                                    }
-                                                                }}
-                                                            />
-                                                        }
-                                                    />
-                                                </Grid2>
-                                            )
-                                        })}
-                                    </Grid2>
-                                </FormControl>
-                            </RadioGroup>
-                        </div>
+                                {
+                                    sortingOptions && sortingOptions.map((item, index) => (
+                                        <MenuItem key={index} value={index}>
+                                            {item.label}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                        <IconButton
+                            disableTouchRipple
+                            onClick={() => handleSortingOrderChange(!sortingOrder)}
+                            style={styles.sortingButton}
+                            sx={{
+                                '&:hover': {
+                                    background: 'none',
+                                    transform: 'scale(1.2)',
+                                },
+                                '&:active': {
+                                    transform: 'scale(1)',
+                                },
+                            }}
+                        >
+                            {sortingOrder ? (
+                                <VerticalAlignBottom fontSize="large"></VerticalAlignBottom>
+                            ) : (
+                                <VerticalAlignTop fontSize="large"></VerticalAlignTop>
+                            )}
+                        </IconButton>
                     </div>
+                    {/*
+                    <div style={styles.viewModes}>
+                        <RadioGroup
+                            row
+                            value={viewMode}
+                            onChange={(event) => setViewMode(Number(event.target.value))}
+                        >
+                            <FormControl fullWidth>
+                                Utiliser le margin des FormControlLabel pour changer l'espacement
+                                <Grid2 container spacing={0} justifyContent="center">
+                                    {viewModes.map((item, index) => {
+                                        return (
+                                            <Grid2 key={index}>
+                                                <FormControlLabel
+                                                    value={viewMode}
+                                                    label={index}
+                                                    style={styles.viewModeControlLabel}
+                                                    control={
+                                                        <Radio
+                                                            checkedIcon={item.icon}
+                                                            icon={item.icon}
+                                                            value={index}
+                                                            checked={viewMode === index}
+                                                            disableTouchRipple
+                                                            style={styles.viewModeButton}
+                                                            sx={{
+                                                                borderRadius: `${index === 0 ? '1rem 0rem 0rem 1rem' : index === viewModes.length - 1 ? '0rem 1rem 1rem 0rem' : '0'}`,
+                                                                '&.Mui-checked': {
+                                                                    background: theme.palette.background.default,
+                                                                }
+                                                            }}
+                                                        />
+                                                    }
+                                                />
+                                            </Grid2>
+                                        )
+                                    })}
+                                </Grid2>
+                            </FormControl>
+                        </RadioGroup>
+                    </div>
+                    */}
 
                     <div style={styles.logsContainer}>
                         {
@@ -323,6 +332,7 @@ const MyLogsPage = () => {
                                 </Grid2>)
                         }
                     < /div>
+
                 </div>
             </>
         )
