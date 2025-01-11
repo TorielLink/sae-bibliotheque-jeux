@@ -3,26 +3,23 @@ import {AuthContext} from '../../components/AuthContext.jsx';
 import {
     Box,
     CircularProgress,
-    FormControl, FormControlLabel,
+    FormControl,
+    FormControlLabel,
     Grid2,
     IconButton,
-    MenuItem, Paper, Radio, RadioGroup,
-    Select, Tooltip,
+    MenuItem,
+    Radio,
+    RadioGroup,
+    Select,
     Typography,
     useMediaQuery
 } from "@mui/material";
 import {useTheme} from "@mui/material/styles";
-import {Sort, VerticalAlignBottom, VerticalAlignTop, Window} from "@mui/icons-material";
-import * as FaIcons from "react-icons/fa";
-import * as SiIcons from "react-icons/si";
-import * as BsIcons from "react-icons/bs";
-import * as Io5Icons from "react-icons/io5";
-import * as PiIcons from "react-icons/pi";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import {VerticalAlignBottom, VerticalAlignTop} from "@mui/icons-material";
 import LogCard from "../../components/game-details/game-logs/LogCard.jsx";
 
 const MyLogsPage = () => {
-    const {isAuthenticated, user} = useContext(AuthContext)
+    const {user} = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
@@ -82,12 +79,11 @@ const MyLogsPage = () => {
         }
     }
 
-    const userId = user?.id
     const [logs, setLogs] = useState([])
     const [games, setGames] = useState([])
     const [sessions, setSessions] = useState([])
 
-    function handleLogsChange(logs, resetSorting) {
+    function handleLogsChange(logs) {
         setLogs(logs)
         sortLogs(logs, 0, true)
     }
@@ -123,7 +119,7 @@ const MyLogsPage = () => {
         try {
             fetchData()
         } catch (e) {
-            console.error('Erreur lors de la récupération des journaux :', err)
+            console.error('Erreur lors de la récupération des journaux :', e)
             setLoading(false)
         }
     }, [])
@@ -147,24 +143,23 @@ const MyLogsPage = () => {
                 return sessionDate > latest ? sessionDate : latest
             }, new Date(0))
 
-            const betterLog = {
+            return {
                 ...log,
                 game_name: gameName,
                 sessions: logSessions,
                 latest_session_date: latestSessionDate.toISOString(),
             }
-            return betterLog
         })
         handleLogsChange(betterLogs)
     }, [games, sessions])
 
 
     const sortingOptions = [
-        {label: "Jeu", defaultOrder: true, mainId: "game_name"},
-        {label: "Temps de jeu", defaultOrder: false, mainId: "time_played"},
-        {label: "Plateforme", defaultOrder: true, mainId: "platform", secondaryId: 'platform_id'},
         {label: "Denière session", defaultOrder: false, mainId: "latest_session_date"},
         {label: "Nombre de session", defaultOrder: false, mainId: "sessions", secondaryId: "length"},
+        {label: "Temps de jeu", defaultOrder: false, mainId: "time_played"},
+        {label: "Jeu", defaultOrder: true, mainId: "game_name"},
+        {label: "Plateforme", defaultOrder: true, mainId: "platform", secondaryId: 'platform_id'},
     ]
 
     const [sortingOption, setSortingOption] = useState(0)
@@ -244,7 +239,7 @@ const MyLogsPage = () => {
                             </FormControl>
                             <IconButton
                                 disableTouchRipple
-                                onClick={(e) => setSortingOrder(!sortingOrder)}
+                                onClick={() => setSortingOrder(!sortingOrder)}
                                 style={styles.sortingButton}
                                 sx={{
                                     '&:hover': {
@@ -278,6 +273,7 @@ const MyLogsPage = () => {
                                                 <Grid2 key={index}>
                                                     <FormControlLabel
                                                         value={viewMode}
+                                                        label={index}
                                                         style={styles.viewModeControlLabel}
                                                         control={
                                                             <Radio
@@ -307,7 +303,7 @@ const MyLogsPage = () => {
 
                     <div style={styles.logsContainer}>
                         {
-                            logs.length == 0 ? (
+                            logs.length === 0 ? (
                                 <Typography style={styles.noLogs}>Vous n'avez aucun journal. Allez sur la page d'un jeu
                                     afin
                                     d'en créer un.</Typography>
@@ -319,7 +315,6 @@ const MyLogsPage = () => {
                                                     <LogCard
                                                         gameData={games.find((game) => game.id === item.igdb_game_id)}
                                                         logData={item}
-                                                        logIndex={index}
                                                     />
                                                 </Box>
                                             )

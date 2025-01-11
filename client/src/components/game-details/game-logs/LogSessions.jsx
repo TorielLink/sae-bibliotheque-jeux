@@ -1,16 +1,9 @@
-import React, {useState, useEffect} from "react"
-import {RadioGroup, Radio, FormControl, FormControlLabel, Tooltip, Icon, IconButton} from "@mui/material"
+import React from "react"
 import {useTheme} from "@mui/material/styles"
-import DeleteIcon from "@mui/icons-material/Delete";
-
 
 function LogSessions({sessions}) {
     const theme = useTheme()
     const styles = getStyles(theme)
-    const [error, setError] = useState(null)
-
-    if (error) return <div>{error}</div>
-
 
     function formatDate(date) {
         const d = new Date(date)
@@ -63,7 +56,7 @@ const getStyles = (theme) => ({
     title: {
         margin: '0.2rem 0 0 0',
         width: '100%',
-        fontWeight:'normal'
+        fontWeight: 'normal'
     },
 })
 

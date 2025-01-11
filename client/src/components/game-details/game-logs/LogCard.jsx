@@ -1,27 +1,21 @@
 import React, {useState, useEffect, useRef} from "react"
-import {RadioGroup, Radio, FormControl, FormControlLabel, Tooltip, Icon} from "@mui/material"
+import {Tooltip, Icon} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import {BsController, BsJournal, BsJournalText} from "react-icons/bs";
 import {IoGameController} from "react-icons/io5";
-import {AccessTime, CalendarMonth, FormatListBulleted, Lock, LockOpen, OpenInBrowser} from "@mui/icons-material";
+import {AccessTime, CalendarMonth, Lock, LockOpen, OpenInBrowser} from "@mui/icons-material";
 import * as FaIcons from "react-icons/fa";
 import * as SiIcons from "react-icons/si";
 import * as BsIcons from "react-icons/bs";
 import * as Io5Icons from "react-icons/io5";
 import * as PiIcons from "react-icons/pi";
-import LockIcon from "@mui/icons-material/Lock";
 import LogSessions from "./LogSessions.jsx";
 import {useNavigate} from "react-router-dom";
 
 
-function LogCard({gameData, logData, logIndex}) {
+function LogCard({gameData, logData}) {
     const theme = useTheme()
     const styles = getStyles(theme, gameData)
     const navigate = useNavigate();
-    const [error, setError] = useState(null)
-
-    const [data, setData] = useState([])
-    if (error) return <div>{error}</div>
 
     const textRef = useRef(null);
     const [isNameHidden, setIsNameHidden] = useState(false);
