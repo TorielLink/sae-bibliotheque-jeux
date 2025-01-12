@@ -101,7 +101,7 @@ class DataRetriever extends APIRequests {
                 releaseDate: game.first_release_date,
                 platforms: apiData.platforms,
                 ageRating: apiData.ageRating,
-                cover: apiData.cover,
+                cover: apiData?.cover || "https://placehold.co/1080x1920",
                 genres: apiData.genres,
                 screenshots: apiData.screenshots,
                 videos: apiData.videos,
@@ -225,7 +225,6 @@ class DataRetriever extends APIRequests {
         let genresMap = new Map()
         const coversMap = coverGenresData.coverMap || new Map()
         const genres = coverGenresData.genres?.map(el => genresMap.set(el.id, el)) || []
-
         let result = games.map(el => {
             let game = {...el}
 
@@ -270,6 +269,12 @@ class DataRetriever extends APIRequests {
         const popuaritySortingOption = `sort aggregated_rating desc;`
         const paginationOption = `limit ${limit};offset ${offset};`;
         return await this.#getGameList(popuaritySortingOption, paginationOption)
+    }
+
+    async getGameList(gameIds) {
+        const sortingOption = `where id=(${gameIds.join(',')});`
+        const paginationOption = `limit ${gameIds.length};`;
+        return await this.#getGameList(sortingOption, paginationOption)
     }
 
 }

@@ -30,6 +30,36 @@ controller.getAllByLog = async (req, res) => {
     }
 }
 
+controller.getAllByLogs = async (req, res) => {
+    try {
+        const {logIds} = req.body
+
+        if (!Array.isArray(logIds) || logIds.length === 0) {
+            return res.status(400).json({
+                message: 'logIds must be a non-empty array of game_log_id',
+            })
+        }
+
+        const sessions = await gameSession.findAll({
+            where: {
+                game_log_id: logIds,
+            },
+            order: [['session_date', 'DESC']]
+        })
+
+        res.status(200).json({
+            message: 'Game sessions fetched successfully',
+            data: sessions,
+        })
+    } catch (error) {
+        console.error('Error fetching game sessions:', error)
+        res.status(500).json({
+            message: 'Error fetching game sessions',
+            error: error.message,
+        })
+    }
+}
+
 controller.updateSession = async (req, res) => {
     try {
         const {sessionId} = req.params
@@ -105,12 +135,12 @@ controller.createSession = async (req, res) => {
 
 controller.deleteSession = async (req, res) => {
     try {
-        const { sessionId } = req.params
+        const {sessionId} = req.params
 
         const session = await gameSession.findByPk(sessionId)
 
         if (!session) {
-            return res.status(404).json({ message: 'Session not found' })
+            return res.status(404).json({message: 'Session not found'})
         }
 
         await session.destroy()

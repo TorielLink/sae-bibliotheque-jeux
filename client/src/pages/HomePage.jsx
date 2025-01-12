@@ -63,101 +63,96 @@ function HomePage() {
 
 
     return (
-        <Box sx={{padding: "0"}}>
-            {/* Breadcrumb */}
+
+        loading ? (
             <Box
                 sx={{
-                    display: "inline-block",
-                    padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
+                    display: 'flex',
+                    flex:'1',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                 }}
             >
-                <Typography
-                    variant="subtitle2"
-                    sx={{
-                        color: theme.palette.colors.red,
-                        fontSize: isMobile ? "0.9em" : "1em",
-                        display: "inline",
-                    }}
-                >
-                    Accueil &gt;
-                </Typography>
-                <Typography
-                    variant="subtitle2"
-                    sx={{
-                        color: isMobile ? theme.palette.colors.red : theme.palette.text.primary,
-                        display: "inline",
-                        marginLeft: "0.25em",
-                    }}
-                >
-                </Typography>
+                <CircularProgress/>
             </Box>
-
-
-            {/* Loading or Error */}
-            {loading ? (
+        ) : error ? (
+            <Box
+                sx={{
+                    textAlign: "center",
+                    color: theme.palette.colors.red,
+                    marginTop: "20px",
+                }}
+            >
+                <Typography variant="h6">{error}</Typography>
+            </Box>
+        ) : (
+            <>
                 <Box
                     sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "50vh",
+                        display: "inline-block",
+                        padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
                     }}
                 >
-                    <CircularProgress/>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            color: theme.palette.colors.red,
+                            fontSize: isMobile ? "0.9em" : "1em",
+                            display: "inline",
+                        }}
+                    >
+                        Accueil &gt;
+                    </Typography>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            color: isMobile ? theme.palette.colors.red : theme.palette.text.primary,
+                            display: "inline",
+                            marginLeft: "0.25em",
+                        }}
+                    >
+                    </Typography>
                 </Box>
-            ) : error ? (
-                <Box
-                    sx={{
-                        textAlign: "center",
-                        color: theme.palette.colors.red,
-                        marginTop: "20px",
-                    }}
-                >
-                    <Typography variant="h6">{error}</Typography>
-                </Box>
-            ) : (
-                <>
-                    {/* Mobile Tabs */}
-                    { isMobile ? (
-                        <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
-                    ) : (
-                        /* Desktop View */
-                        <>
-                            <Box sx={{
-                                marginTop: "2em"
-                            }}>
-                                <GameList
-                                    title="Sorties récentes"
-                                    games={recentGames}
-                                />
-                            </Box>
-                            {/*
+                {/* Mobile Tabs */}
+                {isMobile ? (
+                    <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
+                ) : (
+                    /* Desktop View */
+                    <>
+                        <Box sx={{
+                            marginTop: "2em"
+                        }}>
+                            <GameList
+                                title="Sorties récentes"
+                                games={recentGames}
+                            />
+                        </Box>
+                        {/*
                             */}
 
-                            <Box sx={{}}>
-                                <GameList
-                                    title="Jeux populaires"
-                                    games={popularGames}
-                                />
-                            </Box>
-                            <SectionTitle title="Avis récents"/>
-                            <Box
-                                sx={{
-                                    textAlign: "center",
-                                    color: theme.palette.text.secondary,
-                                    marginTop: "1.5em",
-                                    marginBottom: "2.5em",
-                                }}
-                            >
-                                <Typography variant="body1">
-                                    Les avis récents seront bientôt disponibles !
-                                </Typography>
-                            </Box>
-                        </>
-                    )}
-                </>
-            )}
-        </Box>
+                        <Box sx={{}}>
+                            <GameList
+                                title="Jeux populaires"
+                                games={popularGames}
+                            />
+                        </Box>
+                        <SectionTitle title="Avis récents"/>
+                        <Box
+                            sx={{
+                                textAlign: "center",
+                                color: theme.palette.text.secondary,
+                                marginTop: "1.5em",
+                                marginBottom: "2.5em",
+                            }}
+                        >
+                            <Typography variant="body1">
+                                Les avis récents seront bientôt disponibles !
+                            </Typography>
+                        </Box>
+                    </>
+                )}
+            </>
+        )
     );
 }
 

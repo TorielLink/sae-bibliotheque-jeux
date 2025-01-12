@@ -3,7 +3,7 @@ import {useParams} from "react-router-dom"; // pour récupérer les paramètres 
 import GameDetails from "../components/game-details/GameDetails.jsx";
 import GameReviews from "../components/game-details/GameReviews.jsx";
 import GameMedias from "../components/game-details/GameMedias.jsx";
-import {Typography, useMediaQuery} from "@mui/material";
+import {Box, CircularProgress, Typography, useMediaQuery} from "@mui/material";
 import GameMobileQuickActions from "../components/game-details/GameMobileQuickActions.jsx";
 import {useTheme} from "@mui/material/styles";
 import MobileTabs from "../components/MobileTabs.jsx";
@@ -20,12 +20,13 @@ export default function GamesDetailsPage() {
     const [error, setError] = useState(null);
 
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile);
 
     useEffect(() => {
         const fetchGameData = async () => {
             try {
+                setLoading(true);
                 console.log(`Fetching game data for ID: ${id}`); // log ID
                 const response = await fetch(`http://localhost:8080/games/${id}`);
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
@@ -42,7 +43,18 @@ export default function GamesDetailsPage() {
         fetchGameData();
     }, [id]);
 
-    if (loading) return <div>Chargement des données...</div>;
+    if (loading) return (
+        <Box
+            sx={{
+                display: 'flex',
+                flex: '1',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}
+        >
+            <CircularProgress/>
+        </Box>
+    )
     if (error) return <div>{error}</div>;
 
     const tabTitles = ["Détails", "Avis", "Journaux", "Médias"];
@@ -88,7 +100,7 @@ export default function GamesDetailsPage() {
                     <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
                 </>
             ) : (
-                <>
+                <div style={styles.container}>
                     <div id="details">
                         {tabContents[0]}
                         <div style={styles.separatorContainerR}>
@@ -110,13 +122,16 @@ export default function GamesDetailsPage() {
                     <div id="medias">
                         {tabContents[3]}
                     </div>
-                </>
+                </div>
             )}
         </>
     );
 }
 
 const getStyles = (theme, isMobile) => ({
+    container: {
+        flex: '1',
+    },
     breadcrumb: {
         color: theme.palette.colors.red,
         padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",

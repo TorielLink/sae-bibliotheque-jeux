@@ -71,6 +71,51 @@ router.get('/log/:logId', gameSessionController.getAllByLog)
 
 /**
  * @swagger
+ * /gameSessions/logs:
+ *   post:
+ *     summary: Récupérer toutes les sessions de jeu pour plusieurs journaux
+ *     description: >
+ *       Cette route retourne toutes les sessions de jeu associées à une liste d'IDs de journaux.
+ *     tags:
+ *       - Game Sessions
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               logIds:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 description: Liste des IDs des journaux
+ *     responses:
+ *       200:
+ *         description: Liste des sessions récupérée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game sessions fetched successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/GameSession'
+ *       400:
+ *         description: logIds doit être un tableau non vide
+ *       500:
+ *         description: Erreur serveur
+ */
+
+router.post('/logs', gameSessionController.getAllByLogs);
+
+
+/**
+ * @swagger
  * /update/{sessionId}:
  *   summary: Mettre à jour une session de jeu
  *   description: >
