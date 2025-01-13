@@ -36,6 +36,7 @@ const gamesController = {
         }
     },
 
+
     // Obtenir une liste de jeux avec filtres
     // Obtenir une liste de jeux avec filtres
     async getFilteredGames(req, res) {
@@ -49,7 +50,23 @@ const gamesController = {
             console.error('Erreur lors de la récupération des jeux récents :', error);
             res.status(500).json({error: 'Impossible de récupérer les jeux récents.'});
         }
-    }
+    },
+
+    async getGamesByGenres(req, res) {
+        try {
+            const {limit, offset, genres} = req.body;
+
+            if (!Array.isArray(genres)) {
+                return res.status(400).json({error: 'La liste des genres est requise.'});
+            }
+
+            const games = await dataRetriever.getCatalogByGenres(genres, limit, offset);
+            res.json(games);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des jeux par genres :', error);
+            res.status(500).json({error: 'Impossible de récupérer les jeux par genres.'});
+        }
+    },
 }
 
 module.exports = gamesController;

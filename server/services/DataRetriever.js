@@ -254,6 +254,11 @@ class DataRetriever extends APIRequests {
         return await this.#getGameList(popuaritySortingOption, paginationOption)
     }
 
+    async getCatalogByGenres(genres = [], limit = DataRetriever.#DEFAULT_LIMIT, offset = DataRetriever.#DEFAULT_OFFSET) {
+        const sortingOption = genres.length !== 0 ? `where genres=(${genres.join(',')});` : '';
+        const paginationOption = `limit ${limit};offset ${offset};`;
+        return await this.#getGameList(sortingOption, paginationOption)
+    }
 }
 
 module.exports = DataRetriever
