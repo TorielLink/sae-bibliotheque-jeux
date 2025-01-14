@@ -12,26 +12,46 @@ export function CommentsProvider({children}) {
         console.warn("Token non disponible. L'utilisateur doit être connecté.");
     }
 
-    const addComment = (rating, text, platform, gameName) => {
-        const newComment = {
-            id: faker.datatype.uuid(), // Génère un ID unique
-            rating,
-            text,
-            platform,
-            gameName,
-            date: new Date().toLocaleString(),
-            avatar: faker.image.avatar(),
-        };
+    const addComment = async (rating, text, platform, gameName) => {
+        try {
+            const response = await fetch("http://localhost:8080/game-reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // Token JWT
+                },
+                body: JSON.stringify({
+                    rating,
+                    text,
+                    platform,
+                    gameName,
+                }),
+            });
 
-        setComments((prevComments) => [newComment, ...prevComments]); // Ajout du commentaire localement
+            if (!response.ok) {
+                throw new Error(`Erreur API : ${response.statusText}`);
+            }
+
+            const newComment = await response.json();
+
+            setComments((prevComments) => [newComment, ...prevComments]); // Ajout du commentaire localement
+        } catch (error) {
+            console.error("Erreur lors de l'ajout du commentaire :", error);
+            throw error;
+        }
     };
 
     const deleteComment = async (commentId) => {
+        if (!token) {
+            console.warn("Token non disponible. Impossible de supprimer le commentaire.");
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:8080/game-reviews/${commentId}`, {
-                method: 'DELETE',
+                method: "DELETE",
                 headers: {
-                    'Authorization': `Bearer ${token}`, // Token JWT
+                    Authorization: `Bearer ${token}`, // Token JWT
                 },
             });
 
@@ -44,7 +64,7 @@ export function CommentsProvider({children}) {
                 prevComments.filter((comment) => comment.id !== commentId)
             );
         } catch (error) {
-            console.error('Erreur lors de la suppression du commentaire :', error);
+            console.error("Erreur lors de la suppression du commentaire :", error);
             throw error;
         }
     };
@@ -73,19 +93,52 @@ export function Comment({comment}) {
     };
 
     return (
-        <div style={{border: "1px solid #ccc", padding: 10, margin: 10}}>
-            <button
-                style={{
-                    backgroundColor: getButtonColor(comment.platform),
-                    border: "none",
-                    width: 20,
-                    height: 20,
-                    borderRadius: "50%",
-                }}
-            ></button>
-            <span style={{marginLeft: 10}}>{comment.platform}</span>
-            <p>{comment.text}</p>
-            <small>{comment.date}</small>
+        <div style={styles.commentContainer}>
+            <div style={styles.header}>
+                <button
+                    style={{
+                        ...styles.platformButton,
+                        backgroundColor: getButtonColor(comment.platform),
+                    }}
+                ></button>
+                <span style={styles.platformLabel}>{comment.platform}</span>
+            </div>
+            <p style={styles.commentText}>{comment.text}</p>
+            <small style={styles.commentDate}>{comment.date}</small>
         </div>
     );
 }
+
+const styles = {
+    commentContainer: {
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        padding: "10px",
+        margin: "10px 0",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    },
+    header: {
+        display: "flex",
+        alignItems: "center",
+        marginBottom: "10px",
+    },
+    platformButton: {
+        width: "20px",
+        height: "20px",
+        borderRadius: "50%",
+        border: "none",
+        marginRight: "10px",
+    },
+    platformLabel: {
+        fontWeight: "bold",
+    },
+    commentText: {
+        fontSize: "1rem",
+        marginBottom: "5px",
+    },
+    commentDate: {
+        fontSize: "0.8rem",
+        color: "#666",
+    },
+};

@@ -17,6 +17,13 @@ function HomePage() {
     const {user} = useContext(AuthContext);
     const [recentComments, setRecentComments] = useState([]);
 
+    const handleCommentDeleted = (commentId) => {
+        // Supprimer le commentaire de l'état local
+        setRecentComments((prevComments) =>
+            prevComments.filter((comment) => comment.id !== commentId)
+        );
+    };
+
     const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
     const tabContents = [
         <GameList key="recent" games={recentGames}/>,
@@ -24,9 +31,13 @@ function HomePage() {
         <Box sx={{textAlign: "center", color: theme.palette.text.secondary}}>
             {recentComments.length > 0 ? (
                 <Grid container spacing={2}>
-                    {recentComments.map((comment, index) => (
+                    {recentComments.map((comment) => (
                         <Grid item xs={12} sm={6} key={comment.id}>
-                            <CommentCard comments={[comment]} currentUserId={user?.id}/>
+                            <CommentCard
+                                comments={[comment]}
+                                currentUserId={user?.id}
+                                onCommentDeleted={handleCommentDeleted} // Passer la fonction au composant
+                            />
                         </Grid>
                     ))}
                 </Grid>
@@ -46,7 +57,6 @@ function HomePage() {
                 throw new Error(`Erreur API : ${response.statusText}`);
             }
             const data = await response.json();
-            console.log(`Données reçues pour ${filter}:`, data);
             return data;
         } catch (error) {
             console.error(`Erreur lors de la récupération des jeux (${filter}):`, error);
@@ -61,7 +71,7 @@ function HomePage() {
         try {
             const recent = await fetchGamesByFilter("by-date");
             const popular = await fetchGamesByFilter("by-popularity");
-            setRecentGames(recent.length ? recent : recentGames); // Préserver les anciennes données si vides
+            setRecentGames(recent.length ? recent : recentGames);
             setPopularGames(popular.length ? popular : popularGames);
         } catch (err) {
             setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
@@ -91,7 +101,6 @@ function HomePage() {
     useEffect(() => {
         fetchAllGames();
         fetchRecentComments(); // Charger les avis récents
-
     }, []);
 
     return (
@@ -158,7 +167,11 @@ function HomePage() {
                                 <Grid container spacing={2}>
                                     {recentComments.map((comment) => (
                                         <Grid item xs={12} sm={6} key={comment.id}>
-                                            <CommentCard comments={[comment]} currentUserId={user?.id}/>
+                                            <CommentCard
+                                                comments={[comment]}
+                                                currentUserId={user?.id}
+                                                onCommentDeleted={handleCommentDeleted} // Passer la fonction au composant
+                                            />
                                         </Grid>
                                     ))}
                                 </Grid>

@@ -2,13 +2,12 @@ import React, {useState, useContext} from "react";
 import {FaStar} from "react-icons/fa";
 import {CommentsContext} from "./CommentsContext";
 
-
 const colors = {
     orange: "#FFBA5A",
     grey: "#a9a9a9",
 };
 
-const CommentCard = ({comments = [], maxComments = null, currentUserId}) => {
+const CommentCard = ({comments = [], maxComments = null, currentUserId, onCommentDeleted}) => {
     const {deleteComment} = useContext(CommentsContext);
     const [modalText, setModalText] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
@@ -46,6 +45,7 @@ const CommentCard = ({comments = [], maxComments = null, currentUserId}) => {
     const displayedComments = maxComments
         ? sortedComments.slice(0, maxComments)
         : sortedComments;
+
     return (
         <div style={styles.container}>
             {/* Modal pour afficher le texte complet */}
@@ -135,6 +135,7 @@ const CommentCard = ({comments = [], maxComments = null, currentUserId}) => {
                                     onClick={async () => {
                                         try {
                                             await deleteComment(item.id);
+                                            onCommentDeleted(item.id); // Notifier le parent après suppression
                                             alert('Commentaire supprimé avec succès.');
                                         } catch (error) {
                                             console.error("Erreur lors de la suppression du commentaire :", error);
@@ -153,7 +154,6 @@ const CommentCard = ({comments = [], maxComments = null, currentUserId}) => {
         </div>
     );
 }
-
 
 function FullTextModal({text, onClose}) {
     const [isHovered, setIsHovered] = useState(false);
