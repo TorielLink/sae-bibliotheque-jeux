@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {Box, Typography, CircularProgress, useMediaQuery} from "@mui/material";
+import React, {useContext, useEffect, useState} from "react";
+import {Box, Typography, CircularProgress, useMediaQuery, Grid} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
 import MobileTabs from "../components/MobileTabs.jsx";
+import CommentCard from "../components/CommentCard.jsx";
+import {AuthContext} from "../components/AuthContext";
 
 function HomePage() {
     const [recentGames, setRecentGames] = useState([]);
@@ -12,15 +14,27 @@ function HomePage() {
     const [error, setError] = useState("");
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const {user} = useContext(AuthContext);
+    const [recentComments, setRecentComments] = useState([]);
 
     const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
     const tabContents = [
         <GameList key="recent" games={recentGames}/>,
         <GameList key="popular" games={popularGames}/>,
         <Box sx={{textAlign: "center", color: theme.palette.text.secondary}}>
-            <Typography variant="body1">
-                Les avis récents seront bientôt disponibles !
-            </Typography>
+            {recentComments.length > 0 ? (
+                <Grid container spacing={2}>
+                    {recentComments.map((comment, index) => (
+                        <Grid item xs={12} sm={6} key={comment.id}>
+                            <CommentCard comments={[comment]} currentUserId={user?.id}/>
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <Typography variant="body1">
+                    Aucun avis disponible pour le moment.
+                </Typography>
+            )}
         </Box>,
     ];
 
@@ -56,19 +70,36 @@ function HomePage() {
         }
     };
 
+    const fetchRecentComments = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/game-reviews");
+            if (!response.ok) {
+                throw new Error(`Erreur API : ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (!data.data || !Array.isArray(data.data)) {
+                setError("Format des données inattendu pour les avis.");
+                return;
+            }
+            setRecentComments(data.data);
+        } catch (error) {
+            setError("Impossible de charger les avis récents. Veuillez réessayer plus tard.");
+        }
+    };
+
     // Chargement initial des jeux
     useEffect(() => {
         fetchAllGames();
+        fetchRecentComments(); // Charger les avis récents
+
     }, []);
 
-
     return (
-
         loading ? (
             <Box
                 sx={{
                     display: 'flex',
-                    flex:'1',
+                    flex: '1',
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}
@@ -103,38 +134,16 @@ function HomePage() {
                     >
                         Accueil &gt;
                     </Typography>
-                    <Typography
-                        variant="subtitle2"
-                        sx={{
-                            color: isMobile ? theme.palette.colors.red : theme.palette.text.primary,
-                            display: "inline",
-                            marginLeft: "0.25em",
-                        }}
-                    >
-                    </Typography>
                 </Box>
-                {/* Mobile Tabs */}
                 {isMobile ? (
                     <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
                 ) : (
-                    /* Desktop View */
                     <>
-                        <Box sx={{
-                            marginTop: "2em"
-                        }}>
-                            <GameList
-                                title="Sorties récentes"
-                                games={recentGames}
-                            />
+                        <Box sx={{marginTop: "2em"}}>
+                            <GameList title="Sorties récentes" games={recentGames}/>
                         </Box>
-                        {/*
-                            */}
-
-                        <Box sx={{}}>
-                            <GameList
-                                title="Jeux populaires"
-                                games={popularGames}
-                            />
+                        <Box>
+                            <GameList title="Jeux populaires" games={popularGames}/>
                         </Box>
                         <SectionTitle title="Avis récents"/>
                         <Box
@@ -145,9 +154,19 @@ function HomePage() {
                                 marginBottom: "2.5em",
                             }}
                         >
-                            <Typography variant="body1">
-                                Les avis récents seront bientôt disponibles !
-                            </Typography>
+                            {recentComments.length > 0 ? (
+                                <Grid container spacing={2}>
+                                    {recentComments.map((comment) => (
+                                        <Grid item xs={12} sm={6} key={comment.id}>
+                                            <CommentCard comments={[comment]} currentUserId={user?.id}/>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                <Typography variant="body1">
+                                    Aucun avis disponible pour le moment.
+                                </Typography>
+                            )}
                         </Box>
                     </>
                 )}

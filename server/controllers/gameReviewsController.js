@@ -52,18 +52,19 @@ const formatDateToFrench = (date) => {
  */
 controller.getAllReviews = async (req, res) => {
     try {
+        // Récupérer toutes les critiques avec les relations nécessaires
         const reviews = await gameReview.findAll({
             include: [
                 {
                     model: privacySettings,
                     as: 'review_privacy',
                     attributes: ['name'],
-                    where: {name: 'Publique'}, // Critères publics
+                    where: {name: 'Public'},
                 },
                 {
                     model: users,
                     as: 'user',
-                    attributes: ['username'],
+                    attributes: ['username', 'user_id'],
                     include: [
                         {
                             model: gameLogs,
@@ -77,62 +78,81 @@ controller.getAllReviews = async (req, res) => {
                                 },
                             ],
                         },
+                        {
+                            model: gameRatings,
+                            as: 'user_ratings',
+                            attributes: ['rating_value', 'igdb_game_id'],
+                        },
                     ],
                 },
             ],
         });
 
+        // Vérification si des critiques existent
         if (!reviews || reviews.length === 0) {
             return res.status(404).json({message: 'No reviews found'});
         }
 
-        // Récupérer les données de jeu en parallèle et les stocker dans une Map
+        // Récupération des données de jeu via API (avec cache)
         const gameDataMap = new Map();
-        const gameDataPromises = reviews.map(async (review) => {
-            if (!gameDataMap.has(review.igdb_game_id)) {
-                const gameData = await getGameData(review.igdb_game_id);
-                if (gameData) {
-                    gameDataMap.set(review.igdb_game_id, gameData);
-                }
+
+        for (const review of reviews) {
+            const igdbGameId = review.igdb_game_id;
+
+            // Si le jeu n'est pas déjà dans le cache, récupérer les données
+            if (!gameDataMap.has(igdbGameId)) {
+                const gameData = await getGameData(igdbGameId);
+                gameDataMap.set(igdbGameId, {
+                    name: gameData.name || null,
+                    cover: gameData.cover?.url || null,
+                });
             }
+        }
+
+        // Transformation des critiques avec les détails enrichis
+        const reviewsWithDetails = reviews.map((review) => {
+            const gameData = gameDataMap.get(review.igdb_game_id) || {
+                name: 'Unknown Game',
+                cover: null,
+            };
+
+            const userLogs = review.user?.user_game_logs || [];
+            const platformLog = userLogs.find(
+                (log) => Number(log.igdb_game_id) === Number(review.igdb_game_id)
+            );
+
+            const platform = platformLog?.platform || {name: null, icon: null};
+
+            // Récupérer la note associée à ce jeu pour cet utilisateur
+            const userRating = review.user?.user_ratings?.find(
+                (rating) => Number(rating.igdb_game_id) === Number(review.igdb_game_id)
+            );
+
+            return {
+                id: review.id,
+                user_id: review.user.user_id,
+                user: {username: review.user?.username || 'Unknown User'},
+                igdb_game_id: review.igdb_game_id,
+                content: review.content,
+                spoiler: review.spoiler,
+                date_published: formatDateToFrench(review.date_published), // Formatage de la date
+                privacy: review.review_privacy?.name || 'Unknown Privacy',
+                platform: platform.name,
+                platform_icon: platform.icon,
+                game: {
+                    title: gameData.name,
+                    cover: gameData.cover,
+                },
+                rating: userRating?.rating_value || null, // Ajouter la note de l'utilisateur
+            };
         });
 
-        // Attendre que tous les appels à l'API soient terminés
-        await Promise.all(gameDataPromises);
-
-        // Transformation des données enrichies pour chaque critique
-        const reviewsWithDetails = reviews
-            .map((review) => {
-                const gameData = gameDataMap.get(review.igdb_game_id);
-
-                const userLogs = review.user?.user_game_logs || [];
-                const platformLog = userLogs.find(
-                    (log) => Number(log.igdb_game_id) === Number(review.igdb_game_id)
-                );
-
-                const platform = platformLog?.platform || {name: 'Unknown Platform', icon: null};
-
-                return {
-                    id: review.id,
-                    user: {username: review.user?.username || 'Unknown User'},
-                    igdb_game_id: review.igdb_game_id,
-                    content: review.content,
-                    spoiler: review.spoiler,
-                    date_published: formatDateToFrench(review.date_published), // Formatage de la date
-                    privacy: review.review_privacy?.name || 'Unknown Privacy',
-                    platform: platform.name,
-                    platform_icon: platform.icon,
-                    game: {
-                        title: gameData.name,
-                        cover: gameData.cover?.url || null,
-                    },
-                };
-            });
-
+        // Vérification des critiques transformées
         if (reviewsWithDetails.length === 0) {
             return res.status(404).json({message: 'No valid reviews found'});
         }
 
+        // Envoi de la réponse avec les critiques enrichies
         res.status(200).json({
             message: 'Reviews fetched successfully',
             data: reviewsWithDetails,
@@ -395,7 +415,7 @@ controller.getReviewsByUserId = async (req, res) => {
                     (log) => Number(log.igdb_game_id) === Number(review.igdb_game_id)
                 );
 
-                const platform = platformLog?.platform || {name: 'Unknown Platform', icon: null};
+                const platform = platformLog?.platform || {name: null, icon: null};
 
                 return {
                     id: review.id,
