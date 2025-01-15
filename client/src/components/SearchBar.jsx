@@ -61,7 +61,14 @@ function SearchBar({ searchText, setSearchText, handleSearchBack, handleSearchSu
     >
       {/* Bouton de recherche ou de fermeture */}
       <IconButton
-        onClick={() => setSearchActive(!isSearchActive)}
+        onClick={() => {
+            setSearchActive(!isSearchActive)
+            if (!isSearchActive) {
+                setTimeout(() => {
+                    document.getElementById("search-input")?.focus();
+                }, 0);
+            }
+        }}
         sx={{
           padding: '2px',
           marginRight: '4px',
@@ -99,6 +106,7 @@ function SearchBar({ searchText, setSearchText, handleSearchBack, handleSearchSu
             }}
           >
             <TextField
+                id="search-input"
               variant="outlined"
               size="small"
               placeholder="Rechercher..."

@@ -46,7 +46,7 @@ router.get('/', controller.getAllRatings);
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID du jeu
+ *         description: ID du jeu (igdb_game_id)
  *     responses:
  *       200:
  *         description: Évaluations récupérées avec succès
@@ -68,6 +68,7 @@ router.get('/', controller.getAllRatings);
  *         description: Erreur serveur
  */
 router.get('/game/:id', controller.getRatingsByGameId);
+
 /**
  * @swagger
  * /gameRatings/user/{id}:
@@ -105,5 +106,45 @@ router.get('/game/:id', controller.getRatingsByGameId);
  *         description: Erreur serveur
  */
 router.get('/user/:id', controller.getRatingsByUserId);
+
+/**
+ * @swagger
+ * /gameRatings/game/{id}/average:
+ *   get:
+ *     summary: Récupérer la moyenne des évaluations pour un jeu
+ *     description: >
+ *       Cette route calcule et retourne la moyenne de toutes les évaluations d'un jeu donné.
+ *     tags:
+ *       - Game Ratings
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du jeu (igdb_game_id)
+ *     responses:
+ *       200:
+ *         description: Moyenne récupérée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Average rating fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     average:
+ *                       type: number
+ *                       format: float
+ *       404:
+ *         description: Aucune évaluation trouvée pour ce jeu
+ *       500:
+ *         description: Erreur serveur
+ */
+router.get('/:id/average', controller.getAverageRatingByGameId);
 
 module.exports = router;

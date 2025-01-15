@@ -116,5 +116,34 @@ router.get('/', gamesController.getFilteredGames);
  */
 router.post('/by-genres', gamesController.getGamesByGenres);
 
+/**
+ * @swagger
+ * /games/specific:
+ *   post:
+ *     summary: Récupérer des jeux spécifiques
+ *     tags:
+ *       - Games
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               gameIds:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *             example:
+ *               gameIds: [1942, 77336]
+ *     responses:
+ *       200:
+ *         description: Jeux spécifiques récupérés avec succès
+ *       400:
+ *         description: Requête invalide
+ *       500:
+ *         description: Erreur serveur
+ */
+router.post('/specific', gamesController.getSpecificGames);
 
 module.exports = router;

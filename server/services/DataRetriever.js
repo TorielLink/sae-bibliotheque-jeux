@@ -6,6 +6,7 @@ class DataRetriever extends APIRequests {
     static #DEFAULT_LIMIT = 50
 
     static #gamePageFields = `
+        id,
         age_ratings,
         aggregated_rating,
         aggregated_rating_count,
@@ -84,10 +85,13 @@ class DataRetriever extends APIRequests {
 
             const apiData = await this.makeRequests(requests);
 
+
             const [bundles, collections, dlcs, expansions, remakes,
                 remasters, similar_games, standalone_expansions, franchises, parentGame] = await this.#getRelatedContent(game, apiData);
 
+
             return {
+                id: game.id,
                 name: game.name,
                 summary: game.summary,
                 storyline: game.storyline,
@@ -97,7 +101,7 @@ class DataRetriever extends APIRequests {
                 releaseDate: game.first_release_date,
                 platforms: apiData.platforms,
                 ageRating: apiData.ageRating,
-                cover: apiData.cover,
+                cover: apiData?.cover || "https://placehold.co/1080x1920",
                 genres: apiData.genres,
                 screenshots: apiData.screenshots,
                 videos: apiData.videos,
@@ -184,11 +188,26 @@ class DataRetriever extends APIRequests {
     }
 
     async #getRelatedContentList(gamesIds) {
-        if (gamesIds.length === 0) return [];
+        if (gamesIds.length === 0) return []
 
-        const sortingOptions = `where id = (${gamesIds.join(",")});`;
-        const paginationOption = `limit ${gamesIds.length};`;
-        return await this.#getGameList(sortingOptions, paginationOption);
+        const chunkSize = 200
+        const chunks = []
+        for (let i = 0; i < gamesIds.length; i += chunkSize) {
+            chunks.push(gamesIds.slice(i, i + chunkSize))
+        }
+
+        const promises = chunks.map(chunk => {
+            const sortingOptions = `where id = (${chunk.join(",")});`;
+            const paginationOption = `limit ${chunk.length};`;
+            return this.#getGameList(sortingOptions, paginationOption);
+        });
+
+        const results = await Promise.all(promises);
+        return results.flat();
+
+        // const sortingOptions = `where id = (${gamesIds.join(",")});`;
+        // const paginationOption = `limit ${gamesIds.length};`;
+        // return await this.#getGameList(sortingOptions, paginationOption);
     }
 
     async #getGameList(sortingOption, paginationOption) {
@@ -207,7 +226,6 @@ class DataRetriever extends APIRequests {
         let genresMap = new Map()
         const coversMap = coverGenresData.coverMap || new Map()
         const genres = coverGenresData.genres?.map(el => genresMap.set(el.id, el)) || []
-
         let result = games.map(el => {
             let game = {...el}
 
@@ -253,7 +271,11 @@ class DataRetriever extends APIRequests {
         const paginationOption = `limit ${limit};offset ${offset};`;
         return await this.#getGameList(popuaritySortingOption, paginationOption)
     }
-
+  async getGameList(gameIds) {
+        const sortingOption = `where id=(${gameIds.join(',')});`
+        const paginationOption = `limit ${gameIds.length};`;
+        return await this.#getGameList(sortingOption, paginationOption)
+    }
     async getCatalogByGenres(genres = [], limit = DataRetriever.#DEFAULT_LIMIT, offset = DataRetriever.#DEFAULT_OFFSET) {
         const sortingOption = genres.length !== 0 ? `where genres=(${genres.join(',')});` : '';
         const paginationOption = `limit ${limit};offset ${offset};`;

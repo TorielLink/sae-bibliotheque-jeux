@@ -1,8 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../components/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
+import LoginBg from "../components/LoginBg"
+
+import LoginBox from "../components/LoginSignup/LoginBox"
+import SignupBox from "../components/LoginSignup/SignupBox"
+
 function LoginPage() {
+
   const [showSignup, setShowSignup] = useState(false); // Gérer l'affichage du formulaire d'inscription
   const [credentials, setCredentials] = useState({ username: '', password: '' }); // Champs de connexion
   const [signupData, setSignupData] = useState({
@@ -12,6 +18,8 @@ function LoginPage() {
     profilePicture: null,
     privacy_setting_id: 1,
   });
+
+  // Gérer les modifications des champs d'inscription
 
   const [loginError, setLoginError] = useState(''); // Erreurs de connexion
   const [signupError, setSignupError] = useState(''); // Erreurs d'inscription
@@ -112,96 +120,45 @@ const handleLoginSubmit = async (e) => {
     }
   };
 
+  // useEffect(() => { //Execution du script background3D.jsx
+  //   // Code à exécuter lorsque le composant est monté
+  //   console.log('Composant chargé');
+
+  //   // Exemple : Attacher un script ou une logique
+  //   const script = document.createElement('script');
+  //   script.src = "/src/3Dbackgrounds/background3D.jsx";
+  //   script.async = true;
+  //   script.type = "module";
+  //   document.body.appendChild(script);
+
+  //   // Nettoyage (si nécessaire)
+  //   return () => {
+  //     console.log('Composant démonté');
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
+
+  const stateVariables = {
+    signupData,
+    setSignupData,
+    signupError,
+    setShowSignup,
+    handleSignupChange,
+    handleSignupSubmit,
+    handleLoginChange,
+    handleLoginSubmit,
+    credentials
+  }
+
   return (
+    <>
+    <LoginBg/>
     <div>
-      {!showSignup ? (
-        <>
-          <h1>Connexion</h1>
-          <form onSubmit={handleLoginSubmit}>
-            <label>
-              Nom d'utilisateur :
-              <input
-                type="text"
-                name="username"
-                value={credentials.username}
-                onChange={handleLoginChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Mot de passe :
-              <input
-                type="password"
-                name="password"
-                value={credentials.password}
-                onChange={handleLoginChange}
-                required
-              />
-            </label>
-            <br />
-            <button type="submit">Se connecter</button>
-          </form>
-          {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
-          <hr />
-          <button onClick={() => setShowSignup(true)}>S'inscrire</button>
-        </>
-      ) : (
-        <>
-          <h2>Inscription</h2>
-          <form onSubmit={handleSignupSubmit}>
-            <label>
-              Nom d'utilisateur :
-              <input
-                type="text"
-                name="username"
-                value={signupData.username}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Adresse e-mail :
-              <input
-                type="email"
-                name="mail"
-                value={signupData.mail}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Mot de passe :
-              <input
-                type="password"
-                name="password"
-                value={signupData.password}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Photo de profil :
-              <input
-                type="file"
-                name="profilePicture"
-                accept="mentorOrInvestorImage/*"
-                onChange={handleSignupChange}
-              />
-            </label>
-            <br />
-            <button type="submit">S'inscrire</button>
-          </form>
-          {signupError && <p style={{ color: 'red' }}>{signupError}</p>}
-          <hr />
-          <button onClick={() => setShowSignup(false)}>Retour à la connexion</button>
-        </>
-      )}
+      {showSignup ? <SignupBox {...stateVariables}/> : <LoginBox {...stateVariables} />}
     </div>
+    </>
   );
+
 }
 
 export default LoginPage;

@@ -26,7 +26,7 @@ class APIRequests {
         const headers = {
             'Client-ID': this.#clientId,
             'Authorization': `Bearer ${this.#accessToken}`,
-            'Content-Type': 'text/plain'
+            'Content-Type': 'input/plain'
         };
 
         try {
@@ -504,11 +504,12 @@ class APIRequests {
 
         const gamePlatformsData = await this.getData(
             "platforms",
-            `fields abbreviation,name,platform_logo,slug,websites;
+            `fields abbreviation,name,slug;
                       where id = (${gamePlatforms.join(",")});
                       limit ${gamePlatforms.length};`
         )
 
+        /*
         const platformsLogoIds = gamePlatformsData.map((el) => el.platform_logo);
         const uniquePlatformsLogoIds = [...new Set(platformsLogoIds)];
 
@@ -547,8 +548,9 @@ class APIRequests {
             result.push(platform)
         })
 
+        */
         return {
-            platforms: result,
+            platforms: gamePlatformsData,
         }
     }
 
