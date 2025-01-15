@@ -1,52 +1,85 @@
 import React, {useState, useContext} from "react";
 import {FaStar} from "react-icons/fa";
-import {CommentsContext} from "./CommentsContext";
+import {AuthContext} from "./AuthContext";
 
 const colors = {
     orange: "#FFBA5A",
     lightOrange: "#FFE5B4",
 };
 
-function AddComment({gameName}) {
-    const [isVisible, setIsVisible] = useState(true);
+const platforms = [
+    {id: 1, name: "PlayStation", shortName: "PS"},
+    {id: 2, name: "Xbox", shortName: "XB"},
+    {id: 3, name: "Nintendo Switch", shortName: "NS"},
+    {id: 4, name: "Steam", shortName: "Steam"},
+    {id: 5, name: "GOG", shortName: "GOG"},
+    {id: 6, name: "Epic Games Store", shortName: "EGS"},
+    {id: 7, name: "Microsoft Store", shortName: "MS"},
+];
+
+function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
     const [currentValue, setCurrentValue] = useState(0);
     const [hoverValue, setHoverValue] = useState(undefined);
     const [comment, setComment] = useState("");
     const [platform, setPlatform] = useState("");
     const [visibility, setVisibility] = useState("Privé");
-    const [coverImage, setCoverImage] = useState(""); // Nouvelle image de couverture
-    const [successMessage, setSuccessMessage] = useState("");
-    const {addComment} = useContext(CommentsContext);
+    const [message, setMessage] = useState(null); // Message state for error/success
+    const {token} = useContext(AuthContext);
 
     const handleClick = (value) => setCurrentValue(value);
     const handleMouseOver = (value) => setHoverValue(value);
     const handleMouseLeave = () => setHoverValue(undefined);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (comment.trim() && platform && currentValue > 0) {
-            addComment(
-                currentValue,
-                comment,
-                platform,
-                gameName || "Non spécifié",
-                visibility,
-                coverImage // Ajout de l'image de couverture
-            );
 
-            setSuccessMessage("Votre commentaire a été ajouté avec succès !");
-            setTimeout(() => {
-                resetForm();
-                setIsVisible(false); // Fermeture du modal
-            }, 2000);
-        } else {
-            alert("Veuillez remplir tous les champs et sélectionner une note.");
+        if (!comment.trim() || !platform) {
+            setMessage({type: "error", text: "Veuillez remplir tous les champs obligatoires."});
+            return;
+        }
+
+        try {
+            const privacySettingId = visibility === "Public" ? 2 : 1;
+
+            const body = {
+                igdb_game_id: gameId,
+                content: comment,
+                privacy_setting_id: privacySettingId,
+                spoiler: false, // Always set to false
+                platform_id: platform,
+            };
+
+            if (currentValue > 0) {
+                body.rating_value = currentValue;
+            }
+
+            const response = await fetch("http://localhost:8080/game-reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(body),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Une erreur est survenue.");
+            }
+
+            onCommentAdded(data);
+            setMessage({type: "success", text: "Votre avis a été ajouté avec succès !"});
+            resetForm();
+            if (onCancel) onCancel(); // Close the modal
+        } catch (error) {
+            setMessage({type: "error", text: error.message});
         }
     };
 
     const handleCancel = () => {
+        if (onCancel) onCancel(); // Close the modal
         resetForm();
-        setIsVisible(false);
     };
 
     const resetForm = () => {
@@ -55,18 +88,23 @@ function AddComment({gameName}) {
         setVisibility("Privé");
         setCurrentValue(0);
         setHoverValue(undefined);
-        setCoverImage(""); // Réinitialisation de l'image
+        setMessage(null);
     };
 
-    if (!isVisible) {
-        return null;
-    }
-
     return (
-        <div style={styles.modalOverlay} role="dialog" aria-labelledby="add-comment-title">
+        <div style={styles.modalOverlay}>
             <div style={styles.modalContent}>
-                {successMessage && <p style={styles.successMessage}>{successMessage}</p>}
-                <form onSubmit={handleSubmit} aria-describedby="form-description">
+                {message && (
+                    <div
+                        style={{
+                            ...styles.message,
+                            ...(message.type === "error" ? styles.error : styles.success),
+                        }}
+                    >
+                        {message.text}
+                    </div>
+                )}
+                <form onSubmit={handleSubmit}>
                     <div style={styles.gameNameBlock}>
                         <strong>Nom du jeu :</strong> {gameName || "Non spécifié"}
                     </div>
@@ -78,7 +116,6 @@ function AddComment({gameName}) {
                                 <FaStar
                                     key={index}
                                     size={40}
-                                    role="button"
                                     onClick={() => handleClick(index + 1)}
                                     onMouseOver={() => handleMouseOver(index + 1)}
                                     onMouseLeave={handleMouseLeave}
@@ -92,29 +129,26 @@ function AddComment({gameName}) {
                     <div style={styles.selectContainer}>
                         <div style={styles.inlineSelects}>
                             <div>
-                                <label htmlFor="platform-select" style={styles.label}>Plateforme</label>
+                                <label style={styles.label}>Plateforme</label>
                                 <select
-                                    id="platform-select"
                                     value={platform}
                                     onChange={(e) => setPlatform(e.target.value)}
                                     style={styles.select}
-                                    aria-label="Sélectionnez une plateforme"
                                 >
                                     <option value="">Sélectionnez une plateforme</option>
-                                    <option value="PC">PC</option>
-                                    <option value="Switch">Switch</option>
-                                    <option value="PS5">PS5</option>
-                                    <option value="Xbox">Xbox</option>
+                                    {platforms.map((p) => (
+                                        <option key={p.id} value={p.id}>
+                                            {p.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                             <div>
-                                <label htmlFor="visibility-select" style={styles.label}>Visibilité</label>
+                                <label style={styles.label}>Visibilité</label>
                                 <select
-                                    id="visibility-select"
                                     value={visibility}
                                     onChange={(e) => setVisibility(e.target.value)}
                                     style={styles.select}
-                                    aria-label="Sélectionnez la visibilité"
                                 >
                                     <option value="Privé">Privé</option>
                                     <option value="Public">Public</option>
@@ -123,30 +157,20 @@ function AddComment({gameName}) {
                         </div>
                     </div>
 
-                    <label htmlFor="comment-textarea" style={styles.label}>Avis</label>
+                    <label style={styles.label}>Avis</label>
                     <textarea
-                        id="comment-textarea"
                         placeholder="Mon avis..."
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         style={styles.textarea}
-                        aria-label="Ajouter un commentaire"
                     />
+
                     <div style={styles.actions}>
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            style={styles.cancelButton}
-                            aria-label="Annuler et fermer"
-                        >
+                        <button type="button" onClick={handleCancel} style={styles.cancelButton}>
                             Annuler
                         </button>
-                        <button
-                            type="submit"
-                            style={styles.submitButton}
-                            aria-label="Ajouter votre avis"
-                        >
-                            <div style={styles.customPlusIcon}>+</div>
+                        <button type="submit" style={styles.submitButton}>
+                            Ajouter
                         </button>
                     </div>
                 </form>
@@ -154,6 +178,7 @@ function AddComment({gameName}) {
         </div>
     );
 }
+
 
 const styles = {
     modalOverlay: {
@@ -292,6 +317,18 @@ const styles = {
         fontWeight: "bold",
         marginBottom: "20px",
         textAlign: "center",
+    },
+    message: {
+        fontSize: "1.5em", // Plus grand que le texte normal
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: "20px",
+    },
+    error: {
+        color: "red",
+    },
+    success: {
+        color: "#28a745",
     },
 };
 

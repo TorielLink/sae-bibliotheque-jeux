@@ -178,20 +178,37 @@ controller.addReview = async (req, res) => {
         } = req.body;
 
         // Récupérer le user_id depuis le middleware verifyToken
-        const user_id = req.user.user_id; // Assurez-vous que "user_id" est la clé utilisée dans le payload du token
+        if (!req.user || !req.user.user_id) {
+            return res.status(401).json({message: 'Utilisateur non authentifié.'});
+        }
+        const user_id = req.user.user_id;
 
         // Vérifier si les champs obligatoires sont fournis
-        if (!content || !platform_id) {
+        if (!igdb_game_id || !content || !privacy_setting_id || !platform_id) {
             return res.status(400).json({
-                message: 'La critique (content) et la plateforme (platform_id) sont obligatoires.'
+                message: 'Les champs igdb_game_id, content, privacy_setting_id et platform_id sont obligatoires.',
             });
         }
 
-        // Vérifier si l'utilisateur existe (facultatif si vous faites confiance au middleware)
-        const user = await users.findOne({where: {user_id}}); // Utilisation correcte de `user_id`
+        console.log("Données reçues :", req.body);
+
+        // Vérifier si un commentaire existe déjà pour cet utilisateur et ce jeu
+        const existingReview = await gameReview.findOne({
+            where: {user_id, igdb_game_id},
+        });
+
+        if (existingReview) {
+            return res.status(400).json({
+                message: 'Vous avez déjà publié un commentaire pour ce jeu.',
+            });
+        }
+
+        // Vérifier si l'utilisateur existe
+        const user = await users.findOne({where: {user_id}});
         if (!user) {
             return res.status(404).json({message: 'Utilisateur non trouvé.'});
         }
+        console.log("Utilisateur trouvé :", user_id);
 
         // Créer la critique
         const review = await gameReview.create({
@@ -202,39 +219,40 @@ controller.addReview = async (req, res) => {
             spoiler: spoiler || false, // Défaut à false si non fourni
             date_published: new Date(),
         });
+        console.log("Critique créée :", review);
 
-        // Ajouter une note si elle est fournie
-        if (rating_value !== undefined && rating_value !== null) {
-            await gameRatings.create({
-                user_id,
-                igdb_game_id,
-                rating_value,
-                privacy_setting_id,
-            });
-        }
+        // Ajouter une note
+        await gameRatings.create({
+            user_id,
+            igdb_game_id,
+            rating_value,
+            privacy_setting_id,
+        });
+        console.log("Note ajoutée :", rating_value);
 
-        // Ajouter un log pour la plateforme
+        // Vérifier ou créer un log pour la plateforme
         let existingLog = await gameLogs.findOne({
-            where: {user_id, igdb_game_id}, // Utilisation correcte de `user_id`
+            where: {user_id, igdb_game_id},
         });
 
         if (!existingLog) {
-            // Créer un nouveau log
-            await gameLogs.create({
+            existingLog = await gameLogs.create({
                 user_id,
                 igdb_game_id,
                 platform_id,
                 privacy_setting_id,
                 time_played: 0,
             });
+            console.log("Nouveau log créé :", existingLog);
         } else {
-            // Si un log existe déjà, mettre éventuellement à jour la plateforme
             await existingLog.update({
                 platform_id,
                 privacy_setting_id,
             });
+            console.log("Log existant mis à jour :", existingLog);
         }
 
+        // Retourner une réponse de succès
         res.status(201).json({
             message: 'Critique et plateforme ajoutées avec succès.',
             data: review,
@@ -451,12 +469,15 @@ controller.getReviewsByUserId = async (req, res) => {
     }
 };
 
+
 /**
  * Obtenir les critiques par jeu
  */
 controller.getReviewsByGameId = async (req, res) => {
     try {
         const {id} = req.params;
+
+        // Récupérer les critiques associées à ce jeu, seulement celles avec la confidentialité "Public"
         const reviews = await gameReview.findAll({
             where: {igdb_game_id: id},
             include: [
@@ -464,21 +485,29 @@ controller.getReviewsByGameId = async (req, res) => {
                     model: privacySettings,
                     as: 'review_privacy',
                     attributes: ['name'],
+                    where: {name: 'Public'}, // Filtrer uniquement les avis publics
                 },
                 {
                     model: users,
                     as: 'user',
-                    attributes: ['username'],
-                },
-                {
-                    model: gameLogs,
-                    as: 'game_logs',
-                    attributes: ['platform_id'],
+                    attributes: ['username', 'user_id'], // Inclure l'ID utilisateur
                     include: [
                         {
-                            model: gamePlatforms,
-                            as: 'platform',
-                            attributes: ['name', 'icon'],
+                            model: gameLogs,
+                            as: 'user_game_logs',
+                            attributes: ['platform_id', 'igdb_game_id'],
+                            include: [
+                                {
+                                    model: gamePlatforms,
+                                    as: 'platform',
+                                    attributes: ['name', 'icon'],
+                                },
+                            ],
+                        },
+                        {
+                            model: gameRatings,
+                            as: 'user_ratings',
+                            attributes: ['rating_value', 'igdb_game_id'],
                         },
                     ],
                 },
@@ -489,13 +518,39 @@ controller.getReviewsByGameId = async (req, res) => {
             return res.status(404).json({message: 'No reviews found for this game'});
         }
 
-        const reviewsWithDetails = reviews.map(review => {
-            const platform = review.game_logs?.[0]?.platform || {name: 'Plateforme inconnue', icon: null};
+        // Récupération des données du jeu via API ou cache
+        const gameData = await getGameData(id);
+
+        // Transformation des critiques avec les détails du jeu, plateforme, et notes
+        const reviewsWithDetails = reviews.map((review) => {
+            const userLogs = review.user?.user_game_logs || [];
+            const platformLog = userLogs.find(
+                (log) => Number(log.igdb_game_id) === Number(review.igdb_game_id)
+            );
+
+            const platform = platformLog?.platform || {name: 'Plateforme inconnue', icon: null};
+
+            // Récupérer la note associée à ce jeu pour cet utilisateur
+            const userRating = review.user?.user_ratings?.find(
+                (rating) => Number(rating.igdb_game_id) === Number(review.igdb_game_id)
+            );
 
             return {
-                ...review.toJSON(),
+                id: review.id,
+                user_id: review.user.user_id,
+                user: {username: review.user?.username || 'Unknown User'},
+                igdb_game_id: review.igdb_game_id,
+                content: review.content,
+                spoiler: review.spoiler,
+                date_published: formatDateToFrench(review.date_published), // Formatage de la date
+                privacy: review.review_privacy?.name || 'Unknown Privacy',
                 platform: platform.name,
                 platform_icon: platform.icon,
+                game: {
+                    title: gameData.name || 'Titre inconnu',
+                    cover: gameData.cover?.url || null,
+                },
+                rating: userRating?.rating_value || null, // Ajouter la note de l'utilisateur
             };
         });
 

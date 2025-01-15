@@ -9,12 +9,8 @@ import {useTheme} from "@mui/material/styles";
 import MobileTabs from "../components/MobileTabs.jsx";
 import GameLogs from '../components/game-details/game-logs/GameLogs.jsx';
 
-
-/** TODO :
- - Faire la version mobile
- */
 export default function GamesDetailsPage() {
-    const {id} = useParams(); // Récupère l'ID depuis l'URL
+    const {id} = useParams();
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -27,7 +23,6 @@ export default function GamesDetailsPage() {
         const fetchGameData = async () => {
             try {
                 setLoading(true);
-                console.log(`Fetching game data for ID: ${id}`); // log ID
                 const response = await fetch(`http://localhost:8080/games/${id}`);
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
 
@@ -78,7 +73,8 @@ export default function GamesDetailsPage() {
             parentGame={gameData.parentGame}
             similarGames={gameData.similarGames}
         />,
-        <GameReviews/>,
+        // Pass gameName along with gameId to GameReviews
+        <GameReviews gameId={id} gameName={gameData.name}/>,
         <GameLogs
             game={gameData}
         />,

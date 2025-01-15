@@ -1,5 +1,4 @@
 import React, {createContext, useContext, useState} from "react";
-import {faker} from "@faker-js/faker";
 import {AuthContext} from "./AuthContext.jsx";
 
 export const CommentsContext = createContext();
