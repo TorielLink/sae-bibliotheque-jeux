@@ -19,6 +19,7 @@ import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import GameList from "../GameList.jsx";
 import GameCard from "../GameCard.jsx";
 import ButtonSelector from "./game-logs/log-details-content/ButtonSelector.jsx";
+import AddComment from "../AddComment.jsx";
 
 
 /**TODO :
@@ -47,6 +48,12 @@ const GameDetails = ({
         setStatusModalOpen(false);
     };
 
+    const [isAddingComment, setIsAddingComment] = useState(false);
+    const handleCommentAdded = async () => {
+        setIsAddingComment(false);
+        await fetchReviews();
+    };
+
     return (
         <div style={styles.container}>
             {/* Conteneur principal pour l'entièreté des détails du jeu */}
@@ -67,7 +74,7 @@ const GameDetails = ({
                     {/* Boutons d'actions rapides */}
                     {!isMobile && isAuthenticated && (
                         <div style={styles.quickActions}>
-                            <button
+                            {/*<button
                                 style={{...styles.quickActionButton, ...styles.reviewButton}}
                                 onMouseEnter={(e) => {
                                     e.target.style.backgroundColor = theme.palette.colors.blue;
@@ -79,9 +86,18 @@ const GameDetails = ({
                                     e.target.style.color = theme.palette.text.primary;
                                     e.target.style.borderColor = theme.palette.colors.blue;
                                 }}
+                                onClick={() => setIsAddingComment(true)}
                             >
                                 Ajouter un avis
                             </button>
+                            {isAddingComment && (
+                                <AddComment
+                                    gameId={id}
+                                    gameName={name}
+                                    onCommentAdded={handleCommentAdded}
+                                    onCancel={() => setIsAddingComment(false)}
+                                />
+                            )}*/}
                             {/*<button
                                 style={{...styles.quickActionButton, ...styles.noteButton}}
                                 onMouseEnter={(e) => {
@@ -140,7 +156,7 @@ const GameDetails = ({
                                 aria-labelledby="change-list-dialog-title"
                                 aria-describedby="change-list-dialog-description"
                             >
-                                <DialogTitle id="change-list-dialog-title">Changer de liste</DialogTitle>
+                                <DialogTitle id="change-list-dialog-title" fontWeight="bold">Changer de liste</DialogTitle>
                                 <DialogContent>
                                     <ButtonSelector
                                         disabled={false}
@@ -472,6 +488,11 @@ const getStyles = (theme, isMobile) => ({
         color: theme.palette.text.primary,
         padding: '0.5rem 1rem',
         borderRadius: '1rem',
+    },
+    dialogTitle: {
+        borderBottom: `solid 0.1rem ${theme.palette.text.primary}`,
+        width: 'fit-content',
+        margin: '0.5rem 1rem'
     },
     mainContainer: {
         display: 'flex',
