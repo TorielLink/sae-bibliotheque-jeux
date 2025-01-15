@@ -114,7 +114,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                                         overflow: "hidden",
                                     }}
                                 >
-                                    {genre.name} {/* Afficher le nom du genre */}
+                                    {genre} {/* Affichez directement le genre si c'est une chaîne */}
                                 </Box>
                             ))
                         ) : (
@@ -132,6 +132,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                                 Aucun genre disponible
                             </Box>
                         )}
+
                     </Box>
                 </Box>
 

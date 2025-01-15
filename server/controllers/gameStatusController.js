@@ -4,40 +4,32 @@ const {
     status,
     gamePlatforms,
     gameSession,
-    gameRatings, sequelize, users,
+    gameRatings,
+    sequelize,
+    users,
 } = require('../database/sequelize');
 const DataRetriever = require('../services/DataRetriever.js');
 require('dotenv').config();
 
-// Chargement des variables d'environnement pour l'API IGDB
-
 const controller = {};
 
-// Mise en place d'un cache en mémoire pour éviter d'appeler l'API IGDB pour chaque critique identique
-const gameCache = new Map();
+// Initialisation du service DataRetriever
+const clientId = process.env.CLIENT_ID;
+const accessToken = process.env.ACCESS_TOKEN;
+const dataRetriever = new DataRetriever(clientId, accessToken);
 
-// Fonction pour récupérer les données de jeu à partir de l'API IGDB avec gestion de cache
-async function getGameData(igdb_game_id, dataRetriever) {
-    if (gameCache.has(igdb_game_id)) {
-        return gameCache.get(igdb_game_id);
-    }
-
-    try {
-        const gameData = await dataRetriever.getGameInfo(igdb_game_id);
-        gameCache.set(igdb_game_id, gameData);
-        return gameData;
-    } catch (error) {
-        console.error(`Error fetching game data for ${igdb_game_id}:`, error.message);
-        return {name: 'Titre inconnu', cover: {url: null}};
-    }
+if (!clientId || !accessToken) {
+    console.error("CLIENT_ID or ACCESS_TOKEN missing in .env");
+    process.exit(1);
 }
 
-// Fonction pour formater les dates en français (JJ-MM-AAAA)
+// Mise en place d'un cache local pour éviter les appels redondants
+const gameCache = new Map();
+
 const formatDateToFrench = (date) => {
     if (!date) return null;
 
     const d = typeof date === 'number' ? new Date(date * 1000) : new Date(date);
-
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = d.getFullYear();
@@ -49,14 +41,13 @@ controller.getGamesWithSessions = async (req, res) => {
     try {
         const {userId, gameStatusName} = req.query;
 
-        // Vérification des paramètres nécessaires
         if (!userId || !gameStatusName) {
             return res.status(400).json({message: 'userId et gameStatusName sont requis.'});
         }
 
         console.log(`Récupération des jeux pour l'utilisateur ID: ${userId} avec le statut: ${gameStatusName}`);
 
-        // Récupérer les gameStatus pour l'utilisateur donné et le statut spécifié
+        // Fetch game statuses with logs and sessions
         const gameStatuses = await gameStatus.findAll({
             where: {user_id: userId},
             include: [
@@ -80,7 +71,7 @@ controller.getGamesWithSessions = async (req, res) => {
                         {
                             model: gameSession,
                             as: 'game_sessions',
-                            attributes: ['session_date', 'time_played'],
+                            attributes: ['session_date'],
                         },
                         {
                             model: gamePlatforms,
@@ -88,7 +79,7 @@ controller.getGamesWithSessions = async (req, res) => {
                             attributes: ['name'],
                         },
                     ],
-                    attributes: ['igdb_game_id'],
+                    attributes: ['time_played', 'igdb_game_id'],
                     required: false,
                 },
             ],
@@ -100,70 +91,39 @@ controller.getGamesWithSessions = async (req, res) => {
             return res.status(404).json({message: 'Aucun jeu trouvé pour cet utilisateur et ce statut.'});
         }
 
-        const clientId = process.env.CLIENT_ID;
-        const accessToken = process.env.ACCESS_TOKEN;
-        const dataRetriever = new DataRetriever(clientId, accessToken);
+        const gameIds = gameStatuses.map((entry) => entry.igdb_game_id);
 
-        // Enrichir les données
-        const enrichedGames = await Promise.all(
-            gameStatuses.map(async (entry) => {
-                const igdbGameId = entry.igdb_game_id;
+        // Fetch additional game info from DataRetriever
+        const gamesInfo = await dataRetriever.getGameList(gameIds);
 
-                // Récupérer les données du jeu avec gestion de cache
-                const gameInfo = await getGameData(igdbGameId, dataRetriever);
+        const enrichedGames = gameStatuses.map((entry) => {
+            const gameInfo = gamesInfo.find((game) => game.id === entry.igdb_game_id) || {};
+            const logs = entry.status_game_logs || [];
 
-                // Récupération de la note de l'utilisateur
-                const userRating = entry.ratings?.[0]?.rating_value || null;
+            // Calculate total time played by summing all logs' time_played
+            const totalTimePlayed = logs.reduce((total, log) => total + (log.time_played || 0), 0);
 
-                // Récupérer toutes les sessions de jeu pour ce jeu et statut
-                const gameSessions = entry.status_game_logs?.flatMap(log => log.game_sessions) || [];
-                const lastSessionDate = gameSessions.length > 0
-                    ? gameSessions.reduce((latest, session) => {
-                        return new Date(session.session_date) > new Date(latest) ? session.session_date : latest;
-                    }, gameSessions[0].session_date)
-                    : null;
-
-                // Calculer le total du temps joué pour ce jeu
-                const totalTimePlayed = gameSessions.reduce((total, session) => {
-                    return total + (session.time_played || 0);
-                }, 0);
-
-                // Calculer le nombre de sessions
-                const sessionCount = gameSessions.length;
-
-                // Calculer la note moyenne des utilisateurs pour ce jeu
-                const avgRatingResult = await gameRatings.findOne({
-                    where: {igdb_game_id: igdbGameId},
-                    attributes: [
-                        [sequelize.fn('AVG', sequelize.col('rating_value')), 'averageRating'],
-                    ],
-                    raw: true,
-                });
-
-                const averageRating = avgRatingResult ? parseFloat(avgRatingResult.averageRating).toFixed(2) : null;
-
-                // Récupérer le nom de la plateforme
-                const platformName = entry.status_game_logs?.[0]?.platform?.name || null;
-
-                // Formater les dates en version française
-                const formattedReleaseDate = formatDateToFrench(gameInfo?.releaseDate);
-                const formattedLastSessionDate = formatDateToFrench(lastSessionDate);
-
-                return {
-                    igdb_game_id: igdbGameId,
-                    title: gameInfo?.name || 'Titre inconnu',
-                    cover: gameInfo?.cover?.url || null,
-                    releaseDate: formattedReleaseDate,
-                    genres: gameInfo?.genres || [],
-                    userRating,
-                    lastSessionDate: formattedLastSessionDate,
-                    averageRating,
-                    totalTimePlayed,
-                    sessionCount,
-                    platform: platformName,
-                };
-            })
-        );
+            return {
+                igdb_game_id: entry.igdb_game_id,
+                title: gameInfo.name || 'Titre inconnu',
+                cover: gameInfo.cover || null,
+                releaseDate: formatDateToFrench(gameInfo.releaseDate),
+                genres: gameInfo.genres || [],
+                userRating: entry.ratings?.[0]?.rating_value || null,
+                lastSessionDate: formatDateToFrench(
+                    logs.reduce(
+                        (latest, log) =>
+                            new Date(log.game_sessions?.[0]?.session_date) > new Date(latest)
+                                ? log.game_sessions?.[0]?.session_date
+                                : latest,
+                        null
+                    )
+                ),
+                totalTimePlayed, // Correctly summed time played
+                sessionCount: logs.flatMap((log) => log.game_sessions || []).length || 0,
+                platform: logs[0]?.platform?.name || 'Non spécifiée',
+            };
+        });
 
         res.status(200).json({
             message: 'Jeux, notes, sessions, moyenne, temps, plateforme et dates récupérés avec succès',
@@ -174,7 +134,6 @@ controller.getGamesWithSessions = async (req, res) => {
         res.status(500).json({message: 'Erreur serveur', error: error.message});
     }
 };
-
 // Récupérer tous les statuts de jeu avec leur statut générique associé
 controller.getAllGameStatuses = async (req, res) => {
     try {

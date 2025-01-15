@@ -66,6 +66,7 @@ router.get('/', gameStatusController.getAllGameStatuses);
  *         description: Erreur serveur
  */
 router.get('/user/:userId', gameStatusController.getGameStatusesByUser);
+
 /**
  * @swagger
  * /gameStatus/user/{userId}/game/{gameId}:
@@ -217,7 +218,6 @@ router.get('/game/:igdb_game_id', gameStatusController.getGameStatusesByGame);
  */
 router.get('/games-by-status', gameStatusController.getGamesWithSessions);
 
-module.exports = router;
 /**
  * @swagger
  * /gameStatus/update/{userId}/{gameId}:

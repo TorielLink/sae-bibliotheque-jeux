@@ -57,13 +57,14 @@ const MyListsPage = () => {
 
     // Mapping entre les IDs de filtres et les valeurs attendues par l'API
     const filterStatusMapping = {
-        finish: 'Finished',
-        playing: 'Playing',
-        library: 'Library',
-        wishlist: 'Wishlist',
-        paused: 'Paused',
-        stopped: 'Stopped',
+        finish: 'Played',       // Terminés
+        playing: 'Playing',     // En cours
+        library: 'Library',     // A jouer
+        wishlist: 'Wishlist',   // Liste de souhaits
+        paused: 'Paused',       // En pause
+        stopped: 'Stopped',     // Abandonnés
     };
+
 
     const tableHeaders = {
         finish: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
@@ -91,11 +92,13 @@ const MyListsPage = () => {
         const fetchAllGames = async () => {
             setLoading(true);
             setError(null);
+            const newGamesData = {...gamesData};
+
             try {
-                const fetchPromises = filters.map(async (filter) => {
+                for (const filter of filters) {
                     const gameStatusName = filterStatusMapping[filter.id];
                     const apiUrl = `http://localhost:8080/game-status/games-by-status?userId=${userId}&gameStatusName=${encodeURIComponent(gameStatusName)}`;
-                    console.log(`Fetching games for filter "${filter.id}" with URL: ${apiUrl}`); // Debug
+                    console.log(`Fetching games for filter "${filter.id}" with URL: ${apiUrl}`);
 
                     const response = await fetch(apiUrl, {
                         headers: {
@@ -104,9 +107,10 @@ const MyListsPage = () => {
                     });
 
                     if (response.status === 404) {
-                        // Aucun jeu trouvé pour ce filtre, retourner une liste vide
                         console.warn(`Aucun jeu trouvé pour le filtre "${filter.id}".`);
-                        return {filterId: filter.id, games: []};
+                        newGamesData[filter.id] = [];
+                        setGamesData({...newGamesData});
+                        continue;
                     }
 
                     if (!response.ok) {
@@ -114,19 +118,10 @@ const MyListsPage = () => {
                     }
 
                     const result = await response.json();
-                    console.log(`API Response for filter "${filter.id}":`, result); // Debug
-
-                    return {filterId: filter.id, games: result.data || []};
-                });
-
-                const results = await Promise.all(fetchPromises);
-                const newGamesData = {...gamesData};
-
-                results.forEach(({filterId, games}) => {
-                    newGamesData[filterId] = games;
-                });
-
-                setGamesData(newGamesData);
+                    console.log(`API Response for filter "${filter.id}":`, result);
+                    newGamesData[filter.id] = result.data || [];
+                    setGamesData({...newGamesData}); // Mise à jour progressive
+                }
             } catch (err) {
                 setError(err.message);
                 console.error('Erreur lors de la récupération des jeux:', err);
@@ -136,10 +131,11 @@ const MyListsPage = () => {
         };
 
         fetchAllGames();
+        console.log('jeu envoyé', gamesData);
     }, [userId]); // Dépendance uniquement sur userId pour charger une fois
 
     return (
-        <Box style={{padding: '0.125em', overflowX: 'hidden', overflowY: 'auto'}}>
+        <Box style={{padding: '0.125em', overflowX: 'hidden', overflowY: 'auto', flexGrow: 1,}}>
             {/* Navigation en haut */}
             <Box
                 sx={{
@@ -150,7 +146,7 @@ const MyListsPage = () => {
                     color: theme.palette.colors?.red || '#FF0000',
                 }}
             >
-                <Typography variant="body1" sx={{color: '#555', marginRight: '0.5em'}}>
+                <Typography variant="body1" sx={{color: theme.palette.colors?.red, marginRight: '0.5em'}}>
                     Listes de jeux
                 </Typography>
                 <Typography variant="body1" sx={{color: theme.palette.colors?.red || '#FF0000'}}>
