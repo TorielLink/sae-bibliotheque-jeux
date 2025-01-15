@@ -53,7 +53,7 @@ export default function GameDetailsNavBar({ activeSection }) {
                         backgroundColor: getActiveColor()
                     } : {}),
                 }}>
-                    <a href={"#logs"} style={{...styles.navLink,}}>Progression</a>
+                    <a href={"#logs"} style={{...styles.navLink,}}>Journaux</a>
                 </li>
                 <li style={{
                     ...styles.navItem,

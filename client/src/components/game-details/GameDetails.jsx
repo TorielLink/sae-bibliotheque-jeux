@@ -82,7 +82,7 @@ const GameDetails = ({
                             >
                                 Ajouter un avis
                             </button>
-                            <button
+                            {/*<button
                                 style={{...styles.quickActionButton, ...styles.noteButton}}
                                 onMouseEnter={(e) => {
                                     e.target.style.backgroundColor = theme.palette.colors.green;
@@ -96,7 +96,7 @@ const GameDetails = ({
                                 }}
                             >
                                 Ajouter une note
-                            </button>
+                            </button>*/}
                             {/*<button
                                 style={{...styles.quickActionButton, ...styles.logButton}}
                                 onMouseEnter={(e) => {

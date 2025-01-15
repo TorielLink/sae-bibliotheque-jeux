@@ -116,7 +116,7 @@ export default function GamesDetailsPage() {
     )
     if (error) return <div>{error}</div>;
 
-    const tabTitles = ["Détails", "Avis", "Progression", "Médias"];
+    const tabTitles = ["Détails", "Avis", "Journaux", "Médias"];
     const tabContents = [
         <GameDetails
             id={gameData.id}
