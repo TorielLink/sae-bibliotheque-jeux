@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Breadcrumbs, Button, Link } from "@mui/material";
+import Stack from "@mui/material/Stack";
+
 import GameCategory from "../components/GameCategory";
 import GameList from "../components/GameList.jsx";
 
@@ -14,16 +16,7 @@ const CataloguePage = () => {
   const [error, setError] = useState("");
 
   // Définir un état pour chaque catégorie
-    const [visibleCategory, setVisibleCategory] = useState({
-      fighting: false,
-      shooter: false,
-      platform: false,
-      rts: false,
-      rpg: false,
-      simulation: false,
-      strategy: false,
-      adventure: false,
-    });
+  const [activeComponent, setActiveComponent] = useState("all"); // 'all' par défaut
 
   // Data de chaque catégorie
   const [fightingGames, setFightingGames] = useState([]);
@@ -31,20 +24,17 @@ const CataloguePage = () => {
   const [platformGames, setPlatformGames] = useState([]);
   const [rtsGames, setRtsGames] = useState([]);
   const [rpgGames, setRpgGames] = useState([]);
-  const [simulationGames, setSimulationGames] = useState([]);
-  const [strategyGames, setStrategyGames] = useState([]);
-  const [adventureGames, setAdventureGames] = useState([]);
 
   const catTitle = [
-    { id: 4, name: "Fighting" },
-    { id: 5, name: "Shooter" },
-    { id: 8, name: "Platform" },
-    { id: 11, name: "Real Time Strategy (RTS)" },
-    { id: 12, name: "Role-playing (RPG)" },
-    { id: 13, name: "Simulator" },
-    { id: 15, name: "Strategy" },
-    { id: 32, name: "Indie" },
-    { id: 31, name: "Adventure" },
+    { id: 4, name: "Fighting", nameFR: "Combat" },
+    { id: 5, name: "Shooter", nameFR: "Tir" },
+    { id: 8, name: "Platform", nameFR: "Plateforme" },
+    {
+      id: 11,
+      name: "Real Time Strategy (RTS)",
+      nameFR: "Stratégie en temps réel (RTS)",
+    },
+    { id: 12, name: "Role-playing (RPG)", nameFR: "Jeux de rôle (RPG)" },
   ];
 
   // ID des catégories
@@ -59,6 +49,13 @@ const CataloguePage = () => {
   });
   console.log("Nom des catégories :", categoryName);
 
+  //Nom français des catégories
+  const categoryNameFR = catTitle.map(function (category) {
+    return category.nameFR;
+  });
+  console.log("Nom des catégories :", categoryNameFR);
+
+  // récupérer les jeux
   const fetchGameByGenres = async (body) => {
     try {
       const response = await fetch(`http://localhost:8080/games/by-genres`, {
@@ -88,17 +85,9 @@ const CataloguePage = () => {
     );
     setRtsGames(games.filter((game) => game.genres.includes(categoryName[3])));
     setRpgGames(games.filter((game) => game.genres.includes(categoryName[4])));
-    setSimulationGames(
-      games.filter((game) => game.genres.includes(categoryName[5]))
-    );
-    setStrategyGames(
-      games.filter((game) => game.genres.includes(categoryName[6]))
-    );
-    setAdventureGames(
-      games.filter((game) => game.genres.includes(categoryName[7]))
-    );
   };
 
+  // exécution API
   useEffect(() => {
     const fetchGames = async () => {
       setLoading(true);
@@ -106,10 +95,10 @@ const CataloguePage = () => {
         const body = { limit: 100, offset: 0, genres: categoryID };
         const gamesData = await fetchGameByGenres(body);
         console.log("Données reçues API :", gamesData);
-  
+
         // Une fois les jeux récupérés, filtrez-les par genre
         filterGamesByGenre(gamesData);
-  
+
         // Mettez à jour l'état pour tous les jeux
         setAllGames(gamesData);
       } catch {
@@ -119,110 +108,185 @@ const CataloguePage = () => {
       }
     };
     fetchGames();
-  }, []);  // Vous pouvez ajuster la dépendance ici si nécessaire
+  }, []); // Vous pouvez ajuster la dépendance ici si nécessaire
 
-  
-  const toggleCategory = (category) => {
-    setVisibleCategory((prevState) => ({
-      ...prevState,
-      [category]: !prevState[category],
-    }));
+  const AllGames = () => {
+    return (
+      <div>
+        <GameList title={categoryNameFR[0]} games={fightingGames} />
+        <GameList title={categoryNameFR[1]} games={shooterGames} />
+        <GameList title={categoryNameFR[2]} games={platformGames} />
+        <GameList title={categoryNameFR[3]} games={rtsGames} />
+        <GameList title={categoryNameFR[4]} games={rpgGames} />
+      </div>
+    );
   };
 
-  console.log("Catégorie :", fightingGames);
+  const fighting = () => {
+    return (
+      <GameCategory
+        style={styles.gameCard}
+        categoryTitle={categoryNameFR[0]}
+        data={fightingGames}
+        podium={true}
+      />
+    );
+  };
+
+  const shooting = () => {
+    return (
+      <GameCategory
+        style={styles.gameCard}
+        categoryTitle={categoryNameFR[1]}
+        data={shooterGames}
+        podium={true}
+      />
+    );
+  };
+
+  const platform = () => {
+    return (
+      <GameCategory
+        style={styles.gameCard}
+        categoryTitle={categoryNameFR[2]}
+        data={platformGames}
+        podium={true}
+      />
+    );
+  };
+
+  const rts = () => {
+    return (
+      <GameCategory
+        style={styles.gameCard}
+        categoryTitle={categoryNameFR[3]}
+        data={rtsGames}
+        podium={true}
+      />
+    );
+  };
+
+  const rpg = () => {
+    return (
+      <GameCategory
+        style={styles.gameCard}
+        categoryTitle={categoryNameFR[4]}
+        data={rpgGames}
+        podium={true}
+      />
+    );
+  };
+
+  const renderComponent = () => {
+    switch (activeComponent) {
+      case "all":
+        return AllGames();
+      case "fighting":
+        return fighting();
+      case "shooting":
+        return shooting();
+      case "platform":
+        return platform();
+      case "rts":
+        return rts();
+      case "rpg":
+        return rpg();
+      default:
+        return AllGames();
+    }
+  };
+
+  console.log("Filtre plateforme :", platformGames);
 
   return (
     <section>
-      <h1 style={styles.title}>Catalogue de jeux</h1>
-
       {loading ? (
         <p style={styles.loadingTxt}>Chargement en cours...</p>
       ) : error ? (
         <p style={{ color: "red" }}>{error}</p>
       ) : (
         <>
-          {/* Fighting */} 
-          <GameList title={categoryName[0]} games={fightingGames} />
-          <Button variant="contained" style={styles.button}  onClick={() => toggleCategory("fighting")}>
-          {visibleCategory.fighting ? "Masquer" : "Afficher"}
-          </Button>
-          {visibleCategory.fighting && (
-            <GameCategory
-              style={styles.gameCard}
-              categoryTitle={categoryName[0]}
-              data={fightingGames}
-              podium={false}
-            />
-          )}
+          <Breadcrumbs separator="›" style={styles.breadcrumb}>
+            <Link underline="hover" href="/" style={styles.txtBreadcrumb}>
+              Accueil
+            </Link>
+            <Link
+              underline="hover"
+              href="/catalogue"
+              style={styles.txtBreadcrumb}>
+              Catalogue
+            </Link>
+          </Breadcrumbs>
 
-          {/* Shooting */}
-          <GameList title={categoryName[1]} games={shooterGames} />
-          <Button variant="contained" style={styles.button}  onClick={() => toggleCategory("shooter")}>
-          {visibleCategory.shooter ? "Masquer" : "Afficher"}
-          </Button>
-          {visibleCategory.shooter && (
-            <GameCategory
-              style={styles.gameCard}
-              categoryTitle={categoryName[1]}
-              data={shooterGames}
-              podium={false}
-            />
-          )}
+          {/* Boutons filtre */}
+          <Stack direction="row" spacing={2} style={styles.buttons}>
+            <Button
+              variant="outlined"
+              style={styles.button}
+              onClick={() => setActiveComponent("all")}
+            >
+              Tout
+            </Button>
 
-          {/* Platform */}
-          <GameList title={categoryName[2]} games={platformGames} />
-          <Button variant="contained" style={styles.button}  onClick={() => toggleCategory("platform")}>
-          {visibleCategory.platform ? "Masquer" : "Afficher"}
-          </Button>
-          {visibleCategory.platform && (
-            <GameCategory
-              style={styles.gameCard}
-              categoryTitle={categoryName[2]}
-              data={platformGames}
-              podium={false}
-            />
-          )}
+            <Button
+              variant="outlined"
+              style={styles.button}
+              onClick={() => setActiveComponent("fighting")}
+            >
+              Combat
+            </Button>
 
-          {/* RTS */}
-          <GameList title={categoryName[3]} games={rtsGames} />
-          <Button variant="contained" style={styles.button}  onClick={() => toggleCategory("rts")}>
-          {visibleCategory.rts ? "Masquer" : "Afficher"}
-          </Button>
-          {visibleCategory.rts && (
-            <GameCategory
-              style={styles.gameCard}
-              categoryTitle={categoryName[3]}
-              data={rtsGames}
-              podium={false}
-            />
-          )}
+            <Button
+              variant="outlined"
+              style={styles.button}
+              onClick={() => setActiveComponent("shooting")}
+            >
+              Tir
+            </Button>
 
-          {/* RPG */}
-          <GameList title={categoryName[4]} games={rpgGames} />
-          <Button variant="contained" style={styles.button}  onClick={() => toggleCategory("rpg")}>
-          {visibleCategory.rpg ? "Masquer" : "Afficher"}
-          </Button>
-          {visibleCategory.rpg && (
-            <GameCategory
-              style={styles.gameCard}
-              categoryTitle={categoryName[4]}
-              data={rpgGames}
-              podium={false}
-            />
-          )}
+            <Button
+              variant="outlined"
+              style={styles.button}
+              onClick={() => setActiveComponent("platform")}
+            >
+              Plateforme
+            </Button>
+
+            <Button
+              variant="outlined"
+              style={styles.button}
+              onClick={() => setActiveComponent("rts")}
+            >
+              RTS
+            </Button>
+
+            <Button
+              variant="outlined"
+              style={styles.button}
+              onClick={() => setActiveComponent("rpg")}
+            >
+              RPG
+            </Button>
+          </Stack>
+
+          <div>{renderComponent()}</div>
         </>
       )}
-      
     </section>
   );
 };
 
 const getStyles = (theme) => ({
-  title: {
+  breadcrumb: {
     fontFamily: theme.typography.fontFamily,
-    color: theme.palette.text.primary,
-    textAlign: "center",
-    margin: "2em 0 1em 0",
+    //fontSize: "1em",
+    color: theme.palette.colors.red,
+    margin: "2em 0 1em 2em",
+  },
+  txtBreadcrumb: {
+    fontFamily: theme.typography.fontFamily,
+    //fontSize: "1em",
+    color: theme.palette.colors.red,
   },
   loadingTxt: {
     fontFamily: theme.typography.fontFamily,
@@ -230,11 +294,19 @@ const getStyles = (theme) => ({
     color: theme.palette.text.primary,
     textAlign: "center",
   },
+  buttons: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "1.5em 0",
+  },
   button: {
-    float: "right",
-    margin: "-4em 2em 5em 0",
-    backgroundColor: theme.palette.colors.purple,
-    fontWeight: "300",
+    color: theme.palette.colors.blue,
+    backgroundColor: theme.palette.background.paper,
+    fontWeight: "700",
+    fontSize: "14px",
+    padding: "0.25em 1.75em",
+    borderRadius: "2em",
   },
   gameCard: {
     display: "flex",
