@@ -9,7 +9,7 @@ import GameLogSessions from "./GameLogSessions.jsx"
 import SessionEditor from "./SessionEditor.jsx"
 import GameDetailsNavBar from "../GameDetailsNavBar.jsx"
 
-function GameLogs({game}) {
+function GameLogs({game, status, changeStatus}) {
     const theme = useTheme()
     const styles = getStyles(theme)
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -44,46 +44,10 @@ function GameLogs({game}) {
     }
 
     useEffect(() => {
-        console.log('Game changed')
-        fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${game.id}`, handleStatusChange, "game_status_id")
         fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${game.id}`, handleLogsChange)
         handleCurrentLogChange(null)
         fetchData(`http://localhost:8080/privacy-settings`, setPrivacySettings)
     }, [game])
-
-    const [currentStatus, setCurrentStatus] = useState(0)
-    const handleStatusChange = (status) => {
-        setCurrentStatus(status || 0)
-        if (status) {
-            saveStatusChange(
-                user.id,
-                game.id,
-                {
-                    game_status_id: status
-                }
-            )
-        }
-    }
-
-    const saveStatusChange = async (userId, gameId, body) => {
-        try {
-            const response = await fetch(`http://localhost:8080/game-status/update/${userId}/${gameId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            })
-
-            if (!response.ok) {
-                throw new Error(`Failed to update game status: ${response.statusText}`)
-            }
-
-            await response.json()
-        } catch (error) {
-            console.error('Error updating game status:', error)
-        }
-    }
 
     const [logs, setLogs] = useState([])
     const handleLogsChange = (newLogs) => {
@@ -381,8 +345,8 @@ function GameLogs({game}) {
                             logs={logs}
                             setLogs={handleLogsChange}
 
-                            currentStatus={currentStatus}
-                            setCurrentStatus={handleStatusChange}
+                            currentStatus={status}
+                            setCurrentStatus={changeStatus}
 
                             currentLog={currentLog}
                             setCurrentLog={handleCurrentLogChange}

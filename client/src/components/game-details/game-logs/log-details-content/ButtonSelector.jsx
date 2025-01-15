@@ -29,6 +29,7 @@ function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idNa
                 setError('Impossible de charger les données.')
             }
         })()
+        console.log(selectedItem)
     }, [fetchUrl])
 
     if (error) return <div>{error}</div>

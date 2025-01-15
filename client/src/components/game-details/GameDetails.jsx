@@ -1,14 +1,24 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useTheme} from "@mui/material/styles";
 import {CalendarToday, ChildCare, SportsEsports} from '@mui/icons-material';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
-import {useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography} from "@mui/material";
+import {
+    useMediaQuery,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography,
+    Button,
+    Dialog,
+    DialogTitle, DialogContent, DialogActions
+} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {AuthContext} from "../AuthContext.jsx";
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import GameList from "../GameList.jsx";
 import GameCard from "../GameCard.jsx";
+import ButtonSelector from "./game-logs/log-details-content/ButtonSelector.jsx";
 
 
 /**TODO :
@@ -17,14 +27,25 @@ import GameCard from "../GameCard.jsx";
  * - Limiter la taille des blocs (overflow: hidden)
  */
 const GameDetails = ({
-                         name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
+                         id, name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
-                         parentGame, similarGames
+                         parentGame, similarGames,
+                         status, changeStatus
                      }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const {isAuthenticated} = useContext(AuthContext);
     const styles = getStyles(theme, isMobile);
+
+    const [isStatusModalOpen, setStatusModalOpen] = useState(false);
+
+    const openStatusModal = () => {
+        setStatusModalOpen(true);
+    };
+
+    const closeStatusModal = () => {
+        setStatusModalOpen(false);
+    };
 
     return (
         <div style={styles.container}>
@@ -76,7 +97,7 @@ const GameDetails = ({
                             >
                                 Ajouter une note
                             </button>
-                            <button
+                            {/*<button
                                 style={{...styles.quickActionButton, ...styles.logButton}}
                                 onMouseEnter={(e) => {
                                     e.target.style.backgroundColor = theme.palette.colors.yellow;
@@ -90,7 +111,51 @@ const GameDetails = ({
                                 }}
                             >
                                 Ajouter un journal
+                            </button>*/}
+                            <button
+                                style={{...styles.quickActionButton, ...styles.statusButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.red;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.red;
+                                }}
+                                onClick={openStatusModal}
+                            >
+                                Changer de liste
                             </button>
+                            <Dialog
+                                sx={{
+                                    '& .MuiPaper-root': {
+                                        borderRadius: '1rem',
+                                        background: theme.palette.colors.yellow,
+                                    },
+                                }}
+                                open={isStatusModalOpen}
+                                onClose={closeStatusModal}
+                                aria-labelledby="change-list-dialog-title"
+                                aria-describedby="change-list-dialog-description"
+                            >
+                                <DialogTitle id="change-list-dialog-title">Changer de liste</DialogTitle>
+                                <DialogContent>
+                                    <ButtonSelector
+                                        disabled={false}
+                                        selectedItem={status}
+                                        setSelectedItem={changeStatus}
+                                        fetchUrl={`http://localhost:8080/status`}
+                                        idName={'game_status_id'}
+                                    />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button style={styles.closeButton} onClick={closeStatusModal}>
+                                        Fermer
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
                         </div>
                     )}
 
@@ -397,6 +462,16 @@ const getStyles = (theme, isMobile) => ({
     },
     logButton: {
         border: '1px solid' + theme.palette.colors.yellow,
+    },
+    statusButton: {
+        border: '1px solid' + theme.palette.colors.red,
+    },
+    closeButton: {
+        background: theme.palette.colors.red,
+        fontSize: 'large',
+        color: theme.palette.text.primary,
+        padding: '0.5rem 1rem',
+        borderRadius: '1rem',
     },
     mainContainer: {
         display: 'flex',

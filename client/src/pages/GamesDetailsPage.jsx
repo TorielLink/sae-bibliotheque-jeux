@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {useParams} from "react-router-dom"; // pour récupérer les paramètres de l'URL
 import GameDetails from "../components/game-details/GameDetails.jsx";
 import GameReviews from "../components/game-details/GameReviews.jsx";
@@ -8,6 +8,7 @@ import GameMobileQuickActions from "../components/game-details/GameMobileQuickAc
 import {useTheme} from "@mui/material/styles";
 import MobileTabs from "../components/MobileTabs.jsx";
 import GameLogs from '../components/game-details/game-logs/GameLogs.jsx';
+import {AuthContext} from "../components/AuthContext.jsx";
 
 
 /** TODO :
@@ -20,6 +21,7 @@ export default function GamesDetailsPage() {
     const [error, setError] = useState(null);
 
     const theme = useTheme();
+    const {user} = useContext(AuthContext)
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile);
 
@@ -43,6 +45,63 @@ export default function GamesDetailsPage() {
         fetchGameData();
     }, [id]);
 
+    useEffect(() => {
+        if (user)
+            fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${id}`, handleStatusChange, "game_status_id")
+    }, [user]);
+
+    const fetchData = async (url, setData, optionalId = false) => {
+        try {
+            const response = await fetch(url)
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+
+            const data = await response.json()
+            if (optionalId) {
+                setData(data.data[optionalId])
+            } else {
+                setData(data.data)
+            }
+            return data.data
+        } catch (err) {
+            setData(null)
+            return null
+        }
+    }
+
+    const [currentStatus, setCurrentStatus] = useState(0)
+    const handleStatusChange = (status) => {
+        setCurrentStatus(status || 0)
+        if (status) {
+            saveStatusChange(
+                user.id,
+                id,
+                {
+                    game_status_id: status
+                }
+            )
+        }
+    }
+
+    const saveStatusChange = async (userId, gameId, body) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-status/update/${userId}/${gameId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to update game status: ${response.statusText}`)
+            }
+
+            await response.json()
+        } catch (error) {
+            console.error('Error updating game status:', error)
+        }
+    }
+
     if (loading) return (
         <Box
             sx={{
@@ -57,9 +116,10 @@ export default function GamesDetailsPage() {
     )
     if (error) return <div>{error}</div>;
 
-    const tabTitles = ["Détails", "Avis", "Journaux", "Médias"];
+    const tabTitles = ["Détails", "Avis", "Progression", "Médias"];
     const tabContents = [
         <GameDetails
+            id={gameData.id}
             name={gameData.name}
             description={gameData.summary}
             releaseDate={gameData.releaseDate}
@@ -77,10 +137,14 @@ export default function GamesDetailsPage() {
             franchises={gameData.franchises}
             parentGame={gameData.parentGame}
             similarGames={gameData.similarGames}
+            status={currentStatus}
+            changeStatus={handleStatusChange}
         />,
         <GameReviews/>,
         <GameLogs
             game={gameData}
+            status={currentStatus}
+            changeStatus={handleStatusChange}
         />,
         <GameMedias
             videos={gameData.videos}
