@@ -16,21 +16,23 @@ const GameReviews = ({gameId, gameName}) => {
     const fetchReviews = async () => {
         try {
             const response = await fetch(`http://localhost:8080/game-reviews/game/${gameId}`);
-
             if (response.status === 404) {
                 setReviews([]);
                 setError(null);
                 return;
             }
-
             if (!response.ok) {
-                throw new Error(
-                    `Erreur lors du chargement des avis : ${response.statusText}`
-                );
+                throw new Error(`Erreur lors du chargement des avis : ${response.statusText}`);
             }
-
             const data = await response.json();
-            setReviews(data.data || []);
+            const enrichedData = data.data.map((review) => ({
+                ...review,
+                game: {
+                    ...review.game,
+                    cover: review.game.cover || "/assets/default-cover.jpg", // Ajout de fallback
+                },
+            }));
+            setReviews(enrichedData || []);
             setError(null);
         } catch (err) {
             setError(err.message);
@@ -38,6 +40,7 @@ const GameReviews = ({gameId, gameName}) => {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchReviews();

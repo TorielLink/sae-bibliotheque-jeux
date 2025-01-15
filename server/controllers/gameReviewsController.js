@@ -8,6 +8,7 @@ const {
     gamePlatforms,
 } = require('../database/sequelize');
 const DataRetriever = require('../services/DataRetriever');
+const {gameReview: gameReviews} = require('../database/sequelize');
 
 // Initialiser DataRetriever avec vos clés d'API
 const clientId = process.env.CLIENT_ID;
@@ -21,17 +22,17 @@ const gameCache = new Map();
 
 // Fonction pour récupérer les données de jeu à partir de l'API IGDB
 async function getGameData(igdb_game_id) {
-    if (gameCache.has(igdb_game_id)) {
-        return gameCache.get(igdb_game_id);
-    }
-
     try {
         const gameData = await dataRetriever.getGameInfo(igdb_game_id);
-        gameCache.set(igdb_game_id, gameData);
+        if (gameData.cover && gameData.cover.image_id) {
+            gameData.cover.url = `https://images.igdb.com/igdb/image/upload/t_cover_big/${gameData.cover.image_id}.png`;
+        } else {
+            gameData.cover = {url: '/placeholder-image.png'};
+        }
         return gameData;
     } catch (error) {
         console.error(`Error fetching game data for ${igdb_game_id}:`, error.message);
-        return {name: 'Titre inconnu', cover: {url: null}};
+        return {name: 'Titre inconnu', cover: {url: '/placeholder-image.png'}};
     }
 }
 
@@ -370,200 +371,149 @@ controller.deleteReview = async (req, res) => {
     }
 };
 
+controller.getReviewsByGameId = async (req, res) => {
+    try {
+        const gameId = req.params.id;
+
+        if (!gameId) {
+            return res.status(400).json({message: 'ID du jeu manquant.'});
+        }
+
+        // Récupérer les critiques pour le jeu donné
+        const reviews = await gameReview.findAll({
+            where: {igdb_game_id: gameId},
+            include: [
+                {
+                    model: users,
+                    as: 'user',
+                    attributes: ['username', 'profile_picture'], // Inclure les informations utilisateur
+                },
+                {
+                    model: privacySettings,
+                    as: 'review_privacy',
+                    attributes: ['name'], // Inclure les paramètres de confidentialité
+                },
+            ],
+        });
+
+        if (!reviews || reviews.length === 0) {
+            return res.status(404).json({message: 'Aucune critique trouvée pour ce jeu.'});
+        }
+
+        // Utilisation de DataRetriever pour récupérer les détails du jeu
+        const gameDetails = await dataRetriever.getGameList([gameId]);
+
+        if (!gameDetails || gameDetails.length === 0) {
+            return res.status(404).json({message: 'Détails du jeu non trouvés.'});
+        }
+
+        // Extraire les informations pertinentes du jeu
+        const gameInfo = gameDetails[0];
+        const coverUrl = gameInfo.cover
+            ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${gameInfo.cover.image_id}.png`
+            : '/placeholder-image.png';
+
+        // Enrichir les critiques avec les informations du jeu
+        const reviewsWithDetails = reviews.map((review) => ({
+            id: review.id,
+            user_id: review.user_id,
+            content: review.content,
+            spoiler: review.spoiler,
+            date_published: formatDateToFrench(review.date_published),
+            user: {
+                username: review.user?.username || 'Utilisateur inconnu',
+                profile_picture: review.user?.profile_picture || '/default-avatar.png',
+            },
+            privacy: review.review_privacy?.name || 'Public',
+            game: {
+                title: gameInfo.name || 'Titre inconnu',
+                cover: coverUrl,
+            },
+        }));
+
+        res.status(200).json({
+            message: 'Critiques récupérées avec succès',
+            data: reviewsWithDetails,
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des critiques :', error);
+        res.status(500).json({message: 'Erreur serveur', error: error.message});
+    }
+};
+
 /**
  * Obtenir les critiques par utilisateur
  */
 controller.getReviewsByUserId = async (req, res) => {
     try {
-        // Récupérer l'utilisateur authentifié via le token JWT
-        const {user_id} = req.user;
+        const userId = req.params.id;
 
-        const reviews = await gameReview.findAll({
-            where: {user_id},
+        if (!userId) {
+            return res.status(400).json({message: 'ID utilisateur manquant.'});
+        }
+
+        // Récupérer les critiques de l'utilisateur
+        const reviews = await gameReviews.findAll({
+            where: {user_id: userId},
             include: [
-                {
-                    model: privacySettings,
-                    as: 'review_privacy',
-                    attributes: ['name'],
-                },
                 {
                     model: users,
                     as: 'user',
-                    attributes: ['username'],
-                },
-                {
-                    model: gameLogs,
-                    as: 'game_logs',
-                    attributes: ['platform_id', 'igdb_game_id'],
-                    include: [
-                        {
-                            model: gamePlatforms,
-                            as: 'platform',
-                            attributes: ['name', 'icon'],
-                        },
-                    ],
+                    attributes: ['username', 'profile_picture'], // Inclure les informations utilisateur
                 },
             ],
         });
 
         if (!reviews || reviews.length === 0) {
-            return res.status(404).json({message: 'No reviews found for this user'});
+            return res.status(404).json({message: 'Aucune critique trouvée pour cet utilisateur.'});
         }
 
-        // Récupérer les données de jeux en parallèle
+        // Récupérer les détails des jeux (titre, cover) via API IGDB ou cache
         const gameDataMap = new Map();
+
         for (const review of reviews) {
-            if (!gameDataMap.has(review.igdb_game_id)) {
-                const gameData = await getGameData(review.igdb_game_id);
-                // Ajouter uniquement les données valides dans le cache
-                if (gameData && gameData.name) {
-                    gameDataMap.set(review.igdb_game_id, gameData);
-                }
+            const igdbGameId = review.igdb_game_id;
+
+            if (!gameDataMap.has(igdbGameId)) {
+                const gameData = await getGameData(igdbGameId); // Récupérer les données de jeu
+                gameDataMap.set(igdbGameId, {
+                    name: gameData.name || 'Titre inconnu',
+                    cover: gameData.cover?.url || '/placeholder-image.png',
+                });
             }
         }
 
-        // Transformation des données enrichies pour chaque critique avec filtrage des jeux inexistants
-        const reviewsWithDetails = reviews
-            .filter((review) => gameDataMap.has(review.igdb_game_id)) // Filtrer les critiques sans données de jeu
-            .map((review) => {
-                const gameData = gameDataMap.get(review.igdb_game_id);
-
-                const userLogs = review.game_logs || [];
-                const platformLog = userLogs.find(
-                    (log) => Number(log.igdb_game_id) === Number(review.igdb_game_id)
-                );
-
-                const platform = platformLog?.platform || {name: null, icon: null};
-
-                return {
-                    id: review.id,
-                    user: {username: review.user?.username || 'Unknown User'},
-                    igdb_game_id: review.igdb_game_id,
-                    content: review.content,
-                    spoiler: review.spoiler,
-                    date_published: review.date_published,
-                    privacy: review.review_privacy?.name || 'Unknown Privacy',
-                    platform: platform.name,
-                    platform_icon: platform.icon,
-                    game: {
-                        title: gameData.name,
-                        cover: gameData.cover?.url || null,
-                    },
-                };
-            });
-
-        if (reviewsWithDetails.length === 0) {
-            return res.status(404).json({message: 'No valid reviews found for this user'});
-        }
-
-        res.status(200).json({
-            message: 'User reviews fetched successfully',
-            data: reviewsWithDetails,
-        });
-    } catch (error) {
-        console.error('Error fetching reviews by user ID:', error);
-        res.status(500).json({
-            message: 'Error fetching reviews by user ID',
-            error: error.message,
-        });
-    }
-};
-
-
-/**
- * Obtenir les critiques par jeu
- */
-controller.getReviewsByGameId = async (req, res) => {
-    try {
-        const {id} = req.params;
-
-        // Récupérer les critiques associées à ce jeu, seulement celles avec la confidentialité "Public"
-        const reviews = await gameReview.findAll({
-            where: {igdb_game_id: id},
-            include: [
-                {
-                    model: privacySettings,
-                    as: 'review_privacy',
-                    attributes: ['name'],
-                    where: {name: 'Public'}, // Filtrer uniquement les avis publics
-                },
-                {
-                    model: users,
-                    as: 'user',
-                    attributes: ['username', 'user_id'], // Inclure l'ID utilisateur
-                    include: [
-                        {
-                            model: gameLogs,
-                            as: 'user_game_logs',
-                            attributes: ['platform_id', 'igdb_game_id'],
-                            include: [
-                                {
-                                    model: gamePlatforms,
-                                    as: 'platform',
-                                    attributes: ['name', 'icon'],
-                                },
-                            ],
-                        },
-                        {
-                            model: gameRatings,
-                            as: 'user_ratings',
-                            attributes: ['rating_value', 'igdb_game_id'],
-                        },
-                    ],
-                },
-            ],
-        });
-
-        if (!reviews || reviews.length === 0) {
-            return res.status(404).json({message: 'No reviews found for this game'});
-        }
-
-        // Récupération des données du jeu via API ou cache
-        const gameData = await getGameData(id);
-
-        // Transformation des critiques avec les détails du jeu, plateforme, et notes
+        // Transformer les critiques avec les détails enrichis
         const reviewsWithDetails = reviews.map((review) => {
-            const userLogs = review.user?.user_game_logs || [];
-            const platformLog = userLogs.find(
-                (log) => Number(log.igdb_game_id) === Number(review.igdb_game_id)
-            );
-
-            const platform = platformLog?.platform || {name: 'Plateforme inconnue', icon: null};
-
-            // Récupérer la note associée à ce jeu pour cet utilisateur
-            const userRating = review.user?.user_ratings?.find(
-                (rating) => Number(rating.igdb_game_id) === Number(review.igdb_game_id)
-            );
+            const gameData = gameDataMap.get(review.igdb_game_id) || {
+                name: 'Titre inconnu',
+                cover: '/placeholder-image.png',
+            };
 
             return {
                 id: review.id,
-                user_id: review.user.user_id,
-                user: {username: review.user?.username || 'Unknown User'},
-                igdb_game_id: review.igdb_game_id,
+                user_id: review.user_id,
                 content: review.content,
                 spoiler: review.spoiler,
-                date_published: formatDateToFrench(review.date_published), // Formatage de la date
-                privacy: review.review_privacy?.name || 'Unknown Privacy',
-                platform: platform.name,
-                platform_icon: platform.icon,
-                game: {
-                    title: gameData.name || 'Titre inconnu',
-                    cover: gameData.cover?.url || null,
+                date_published: formatDateToFrench(review.date_published),
+                user: {
+                    username: review.user?.username || 'Utilisateur inconnu',
+                    profile_picture: review.user?.profile_picture || '/default-avatar.png',
                 },
-                rating: userRating?.rating_value || null, // Ajouter la note de l'utilisateur
+                game: {
+                    title: gameData.name,
+                    cover: gameData.cover,
+                },
             };
         });
 
-        res.status(200).json({
-            message: 'Game reviews fetched successfully',
+        return res.status(200).json({
+            message: 'Critiques récupérées avec succès',
             data: reviewsWithDetails,
         });
-    } catch (error) {
-        console.error('Error fetching reviews by game ID:', error);
-        res.status(500).json({
-            message: 'Error fetching reviews by game ID',
-            error: error.message,
-        });
+    } catch (err) {
+        console.error('Erreur lors de la récupération des critiques :', err);
+        return res.status(500).json({message: 'Erreur serveur', error: err.message});
     }
 };
 

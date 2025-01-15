@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../components/AuthContext.jsx';
 import ResponsiveCommentCard from '../../components/ResponsiveCommentCard';
-import {Grid, CircularProgress, Typography} from '@mui/material';
+import {Grid, CircularProgress, Typography, Box} from '@mui/material';
 
 const MyReviewsPage = () => {
     const {user} = useContext(AuthContext);
@@ -10,71 +10,112 @@ const MyReviewsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Charger les avis utilisateur
     useEffect(() => {
-        if (userId) {
-            fetch(`/gameReviews/user_review`, {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('Erreur lors de la récupération des avis.');
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    setReviews(data?.data || []);
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    setError(error.message);
-                    setLoading(false);
+        const fetchUserReviews = async () => {
+            if (!userId) {
+                setError('Utilisateur non identifié.');
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/game-reviews/user/${userId}/reviews`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                 });
-        }
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('Avis utilisateur:', data);
+                setReviews(data?.data || []); // Mise à jour des avis
+            } catch (err) {
+                console.error('Erreur lors de la récupération des avis:', err);
+                setError('Erreur lors de la récupération des avis. Veuillez réessayer plus tard.');
+            } finally {
+                setLoading(false); // Désactiver le chargement
+            }
+        };
+
+        fetchUserReviews();
     }, [userId]);
 
     if (loading) {
         return (
-            <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flex: '1',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
                 <CircularProgress/>
-            </div>
+            </Box>
         );
     }
 
     if (error) {
         return (
-            <Typography color="error" align="center" style={{marginTop: '20px'}}>
-                {error}
+            <Box
+                sx={{
+                    textAlign: 'center',
+                    color: 'red',
+                    marginTop: '20px',
+                }}
+            >
+                <Typography variant="h6">{error}</Typography>
+            </Box>
+        );
+    }
+
+    if (reviews.length === 0) {
+        return (
+            <Typography align="center" variant="h6" style={{marginTop: '20px'}}>
+                Aucun avis trouvé.
             </Typography>
         );
     }
 
     return (
-        <div>
-            <Typography variant="h4" gutterBottom>
-                Mes avis
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-                Bienvenue, {user?.username} !
-            </Typography>
-            <Grid container spacing={2}>
-                {reviews.map((review) => (
-                    <Grid item xs={12} sm={6} key={review.id}>
-                        <ResponsiveCommentCard
-                            content={review.content}
-                            rating={review.rating}
-                            gameTitle={review.game?.title}
-                            gameCover={review.game?.cover}
-                            datePublished={review.date_published}
-                            username={review.user?.username}
-                            userProfilePicture={review.user?.profile_picture}
-                        />
+        <Box sx={{padding: '2em'}}>
+            
+            {/* Affichage des avis comme sur HomePage */}
+            <Box
+                sx={{
+                    textAlign: 'center',
+                    color: 'text.secondary',
+                    marginTop: '1.5em',
+                }}
+            >
+                {reviews.length > 0 ? (
+                    <Grid container spacing={2}>
+                        {reviews.map((review) => (
+                            <Grid item xs={12} sm={6} key={review.id}>
+                                <ResponsiveCommentCard
+                                    comments={[review]} // Un seul commentaire
+                                    maxComments={1} // Permet d’afficher un seul commentaire par carte
+                                    currentUserId={user?.id}
+                                    onCommentDeleted={(commentId) =>
+                                        setReviews((prev) => prev.filter((r) => r.id !== commentId))
+                                    }
+                                />
+                            </Grid>
+                        ))}
                     </Grid>
-                ))}
-            </Grid>
-        </div>
+                ) : (
+                    <Typography variant="body1">
+                        Aucun avis trouvé pour cet utilisateur.
+                    </Typography>
+                )}
+            </Box>
+        </Box>
     );
 };
 
