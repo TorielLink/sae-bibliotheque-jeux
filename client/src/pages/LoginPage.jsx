@@ -1,10 +1,16 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../components/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
+import LoginBg from "../components/LoginBg"
+
+import LoginBox from "../components/LoginSignup/LoginBox"
+import SignupBox from "../components/LoginSignup/SignupBox"
+
 function LoginPage() {
-  const [showSignup, setShowSignup] = useState(false);
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+
+  const [showSignup, setShowSignup] = useState(false); // Gérer l'affichage du formulaire d'inscription
+  const [credentials, setCredentials] = useState({ username: '', password: '' }); // Champs de connexion
   const [signupData, setSignupData] = useState({
     username: '',
     mail: '',
@@ -13,16 +19,18 @@ function LoginPage() {
     privacy_setting_id: 1,
   });
 
-  const [loginError, setLoginError] = useState('');
-  const [signupError, setSignupError] = useState('');
-  const { login } = useContext(AuthContext);
+  // Gérer les modifications des champs d'inscription
+
+  const [loginError, setLoginError] = useState(''); // Erreurs de connexion
+  const [signupError, setSignupError] = useState(''); // Erreurs d'inscription
+  const { login } = useContext(AuthContext); // Utiliser la fonction login depuis le contexte
   const navigate = useNavigate();
 
   // Gérer les modifications des champs de connexion
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
-    setLoginError('');
+    setLoginError(''); // Réinitialiser les erreurs
   };
 
 const handleLoginSubmit = async (e) => {
@@ -44,9 +52,9 @@ const handleLoginSubmit = async (e) => {
     }
 
     const data = await response.json();
-    console.log('Connexion réussie :', data);
+    console.log('Connexion réussie :', data); // Log des données reçues
     login(data.token, data.user);
-    navigate('/');
+    navigate('/'); // Redirection après connexion
   } catch (error) {
     console.error('Erreur lors de la connexion :', error);
     setLoginError('Erreur réseau. Veuillez réessayer.');
@@ -62,7 +70,7 @@ const handleLoginSubmit = async (e) => {
     } else {
       setSignupData({ ...signupData, [name]: value });
     }
-    setSignupError('');
+    setSignupError(''); // Réinitialiser les erreurs
   };
 
   // Soumettre les données d'inscription
@@ -105,103 +113,52 @@ const handleLoginSubmit = async (e) => {
         profilePicture: null,
         privacy_setting_id: 1,
       });
-      setShowSignup(false);
+      setShowSignup(false); // Revenir à l'écran de connexion
     } catch (error) {
       console.error('Erreur lors de l’inscription :', error);
       setSignupError('Une erreur est survenue. Veuillez réessayer.');
     }
   };
 
+  // useEffect(() => { //Execution du script background3D.jsx
+  //   // Code à exécuter lorsque le composant est monté
+  //   console.log('Composant chargé');
+
+  //   // Exemple : Attacher un script ou une logique
+  //   const script = document.createElement('script');
+  //   script.src = "/src/3Dbackgrounds/background3D.jsx";
+  //   script.async = true;
+  //   script.type = "module";
+  //   document.body.appendChild(script);
+
+  //   // Nettoyage (si nécessaire)
+  //   return () => {
+  //     console.log('Composant démonté');
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
+
+  const stateVariables = {
+    signupData,
+    setSignupData,
+    signupError,
+    setShowSignup,
+    handleSignupChange,
+    handleSignupSubmit,
+    handleLoginChange,
+    handleLoginSubmit,
+    credentials
+  }
+
   return (
+    <>
+    <LoginBg/>
     <div>
-      {!showSignup ? (
-        <>
-          <h1>Connexion</h1>
-          <form onSubmit={handleLoginSubmit}>
-            <label>
-              Nom d'utilisateur :
-              <input
-                type="input"
-                name="username"
-                value={credentials.username}
-                onChange={handleLoginChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Mot de passe :
-              <input
-                type="password"
-                name="password"
-                value={credentials.password}
-                onChange={handleLoginChange}
-                required
-              />
-            </label>
-            <br />
-            <button type="submit">Se connecter</button>
-          </form>
-          {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
-          <hr />
-          <button onClick={() => setShowSignup(true)}>S'inscrire</button>
-        </>
-      ) : (
-        <>
-          <h2>Inscription</h2>
-          <form onSubmit={handleSignupSubmit}>
-            <label>
-              Nom d'utilisateur :
-              <input
-                type="input"
-                name="username"
-                value={signupData.username}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Adresse e-mail :
-              <input
-                type="email"
-                name="mail"
-                value={signupData.mail}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Mot de passe :
-              <input
-                type="password"
-                name="password"
-                value={signupData.password}
-                onChange={handleSignupChange}
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Photo de profil :
-              <input
-                type="file"
-                name="profilePicture"
-                accept="mentorOrInvestorImage/*"
-                onChange={handleSignupChange}
-              />
-            </label>
-            <br />
-            <button type="submit">S'inscrire</button>
-          </form>
-          {signupError && <p style={{ color: 'red' }}>{signupError}</p>}
-          <hr />
-          <button onClick={() => setShowSignup(false)}>Retour à la connexion</button>
-        </>
-      )}
+      {showSignup ? <SignupBox {...stateVariables}/> : <LoginBox {...stateVariables} />}
     </div>
+    </>
   );
+
 }
 
 export default LoginPage;
