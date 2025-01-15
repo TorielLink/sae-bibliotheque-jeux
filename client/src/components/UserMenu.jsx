@@ -6,12 +6,12 @@ import { Link } from 'react-router-dom';
 
 const UserMenu = () => {
   const { isAuthenticated, user, logout } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext); // Extraction correcte de `theme` depuis ThemeContext
+  const { theme } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log('Informations utilisateur récupérées :', user);
+      console.log('Informations utilisateur récupérées :', user); // il faudra le supprimé
     }
   }, [isAuthenticated, user]);
 
@@ -29,7 +29,7 @@ const UserMenu = () => {
     handleMenuClose();
   };
 
-  if (!isAuthenticated) return null; // Ne rien afficher si l'utilisateur n'est pas connecté
+  if (!isAuthenticated) return null;
 
   return (
     <>

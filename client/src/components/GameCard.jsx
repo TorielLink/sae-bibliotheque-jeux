@@ -1,17 +1,10 @@
 import React from "react";
-import {
-    Card,
-    CardMedia,
-    Typography,
-    Chip,
-    Box,
-    useMediaQuery,
-} from "@mui/material";
+import {Box, Card, CardMedia, Chip, Typography, useMediaQuery,} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import { useTheme } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
+import {useTheme} from "@mui/material/styles";
+import {useNavigate} from "react-router-dom";
 
-function GameCard({ id, image, title, rating, categories }) {
+function GameCard({id, image, title, rating, categories}) {
     const theme = useTheme();
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -43,7 +36,7 @@ function GameCard({ id, image, title, rating, categories }) {
             onClick={handleCardClick}
         >
             {/* Zone contenant l'image et l'évaluation */}
-            <Box sx={{ position: "relative", height: "85%" }}>
+            <Box sx={{position: "relative", height: "85%"}}>
                 <CardMedia
                     component="img"
                     image={image}
@@ -52,7 +45,7 @@ function GameCard({ id, image, title, rating, categories }) {
                         objectFit: "cover",
                         width: "100%",
                         height: "100%"
-                }} />
+                    }}/>
 
                 <Box
                     sx={{

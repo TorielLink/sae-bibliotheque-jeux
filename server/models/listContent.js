@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
         game_list_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true, // Partie de la clé primaire composite
+            primaryKey: true,
             references: {
                 model: 'game_list',
                 key: 'game_list_id'
@@ -12,10 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         igdb_game_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true // Partie de la clé primaire composite
+            primaryKey: true
         }
     }, {
         freezeTableName: true,
-        timestamps: false // Désactivation des champs createdAt/updatedAt
+        timestamps: false
     });
 };

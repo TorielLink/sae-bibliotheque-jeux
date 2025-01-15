@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path'); // Import du module path
 require('dotenv').config();
+const verifyToken = require('./middleware/auth');
 
 // Importation des routes
 const searchRoutes = require('./routes/searchRoute');
@@ -15,8 +16,9 @@ const gameRatingsRoutes = require('./routes/gameRatingsRoutes');
 const gameStatusRoutes = require('./routes/gameStatusRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
 const userListsRoutes = require('./routes/userListsRoutes');
-const { swaggerUi, swaggerDocs } = require('./middleware/swagger'); // Importez la configuration
+const {swaggerUi, swaggerDocs} = require('./middleware/swagger'); // Importez la configuration
 const gamesRoutes = require('./routes/gamesRoutes');
+const privacySettingsRoutes = require('./routes/privacySettingsRoutes')
 
 // Création de l'application Express
 const app = express();
@@ -49,18 +51,19 @@ app.use(configureCors());
 
 // Middleware pour parser les données JSON et URL-encodées
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // Gestion des routes
 app.use('/games', gamesRoutes);
-app.use('/search', searchRoutes); // Routes pour la recherche
-app.use('/users', usersRoutes); // Routes pour les utilisateurs
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Routes pour les fichiers téléchargés
-app.use('/status', statusRoutes); // Ajout des routes pour les statuts
-app.use('/game-platforms', gamePlatformsRoutes); // Ajout des routes pour les plateformes de jeu
-app.use('/game-lists', gameListRoutes); // Ajout des routes pour les listes de jeux
+app.use('/search', searchRoutes);
+app.use('/users', usersRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/status', statusRoutes);
+app.use('/game-platforms', gamePlatformsRoutes);
+app.use('/game-lists', gameListRoutes);
 app.use('/list-content', listContentRoutes);
 app.use('/game-logs', gameLogsRoutes);
+app.use('/privacy-settings', privacySettingsRoutes);
 app.use('/game-sessions', gameSessionRoutes);
 app.use('/game-reviews', gameReviewRoutes);
 app.use('/game-ratings', gameRatingsRoutes);
@@ -69,16 +72,15 @@ app.use('/friends', friendsRoutes);
 app.use('/user-lists', userListsRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-
 // Gestion des erreurs pour les routes non définies
 app.use((req, res) => {
-    res.status(404).json({ message: 'Ressource non trouvée.' });
+    res.status(404).json({message: 'Ressource non trouvée.'});
 });
 
 // Gestionnaire global des erreurs
 app.use((err, req, res, next) => {
     console.error('Erreur du serveur :', err.stack);
-    res.status(500).json({ message: 'Erreur interne du serveur.', error: err.message });
+    res.status(500).json({message: 'Erreur interne du serveur.', error: err.message});
 });
 
 // Démarrage du serveur

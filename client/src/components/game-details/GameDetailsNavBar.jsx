@@ -13,6 +13,8 @@ export default function GameDetailsNavBar({ activeSection }) {
                 return theme.palette.transparentColors['purple-70']; // violet
             case "reviews":
                 return theme.palette.transparentColors['yellow-70']; // jaune
+            case "logs":
+                return theme.palette.transparentColors['red-70']; // rouge
             case "medias":
                 return theme.palette.transparentColors['blue-70']; // bleu
             default:
@@ -24,24 +26,39 @@ export default function GameDetailsNavBar({ activeSection }) {
         <div style={styles.navbar}>
             <ul style={styles.navList}>
                 <li style={{
-                        ...styles.navItem,
-                        ...(activeSection === "details" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
-                    }}>
+                    ...styles.navItem,
+                    ...(activeSection === "details" ? {
+                        ...styles.activeNavItem,
+                        backgroundColor: getActiveColor()
+                    } : {}),
+                }}>
                     <a href={"#details"} style={{
                         ...styles.navLink,
                         color: activeSection === "details" ? "#FFF" : "#333", // texte en blanc si actif
                     }}>Détails</a>
                 </li>
                 <li style={{
-                        ...styles.navItem,
-                        ...(activeSection === "reviews" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
-                    }}>
+                    ...styles.navItem,
+                    ...(activeSection === "reviews" ? {
+                        ...styles.activeNavItem,
+                        backgroundColor: getActiveColor()
+                    } : {}),
+                }}>
                     <a href={"#reviews"} style={{...styles.navLink,}}>Avis</a>
                 </li>
                 <li style={{
-                        ...styles.navItem,
-                        ...(activeSection === "medias" ? { ...styles.activeNavItem, backgroundColor: getActiveColor() } : {}),
-                    }}>
+                    ...styles.navItem,
+                    ...(activeSection === "logs" ? {
+                        ...styles.activeNavItem,
+                        backgroundColor: getActiveColor()
+                    } : {}),
+                }}>
+                    <a href={"#logs"} style={{...styles.navLink,}}>Journaux</a>
+                </li>
+                <li style={{
+                    ...styles.navItem,
+                    ...(activeSection === "medias" ? {...styles.activeNavItem, backgroundColor: getActiveColor()} : {}),
+                }}>
                     <a href={"#medias"} style={{...styles.navLink,}}>Médias</a>
                 </li>
             </ul>

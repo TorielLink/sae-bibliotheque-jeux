@@ -5,7 +5,8 @@ server/.env
 
 # Mais ne pas ignorer le dossier profile_pictures lui-même
 !server/uploads/profile_pictures/.gitkeep
-
+!server/uploads/profile_pictures/profile_picture-1733920048860-972297989.jpg
 # Ignorer les fichiers PNG (si cela s'applique en dehors de ce dossier)
 *.png
 
+server/uploads/profile_pictures/profile_picture-1733753693406-193304891.jpeg

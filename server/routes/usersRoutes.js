@@ -1,30 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { uploadProfilePicture } = require('../middleware/upload'); // Middleware pour l'upload
-const { users } = require('../controllers/indexController');
+const {uploadProfilePicture} = require('../middleware/upload');
+const controller = require('../controllers/usersController');
+const verifyToken = require('../middleware/auth');
 
-/**
- * @swagger
- * /users:
- *   get:
- *     summary: Récupérer tous les utilisateurs
- *     description: >
- *       Cette route retourne tous les utilisateurs enregistrés.
- *     tags:
- *       - Users
- *     responses:
- *       200:
- *         description: Liste des utilisateurs récupérée avec succès
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
- *       500:
- *         description: Erreur serveur
- */
-router.get('/', users.getAll);
 /**
  * @swagger
  * /login:
@@ -66,7 +45,7 @@ router.get('/', users.getAll);
  *       500:
  *         description: Erreur serveur
  */
-router.post('/login', users.login);
+router.post('/login', controller.login);
 
 /**
  * @swagger
@@ -96,7 +75,7 @@ router.post('/login', users.login);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/:id', users.getById);
+router.get('/:id', controller.getById);
 
 /**
  * @swagger
@@ -136,6 +115,10 @@ router.get('/:id', users.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.post('/', uploadProfilePicture, users.create);
+router.post('/', uploadProfilePicture, controller.create);
+
+
+router.put('/:id', verifyToken, uploadProfilePicture, controller.update);
+router.delete('/:id', verifyToken, controller.delete);
 
 module.exports = router;
