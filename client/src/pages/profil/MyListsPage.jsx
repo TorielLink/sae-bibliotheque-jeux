@@ -57,13 +57,14 @@ const MyListsPage = () => {
 
     // Mapping entre les IDs de filtres et les valeurs attendues par l'API
     const filterStatusMapping = {
-        finish: 'Finished',
+        finish: 'Played',
         playing: 'Playing',
         library: 'Library',
         wishlist: 'Wishlist',
         paused: 'Paused',
         stopped: 'Stopped',
     };
+
 
     const tableHeaders = {
         finish: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
@@ -139,7 +140,7 @@ const MyListsPage = () => {
     }, [userId]); // Dépendance uniquement sur userId pour charger une fois
 
     return (
-        <Box style={{padding: '0.125em', overflowX: 'hidden', overflowY: 'auto'}}>
+        <Box style={{padding: '0.125em', overflowX: 'hidden', overflowY: 'auto', flexGrow: 1,}}>
             {/* Navigation en haut */}
             <Box
                 sx={{
@@ -150,7 +151,7 @@ const MyListsPage = () => {
                     color: theme.palette.colors?.red || '#FF0000',
                 }}
             >
-                <Typography variant="body1" sx={{color: '#555', marginRight: '0.5em'}}>
+                <Typography variant="body1" sx={{color: theme.palette.colors?.red, marginRight: '0.5em'}}>
                     Listes de jeux
                 </Typography>
                 <Typography variant="body1" sx={{color: theme.palette.colors?.red || '#FF0000'}}>
