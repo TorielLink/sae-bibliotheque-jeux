@@ -9,10 +9,14 @@ function GameCardTitle({id, image, title, rating}) {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+    // Gestion du clic sur la carte
     const handleCardClick = () => {
         console.log("Navigating to details with ID:", id);
         navigate(`/details/${id}`);
     };
+
+    // Debug des données reçues
+    console.log("GameCardTitle Props:", {id, image, title, rating});
 
     return (
         <Card
@@ -38,9 +42,10 @@ function GameCardTitle({id, image, title, rating}) {
         >
             {/* Zone contenant l'image et l'évaluation */}
             <Box sx={{position: "relative", height: "100%"}}>
+                {/* Affichage de l'image avec fallback */}
                 <CardMedia
                     component="img"
-                    image={image}
+                    image={image || "/placeholder-image.png"} // Image par défaut
                     alt={title || "Image non disponible"}
                     sx={{
                         objectFit: "cover",
@@ -56,7 +61,7 @@ function GameCardTitle({id, image, title, rating}) {
                         top: "0.5em",
                         right: "0.5em",
                         backgroundColor: theme.palette.background.default,
-                        color: theme.palette.colors.yellow,
+                        color: theme.palette.colors?.yellow || "#FFD700",
                         borderRadius: "0.2em",
                         boxShadow: "0 0 0.1em #000000",
                         padding: "0 0.25em",
@@ -71,12 +76,12 @@ function GameCardTitle({id, image, title, rating}) {
                             fontWeight: "bold",
                         }}
                     >
-                        {rating}
+                        {rating || "—"}
                     </Typography>
                     <StarIcon
                         sx={{
                             fontSize: "1em",
-                            color: theme.palette.colors.yellow,
+                            color: theme.palette.colors?.yellow || "#FFD700",
                         }}
                     />
                 </Box>

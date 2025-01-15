@@ -2,12 +2,18 @@ import React, {useState} from 'react';
 import {Accordion, AccordionDetails, AccordionSummary, Box, Rating, Typography} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useTheme} from '@mui/material/styles';
+import {useNavigate} from 'react-router-dom';
 
 const GameAccordion = ({game, selectedFilter}) => {
     const [expanded, setExpanded] = useState(false);
+    const navigate = useNavigate(); // Pour la navigation vers la page de détails
 
     const handleChange = () => {
         setExpanded(!expanded);
+    };
+
+    const handleImageClick = () => {
+        navigate(`/details/${game.igdb_game_id}`); // Redirige vers la page de détails
     };
 
     const formatPlayTime = (minutes) => {
@@ -39,7 +45,14 @@ const GameAccordion = ({game, selectedFilter}) => {
                 }}
             >
                 <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
-                    <img src={game.cover} alt={game.title} width={60} height={90}/>
+                    <img
+                        src={game.cover}
+                        alt={game.title}
+                        width={60}
+                        height={90}
+                        style={{cursor: 'pointer'}} // Ajoute un curseur pour indiquer la clicabilité
+                        onClick={handleImageClick} // Gère le clic sur l'image
+                    />
                     <Typography variant="h6">{game.title}</Typography>
                 </Box>
             </AccordionSummary>
@@ -49,11 +62,11 @@ const GameAccordion = ({game, selectedFilter}) => {
                     {selectedFilter === 'finish' && (
                         <>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Nombre de sessions:</strong> {game.sessions || 'Non spécifié'}
+                                <strong>Nombre de sessions:</strong> {game.sessionCount || 'Non spécifié'}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
                                 <strong>Temps
-                                    joué:</strong> {game.timePlayed ? formatPlayTime(game.timePlayed) : 'Non disponible'}
+                                    joué:</strong> {game.totalTimePlayed ? formatPlayTime(game.totalTimePlayed) : 'Non disponible'}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
                                 <strong>Plateforme:</strong> {game.platform || 'Non spécifiée'}
@@ -76,11 +89,11 @@ const GameAccordion = ({game, selectedFilter}) => {
                                 <strong>Dernière session:</strong> {game.lastSessionDate || 'Non spécifiée'}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Nombre de sessions:</strong> {game.sessions || 'Non spécifié'}
+                                <strong>Nombre de sessions:</strong> {game.sessionCount || 'Non spécifié'}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
                                 <strong>Temps
-                                    joué:</strong> {game.timePlayed ? formatPlayTime(game.timePlayed) : 'Non disponible'}
+                                    joué:</strong> {game.totalTimePlayed ? formatPlayTime(game.totalTimePlayed) : 'Non disponible'}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
                                 <strong>Plateforme:</strong> {game.platform || 'Non spécifiée'}
@@ -96,7 +109,6 @@ const GameAccordion = ({game, selectedFilter}) => {
                             </Box>
                         </>
                     )}
-
                     {selectedFilter === 'library' && (
                         <>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
@@ -157,5 +169,6 @@ const GameAccordion = ({game, selectedFilter}) => {
         </Accordion>
     );
 };
+
 
 export default GameAccordion;
