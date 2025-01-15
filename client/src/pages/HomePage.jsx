@@ -1,10 +1,16 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Box, Typography, CircularProgress, useMediaQuery, Grid} from "@mui/material";
+import {
+    Box,
+    Typography,
+    CircularProgress,
+    useMediaQuery,
+    Grid,
+} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
 import MobileTabs from "../components/MobileTabs.jsx";
-import CommentCard from "../components/CommentCard.jsx";
+import ResponsiveCommentCard from "../components/ResponsiveCommentCard";
 import {AuthContext} from "../components/AuthContext";
 
 function HomePage() {
@@ -17,13 +23,14 @@ function HomePage() {
     const {user} = useContext(AuthContext);
     const [recentComments, setRecentComments] = useState([]);
 
+    // Supprimer un commentaire du state local quand il est supprimé côté serveur
     const handleCommentDeleted = (commentId) => {
-        // Supprimer le commentaire de l'état local
         setRecentComments((prevComments) =>
             prevComments.filter((comment) => comment.id !== commentId)
         );
     };
 
+    // Contenus des onglets (version mobile)
     const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
     const tabContents = [
         <GameList key="recent" games={recentGames}/>,
@@ -31,12 +38,15 @@ function HomePage() {
         <Box sx={{textAlign: "center", color: theme.palette.text.secondary}}>
             {recentComments.length > 0 ? (
                 <Grid container spacing={2}>
+                    {/* On boucle sur recentComments et, pour chaque "comment",
+              on passe uniquement [comment] à ResponsiveCommentCard */}
                     {recentComments.map((comment) => (
                         <Grid item xs={12} sm={6} key={comment.id}>
-                            <CommentCard
-                                comments={[comment]}
+                            <ResponsiveCommentCard
+                                comments={[comment]}         // <-- on ne passe qu'un commentaire
+                                maxComments={1}             // ou 5, mais 1 suffit ici
                                 currentUserId={user?.id}
-                                onCommentDeleted={handleCommentDeleted} // Passer la fonction au composant
+                                onCommentDeleted={handleCommentDeleted}
                             />
                         </Grid>
                     ))}
@@ -49,7 +59,7 @@ function HomePage() {
         </Box>,
     ];
 
-    // Fonction pour charger les jeux en fonction des filtres
+    // Fonction pour charger les jeux par filtre
     const fetchGamesByFilter = async (filter) => {
         try {
             const response = await fetch(`http://localhost:8080/games/${filter}`);
@@ -59,12 +69,15 @@ function HomePage() {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error(`Erreur lors de la récupération des jeux (${filter}):`, error);
+            console.error(
+                `Erreur lors de la récupération des jeux (${filter}):`,
+                error
+            );
             throw error;
         }
     };
 
-    // Chargement des données pour les sections
+    // Charger les jeux (récents / populaires)
     const fetchAllGames = async () => {
         setLoading(true);
         setError("");
@@ -80,6 +93,7 @@ function HomePage() {
         }
     };
 
+    // Charger les commentaires récents
     const fetchRecentComments = async () => {
         try {
             const response = await fetch("http://localhost:8080/game-reviews");
@@ -97,25 +111,29 @@ function HomePage() {
         }
     };
 
-    // Chargement initial des jeux
+    // Chargement initial
     useEffect(() => {
         fetchAllGames();
         fetchRecentComments(); // Charger les avis récents
     }, []);
 
-    return (
-        loading ? (
+    if (loading) {
+        return (
             <Box
                 sx={{
-                    display: 'flex',
-                    flex: '1',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    display: "flex",
+                    flex: "1",
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
             >
                 <CircularProgress/>
             </Box>
-        ) : error ? (
+        );
+    }
+
+    if (error) {
+        return (
             <Box
                 sx={{
                     textAlign: "center",
@@ -125,66 +143,74 @@ function HomePage() {
             >
                 <Typography variant="h6">{error}</Typography>
             </Box>
-        ) : (
-            <>
-                <Box
+        );
+    }
+
+    // Rendu principal
+    return (
+        <>
+            <Box
+                sx={{
+                    display: "inline-block",
+                    padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
+                }}
+            >
+                <Typography
+                    variant="subtitle2"
                     sx={{
-                        display: "inline-block",
-                        padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
+                        color: theme.palette.colors.red,
+                        fontSize: isMobile ? "0.9em" : "1em",
+                        display: "inline",
                     }}
                 >
-                    <Typography
-                        variant="subtitle2"
+                    Accueil &gt;
+                </Typography>
+            </Box>
+
+            {/* Si on est en mobile => MobileTabs, sinon => affichage "desktop" */}
+            {isMobile ? (
+                <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
+            ) : (
+                <>
+                    <Box sx={{marginTop: "2em"}}>
+                        <GameList title="Sorties récentes" games={recentGames}/>
+                    </Box>
+                    <Box>
+                        <GameList title="Jeux populaires" games={popularGames}/>
+                    </Box>
+
+                    <SectionTitle title="Avis récents"/>
+                    <Box
                         sx={{
-                            color: theme.palette.colors.red,
-                            fontSize: isMobile ? "0.9em" : "1em",
-                            display: "inline",
+                            textAlign: "center",
+                            color: theme.palette.text.secondary,
+                            marginTop: "1.5em",
+                            marginBottom: "2.5em",
                         }}
                     >
-                        Accueil &gt;
-                    </Typography>
-                </Box>
-                {isMobile ? (
-                    <MobileTabs tabTitles={tabTitles} tabContents={tabContents}/>
-                ) : (
-                    <>
-                        <Box sx={{marginTop: "2em"}}>
-                            <GameList title="Sorties récentes" games={recentGames}/>
-                        </Box>
-                        <Box>
-                            <GameList title="Jeux populaires" games={popularGames}/>
-                        </Box>
-                        <SectionTitle title="Avis récents"/>
-                        <Box
-                            sx={{
-                                textAlign: "center",
-                                color: theme.palette.text.secondary,
-                                marginTop: "1.5em",
-                                marginBottom: "2.5em",
-                            }}
-                        >
-                            {recentComments.length > 0 ? (
-                                <Grid container spacing={2}>
-                                    {recentComments.map((comment) => (
-                                        <Grid item xs={12} sm={6} key={comment.id}>
-                                            <CommentCard
-                                                comments={[comment]}
-                                                currentUserId={user?.id}
-                                                onCommentDeleted={handleCommentDeleted} // Passer la fonction au composant
-                                            />
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            ) : (
-                                <Typography variant="body1">
-                                    Aucun avis disponible pour le moment.
-                                </Typography>
-                            )}
-                        </Box>
-                    </>
-                )}
-            </>
-        )
+                        {recentComments.length > 0 ? (
+                            <Grid container spacing={2}>
+                                {/* Même logique ici : on boucle et on passe [comment]. */}
+                                {recentComments.map((comment) => (
+                                    <Grid item xs={12} sm={6} key={comment.id}>
+                                        <ResponsiveCommentCard
+                                            comments={[comment]}       // un seul comment
+                                            maxComments={1}
+                                            currentUserId={user?.id}
+                                            onCommentDeleted={handleCommentDeleted}
+                                        />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        ) : (
+                            <Typography variant="body1">
+                                Aucun avis disponible pour le moment.
+                            </Typography>
+                        )}
+                    </Box>
+                </>
+            )}
+        </>
     );
 }
 

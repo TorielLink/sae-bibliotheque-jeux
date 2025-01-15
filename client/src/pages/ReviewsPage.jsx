@@ -1,42 +1,94 @@
-import React, {useContext, useState, useMemo} from "react";
+import React, {useEffect, useState, useMemo} from "react";
 import {FaStar} from "react-icons/fa";
-import {Grid, Typography} from "@mui/material";
-import CommentCard from "../components/CommentCard";
-import {CommentsContext} from "../components/CommentsContext";
+import {Grid, Typography, CircularProgress} from "@mui/material";
+import ResponsiveCommentCard from "../components/ResponsiveCommentCard";
 
+/** Couleurs pour le système de filtrage des étoiles */
 const colors = {
     orange: "#FFBA5A",
     grey: "#a9a9a9",
 };
 
-function ReviewsPage() {
-    const {comments} = useContext(CommentsContext);
+export default function ReviewsPage() {
+    const [comments, setComments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Étoiles filtrage
     const [filterStars, setFilterStars] = useState(null);
-    const [hoveredStars, setHoveredStars] = useState(null); // État pour gérer le survol
+    const [hoveredStars, setHoveredStars] = useState(null);
     const stars = Array(5).fill(0);
 
-    const validComments = Array.isArray(comments) ? comments : [];
+    const userId = 42;
 
+    // Récupération des avis depuis l'API
+    useEffect(() => {
+        const fetchComments = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch("http://localhost:8080/game-reviews");
+                if (!response.ok) {
+                    throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                console.log("Réponse de l'API :", data);
+                setComments(data.data || []);
+            } catch (err) {
+                console.error("Erreur lors de la récupération des avis :", err.message);
+                setError("Impossible de charger les avis. Veuillez réessayer.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchComments();
+    }, []);
+
+    // Filtrer localement les avis par note
     const filteredComments = useMemo(() => {
-        return filterStars !== null
-            ? validComments.filter((comment) => comment.rating === filterStars)
-            : validComments;
-    }, [validComments, filterStars]);
+        if (filterStars !== null) {
+            return comments.filter((comment) => comment.rating === filterStars);
+        }
+        return comments;
+    }, [comments, filterStars]);
+
+    // Quand on supprime un avis côté serveur, on le retire aussi du state local
+    const handleCommentDeleted = (commentId) => {
+        setComments((prev) => prev.filter((c) => c.id !== commentId));
+    };
+
+    if (loading) {
+        return (
+            <div style={styles.loadingContainer}>
+                <CircularProgress/>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={styles.errorContainer}>
+                <Typography color="error" variant="h6">
+                    {error}
+                </Typography>
+            </div>
+        );
+    }
 
     return (
         <div style={{padding: "20px"}}>
+            {/* Barre de filtre (étoiles) */}
             <div style={styles.filterContainer}>
                 {stars.map((_, index) => {
-                    const isActive = filterStars === index + 1;
-                    const isHovered = hoveredStars === index + 1;
+                    const starValue = index + 1;
+                    const isActive = filterStars === starValue;
+                    const isHovered = hoveredStars === starValue;
                     return (
                         <button
                             key={index}
                             style={{
                                 ...styles.filterButton,
-                                ...(isActive || isHovered
-                                    ? styles.filterButtonHover
-                                    : {}),
+                                ...(isActive || isHovered ? styles.filterButtonHover : {}),
                                 backgroundColor: isActive
                                     ? colors.orange
                                     : isHovered
@@ -44,72 +96,66 @@ function ReviewsPage() {
                                         : "#f0f0f0",
                                 color: isActive || isHovered ? "#fff" : "#000",
                             }}
-                            onMouseEnter={() => setHoveredStars(index + 1)}
+                            onMouseEnter={() => setHoveredStars(starValue)}
                             onMouseLeave={() => setHoveredStars(null)}
-                            onClick={() => setFilterStars(index + 1)}
+                            onClick={() => setFilterStars(starValue)}
                         >
-                            {index + 1}{" "}
-                            <FaStar
-                                color={
-                                    isActive || isHovered ? "#fff" : colors.orange
-                                }
-                            />
+                            {starValue} <FaStar color={isActive || isHovered ? "#fff" : colors.orange}/>
                         </button>
                     );
                 })}
+
+                {/* Bouton pour annuler le filtre */}
                 <button
                     style={{
                         ...styles.filterButton,
-                        ...(filterStars === null || hoveredStars === null
-                            ? styles.filterButtonHover
-                            : {}),
-                        backgroundColor:
-                            filterStars === null
-                                ? colors.orange
-                                : hoveredStars === null
-                                    ? colors.grey
-                                    : "#f0f0f0",
-                        color:
-                            filterStars === null || hoveredStars === null
-                                ? "#fff"
-                                : "#000",
+                        backgroundColor: filterStars === null ? colors.orange : "#f0f0f0",
+                        color: filterStars === null ? "#fff" : "#000",
                     }}
-                    onMouseEnter={() => setHoveredStars(null)}
-                    onMouseLeave={() => setHoveredStars(null)}
                     onClick={() => setFilterStars(null)}
                 >
                     Tous
                 </button>
             </div>
-            {filteredComments.length === 0 ? (
-                <p style={styles.noResultsText}>
-                    Aucun commentaire ne correspond à ce filtre.
-                </p>
-            ) : (
+
+            {/* Liste des commentaires filtrés */}
+            {filteredComments.length > 0 ? (
                 <Grid container spacing={2}>
                     {filteredComments.map((comment) => (
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6} // 2 avis par ligne sur écrans moyens et plus
-                            key={comment.id}
-                        >
-                            <Typography variant="h6" style={styles.commentAuthor}>
-                                {comment.author}
-                            </Typography>
-                            <Typography variant="body1" style={styles.commentContent}>
-                                {comment.content}
-                            </Typography>
-                            <CommentCard comments={[comment]}/>
+                        <Grid item xs={12} md={6} key={comment.id}>
+                            {/* On passe un SEUL commentaire à ResponsiveCommentCard
+                  pour éviter l'effet "duplicates" */}
+                            <ResponsiveCommentCard
+                                comments={[comment]}
+                                maxComments={1}
+                                currentUserId={userId}  // ou user?.id
+                                onCommentDeleted={handleCommentDeleted}
+                            />
                         </Grid>
                     ))}
                 </Grid>
+            ) : (
+                <Typography style={styles.noResultsText}>
+                    Aucun avis trouvé
+                </Typography>
             )}
         </div>
     );
 }
 
 const styles = {
+    loadingContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+    },
+    errorContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+    },
     filterContainer: {
         display: "flex",
         justifyContent: "center",
@@ -141,13 +187,4 @@ const styles = {
         fontSize: "16px",
         color: "#666",
     },
-    commentAuthor: {
-        fontWeight: "bold",
-        marginBottom: "5px",
-    },
-    commentContent: {
-        marginBottom: "5px",
-    },
 };
-
-export default ReviewsPage;

@@ -1,24 +1,37 @@
 import React, {useEffect, useState, useContext} from "react";
-import CommentCard from "../CommentCard.jsx"; // Ensure the correct path
+import {CircularProgress} from "@mui/material";
+import ResponsiveCommentCard from "../ResponsiveCommentCard.jsx";
 import AddComment from "../AddComment.jsx";
 import {AuthContext} from "../AuthContext.jsx";
+import {baseTheme as theme} from "../../theme/themes.js";
 
 const GameReviews = ({gameId, gameName}) => {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isAddingComment, setIsAddingComment] = useState(false); // Toggle for AddComment modal
+    const [isAddingComment, setIsAddingComment] = useState(false);
     const {user} = useContext(AuthContext);
 
+    // Récupération des avis via l'API
     const fetchReviews = async () => {
         try {
             const response = await fetch(`http://localhost:8080/game-reviews/game/${gameId}`);
-            if (!response.ok) {
-                throw new Error(`Erreur lors du chargement des avis : ${response.statusText}`);
+
+            if (response.status === 404) {
+                setReviews([]);
+                setError(null);
+                return;
             }
+
+            if (!response.ok) {
+                throw new Error(
+                    `Erreur lors du chargement des avis : ${response.statusText}`
+                );
+            }
+
             const data = await response.json();
-            setReviews(data.data);
-            setError(null); // Clear previous error
+            setReviews(data.data || []);
+            setError(null);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -26,14 +39,13 @@ const GameReviews = ({gameId, gameName}) => {
         }
     };
 
-    // Fetch reviews when the component loads
     useEffect(() => {
         fetchReviews();
     }, [gameId]);
 
     const handleCommentAdded = async () => {
-        setIsAddingComment(false); // Close AddComment modal
-        await fetchReviews(); // Reload reviews after adding a comment
+        setIsAddingComment(false);
+        await fetchReviews();
     };
 
     const handleCommentDeleted = (commentId) => {
@@ -41,11 +53,15 @@ const GameReviews = ({gameId, gameName}) => {
     };
 
     return (
-        <div>
-            {/* Button to Add a Comment */}
-            <button onClick={() => setIsAddingComment(true)} style={styles.addButton}>
-                Ajouter un avis
-            </button>
+        <div style={styles.container}>
+            {/* Ligne de header : bouton à droite */}
+            <div style={styles.headerRow}>
+                <button onClick={() => setIsAddingComment(true)} style={styles.addButton}>
+                    Ajouter un avis
+                </button>
+            </div>
+
+            {/* Modale d'ajout d'avis */}
             {isAddingComment && (
                 <AddComment
                     gameId={gameId}
@@ -55,24 +71,38 @@ const GameReviews = ({gameId, gameName}) => {
                 />
             )}
 
-            {/* Error Handling */}
+            {/* Affichage de l'erreur si échec réseau ou code HTTP != 200/404 */}
             {error && (
-                <p style={{color: "red", fontSize: "1.2em", marginTop: "20px"}}>
+                <p style={{color: "red", fontSize: "1.2em", marginTop: "20px", textAlign: "center"}}>
                     Erreur : {error}
                 </p>
             )}
 
-            {/* List of Reviews */}
-            {!loading && reviews.length > 0 ? (
-                <CommentCard
-                    comments={reviews}
-                    currentUserId={user?.id}
-                    onCommentDeleted={handleCommentDeleted}
-                />
-            ) : !loading && !error && (
-                <p style={{color: "blue", marginTop: "20px"}}>
-                    Aucun avis pour ce jeu pour le moment.
-                </p>
+            {/*
+        Tant que loading = true, on affiche le spinner (CircularProgress).
+        Sinon, si pas d'erreur => on vérifie reviews.length
+      */}
+            {loading ? (
+                <div style={styles.loadingContainer}>
+                    <CircularProgress/>
+                </div>
+            ) : (
+                !error && (
+                    reviews.length > 0 ? (
+                        <ResponsiveCommentCard
+                            comments={reviews}
+                            maxComments={null}
+                            currentUserId={user?.id}
+                            onCommentDeleted={handleCommentDeleted}
+                        />
+                    ) : (
+                        <p style={styles.noReviewsText}>
+                            Il n’y a encore aucun avis pour ce jeu...
+                            <br/>
+                            Soyez le premier à partager votre expérience !
+                        </p>
+                    )
+                )
             )}
         </div>
     );
@@ -81,13 +111,32 @@ const GameReviews = ({gameId, gameName}) => {
 export default GameReviews;
 
 const styles = {
+    container: {
+        padding: "20px",
+    },
+    headerRow: {
+        display: "flex",
+        justifyContent: "flex-end",
+        marginBottom: "20px",
+    },
     addButton: {
         padding: "10px 20px",
-        backgroundColor: "#4CAF50",
+        backgroundColor: theme.palette.colors.green,
         color: "white",
         border: "none",
         borderRadius: "5px",
         cursor: "pointer",
-        marginBottom: "20px",
+    },
+    loadingContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "40px",
+    },
+    noReviewsText: {
+        color: "blue",
+        marginTop: "20px",
+        textAlign: "center",
+        lineHeight: "1.4",
     },
 };
