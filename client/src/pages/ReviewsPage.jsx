@@ -1,19 +1,18 @@
 import React, {useEffect, useState, useMemo} from "react";
 import {FaStar} from "react-icons/fa";
-import {Grid, Typography, CircularProgress} from "@mui/material";
+import {Grid, Typography, CircularProgress, useMediaQuery} from "@mui/material";
 import ResponsiveCommentCard from "../components/ResponsiveCommentCard";
+import {baseTheme as theme} from "../theme/themes.js";
+import {useTheme} from "@mui/material/styles";
 
-/** Couleurs pour le système de filtrage des étoiles */
-const colors = {
-    orange: "#FFBA5A",
-    grey: "#a9a9a9",
-};
 
 export default function ReviewsPage() {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const styles = getStyles(theme, isMobile);
     // Étoiles filtrage
     const [filterStars, setFilterStars] = useState(null);
     const [hoveredStars, setHoveredStars] = useState(null);
@@ -77,6 +76,9 @@ export default function ReviewsPage() {
 
     return (
         <div style={{padding: "20px"}}>
+            <Typography variant="subtitle2" style={styles.breadcrumb}>
+                Accueil &gt; Avis
+            </Typography>
             {/* Barre de filtre (étoiles) */}
             <div style={styles.filterContainer}>
                 {stars.map((_, index) => {
@@ -90,17 +92,18 @@ export default function ReviewsPage() {
                                 ...styles.filterButton,
                                 ...(isActive || isHovered ? styles.filterButtonHover : {}),
                                 backgroundColor: isActive
-                                    ? colors.orange
+                                    ? theme.palette.colors.yellow
                                     : isHovered
-                                        ? colors.grey
-                                        : "#f0f0f0",
-                                color: isActive || isHovered ? "#fff" : "#000",
+                                        ? theme.palette.text.secondary
+                                        : theme.palette.background.paper,
+                                color: isActive || isHovered ? theme.palette.text.contrast : theme.palette.text.primary,
                             }}
                             onMouseEnter={() => setHoveredStars(starValue)}
                             onMouseLeave={() => setHoveredStars(null)}
                             onClick={() => setFilterStars(starValue)}
                         >
-                            {starValue} <FaStar color={isActive || isHovered ? "#fff" : colors.orange}/>
+                            {starValue} <FaStar
+                            color={isActive || isHovered ? theme.palette.text.contrast : theme.palette.colors.yellow}/>
                         </button>
                     );
                 })}
@@ -109,8 +112,8 @@ export default function ReviewsPage() {
                 <button
                     style={{
                         ...styles.filterButton,
-                        backgroundColor: filterStars === null ? colors.orange : "#f0f0f0",
-                        color: filterStars === null ? "#fff" : "#000",
+                        backgroundColor: filterStars === null ? theme.palette.colors.yellow : theme.palette.text.contrast,
+                        color: filterStars === null ? theme.palette.text.contrast : theme.palette.text.primary,
                     }}
                     onClick={() => setFilterStars(null)}
                 >
@@ -143,7 +146,13 @@ export default function ReviewsPage() {
     );
 }
 
-const styles = {
+const getStyles = (theme, isMobile) => ({
+    breadcrumb: {
+        color: theme.palette.colors.red,
+        padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
+        font: 'Inter',
+        fontSize: isMobile ? "0.9em" : "1em",
+    },
     loadingContainer: {
         display: "flex",
         justifyContent: "center",
@@ -166,6 +175,7 @@ const styles = {
         gap: "10px",
     },
     filterButton: {
+
         margin: "0 10px",
         padding: "10px 20px",
         border: "none",
@@ -175,8 +185,8 @@ const styles = {
         alignItems: "center",
         fontSize: "14px",
         transition: "background-color 0.3s, color 0.3s, transform 0.2s",
-        backgroundColor: "#f0f0f0",
-        color: "#000",
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
     },
     filterButtonHover: {
         transform: "scale(1.05)",
@@ -185,6 +195,8 @@ const styles = {
         textAlign: "center",
         marginTop: "20px",
         fontSize: "16px",
-        color: "#666",
+        color: theme.palette.text.secondary,
     },
-};
+
+});
+

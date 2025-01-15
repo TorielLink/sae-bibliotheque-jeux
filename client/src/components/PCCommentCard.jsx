@@ -40,6 +40,7 @@ function getPlatformColor(platform, theme) {
         case "playstation":
             return theme.palette.colors.purple; // PlayStation - Violet
         case "xbox":
+
             return theme.palette.colors.green;  // Xbox - Vert
         case "pc":
         case "steam":
