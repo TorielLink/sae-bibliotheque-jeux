@@ -78,7 +78,7 @@ const LoginBg = props => {
         theme.palette.colors.red,
         theme.palette.colors.green,
         theme.palette.colors.purple]
-    
+
     const draw = ctx => {
 
         scene.background = new THREE.Color(theme.palette.background.default);
@@ -121,9 +121,7 @@ const LoginBg = props => {
                 }
             }
         }
-
         placeShapes()
-
         animate()
 
     }
