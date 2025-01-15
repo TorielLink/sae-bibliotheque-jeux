@@ -2,15 +2,19 @@ import {createTheme} from '@mui/material/styles';
 
 
 const colors = {
-    blue: '#36A0FC',
-    yellow: '#FFBB33',
-    red: '#FF4436',
-    green: '#2FC75A',
-    purple: '#9534D5',
-    lightGray: '#E6E6E6',
-    black: '#222222',
-    white: '#F5F5F5'
+    blue: '#36A0FC',         // Bleu
+    yellow: '#FFBB33',       // Jaune
+    red: '#FF4436',          // Rouge
+    green: '#2FC75A',        // Vert
+    purple: '#9534D5',       // Violet
+    lightGray: '#E6E6E6',    // Gris clair
+    black: '#222222',        // Noir
+    white: '#F5F5F5',        // Blanc
+    teal: '#20C997',         // Bleu-vert (Teal)
+    lightBlue: '#5CC6FF',    // Bleu clair
+    orange: '#FF8C00',       // Orange
 };
+
 
 const generateTransparentColors = (colorMap, transparency) => {
     return Object.fromEntries(
@@ -22,17 +26,17 @@ const generateTransparentColors = (colorMap, transparency) => {
 };
 
 export const baseTheme = {
-  palette: {
-    colors,
-    transparentColors: {
-      ...generateTransparentColors(colors, 1),
-      ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
-      ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
+    palette: {
+        colors,
+        transparentColors: {
+            ...generateTransparentColors(colors, 1),
+            ...generateTransparentColors(colors, 0.5), // Ajoute colors-50
+            ...generateTransparentColors(colors, 0.7), // Ajoute colors-70
+        },
     },
-  },
-  typography: {
-    fontFamily: 'Inter, Arial, sans-serif',
-  },
+    typography: {
+        fontFamily: 'Inter, Arial, sans-serif',
+    },
 };
 
 export const lightTheme = createTheme({

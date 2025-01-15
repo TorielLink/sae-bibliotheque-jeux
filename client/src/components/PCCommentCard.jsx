@@ -5,35 +5,61 @@ import {FaStar} from "react-icons/fa";
 import {Button, Typography} from "@mui/material";
 import {CommentsContext} from "./CommentsContext";
 
+/** Renvoie le label en fonction de la plateforme */
 function getPlatformLabel(platform) {
-    switch (platform) {
-        case "PS5":
-            return "PS5";
-        case "PS4":
-            return "PS4";
-        case "Xbox":
+    switch (platform?.toLowerCase()) {
+        case "ps5":
+        case "ps4":
+        case "playstation":
+            return "PlayStation";
+        case "xbox":
             return "Xbox";
-        case "PC":
-            return "PC";
+        case "nintendo switch":
+        case "ns":
+            return "Nintendo Switch";
+        case "steam":
+            return "Steam";
+        case "gog":
+            return "GOG";
+        case "epic games store":
+        case "egs":
+            return "Epic Games Store";
+        case "microsoft store":
+        case "ms":
+            return "Microsoft Store";
         default:
             return platform || "Inconnue";
     }
 }
 
+/** Renvoie la couleur associée à la plateforme */
 function getPlatformColor(platform, theme) {
     switch (platform?.toLowerCase()) {
         case "ps5":
         case "ps4":
         case "playstation":
-            return theme.palette.colors.purple;
+            return theme.palette.colors.purple; // PlayStation - Violet
         case "xbox":
-            return theme.palette.colors.green;
+            return theme.palette.colors.green;  // Xbox - Vert
         case "pc":
-            return theme.palette.colors.blue;
+        case "steam":
+            return theme.palette.colors.blue;   // PC (Steam) - Bleu
+        case "nintendo switch":
+        case "ns":
+            return theme.palette.colors.red;    // Nintendo Switch - Rouge
+        case "gog":
+            return theme.palette.colors.orange; // GOG - Orange
+        case "epic games store":
+        case "egs":
+            return theme.palette.colors.teal;   // Epic Games Store - Bleu-vert
+        case "microsoft store":
+        case "ms":
+            return theme.palette.colors.lightBlue; // Microsoft Store - Bleu clair
         default:
-            return theme.palette.colors.grey;
+            return theme.palette.colors.grey;   // Autres - Gris
     }
 }
+
 
 const Root = styled("div")(({theme}) => ({
     display: "flex",

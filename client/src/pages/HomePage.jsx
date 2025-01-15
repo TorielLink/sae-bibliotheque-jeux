@@ -204,7 +204,7 @@ function HomePage() {
                             </Grid>
                         ) : (
                             <Typography variant="body1">
-                                Aucun avis disponible pour le moment.
+                                <CircularProgress/>
                             </Typography>
                         )}
                     </Box>

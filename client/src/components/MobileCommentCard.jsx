@@ -15,23 +15,34 @@ import {CommentsContext} from "./CommentsContext";
 
 /* --------------------- Fonctions auxiliaires --------------------- */
 
-/** Convertit une plateforme brute (p.ex "ps5") en label lisible ("PS5") */
+/** Renvoie le label en fonction de la plateforme */
 function getPlatformLabel(platform) {
-    switch (platform) {
-        case "PS5":
-            return "PS5";
-        case "PS4":
-            return "PS4";
-        case "Xbox":
+    switch (platform?.toLowerCase()) {
+        case "ps5":
+        case "ps4":
+        case "playstation":
+            return "PlayStation";
+        case "xbox":
             return "Xbox";
-        case "PC":
-            return "PC";
+        case "nintendo switch":
+        case "ns":
+            return "Nintendo Switch";
+        case "steam":
+            return "Steam";
+        case "gog":
+            return "GOG";
+        case "epic games store":
+        case "egs":
+            return "Epic Games Store";
+        case "microsoft store":
+        case "ms":
+            return "Microsoft Store";
         default:
             return platform || "Inconnue";
     }
 }
 
-/** Renvoie la couleur du point en fonction de la plateforme */
+/** Renvoie la couleur associée à la plateforme */
 function getPlatformColor(platform, theme) {
     switch (platform?.toLowerCase()) {
         case "ps5":
@@ -41,11 +52,24 @@ function getPlatformColor(platform, theme) {
         case "xbox":
             return theme.palette.colors.green;
         case "pc":
+        case "steam":
             return theme.palette.colors.blue;
+        case "nintendo switch":
+        case "ns":
+            return theme.palette.colors.red;
+        case "gog":
+            return theme.palette.colors.orange;
+        case "epic games store":
+        case "egs":
+            return theme.palette.colors.teal;
+        case "microsoft store":
+        case "ms":
+            return theme.palette.colors.lightBlue;
         default:
             return theme.palette.colors.grey;
     }
 }
+
 
 /* ------------------- Petit conteneur blanc (fond + ombre) ------------------- */
 const WhiteBox = styled("div")(({theme}) => ({
@@ -237,11 +261,12 @@ export default function MobileCommentCard({
                                             "&::before": {
                                                 content: '""',
                                                 display: "inline-block",
-                                                width: 15,
-                                                height: 15,
+                                                width: "15px",
+                                                height: "15px",
                                                 borderRadius: "50%",
                                                 backgroundColor: getPlatformColor(item.platform, theme),
-                                                marginRight: 4,
+                                                flexShrink: 0,
+                                                marginRight: "4px",
                                             },
                                         }}
                                     >
@@ -257,6 +282,7 @@ export default function MobileCommentCard({
                                         </Typography>
                                     </WhiteBox>
 
+
                                     {/* Étoiles en jaune */}
                                     <WhiteBox>
                                         <StarsContainer>
@@ -266,7 +292,7 @@ export default function MobileCommentCard({
                                                     size={14}
                                                     color={
                                                         i < (item.rating || 0)
-                                                            ? theme.palette.colors.yellow // <-- JAUNE au lieu de orange
+                                                            ? theme.palette.colors.yellow
                                                             : theme.palette.colors.grey
                                                     }
                                                 />
