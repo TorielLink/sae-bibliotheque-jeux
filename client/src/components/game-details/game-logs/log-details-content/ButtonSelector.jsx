@@ -61,6 +61,7 @@ function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idNa
                             return (
                                 <Grid2 key={index}>
                                     <Tooltip title={item.name} placement="top" arrow enterDelay={500}>
+                                <span>
                                         <FormControlLabel
                                             value={item[idName] ?? 0}
                                             style={styles.controlLabel}
@@ -94,6 +95,7 @@ function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idNa
                                             }
                                             label=""
                                         />
+                                    </span>
                                     </Tooltip>
                                 </Grid2>
                             )
