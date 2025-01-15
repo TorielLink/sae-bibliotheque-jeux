@@ -10,7 +10,6 @@ if (!clientId || !accessToken) {
     console.error("CLIENT_ID or ACCESS_TOKEN missing in .env");
     process.exit(1);
 }
-
 const gamesController = {
     // Contrôleur pour obtenir les détails d'un jeu
     async getGameDetails(req, res) {
@@ -37,6 +36,7 @@ const gamesController = {
         }
     },
 
+    // Obtenir une liste de jeux avec filtres
     // Obtenir une liste de jeux avec filtres
     async getFilteredGames(req, res) {
         const {limit = 200, offset = 0, sort = 'first_release_date desc', recent = false} = req.query;
@@ -68,7 +68,21 @@ const gamesController = {
         }
     },
 
+    async getGamesByGenres(req, res) {
+        try {
+            const {limit, offset, genres} = req.body;
 
+            if (!Array.isArray(genres)) {
+                return res.status(400).json({error: 'La liste des genres est requise.'});
+            }
+
+            const games = await dataRetriever.getCatalogByGenres(genres, limit, offset);
+            res.json(games);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des jeux par genres :', error);
+            res.status(500).json({error: 'Impossible de récupérer les jeux par genres.'});
+        }
+    },
 }
 
 module.exports = gamesController;

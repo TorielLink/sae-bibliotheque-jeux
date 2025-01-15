@@ -83,6 +83,41 @@ router.get('/', gamesController.getFilteredGames);
 
 /**
  * @swagger
+ * /games/by-genres:
+ *   post:
+ *     summary: Récupérer les jeux par genres
+ *     tags:
+ *       - Games
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               limit:
+ *                 type: integer
+ *                 description: Nombre de jeux à retourner
+ *               offset:
+ *                 type: integer
+ *                 description: Décalage des résultats
+ *               genres:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 description: Liste des IDs des genres
+ *     responses:
+ *       200:
+ *         description: Jeux récupérés par genres avec succès
+ *       400:
+ *         description: Requête invalide (genres manquants ou incorrects)
+ *       500:
+ *         description: Erreur serveur
+ */
+router.post('/by-genres', gamesController.getGamesByGenres);
+
+/**
+ * @swagger
  * /games/specific:
  *   post:
  *     summary: Récupérer des jeux spécifiques
