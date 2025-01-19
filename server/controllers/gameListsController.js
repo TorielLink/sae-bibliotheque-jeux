@@ -168,6 +168,7 @@ controller.getUserGameLists = async (req, res) => {
                     igdb_game_id: content.igdb_game_id,
                     title: gameData.name,
                     cover: gameData.cover?.url || null,
+                    genres: gameData.genres || [],
                 };
             })
         );
@@ -179,7 +180,12 @@ controller.getUserGameLists = async (req, res) => {
             name: list.name,
             games: list.contents.map(content => {
                 const gameDetails = enrichedGames.find(game => game.igdb_game_id === content.igdb_game_id);
-                return gameDetails || {igdb_game_id: content.igdb_game_id, title: 'Titre inconnu', cover: null};
+                return gameDetails || {
+                    igdb_game_id: content.igdb_game_id,
+                    title: 'Titre inconnu',
+                    cover: null,
+                    genres: []
+                };
             }),
         }));
 

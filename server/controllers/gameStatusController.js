@@ -61,7 +61,7 @@ controller.getGamesWithSessions = async (req, res) => {
                 {
                     model: gameRatings,
                     as: 'ratings',
-                    attributes: ['rating_value'],
+                    attributes: ['rating_value'], // Fetch user ratings
                     required: false,
                 },
                 {
@@ -103,6 +103,13 @@ controller.getGamesWithSessions = async (req, res) => {
             // Calculate total time played by summing all logs' time_played
             const totalTimePlayed = logs.reduce((total, log) => total + (log.time_played || 0), 0);
 
+            // Calculate average rating
+            const ratings = entry.ratings || [];
+            const averageRating =
+                ratings.length > 0
+                    ? ratings.reduce((sum, rating) => sum + rating.rating_value, 0) / ratings.length
+                    : null;
+
             return {
                 igdb_game_id: entry.igdb_game_id,
                 title: gameInfo.name || 'Titre inconnu',
@@ -110,6 +117,7 @@ controller.getGamesWithSessions = async (req, res) => {
                 releaseDate: formatDateToFrench(gameInfo.releaseDate),
                 genres: gameInfo.genres || [],
                 userRating: entry.ratings?.[0]?.rating_value || null,
+                averageRating: averageRating ? averageRating.toFixed(1) : null, // Format the average to 1 decimal place
                 lastSessionDate: formatDateToFrench(
                     logs.reduce(
                         (latest, log) =>
