@@ -111,6 +111,9 @@ const associateModels = () => {
     gameCollection.hasMany(collectionContent, {foreignKey: 'game_collection_id', as: 'collection_content'})
     collectionContent.belongsTo(gameCollection, {foreignKey: 'game_collection_id', as: 'game_collection'})
 
+    gameCollection.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'privacy'})
+    privacySettings.hasMany(gameCollection, {foreignKey: 'privacy_setting_id', as: 'privacy_game_collection'})
+
     // Game Ratings → Users (Many-to-One)
     gameRatings.belongsTo(user, {foreignKey: 'user_id', as: 'user'});
     user.hasMany(gameRatings, {foreignKey: 'user_id', as: 'user_ratings'});
@@ -145,8 +148,8 @@ module.exports = {
     privacySettings,
     status,
     gamePlatforms,
-    gameCollections: gameCollection,
-    collectionContent: collectionContent,
+    gameCollection,
+    collectionContent,
     gameLogs,
     gameSession,
     gameReview,

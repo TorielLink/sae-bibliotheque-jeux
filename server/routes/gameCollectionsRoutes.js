@@ -58,7 +58,7 @@ const gameCollectionsController = require('../controllers/gameCollectionsControl
  *                 error:
  *                   type: string
  */
-router.get('/:userId', gameCollectionsController.getByUser);
+router.get('/:userId', gameCollectionsController.getByUser)
 
 /**
  * @swagger
@@ -88,6 +88,9 @@ router.get('/:userId', gameCollectionsController.getByUser);
  *               description:
  *                 type: string
  *                 description: A short description of the new collection
+ *               privacy:
+ *                 type: integer
+ *                 description: ID of the collection's privacy setting
  *     responses:
  *       201:
  *         description: Game collection created successfully
@@ -96,6 +99,83 @@ router.get('/:userId', gameCollectionsController.getByUser);
  *       500:
  *         description: Internal server error
  */
-router.post('/create/:userId', gameCollectionsController.createCollection);
+router.post('/create/:userId', gameCollectionsController.createCollection)
 
-module.exports = router;
+/**
+ * @swagger
+ * /game-collections/update/{gameCollectionId}:
+ *   post:
+ *     summary: Update a game collection
+ *     description: Updates the name, description, privacy settings, and game list of a specific game collection.
+ *     tags:
+ *       - Game Collections
+ *     parameters:
+ *       - in: path
+ *         name: gameCollectionId
+ *         required: true
+ *         description: ID of the game collection to update.
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The new name of the game collection.
+ *                 example: "My Updated Collection"
+ *               description:
+ *                 type: string
+ *                 description: The new description of the game collection.
+ *                 example: "An updated description for my collection."
+ *               privacy:
+ *                 type: integer
+ *                 description: Privacy setting for the game collection (e.g., public, private).
+ *                 example: 1
+ *               newGames:
+ *                 type: array
+ *                 description: Updated list of game IDs to include in the collection.
+ *                 items:
+ *                   type: integer
+ *                 example: [101, 202, 303]
+ *     responses:
+ *       200:
+ *         description: Game collection updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game collection updated successfully.
+ *       404:
+ *         description: Game collection not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game collection not found.
+ *       500:
+ *         description: Error updating game collection.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error updating game collection.
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error.
+ */
+router.post('/update/:gameCollectionId', gameCollectionsController.updateCollection)
+
+module.exports = router

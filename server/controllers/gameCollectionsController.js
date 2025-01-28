@@ -1,12 +1,25 @@
-const {gameCollections, collectionContent} = require('../database/sequelize');
+const {gameCollection, collectionContent, gameLogs} = require('../database/sequelize');
 
 const controller = {}
+
+let cache = {
+    data: [],
+    timestamp: null,
+    invalid: true
+}
+const CACHE_TIMEOUT = 600000
 
 controller.getByUser = async (req, res) => {
     try {
         const {userId} = req.params
-
-        const collections = await gameCollections.findAll({
+        const currentTime = Date.now()
+        if (!cache.invalid && currentTime - cache.timestamp < CACHE_TIMEOUT) {
+            return res.status(200).json({
+                message: 'Game collections fetched successfully (from cache)',
+                data: cache.data,
+            })
+        }
+        const collections = await gameCollection.findAll({
             where: {user_id: userId},
             attributes: {
                 exclude: ['user_id']
@@ -41,8 +54,7 @@ controller.getByUser = async (req, res) => {
 
         const enrichedCollections = collections.map((collection) => {
             const enrichedContent = collection.collection_content.map((content) => {
-                const gameData = gamesData.find((game) => game.id === content.igdb_game_id) || {}
-                return gameData
+                return gamesData.find((game) => game.id === content.igdb_game_id) || {}
             })
 
             return {
@@ -50,6 +62,10 @@ controller.getByUser = async (req, res) => {
                 collection_content: enrichedContent,
             }
         })
+
+        cache.data = enrichedCollections
+        cache.timestamp = currentTime
+        cache.invalid = false
 
         res.status(200).json({message: 'Game collections fetched successfully', data: enrichedCollections})
     } catch (error) {
@@ -61,18 +77,68 @@ controller.getByUser = async (req, res) => {
 controller.createCollection = async (req, res) => {
     try {
         const {userId} = req.params
-        const {name, description} = req.body
+        const {name, description, privacy} = req.body
 
-        const newCollection = await gameCollections.create({
+        const newCollection = await gameCollection.create({
             name: name,
             description: description,
+            privacy_setting_id: privacy,
             user_id: userId
         })
 
+        cache.invalid = true
         res.status(201).json({message: 'Game collection created successfully', data: newCollection})
     } catch (error) {
         console.error('Error creating game collection:', error)
         res.status(500).json({message: 'Error creating game collection', error: error.message})
+    }
+}
+
+controller.updateCollection = async (req, res) => {
+    try {
+        const {gameCollectionId} = req.params
+        const {name, description, privacy, newGames} = req.body
+
+        const collection = await gameCollection.findByPk(gameCollectionId, {
+            include: {
+                model: collectionContent,
+                as: 'collection_content',
+                attributes: ['igdb_game_id']
+            }
+        })
+        if (!collection) {
+            return res.status(404).json({message: 'Game collection not found'})
+        }
+
+        await collection.update({name, description, privacy})
+
+        const currentGameIds = collection.collection_content.map((game) => game.igdb_game_id)
+
+        const gamesToAdd = newGames.filter(gameId => !currentGameIds.includes(gameId))
+        const gamesToRemove = currentGameIds.filter(gameId => !newGames.includes(gameId))
+
+        if (gamesToAdd.length > 0) {
+            const newGames = gamesToAdd.map(gameId => ({
+                game_collection_id: gameCollectionId,
+                igdb_game_id: gameId
+            }))
+            await collectionContent.bulkCreate(newGames)
+        }
+
+        if (gamesToRemove.length > 0) {
+            await collectionContent.destroy({
+                where: {
+                    game_collection_id: gameCollectionId,
+                    igdb_game_id: gamesToRemove
+                }
+            })
+        }
+
+        cache.invalid = true
+        res.status(200).json({message: 'Game collection updated successfully', data: collection})
+    } catch (error) {
+        console.error('Error updating game collection:', error)
+        res.status(500).json({message: 'Error updating game collection', error: error.message})
     }
 }
 
