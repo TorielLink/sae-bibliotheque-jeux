@@ -120,7 +120,7 @@ const UserMenu = () => {
             },
           }}
         >
-          Listes personnalisées
+          Mes collections
         </MenuItem>
         <Divider />
         <MenuItem

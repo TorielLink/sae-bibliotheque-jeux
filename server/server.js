@@ -22,7 +22,7 @@ const privacySettingsRoutes = require('./routes/privacySettingsRoutes')
 
 // Création de l'application Express
 const app = express();
-const gameListRoutes = require('./routes/gameListsRoutes');
+const gameListRoutes = require('./routes/collectionsRoutes');
 const listContentRoutes = require('./routes/listContentRoutes');
 
 // Configuration CORS

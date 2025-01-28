@@ -26,7 +26,7 @@ import MyStatsPage from './pages/profil/MyStatsPage.jsx';
 import MyListsPage from './pages/profil/MyListsPage.jsx';
 import MyLogsPage from './pages/profil/MyLogsPage.jsx';
 import MyReviewsPage from './pages/profil/MyReviewsPage.jsx';
-import MyCollectionPage from './pages/profil/MyCollectionPage.jsx';
+import MyCollectionsPage from './pages/profil/MyCollectionsPage.jsx';
 import SettingsPage from './pages/profil/SettingsPage.jsx';
 
 
@@ -93,7 +93,7 @@ function App() {
                         />
                         <Route path="/custom-lists" element={
                             <ProtectedRoute>
-                                <MyCollectionPage/>
+                                <MyCollectionsPage/>
                             </ProtectedRoute>
                         }
                         />
