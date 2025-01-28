@@ -31,6 +31,7 @@ const configureCors = () => {
     for (let port = 5173; port <= 5177; port++) {
         allowedOrigins.push(`http://localhost:${port}`);
     }
+    allowedOrigins.push(`http://localhost:8080`)
 
     return cors({
         origin: (origin, callback) => {

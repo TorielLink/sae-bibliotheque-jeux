@@ -4,10 +4,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
-            references: {
-                model: 'game_collections',
-                key: 'game_collection_id'
-            }
         },
         igdb_game_id: {
             type: DataTypes.INTEGER,
