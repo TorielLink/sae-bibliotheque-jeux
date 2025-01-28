@@ -4,7 +4,79 @@ const gameCollectionsController = require('../controllers/gameCollectionsControl
 
 /**
  * @swagger
- * /game-collections/{userId}:
+ * /game-collections/collection/{gameCollectionId}:
+ *   get:
+ *     summary: Get details of a specific game collection
+ *     description: Fetches the details of a specific game collection by its ID, including its content (games).
+ *     tags:
+ *       - Game Collections
+ *     parameters:
+ *       - in: path
+ *         name: gameCollectionId
+ *         required: true
+ *         description: The ID of the game collection to retrieve.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved game collection data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game collections fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     game_collection_id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: My Collection
+ *                     description:
+ *                       type: string
+ *                       example: A list of my favorite games
+ *                     collection_content:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           igdb_game_id:
+ *                             type: integer
+ *                             example: 101
+ *       404:
+ *         description: Game collection not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game collection not found
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error fetching game collections for user
+ *                 error:
+ *                   type: string
+ *                   example: Error details go here.
+ */
+router.get('/collection/:gameCollectionId', gameCollectionsController.getById)
+
+/**
+ * @swagger
+ * /game-collections/user/{userId}:
  *   get:
  *     summary: Get game collections by user ID
  *     description: This route fetches the game collections for a specific user identified by their ID.
@@ -58,7 +130,7 @@ const gameCollectionsController = require('../controllers/gameCollectionsControl
  *                 error:
  *                   type: string
  */
-router.get('/:userId', gameCollectionsController.getByUser)
+router.get('/user/:userId', gameCollectionsController.getByUser)
 
 /**
  * @swagger
@@ -177,5 +249,57 @@ router.post('/create/:userId', gameCollectionsController.createCollection)
  *                   example: Internal server error.
  */
 router.post('/update/:gameCollectionId', gameCollectionsController.updateCollection)
+
+/**
+ * @swagger
+ * /game-collections/delete/{gameCollectionId}:
+ *   delete:
+ *     summary: Delete a game collection
+ *     description: Deletes a game collection by its ID.
+ *     tags:
+ *       - Game Collections
+ *     parameters:
+ *       - in: path
+ *         name: gameCollectionId
+ *         required: true
+ *         description: The ID of the game collection to delete.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Game collection deleted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game collection deleted successfully.
+ *       404:
+ *         description: Game collection not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game collection not found.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error deleting game collection.
+ *                 error:
+ *                   type: string
+ *                   example: Error details go here.
+ */
+router.delete('/delete/:gameCollectionId', gameCollectionsController.deleteCollection)
 
 module.exports = router

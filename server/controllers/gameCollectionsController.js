@@ -2,23 +2,34 @@ const {gameCollection, collectionContent, gameLogs} = require('../database/seque
 
 const controller = {}
 
-let cache = {
-    data: [],
-    timestamp: null,
-    invalid: true
+controller.getById = async (req, res) => {
+    try {
+        const {gameCollectionId} = req.params
+
+        const collections = await gameCollection.findByPk(gameCollectionId, {
+            attributes: {
+                exclude: ['user_id']
+            },
+            include: [
+                {
+                    model: collectionContent,
+                    as: 'collection_content',
+                    attributes: ['igdb_game_id']
+                }
+            ],
+        })
+
+        res.status(200).json({message: 'Game collections fetched successfully', data: collections})
+    } catch (error) {
+        console.error('Error fetching game collections for user:', error)
+        res.status(500).json({message: 'Error fetching game collections for user', error: error.message})
+    }
 }
-const CACHE_TIMEOUT = 600000
 
 controller.getByUser = async (req, res) => {
     try {
         const {userId} = req.params
-        const currentTime = Date.now()
-        if (!cache.invalid && currentTime - cache.timestamp < CACHE_TIMEOUT) {
-            return res.status(200).json({
-                message: 'Game collections fetched successfully (from cache)',
-                data: cache.data,
-            })
-        }
+
         const collections = await gameCollection.findAll({
             where: {user_id: userId},
             attributes: {
@@ -63,10 +74,6 @@ controller.getByUser = async (req, res) => {
             }
         })
 
-        cache.data = enrichedCollections
-        cache.timestamp = currentTime
-        cache.invalid = false
-
         res.status(200).json({message: 'Game collections fetched successfully', data: enrichedCollections})
     } catch (error) {
         console.error('Error fetching game collections for user:', error)
@@ -86,7 +93,6 @@ controller.createCollection = async (req, res) => {
             user_id: userId
         })
 
-        cache.invalid = true
         res.status(201).json({message: 'Game collection created successfully', data: newCollection})
     } catch (error) {
         console.error('Error creating game collection:', error)
@@ -112,33 +118,66 @@ controller.updateCollection = async (req, res) => {
 
         await collection.update({name, description, privacy})
 
-        const currentGameIds = collection.collection_content.map((game) => game.igdb_game_id)
+        const addGamesResponse = await fetch(`http://localhost:8080/collection-content/add-games/${gameCollectionId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                gamesIds: newGames,
+            }),
+        })
 
-        const gamesToAdd = newGames.filter(gameId => !currentGameIds.includes(gameId))
-        const gamesToRemove = currentGameIds.filter(gameId => !newGames.includes(gameId))
+        const removeGamesResponse = await fetch(`http://localhost:8080/collection-content/remove-games/${gameCollectionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                gamesIds: newGames,
+            }),
+        })
+        const addGamesMessage = (await addGamesResponse.json()).message
+        const removeGamesMessage = (await removeGamesResponse.json()).message
 
-        if (gamesToAdd.length > 0) {
-            const newGames = gamesToAdd.map(gameId => ({
-                game_collection_id: gameCollectionId,
-                igdb_game_id: gameId
-            }))
-            await collectionContent.bulkCreate(newGames)
+        res.status(200).json({message: `${addGamesMessage} ${removeGamesMessage}`, data: collection})
+    } catch (error) {
+        console.error('Error updating game collection:', error)
+        res.status(500).json({message: 'Error updating game collection', error: error.message})
+    }
+}
+
+controller.deleteCollection = async (req, res) => {
+    try {
+        const {gameCollectionId} = req.params
+
+        const collection = await gameCollection.findByPk(gameCollectionId, {
+            include: {
+                model: collectionContent,
+                as: 'collection_content',
+                attributes: ['igdb_game_id']
+            }
+        })
+
+        if (!collection) {
+            return res.status(404).json({message: 'Game collection not found'})
         }
 
-        if (gamesToRemove.length > 0) {
+        const gameIds = collection.collection_content.map((game) => game.igdb_game_id)
+
+        if (gameIds.length > 0) {
             await collectionContent.destroy({
                 where: {
                     game_collection_id: gameCollectionId,
-                    igdb_game_id: gamesToRemove
                 }
             })
         }
 
-        cache.invalid = true
-        res.status(200).json({message: 'Game collection updated successfully', data: collection})
+        await collection.destroy()
+        res.status(200).json({message: 'Game collection deleted successfully', data: collection})
     } catch (error) {
-        console.error('Error updating game collection:', error)
-        res.status(500).json({message: 'Error updating game collection', error: error.message})
+        console.error('Error deleting game collection:', error)
+        res.status(500).json({message: 'Error deleting game collection', error: error.message})
     }
 }
 

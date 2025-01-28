@@ -19,6 +19,7 @@ const {swaggerUi, swaggerDocs} = require('./middleware/swagger'); // Importez la
 const gamesRoutes = require('./routes/gamesRoutes');
 const privacySettingsRoutes = require('./routes/privacySettingsRoutes')
 const gameCollectionsRoutes = require('./routes/gameCollectionsRoutes');
+const collectionContentRoutes = require('./routes/collectionContentRoutes')
 
 // Création de l'application Express
 const app = express();
@@ -60,6 +61,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/status', statusRoutes);
 app.use('/game-platforms', gamePlatformsRoutes);
 app.use('/game-collections', gameCollectionsRoutes);
+app.use('/collection-content', collectionContentRoutes);
 app.use('/game-logs', gameLogsRoutes);
 app.use('/privacy-settings', privacySettingsRoutes);
 app.use('/game-sessions', gameSessionRoutes);
