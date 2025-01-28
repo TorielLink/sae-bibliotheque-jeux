@@ -15,15 +15,13 @@ const gameReviewRoutes = require('./routes/gameReviewsRoutes');
 const gameRatingsRoutes = require('./routes/gameRatingsRoutes');
 const gameStatusRoutes = require('./routes/gameStatusRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
-const userListsRoutes = require('./routes/userListsRoutes');
 const {swaggerUi, swaggerDocs} = require('./middleware/swagger'); // Importez la configuration
 const gamesRoutes = require('./routes/gamesRoutes');
 const privacySettingsRoutes = require('./routes/privacySettingsRoutes')
+const gameCollectionsRoutes = require('./routes/gameCollectionsRoutes');
 
 // Création de l'application Express
 const app = express();
-const gameListRoutes = require('./routes/collectionsRoutes');
-const listContentRoutes = require('./routes/listContentRoutes');
 
 // Configuration CORS
 const configureCors = () => {
@@ -60,8 +58,7 @@ app.use('/users', usersRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/status', statusRoutes);
 app.use('/game-platforms', gamePlatformsRoutes);
-app.use('/game-lists', gameListRoutes);
-app.use('/list-content', listContentRoutes);
+app.use('/game-collections', gameCollectionsRoutes);
 app.use('/game-logs', gameLogsRoutes);
 app.use('/privacy-settings', privacySettingsRoutes);
 app.use('/game-sessions', gameSessionRoutes);
@@ -69,7 +66,6 @@ app.use('/game-reviews', gameReviewRoutes);
 app.use('/game-ratings', gameRatingsRoutes);
 app.use('/game-status', gameStatusRoutes);
 app.use('/friends', friendsRoutes);
-app.use('/user-lists', userListsRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Gestion des erreurs pour les routes non définies

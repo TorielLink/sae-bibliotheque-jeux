@@ -1,4 +1,4 @@
-const {listContent, gameList, userLists} = require('../database/sequelize');
+const {collectionContent, gameCollections, userCollections} = require('../database/sequelize');
 
 const controller = {};
 const DataRetriever = require('../services/DataRetriever');
@@ -13,8 +13,8 @@ controller.getContentsByListId = async (req, res) => {
             return res.status(400).json({message: 'User ID is required'});
         }
 
-        // Vérifier que la liste appartient à l'utilisateur via la table userLists
-        const userList = await userLists.findOne({
+        // Vérifier que la liste appartient à l'utilisateur via la table userCollections
+        const userList = await userCollections.findOne({
             where: {
                 game_list_id: id,
                 user_id: userId
@@ -26,10 +26,10 @@ controller.getContentsByListId = async (req, res) => {
         }
 
         // Récupérer les contenus de la liste
-        const listWithContents = await gameList.findOne({
+        const listWithContents = await gameCollections.findOne({
             where: {game_list_id: id},
             include: {
-                model: listContent,
+                model: collectionContent,
                 as: 'contents',
                 attributes: ['igdb_game_id'],
             },

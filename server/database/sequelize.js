@@ -24,30 +24,30 @@ const usersModel = require('../models/users.js');
 const privacySettingsModel = require('../models/privacySettings.js');
 const statusModel = require('../models/status.js');
 const gamePlatformsModel = require('../models/gamePlatforms.js');
-const gameListModel = require('../models/gameLists.js');
-const listContentModel = require('../models/listContent.js');
+const gameCollectionsModel = require('../models/gameCollections.js');
+const collectionContentModel = require('../models/collectionContent.js');
 const gameLogsModel = require('../models/gameLogs.js');
 const gameSessionModel = require('../models/gameSessions.js');
 const gameReviewModel = require('../models/gameReviews.js');
 const gameRatingsModel = require('../models/gameRatings.js');
 const gameStatusModel = require('../models/gameStatus.js');
 const friendsModel = require('../models/friends.js');
-const userListsModel = require('../models/userLists.js');
+const userCollectionsModel = require('../models/userCollections.js');
 
 // Define models
 const users = usersModel(sequelize, DataTypes);
 const privacySettings = privacySettingsModel(sequelize, DataTypes);
 const status = statusModel(sequelize, DataTypes);
 const gamePlatforms = gamePlatformsModel(sequelize, DataTypes);
-const gameList = gameListModel(sequelize, DataTypes);
-const listContent = listContentModel(sequelize, DataTypes);
+const gameCollections = gameCollectionsModel(sequelize, DataTypes);
+const collectionContent = collectionContentModel(sequelize, DataTypes);
 const gameLogs = gameLogsModel(sequelize, DataTypes);
 const gameSession = gameSessionModel(sequelize, DataTypes);
 const gameReview = gameReviewModel(sequelize, DataTypes);
 const gameRatings = gameRatingsModel(sequelize, DataTypes);
 const gameStatus = gameStatusModel(sequelize, DataTypes);
 const friends = friendsModel(sequelize, DataTypes);
-const userLists = userListsModel(sequelize, DataTypes);
+const userCollections = userCollectionsModel(sequelize, DataTypes);
 
 
 // sequelize.sync({force: false}) // Si vous ne voulez pas supprimer les données existantes, mettez force: false
@@ -106,35 +106,35 @@ const associateModels = () => {
         otherKey: 'user_id',
     });
 
-    // Game Lists → List Content (One-to-Many)
-    listContent.belongsTo(gameList, {foreignKey: 'game_list_id', as: 'list'});
-    gameList.hasMany(listContent, {foreignKey: 'game_list_id', as: 'contents'});
+    // Game Collections → Collection Content (One-to-Many)
+    collectionContent.belongsTo(gameCollections, {foreignKey: 'game_collection_id', as: 'collection'});
+    gameCollections.hasMany(collectionContent, {foreignKey: 'game_collection_id', as: 'contents'});
 
-    // Users ↔ Game Lists (Many-to-Many)
-    users.belongsToMany(gameList, {
-        through: userLists,
-        as: 'game_lists',
+    // Users ↔ Game Collections (Many-to-Many)
+    users.belongsToMany(gameCollections, {
+        through: userCollections,
+        as: 'game_collections',
         foreignKey: 'user_id',
-        otherKey: 'game_list_id',
+        otherKey: 'game_collection_id',
     });
-    gameList.belongsToMany(users, {
-        through: userLists,
+    gameCollections.belongsToMany(users, {
+        through: userCollections,
         as: 'users',
-        foreignKey: 'game_list_id',
+        foreignKey: 'game_collection_id',
         otherKey: 'user_id',
     });
 
-    // Associations entre userLists et users
-    userLists.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
-    users.hasMany(userLists, {foreignKey: 'user_id', as: 'user_lists'});
+    // Associations entre userCollections et users
+    userCollections.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
+    users.hasMany(userCollections, {foreignKey: 'user_id', as: 'collections'});
 
     // Game Ratings → Users (Many-to-One)
     gameRatings.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
     users.hasMany(gameRatings, {foreignKey: 'user_id', as: 'user_ratings'});
 
-    // Associations entre userLists et gameList
-    userLists.belongsTo(gameList, {foreignKey: 'game_list_id', as: 'game_list'});
-    gameList.hasMany(userLists, {foreignKey: 'game_list_id', as: 'user_lists'});
+    // Associations entre userCollections et gameCollections
+    userCollections.belongsTo(gameCollections, {foreignKey: 'game_collection_id', as: 'game_collection'});
+    gameCollections.hasMany(userCollections, {foreignKey: 'game_collection_id', as: 'collections'});
 
     // Game Ratings → Privacy Settings (Many-to-One)
     gameRatings.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'rating_privacy'});
@@ -166,14 +166,14 @@ module.exports = {
     privacySettings,
     status,
     gamePlatforms,
-    gameList,
-    listContent,
+    gameCollections: gameCollections,
+    collectionContent: collectionContent,
     gameLogs,
     gameSession,
     gameReview,
     gameRatings,
     gameStatus,
     friends,
-    userLists,
+    userCollections: userCollections,
     Sequelize,
 };
