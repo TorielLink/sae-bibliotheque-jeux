@@ -112,7 +112,7 @@ const UserMenu = () => {
         </MenuItem>
         <MenuItem
           component={Link}
-          to="/custom-lists"
+          to="/collections"
           onClick={handleMenuClose}
           sx={{
             '&:hover': {

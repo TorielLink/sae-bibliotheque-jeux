@@ -91,7 +91,7 @@ function App() {
                             </ProtectedRoute>
                         }
                         />
-                        <Route path="/custom-lists" element={
+                        <Route path="/collections" element={
                             <ProtectedRoute>
                                 <MyCollectionsPage/>
                             </ProtectedRoute>
