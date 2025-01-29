@@ -61,7 +61,7 @@ controller.getGamesWithSessions = async (req, res) => {
                 {
                     model: gameRatings,
                     as: 'ratings',
-                    attributes: ['rating_value'], // Fetch user ratings
+                    attributes: ['rating_value'],
                     required: false,
                 },
                 {

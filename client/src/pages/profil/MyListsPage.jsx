@@ -127,7 +127,7 @@ const MyListsPage = () => {
                     }));
 
 
-                    setGamesData({...newGamesData}); // Progressive update
+                    setGamesData({...newGamesData});
 
                 }
             } catch (err) {
@@ -141,7 +141,7 @@ const MyListsPage = () => {
         fetchAllGames();
         console.log('jeu envoyé', gamesData);
 
-    }, [userId]); // Dépendance uniquement sur userId pour charger une fois
+    }, [userId]);
 
     return (
         <Box style={{padding: '0.125em', overflowX: 'hidden', overflowY: 'auto', flexGrow: 1,}}>
