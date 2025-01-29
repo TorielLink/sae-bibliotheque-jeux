@@ -29,7 +29,7 @@ const GameReviews = ({gameId, gameName}) => {
                 ...review,
                 game: {
                     ...review.game,
-                    cover: review.game.cover || "/assets/default-cover.jpg", // Ajout de fallback
+                    cover: review.game.cover || "/assets/default-cover.jpg",
                 },
             }));
             setReviews(enrichedData || []);
@@ -38,6 +38,7 @@ const GameReviews = ({gameId, gameName}) => {
             setError(err.message);
         } finally {
             setLoading(false);
+
         }
     };
 
@@ -48,8 +49,9 @@ const GameReviews = ({gameId, gameName}) => {
 
     const handleCommentAdded = async () => {
         setIsAddingComment(false);
-        await fetchReviews();
+        setTimeout(fetchReviews, 500); // Attendre 500ms avant de recharger les avis
     };
+
 
     const handleCommentDeleted = (commentId) => {
         setReviews((prevReviews) => prevReviews.filter((review) => review.id !== commentId));
@@ -73,18 +75,12 @@ const GameReviews = ({gameId, gameName}) => {
                     onCancel={() => setIsAddingComment(false)}
                 />
             )}
-
-            {/* Affichage de l'erreur si échec réseau ou code HTTP != 200/404 */}
             {error && (
                 <p style={{color: "red", fontSize: "1.2em", marginTop: "20px", textAlign: "center"}}>
                     Erreur : {error}
                 </p>
             )}
 
-            {/*
-        Tant que loading = true, on affiche le spinner (CircularProgress).
-        Sinon, si pas d'erreur => on vérifie reviews.length
-      */}
             {loading ? (
                 <div style={styles.loadingContainer}>
                     <CircularProgress/>

@@ -108,7 +108,7 @@ controller.getAllReviews = async (req, res) => {
             }
         }
 
-        
+
         const reviewsWithDetails = reviews.map((review) => {
             const gameData = gameDataMap.get(review.igdb_game_id) || {
                 name: 'Unknown Game',
@@ -176,13 +176,13 @@ controller.addReview = async (req, res) => {
             platform_id
         } = req.body;
 
-        // Récupérer le user_id depuis le middleware verifyToken
+        // Vérifier si l'utilisateur est authentifié
         if (!req.user || !req.user.user_id) {
             return res.status(401).json({message: 'Utilisateur non authentifié.'});
         }
         const user_id = req.user.user_id;
 
-        // Vérifier si les champs obligatoires sont fournis
+        // Vérifier les champs obligatoires
         if (!igdb_game_id || !content || !privacy_setting_id || !platform_id) {
             return res.status(400).json({
                 message: 'Les champs igdb_game_id, content, privacy_setting_id et platform_id sont obligatoires.',
@@ -191,23 +191,24 @@ controller.addReview = async (req, res) => {
 
         console.log("Données reçues :", req.body);
 
-        // Vérifier si un commentaire existe déjà pour cet utilisateur et ce jeu
-        const existingReview = await gameReview.findOne({
-            where: {user_id, igdb_game_id},
-        });
+        // Vérifier si une critique existe déjà pour cet utilisateur et ce jeu
+        const existingReview = await gameReview.findOne({where: {user_id, igdb_game_id}});
 
         if (existingReview) {
-            return res.status(400).json({
-                message: 'Vous avez déjà publié un commentaire pour ce jeu.',
-            });
+            return res.status(400).json({message: 'Vous avez déjà publié un commentaire pour ce jeu.'});
         }
 
         // Vérifier si l'utilisateur existe
-        const user = await users.findOne({where: {user_id}});
+        const user = await users.findByPk(user_id);
         if (!user) {
             return res.status(404).json({message: 'Utilisateur non trouvé.'});
         }
-        console.log("Utilisateur trouvé :", user_id);
+
+        // Vérifier si la plateforme existe
+        const platform = await gamePlatforms.findByPk(platform_id);
+        if (!platform) {
+            return res.status(400).json({message: 'Plateforme invalide.'});
+        }
 
         // Créer la critique
         const review = await gameReview.create({
@@ -215,24 +216,28 @@ controller.addReview = async (req, res) => {
             igdb_game_id,
             content,
             privacy_setting_id,
-            spoiler: spoiler || false, // Défaut à false si non fourni
+            spoiler: spoiler || false,
             date_published: new Date(),
         });
+
         console.log("Critique créée :", review);
 
-        // Ajouter une note
-        await gameRatings.create({
-            user_id,
-            igdb_game_id,
-            rating_value,
-            privacy_setting_id,
-        });
-        console.log("Note ajoutée :", rating_value);
+        // Vérifier si une note existe déjà
+        const existingRating = await gameRatings.findOne({where: {user_id, igdb_game_id}});
+        if (!existingRating && rating_value !== undefined) {
+            await gameRatings.create({
+                user_id,
+                igdb_game_id,
+                rating_value,
+                privacy_setting_id,
+            });
+            console.log("Note ajoutée :", rating_value);
+        } else {
+            console.log("Une note existe déjà, non ajoutée.");
+        }
 
-        // Vérifier ou créer un log pour la plateforme
-        let existingLog = await gameLogs.findOne({
-            where: {user_id, igdb_game_id},
-        });
+        // Vérifier si un log existe déjà pour la plateforme
+        let existingLog = await gameLogs.findOne({where: {user_id, igdb_game_id}});
 
         if (!existingLog) {
             existingLog = await gameLogs.create({
@@ -242,13 +247,13 @@ controller.addReview = async (req, res) => {
                 privacy_setting_id,
                 time_played: 0,
             });
-            console.log("Nouveau log créé :", existingLog);
+            console.log("Nouveau log de plateforme créé :", existingLog);
         } else {
             await existingLog.update({
                 platform_id,
                 privacy_setting_id,
             });
-            console.log("Log existant mis à jour :", existingLog);
+            console.log("Log de plateforme existant mis à jour :", existingLog);
         }
 
         // Retourner une réponse de succès
@@ -256,6 +261,7 @@ controller.addReview = async (req, res) => {
             message: 'Critique et plateforme ajoutées avec succès.',
             data: review,
         });
+
     } catch (error) {
         console.error('Erreur lors de l\'ajout de la critique :', error);
         res.status(500).json({
@@ -264,13 +270,12 @@ controller.addReview = async (req, res) => {
         });
     }
 };
-
 /**
  * Mettre à jour une critique et la plateforme associée
  */
 controller.updateReview = async (req, res) => {
     try {
-        const {id} = req.params; // ID de la critique à modifier
+        const {id} = req.params;
         const {content, privacy_setting_id, spoiler, platform_id} = req.body;
 
         // Trouver la critique existante
@@ -352,14 +357,15 @@ controller.deleteReview = async (req, res) => {
         }
 
         // Supprimer les logs associés dans game_logs
-        await gameLogs.destroy({
-            where: {igdb_game_id: review.igdb_game_id, user_id: review.user_id},
-        });
+        await gameLogs.destroy({where: {igdb_game_id: review.igdb_game_id, user_id: review.user_id}});
+
+        // Supprimer la note associée dans game_ratings
+        await gameRatings.destroy({where: {user_id: review.user_id, igdb_game_id: review.igdb_game_id}});
 
         // Supprimer la critique
         await review.destroy();
 
-        res.status(200).json({message: 'Critique et logs associés supprimés avec succès'});
+        res.status(200).json({message: 'Critique, logs et note associés supprimés avec succès'});
     } catch (error) {
         console.error('Erreur lors de la suppression de la critique :', error);
         res.status(500).json({
