@@ -30,7 +30,7 @@ const MyListsPage = () => {
     const {user} = useContext(AuthContext);
     const userId = user?.id;
 
-    const [selectedFilter, setSelectedFilter] = useState('playing'); // Filtre initial
+    const [selectedFilter, setSelectedFilter] = useState('playing');
     const [viewMode, setViewMode] = useState('grid');
     const [gamesData, setGamesData] = useState({
         finish: [],
@@ -40,7 +40,7 @@ const MyListsPage = () => {
         paused: [],
         stopped: [],
     });
-    const [loading, setLoading] = useState(true); // Initialiser à true pour charger dès le début
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const theme = useTheme();
