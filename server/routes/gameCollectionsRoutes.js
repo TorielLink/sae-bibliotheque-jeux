@@ -157,12 +157,15 @@ router.get('/user/:userId', gameCollectionsController.getByUser)
  *               name:
  *                 type: string
  *                 description: The name of the new collection
+ *                 example: "Mes jeux 2024"
  *               description:
  *                 type: string
  *                 description: A short description of the new collection
+ *                 example: "Mes jeux préférés de 2024"
  *               privacy:
  *                 type: integer
  *                 description: ID of the collection's privacy setting
+ *                 example: 1
  *     responses:
  *       201:
  *         description: Game collection created successfully

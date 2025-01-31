@@ -165,13 +165,15 @@ controller.deleteCollection = async (req, res) => {
 
         const gameIds = collection.collection_content.map((game) => game.igdb_game_id)
 
-        if (gameIds.length > 0) {
-            await collectionContent.destroy({
-                where: {
-                    game_collection_id: gameCollectionId,
-                }
-            })
-        }
+        const removeGamesResponse = await fetch(`http://localhost:8080/collection-content/remove-games/${gameCollectionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                gamesIds: gameIds,
+            }),
+        })
 
         await collection.destroy()
         res.status(200).json({message: 'Game collection deleted successfully', data: collection})

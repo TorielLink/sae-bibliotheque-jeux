@@ -35,6 +35,29 @@ controller.addGamesToCollection = async (req, res) => {
     }
 }
 
+controller.addGameToCollections = async (req, res) => {
+    try {
+        const {gameId} = req.params
+        let {collectionsIds} = req.body
+
+        if (collectionsIds.length > 0) {
+            const collectionsToAdd = collectionsIds.map(collectionId => ({
+                game_collection_id: collectionId,
+                igdb_game_id: gameId
+            }))
+            await collectionContent.bulkCreate(collectionsToAdd)
+        } else {
+            res.status(200).json({message: 'There are no collections.'})
+            return
+        }
+
+        res.status(201).json({message: `Game added to the collections : ${collectionsIds}.`})
+    } catch (error) {
+        console.error('Error adding game to collections :', error)
+        res.status(500).json({message: 'Error adding game to collections', error: error.message})
+    }
+}
+
 controller.removeGamesFromCollection = async (req, res) => {
     try {
         const {gameCollectionId} = req.params

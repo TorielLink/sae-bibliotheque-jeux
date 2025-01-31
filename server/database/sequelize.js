@@ -108,7 +108,11 @@ const associateModels = () => {
     // Collections
     user.hasMany(gameCollection, {foreignKey: 'user_id', as: 'game_collections'})
     gameCollection.belongsTo(user, {foreignKey: 'user_id', as: 'users'})
-    gameCollection.hasMany(collectionContent, {foreignKey: 'game_collection_id', as: 'collection_content'})
+    gameCollection.hasMany(collectionContent, {
+        foreignKey: 'game_collection_id',
+        as: 'collection_content',
+        onDelete: 'CASCADE'
+    })
     collectionContent.belongsTo(gameCollection, {foreignKey: 'game_collection_id', as: 'game_collection'})
 
     gameCollection.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'privacy'})
