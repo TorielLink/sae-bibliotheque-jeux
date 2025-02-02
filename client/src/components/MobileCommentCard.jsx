@@ -95,19 +95,22 @@ const CardContainer = styled("div")(({theme}) => ({
 const CommentCard = styled("div")(({theme}) => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
-    borderRadius: 8,
+    borderRadius: "8px",
     display: "flex",
-    flexDirection: "row",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.5)",
-    overflow: "hidden", // empêche le texte de déborder
+    alignItems: "center", // Aligne verticalement les éléments
+    gap: "16px", // Espacement entre les éléments
+    padding: "16px", // Espace intérieur
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)", // Ombre légère
 }));
 
 const CoverImage = styled("img")(() => ({
-    width: 140,  // Largeur fixe pour l'image
-    height: "auto",
+    width: 120,
+    height: 120,
     objectFit: "cover",
+    borderRadius: 8,
     flexShrink: 0,
 }));
+
 
 const ContentContainer = styled("div")(() => ({
     display: "flex",
@@ -225,9 +228,10 @@ export default function MobileCommentCard({
                     <CommentCard key={item.id || index}>
                         {/* Image à gauche */}
                         <CoverImage
-                            src={item.game?.cover || "https://via.placeholder.com/150"}
+                            src={item.game?.cover || "/assets/default-cover.jpg"}
                             alt={item.game?.title || "Cover"}
                         />
+
 
                         {/* Contenu texte/info à droite */}
                         <ContentContainer>

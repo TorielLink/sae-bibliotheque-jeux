@@ -221,7 +221,7 @@ router.get('/game/:id', controller.getReviewsByGameId);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/user_review', verifyToken, controller.getReviewsByUserId);
+router.get('/user/:id/reviews', controller.getReviewsByUserId);
 
 /**
  * @swagger
@@ -319,6 +319,7 @@ router.post('/', verifyToken, controller.addReview);
  *         description: Erreur serveur
  */
 router.put('/:id', verifyToken, controller.updateReview);
+
 
 /**
  * @swagger
