@@ -9,7 +9,7 @@ import SignupBox from "../components/LoginSignup/SignupBox"
 
 function LoginPage() {
 
-    const [showSignup, setShowSignup] = useState(false); // Gérer l'affichage du formulaire d'inscription
+    const [showSignup, setShowSignup] = useState(false);
     const [credentials, setCredentials] = useState({username: '', password: ''}); // Champs de connexion
     const [signupData, setSignupData] = useState({
         username: '',
@@ -36,23 +36,21 @@ function LoginPage() {
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         setLoginError('');
-
         try {
-            const response = await fetch('http://localhost:8080/users/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(credentials),
-            });
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+    });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                setLoginError(errorData.message || 'Erreur de connexion.');
-                console.log('Erreur de connexion :', errorData);
-                return;
-            }
-
+    if (!response.ok) {
+        const errorData = await response.json();
+        setLoginError(errorData.message || 'Erreur de connexion.');
+        console.log('Erreur de connexion :', errorData);
+        return;
+    }
             const data = await response.json();
-            console.log('Connexion réussie :', data); // Log des données reçues
+            console.log('Connexion réussie :', data);
             login(data.token, data.user);
             console.log("mon token", data.token)
             navigate('/'); // Redirection après connexion
@@ -61,7 +59,6 @@ function LoginPage() {
             setLoginError('Erreur réseau. Veuillez réessayer.');
         }
     };
-
 
     // Gérer les modifications des champs d'inscription
     const handleSignupChange = (e) => {
@@ -75,69 +72,51 @@ function LoginPage() {
     };
 
     // Soumettre les données d'inscription
-    const handleSignupSubmit = async (e) => {
-        e.preventDefault();
+const handleSignupSubmit = async (e) => {
+    e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('username', signupData.username);
-        formData.append('mail', signupData.mail);
-        formData.append('password', signupData.password);
-        formData.append('privacy_settings', signupData.privacy_setting_id);
-        if (signupData.profilePicture) {
-            formData.append('profile_picture', signupData.profilePicture);
-        }
+    const formData = new FormData();
+    formData.append('username', signupData.username);
+    formData.append('mail', signupData.mail);
+    formData.append('password', signupData.password);
+    formData.append('privacy_settings', signupData.privacy_setting_id);
+    if (signupData.profilePicture) {
+        formData.append('profile_picture', signupData.profilePicture);
+    }
 
-        try {
-            const response = await fetch('http://localhost:8080/users', {
-                method: 'POST',
-                body: formData,
-            });
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users`, {
+            method: 'POST',
+            body: formData,
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                if (response.status === 400) {
-                    setSignupError(errorData.message);
-                } else {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return;
+        if (!response.ok) {
+            const errorData = await response.json();
+            if (response.status === 400) {
+                setSignupError(errorData.message);
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            const result = await response.json();
-            alert('Inscription réussie : ' + result.message);
-
-            // Réinitialiser le formulaire après une inscription réussie
-            setSignupData({
-                username: '',
-                mail: '',
-                password: '',
-                profilePicture: null,
-                privacy_setting_id: 1,
-            });
-            setShowSignup(false); // Revenir à l'écran de connexion
-        } catch (error) {
-            console.error('Erreur lors de l’inscription :', error);
-            setSignupError('Une erreur est survenue. Veuillez réessayer.');
+            return;
         }
-    };
 
-    // useEffect(() => { //Execution du script background3D.jsx
-    //   // Code à exécuter lorsque le composant est monté
-    //   console.log('Composant chargé');
+        const result = await response.json();
+        alert('Inscription réussie : ' + result.message);
 
-    //   // Exemple : Attacher un script ou une logique
-    //   const script = document.createElement('script');
-    //   script.src = "/src/3Dbackgrounds/background3D.jsx";
-    //   script.async = true;
-    //   script.type = "module";
-    //   document.body.appendChild(script);
-
-    //   // Nettoyage (si nécessaire)
-    //   return () => {
-    //     console.log('Composant démonté');
-    //     document.body.removeChild(script);
-    //   };
-    // }, []);
+        // Réinitialiser le formulaire après une inscription réussie
+        setSignupData({
+            username: '',
+            mail: '',
+            password: '',
+            profilePicture: null,
+            privacy_setting_id: 1,
+        });
+        setShowSignup(false);
+    } catch (error) {
+        console.error('Erreur lors de l’inscription :', error);
+        setSignupError('Une erreur est survenue. Veuillez réessayer.');
+    }
+};
 
     const stateVariables = {
         signupData,
