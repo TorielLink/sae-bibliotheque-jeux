@@ -12,10 +12,11 @@ function HorizontalSelector({
                                 defaultValue,
                                 size,
                                 value,
-                                fontSize
+                                fontSize,
+                                background
                             }) {
     const theme = useTheme()
-    const styles = getStyles(theme, fontSize)
+    const styles = getStyles(theme, fontSize, background)
 
     return (
         <div style={styles.selectorContainer}>
@@ -51,7 +52,7 @@ function HorizontalSelector({
     )
 }
 
-const getStyles = (theme, fontSize) => ({
+const getStyles = (theme, fontSize, background) => ({
     form: {
         display: 'flex',
         alignItems: 'center',
@@ -59,7 +60,7 @@ const getStyles = (theme, fontSize) => ({
     selector: {
         boxShadow: `0 0 0.25em${theme.palette.colors.black}`,
         borderRadius: '0.3rem',
-        background: theme.palette.background.default,
+        background: theme.palette.background[background] || theme.palette.background.default,
         fontSize: fontSize
     },
 })

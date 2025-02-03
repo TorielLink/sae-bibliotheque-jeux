@@ -135,7 +135,7 @@ router.get('/user/:userId', gameCollectionsController.getByUser)
 /**
  * @swagger
  * /game-collections/create/{userId}:
- *   post:
+ *   put:
  *     summary: Create a new game collection
  *     description: This route creates a new game collection for a specific user with the provided name and description.
  *     tags:
@@ -174,7 +174,7 @@ router.get('/user/:userId', gameCollectionsController.getByUser)
  *       500:
  *         description: Internal server error
  */
-router.post('/create/:userId', gameCollectionsController.createCollection)
+router.put('/create/:userId', gameCollectionsController.createCollection)
 
 /**
  * @swagger

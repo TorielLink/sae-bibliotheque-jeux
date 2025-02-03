@@ -1,0 +1,295 @@
+import React, { useState, useEffect} from 'react';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Icon,
+    IconButton,
+    TextField,
+    useMediaQuery
+} from "@mui/material";
+import {useTheme} from "@mui/material/styles";
+import HorizontalSelector from "../../game-details/game-logs/log-details-content/HorizontalSelector.jsx";
+import {AddBox, Lock, LockOpen} from "@mui/icons-material";
+
+function NewCollectionForm({
+                               isCollectionFormOpen,
+                               openCollectionForm,
+                               closeCollectionForm,
+                               createCollection,
+                               createCollectionAndChange,
+                               cancelCollectionCreation
+                           }) {
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const styles = getStyles(theme, isMobile)
+    const [loading, setLoading] = useState(true)
+
+    const [privacySettings, setPrivacySettings] = useState()
+
+    async function fetchData() {
+        try {
+            setLoading(true)
+            const response = await fetch(`http://localhost:8080/privacy-settings`)
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+            const data = await response.json()
+            setPrivacySettings(data.data)
+            setLoading(false)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, []);
+
+    const [name, setName] = useState("")
+    const handleNameChange = (event) => {
+        setName(event.target.value)
+    }
+
+    const [description, setDescription] = useState("")
+    const handleDescriptionChange = (event) => {
+        setDescription(event.target.value)
+    }
+
+    const [privacy, setPrivacy] = useState(1)
+    const handlePrivacySettingChange = (event) => {
+        setPrivacy(Number(event.target.value))
+    }
+
+    const handleCreateCollection = () => {
+        createCollection({
+            name: name,
+            description: description,
+            privacy: privacy
+        })
+    }
+
+    const handleCreateCollectionAndChange = () => {
+        createCollectionAndChange({
+            name: name,
+            description: description,
+            privacy: privacy
+        })
+    }
+
+    return (
+        !loading && (
+            <div>
+                <IconButton
+                    disableTouchRipple
+                    onClick={openCollectionForm}
+                    sx={{
+                        boxShadow: `0 0 0.5rem ${theme.palette.colors.black}`,
+                        borderRadius: '0.5rem',
+                        background: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        fontSize: '1rem',
+                        padding: '0 1rem',
+                        margin: '0',
+                        gap: '0.5rem',
+                        '&:hover': {
+                            transform: 'scale(1.05)',
+                        },
+                        '&:active': {
+                            transform: 'scale(1)',
+                        },
+                    }}>
+                    <AddBox fontSize="large"/>
+                    <p>Créer une collection</p>
+                </IconButton>
+
+                <Dialog
+                    sx={{
+                        '& .MuiPaper-root': {
+                            borderRadius: '1rem',
+                            background: theme.palette.background.paper,
+                        },
+                    }}
+                    open={isCollectionFormOpen}
+                    onClose={closeCollectionForm}
+                    aria-labelledby="create-collection-dialog-title"
+                    aria-describedby="create-collection-dialog-description"
+                >
+
+                    <DialogTitle id="create-collection-dialog-title" fontWeight="bold"
+                                 style={styles.dialogTitle}>
+                        Nouvelle collection
+                    </DialogTitle>
+
+                    <DialogContent style={styles.container}>
+
+                        <TextField
+                            id="name"
+                            style={styles.inputField}
+                            value={name}
+                            onChange={handleNameChange}
+                            placeholder="Nom de la collection"
+                            slotProps={{
+                                htmlInput: {
+                                    maxLength: 100,
+                                },
+                            }}
+                            sx={{
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                    border: 'none',
+                                },
+                                '& .Mui-focused': {
+                                    borderRadius: '0.5rem',
+                                    background: theme.palette.background.default,
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            id="description"
+                            style={styles.inputField}
+                            multiline
+                            minRows="3"
+                            value={description}
+                            onChange={handleDescriptionChange}
+                            placeholder="Description de la collection"
+                            slotProps={{
+                                htmlInput: {
+                                    maxLength: 100,
+                                },
+                            }}
+                            sx={{
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                    border: 'none',
+                                },
+                                '& .Mui-focused': {
+                                    borderRadius: '0.5rem',
+                                    background: theme.palette.background.default,
+                                },
+                            }}
+                        />
+
+                        <div style={styles.privacy}>
+                            {
+                                <Icon style={styles.icon}>
+                                    {
+                                        privacy === 1 ? (
+                                            <Lock style={styles.icon.inside}/>
+                                        ) : (
+                                            <LockOpen style={styles.icon.inside}/>
+                                        )
+                                    }
+                                </Icon>
+                            }
+                            <HorizontalSelector label={"Visibilité"}
+                                                items={privacySettings}
+                                                itemId={"privacy_setting_id"}
+                                                selectedItem={privacy}
+                                                setSelectedItem={handlePrivacySettingChange}
+                                                isIndex={true}
+                                                defaultValue={1}
+                                                size={"small"}
+                                                value={"name"}
+                                                background={"paper"}
+                            />
+                        </div>
+
+                    </DialogContent>
+
+                    <DialogActions sx={{
+                        gap: '0.2rem',
+                    }}>
+                        <Button style={styles.cancelButton} onClick={cancelCollectionCreation} sx={{
+                            '&:hover': {
+                                transform: 'scale(1.025)',
+                            },
+                            '&:active': {
+                                transform: 'scale(1)',
+                            },
+                        }}>
+                            Fermer
+                        </Button>
+                        <Button style={styles.submitButton} onClick={handleCreateCollection} sx={{
+                            '&:hover': {
+                                transform: 'scale(1.025)',
+                            },
+                            '&:active': {
+                                transform: 'scale(1)',
+                            },
+                        }}>
+                            Valider
+                        </Button>
+                        <Button style={styles.submitButton} onClick={handleCreateCollectionAndChange} sx={{
+                            '&:hover': {
+                                transform: 'scale(1.025)',
+                            },
+                            '&:active': {
+                                transform: 'scale(1)',
+                            },
+                        }}>
+                            Valider et modifier
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        )
+    )
+}
+
+const getStyles = (theme) => {
+
+    const formButton = {
+        color: theme.palette.text.primary,
+        fontWeight: 'bold',
+        padding: '0.5rem 1rem',
+        boxShadow: `0 0 0.1rem ${theme.palette.colors.black}`,
+        borderRadius: '0.5rem',
+    }
+
+    return {
+        container: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            gap: '1rem',
+            padding: '1rem',
+        },
+        dialogTitle: {
+            borderBottom: `solid 0.1rem ${theme.palette.text.primary}`,
+            width: 'fit-content',
+            margin: '0.5rem 1rem'
+        },
+        inputField: {
+            borderRadius: '0.5rem',
+            boxShadow: `0 0 0.2rem ${theme.palette.colors.black}`,
+            width: '31rem',
+        },
+        privacy: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: '1rem',
+        },
+        icon: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '2rem',
+            width: '2rem',
+            inside: {
+                height: '100%',
+                width: '100%',
+            },
+        },
+        submitButton: {
+            ...formButton,
+            background: theme.palette.colors.green,
+        },
+        cancelButton: {
+            ...formButton,
+            background: theme.palette.colors.red,
+        },
+    }
+}
+
+export default NewCollectionForm
