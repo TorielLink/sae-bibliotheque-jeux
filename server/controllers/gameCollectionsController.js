@@ -1,4 +1,4 @@
-const {gameCollection, collectionContent, gameLogs} = require('../database/sequelize');
+const {gameCollection, collectionContent} = require('../database/sequelize');
 
 const controller = {}
 

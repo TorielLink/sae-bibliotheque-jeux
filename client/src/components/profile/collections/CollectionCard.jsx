@@ -35,16 +35,15 @@ function CollectionCard({collectionData, deleteCollection}) {
         deleteCollection(collectionData.game_collection_id)
     }
 
-    // TODO
     const handleNavigation = () => {
-        navigate(`/details/${collectionData.igdb_game_id}/#logs`)
+        navigate(`/collection/${collectionData.game_collection_id}`)
     }
 
     return (
         <Box style={styles.container}
              onMouseEnter={() => setIsCardHovered(true)}
              onMouseLeave={() => setIsCardHovered(false)}
-             onClick={() => isMobile ? handleNavigation() : undefined}
+             onClick={handleNavigation}
              sx={{
                  '&:hover': {
                      transform: 'scale(1.05)',
