@@ -30,7 +30,8 @@ function CollectionCard({collectionData, deleteCollection}) {
 
     const [isCardHovered, setIsCardHovered] = useState(false);
 
-    const handleDeleteCollection = () => {
+    const handleDeleteCollection = (e) => {
+        e.stopPropagation()
         deleteCollection(collectionData.game_collection_id)
     }
 
@@ -52,7 +53,7 @@ function CollectionCard({collectionData, deleteCollection}) {
         >
             <IconButton
                 disableTouchRipple
-                onClick={handleDeleteCollection}
+                onClick={(e) => handleDeleteCollection(e)}
                 style={styles.deleteButton}
                 sx={{
                     display: isCardHovered ? 'flex' : 'none',
@@ -122,7 +123,7 @@ const getStyles = (theme) => {
             display: 'flex',
             flexDirection: 'column',
             width: 'fit-content',
-            // overflow: 'hidden',
+            zIndex: '19',
             padding: '1rem',
             gap: '0.5rem',
             cursor: 'pointer',
@@ -190,9 +191,9 @@ const getStyles = (theme) => {
         },
         deleteButton: {
             position: 'absolute',
+            zIndex: '20',
             top: '-0.5rem',
             right: '-0.5rem',
-            zIndex: '20',
             color: theme.palette.background.paper,
             background: theme.palette.colors.red,
             transition: 'transform 0.1s',
