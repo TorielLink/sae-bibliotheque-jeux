@@ -2,11 +2,25 @@ const {gameCollection, collectionContent, gameLogs} = require('../database/seque
 
 const controller = {}
 
+const fetchGamesInfo = async (gameIds) => {
+    const response = await fetch('http://localhost:8080/games/specific', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            gameIds: gameIds,
+        }),
+    })
+
+    return await response.json()
+}
+
 controller.getById = async (req, res) => {
     try {
         const {gameCollectionId} = req.params
 
-        const collections = await gameCollection.findByPk(gameCollectionId, {
+        const response = await gameCollection.findByPk(gameCollectionId, {
             attributes: {
                 exclude: ['user_id']
             },
@@ -17,9 +31,20 @@ controller.getById = async (req, res) => {
                     attributes: ['igdb_game_id']
                 }
             ],
+        }).then((result) => result.get({plain: true}))
+
+        const gameIds = []
+        response.collection_content.forEach((content) => {
+            gameIds.push(content.igdb_game_id)
         })
 
-        res.status(200).json({message: 'Game collections fetched successfully', data: collections})
+        const gamesData = await fetchGamesInfo(gameIds)
+
+        response.collection_content = response.collection_content.map((content) => {
+            return gamesData.find((game) => game.id === content.igdb_game_id) || {}
+        })
+
+        res.status(200).json({message: 'Game collections fetched successfully', data: response})
     } catch (error) {
         console.error('Error fetching game collections for user:', error)
         res.status(500).json({message: 'Error fetching game collections for user', error: error.message})
@@ -51,17 +76,7 @@ controller.getByUser = async (req, res) => {
             })
         })
 
-        const response = await fetch('http://localhost:8080/games/specific', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                gameIds: gameIds,
-            }),
-        })
-
-        const gamesData = await response.json()
+        const gamesData = await fetchGamesInfo(gameIds)
 
         const enrichedCollections = collections.map((collection) => {
             const enrichedContent = collection.collection_content.map((content) => {
