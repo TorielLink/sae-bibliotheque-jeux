@@ -10,6 +10,7 @@ import CataloguePage from './pages/CataloguePage.jsx';
 import ReviewsPage from './pages/ReviewsPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import GameDetailsPage from "./pages/GamesDetailsPage.jsx";
+import CollecionPage from "./pages/CollectionPage.jsx"
 // Pied de page
 import Footer from "./components/Footer.jsx";
 import Team from './pages/footer/TeamPage.jsx';
@@ -50,6 +51,7 @@ function App() {
                         <Route path="/avis" element={<ReviewsPage/>}/> {/* Route pour la page "Avis" */}
                         <Route path="/login" element={<LoginPage/>}/> {/* Route pour la page "Se connecter" */}
                         <Route path="/details/:id" element={<GameDetailsPage/>}/> {/* Route dynamique */}
+                        <Route path="/collection/:id" element={<CollecionPage/>}/>
 
                         {/*-- Pages du pied de page --*/}
                         <Route path="/team" element={<Team/>}/>
