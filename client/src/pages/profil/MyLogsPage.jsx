@@ -14,6 +14,7 @@ import {
 import {useTheme} from "@mui/material/styles";
 import {VerticalAlignBottom, VerticalAlignTop} from "@mui/icons-material";
 import LogCard from "../../components/game-details/game-logs/LogCard.jsx";
+import SortingOptions from "../../components/SortingOptions.jsx";
 
 const MyLogsPage = () => {
     const {user} = useContext(AuthContext)
@@ -203,52 +204,13 @@ const MyLogsPage = () => {
                 </Typography>
 
                 <div style={styles.container}>
-                    <div style={styles.sortingOptions}>
-                        <Typography fontSize={"large"}>Trier par</Typography>
-                        <FormControl style={styles.sortingOptionForm}>
-                            <Select
-                                style={styles.sortingOptionSelector}
-                                id="sort-selector"
-                                value={sortingOption}
-                                size={"small"}
-                                variant="outlined"
-                                onChange={(e) => handleSortingOptionChange(Number(e.target.value))}
-                                sx={{
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none',
-                                    },
-                                }}
-                            >
-                                {
-                                    sortingOptions && sortingOptions.map((item, index) => (
-                                        <MenuItem key={index} value={index}>
-                                            {item.label}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                        <IconButton
-                            disableTouchRipple
-                            onClick={() => handleSortingOrderChange(!sortingOrder)}
-                            style={styles.sortingButton}
-                            sx={{
-                                '&:hover': {
-                                    background: 'none',
-                                    transform: 'scale(1.2)',
-                                },
-                                '&:active': {
-                                    transform: 'scale(1)',
-                                },
-                            }}
-                        >
-                            {sortingOrder ? (
-                                <VerticalAlignBottom fontSize="large"></VerticalAlignBottom>
-                            ) : (
-                                <VerticalAlignTop fontSize="large"></VerticalAlignTop>
-                            )}
-                        </IconButton>
-                    </div>
+                    <SortingOptions
+                        sortingOptions={sortingOptions}
+                        sortingOption={sortingOption}
+                        handleSortingOptionChange={handleSortingOptionChange}
+                        sortingOrder={sortingOrder}
+                        handleSortingOrderChange={handleSortingOrderChange}
+                    />
 
                     <div style={styles.logsContainer}>
                         {

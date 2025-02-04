@@ -1,9 +1,16 @@
 import React, {useContext, useState, useEffect} from 'react';
 import {AuthContext} from '../../components/AuthContext.jsx';
-import {Box, CircularProgress, Grid2, Typography, useMediaQuery} from "@mui/material";
+import {
+    Box,
+    CircularProgress,
+    Grid2,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import CollectionCard from "../../components/profile/collections/CollectionCard.jsx";
 import NewCollectionForm from "../../components/profile/collections/NewCollectionForm.jsx";
+import SortingOptions from "../../components/SortingOptions.jsx";
 
 const MyCollectionsPage = () => {
     const {user} = useContext(AuthContext)
@@ -16,7 +23,7 @@ const MyCollectionsPage = () => {
 
     const [updateCollections, setUpdateCollections] = useState(false)
 
-    const [collections, setCollections] = useState()
+    const [collections, setCollections] = useState([])
 
     async function fetchData() {
         try {
@@ -25,7 +32,7 @@ const MyCollectionsPage = () => {
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
             const data = await response.json()
-            setCollections(data.data)
+            sortCollections(data.data, 0, true)
             setLoading(false)
         } catch (e) {
             setError(e)
@@ -70,6 +77,7 @@ const MyCollectionsPage = () => {
 
     useEffect(() => {
         try {
+            handleSortingOptionChange(0)
             fetchData()
         } catch (e) {
             console.error('Erreur lors de la récupération des journaux :', e)
@@ -88,6 +96,11 @@ const MyCollectionsPage = () => {
     }
 
     const createCollection = async (newCollection) => {
+        if (!newCollection.name || !newCollection.description.isEmpty) {
+            if (!confirm('Certains champs sont vide. Voulez vraiment créer la collection ?')) {
+                return
+            }
+        }
         await saveCollectionCreation(newCollection)
         setUpdateCollections(!updateCollections)
         closeCollectionForm()
@@ -109,6 +122,49 @@ const MyCollectionsPage = () => {
         }
     }
 
+    function sortCollections(currentCollections, sortingOption, sortingOrder) {
+        const selectedOption = sortingOptions[sortingOption];
+        const sortedCollections = [...currentCollections].sort((a, b) => {
+            const aValue = selectedOption?.secondaryId
+                ? a[selectedOption.mainId][selectedOption.secondaryId]
+                : a[selectedOption.mainId]
+
+            const bValue = selectedOption?.secondaryId
+                ? b[selectedOption.mainId][selectedOption.secondaryId]
+                : b[selectedOption.mainId]
+
+            if (aValue < bValue) return sortingOrder ? -1 : 1
+            if (aValue > bValue) return sortingOrder ? 1 : -1
+            return 0
+        })
+
+        setCollections(sortedCollections)
+    }
+
+    const sortingOptions = [
+        {label: "Nom", defaultOrder: true, mainId: "name"},
+        {label: "Nombre de jeux", defaultOrder: false, mainId: "collection_content", secondaryId: "length"},
+        {label: "Visibilité", defaultOrder: true, mainId: "privacy_setting_id"},
+    ]
+
+    const [sortingOption, setSortingOption] = useState(0)
+
+    function handleSortingOptionChange(newValue) {
+        setSortingOption(newValue)
+        setSortingOrder(sortingOptions[newValue].defaultOrder)
+    }
+
+    // true : ascendant - false : descendant
+    const [sortingOrder, setSortingOrder] = useState(true)
+
+    function handleSortingOrderChange(newValue) {
+        setSortingOrder(newValue)
+    }
+
+    useEffect(() => {
+        sortCollections(collections, sortingOption, sortingOrder)
+    }, [sortingOption, sortingOrder])
+
     return (
         <Box
             sx={{
@@ -123,58 +179,23 @@ const MyCollectionsPage = () => {
 
             <div style={styles.container}>
                 <div style={styles.options}>
-                    {/*<Typography fontSize={"large"}>Trier par</Typography>
-                        <FormControl style={styles.sortingOptionForm}>
-                            <Select
-                                style={styles.sortingOptionSelector}
-                                id="sort-selector"
-                                value={sortingOption}
-                                size={"small"}
-                                variant="outlined"
-                                onChange={(e) => handleSortingOptionChange(Number(e.target.value))}
-                                sx={{
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none',
-                                    },
-                                }}
-                            >
-                                {
-                                    sortingOptions && sortingOptions.map((item, index) => (
-                                        <MenuItem key={index} value={index}>
-                                            {item.label}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                        <IconButton
-                            disableTouchRipple
-                            onClick={() => handleSortingOrderChange(!sortingOrder)}
-                            style={styles.sortingButton}
-                            sx={{
-                                '&:hover': {
-                                    background: 'none',
-                                    transform: 'scale(1.2)',
-                                },
-                                '&:active': {
-                                    transform: 'scale(1)',
-                                },
-                            }}
-                        >
-                            {sortingOrder ? (
-                                <VerticalAlignBottom fontSize="large"></VerticalAlignBottom>
-                            ) : (
-                                <VerticalAlignTop fontSize="large"></VerticalAlignTop>
-                            )}
-                        </IconButton>*/}
-                    <NewCollectionForm
-                        isCollectionFormOpen={isCollectionFormOpen}
-                        openCollectionForm={openCollectionForm}
-                        closeCollectionForm={closeCollectionForm}
-                        createCollection={createCollection}
-                        createCollectionAndChange={createCollectionAndChange}
-                        cancelCollectionCreation={cancelCollectionCreation}
+                    <SortingOptions
+                        sortingOptions={sortingOptions}
+                        sortingOption={sortingOption}
+                        handleSortingOptionChange={handleSortingOptionChange}
+                        sortingOrder={sortingOrder}
+                        handleSortingOrderChange={handleSortingOrderChange}
                     />
+                    <div style={styles.newCollectionButton}>
+                        <NewCollectionForm
+                            isCollectionFormOpen={isCollectionFormOpen}
+                            openCollectionForm={openCollectionForm}
+                            closeCollectionForm={closeCollectionForm}
+                            createCollection={createCollection}
+                            createCollectionAndChange={createCollectionAndChange}
+                            cancelCollectionCreation={cancelCollectionCreation}
+                        />
+                    </div>
                 </div>
 
                 {
@@ -251,11 +272,38 @@ const getStyles = (theme, isMobile) => {
         },
         options: {
             display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            gap: isMobile ? '2rem' : '1rem',
+        },
+        sortingOptions: {
+            display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'flex-start',
             width: '100%',
             gap: '1rem',
+        },
+        sortingOptionForm: {
+            display: 'flex',
+            alignItems: 'center',
+        },
+        sortingOptionSelector: {
+            boxShadow: `0 0 0.25em${theme.palette.colors.black}`,
+            borderRadius: '1rem',
+            background: theme.palette.background.paper,
+            fontSize: "large"
+        },
+        sortingButton: {
+            height: '100%',
+            padding: '0',
+            fontSize: "large",
+            transition: 'transform 0.1s',
+        },
+        newCollectionButton: {
+            flexShrink: '0',
         },
         container: {
             paddingBlock: '2.5rem',
@@ -267,14 +315,6 @@ const getStyles = (theme, isMobile) => {
         collectionsContainer: {
             paddingBlock: '2.5rem',
             paddingInline: '0rem',
-        },
-        icon: {
-            height: '30rem',
-            width: '30rem',
-            inside: {
-                height: '100%',
-                width: '100%',
-            },
         },
     }
 }

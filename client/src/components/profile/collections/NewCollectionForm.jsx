@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Button,
     Dialog,
@@ -196,10 +196,8 @@ function NewCollectionForm({
 
                     </DialogContent>
 
-                    <DialogActions sx={{
-                        gap: '0.2rem',
-                    }}>
-                        <Button style={styles.cancelButton} onClick={cancelCollectionCreation} sx={{
+                    <DialogActions style={styles.dialogActions}>
+                        <Button style={styles.submitButton} onClick={handleCreateCollectionAndChange} sx={{
                             '&:hover': {
                                 transform: 'scale(1.025)',
                             },
@@ -207,7 +205,7 @@ function NewCollectionForm({
                                 transform: 'scale(1)',
                             },
                         }}>
-                            Fermer
+                            Valider et modifier
                         </Button>
                         <Button style={styles.submitButton} onClick={handleCreateCollection} sx={{
                             '&:hover': {
@@ -219,7 +217,7 @@ function NewCollectionForm({
                         }}>
                             Valider
                         </Button>
-                        <Button style={styles.submitButton} onClick={handleCreateCollectionAndChange} sx={{
+                        <Button style={styles.cancelButton} onClick={cancelCollectionCreation} sx={{
                             '&:hover': {
                                 transform: 'scale(1.025)',
                             },
@@ -227,7 +225,7 @@ function NewCollectionForm({
                                 transform: 'scale(1)',
                             },
                         }}>
-                            Valider et modifier
+                            Fermer
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -236,7 +234,7 @@ function NewCollectionForm({
     )
 }
 
-const getStyles = (theme) => {
+const getStyles = (theme, isMobile) => {
 
     const formButton = {
         color: theme.palette.text.primary,
@@ -255,14 +253,19 @@ const getStyles = (theme) => {
             padding: '1rem',
         },
         dialogTitle: {
-            borderBottom: `solid 0.1rem ${theme.palette.text.primary}`,
-            width: 'fit-content',
-            margin: '0.5rem 1rem'
+            boxShadow: `0 0 0.2rem ${theme.palette.colors.black}`,
+            width: '100%',
+        },
+        dialogActions: {
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? '0.5rem' : '0.2rem',
         },
         inputField: {
             borderRadius: '0.5rem',
             boxShadow: `0 0 0.2rem ${theme.palette.colors.black}`,
             width: '31rem',
+            maxWidth: '100%'
         },
         privacy: {
             display: 'flex',
