@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import {Icon, useMediaQuery, Box, IconButton} from "@mui/material"
+import {Icon, Box, IconButton} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {Delete, Lock, LockOpen} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
@@ -8,8 +8,7 @@ import {useNavigate} from "react-router-dom";
 function CollectionCard({collectionData, deleteCollection}) {
     const theme = useTheme()
     const styles = getStyles(theme, collectionData)
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const navigate = useNavigate()
 
     const [covers, setCovers] = useState([])
 

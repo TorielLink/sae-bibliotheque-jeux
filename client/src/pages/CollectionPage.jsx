@@ -1,24 +1,16 @@
-import React, {useContext, useState, useEffect} from 'react';
-import {AuthContext} from '../components/AuthContext.jsx';
+import React, {useState, useEffect} from 'react';
 import {Box, CircularProgress, Grid2, Icon, IconButton, Typography, useMediaQuery} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {useNavigate, useParams} from "react-router-dom";
 import {
-    AddBox,
-    ArrowBack,
     ArrowForward,
-    Edit,
     EditNote,
     Lock,
     LockOpen,
-    ModeEdit,
-    ModeEditOutline
 } from "@mui/icons-material";
 import GameCard from "../components/GameCard.jsx";
-import CollectionCard from "../components/profile/collections/CollectionCard.jsx";
 
 function CollectionPage() {
-    const {user, token} = useContext(AuthContext)
     const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -40,6 +32,7 @@ function CollectionPage() {
             setCollection(data.data)
         } catch (err) {
             console.error('Erreur lors de la récupération des données :', err)
+            setError("Erreur lors de la récupération des données.")
         } finally {
             setLoading(false)
         }
