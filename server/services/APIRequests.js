@@ -120,9 +120,7 @@ class APIRequests {
     }
 
     async getData(endpoint, queryBody) {
-        const data = await this.fetchAPI(endpoint, queryBody);
-
-        return data;
+        return await this.fetchAPI(endpoint, queryBody);
     }
 
     async makeRequests(requests) {
