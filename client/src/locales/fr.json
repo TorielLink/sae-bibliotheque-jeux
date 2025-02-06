@@ -1,0 +1,34 @@
+{
+  "pageName": {
+    "home": "Accueil"
+  },
+  "home": {
+    "recent_releases": "Sorties récentes",
+    "popular_games": "Jeux populaires",
+    "recent_reviews": "Avis récents",
+    "no_reviews_available": "Aucun avis disponible pour le moment"
+  },
+  "footer": {
+    "aboutUs": "À propos de nous",
+    "team": "L'équipe",
+    "teamShort": "Équipe",
+    "institution": "L'établissement",
+    "aboutProject": "À propos du projet",
+    "project": "Le projet",
+    "projectShort": "Projet",
+    "mentorship": "L'encadrement",
+    "githubRepo": "Dépôt GitHub",
+    "privacy": "Confidentialité",
+    "termsConditions": "Termes & conditions",
+    "privacyPolicy": "Politique & confidentialité",
+    "contact": "Contact",
+    "email": "Adresse mail",
+    "copyRight": "Tous droits réservés © 2024"
+  },
+
+     "error": {
+    "unexpectedDataFormat": "Format des données inattendu pour les avis.",
+    "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
+    "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard."
+  }
+}

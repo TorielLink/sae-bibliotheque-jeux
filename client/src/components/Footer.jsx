@@ -1,8 +1,10 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Footer = () => {
+    const { t } = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const styles = getStyles(theme);
@@ -13,39 +15,41 @@ const Footer = () => {
                 <div style={styles.footerContent}>
                     {/* Section : À propos de nous */}
                     <div style={styles.column}>
-                        <h3 style={styles.header}>À propos de nous</h3>
+                        <h3 style={styles.header}>{t("footer.aboutUs")}</h3>
                         <ul style={styles.linkList}>
-                            <li><a href="/team" style={styles.link}>L'équipe</a></li>
-                            <li><a href="/institution" style={styles.link}>L'établissement</a></li>
+                            <li><a href="/team" style={styles.link}>{t("footer.team")}</a></li>
+                            <li><a href="/institution" style={styles.link}>{t("footer.institution")}</a></li>
                         </ul>
                     </div>
 
                     {/* Section : À propos du projet */}
                     <div style={styles.column}>
-                        <h3 style={styles.header}>À propos du projet</h3>
+                        <h3 style={styles.header}>{t("footer.aboutProject")}</h3>
                         <ul style={styles.linkList}>
-                            <li><a href="/project" style={styles.link}>Le projet</a></li>
-                            <li><a href="/mentorship" style={styles.link}>L'encadrement</a></li>
+                            <li><a href="/project" style={styles.link}>{t("footer.project")}</a></li>
+                            <li><a href="/mentorship" style={styles.link}>{t("footer.mentorship")}</a></li>
                             <li><a href="https://github.com/TorielLink/BibliothequeJeuxIUT" target="_blank"
-                                   rel="noopener noreferrer" style={styles.link}>Dépôt GitHub</a></li>
+                                   rel="noopener noreferrer" style={styles.link}>{t("footer.githubRepo")}</a></li>
                         </ul>
                     </div>
 
                     {/* Section : Confidentialité */}
                     <div style={styles.column}>
-                        <h3 style={styles.header}>Confidentialité</h3>
+                        <h3 style={styles.header}>{t("footer.privacy")}</h3>
                         <ul style={styles.linkList}>
-                            <li><a href="/terms" style={styles.link}>Termes & conditions</a></li>
-                            <li><a href="/privacy-policy" style={styles.link}>Politique & confidentialité</a></li>
+                            <li><a href="/terms" style={styles.link}>{t("footer.termsConditions")}</a></li>
+                            <li><a href="/privacy-policy" style={styles.link}>{t("footer.privacyPolicy")}</a></li>
                         </ul>
                     </div>
 
                     {/* Section : Contact */}
                     <div style={styles.column}>
-                        <h3 style={styles.header}>Contact</h3>
+                        <h3 style={styles.header}>{t("footer.contact")}</h3>
                         <ul style={styles.linkList}>
-                            <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" style={styles.link}>GitHub</a></li>
-                            <li><a href="mailto:contact-srcib@example.com" style={styles.link}>Adresse mail</a></li>
+                            <li><a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                   style={styles.link}>GitHub</a></li>
+                            <li><a href="mailto:contact-srcib@example.com" style={styles.link}>
+                                {t("footer.email")}</a></li>
                             <li><a href="/discord" style={styles.link}>Discord</a></li>
                         </ul>
                     </div>
@@ -56,22 +60,22 @@ const Footer = () => {
                 <div style={styles.mobileFooterContent}>
                     {/* Section : Nous */}
                     <div style={styles.column}>
-                        <a href="/team" style={styles.link}>Équipe</a>
+                        <a href="/team" style={styles.link}>{t("footer.teamShort")}</a>
                     </div>
 
                     {/* Section : Projet */}
                     <div style={styles.column}>
-                        <a href="/project" style={styles.link}>Projet</a>
+                        <a href="/project" style={styles.link}>{t("footer.projectShort")}</a>
                     </div>
 
                     {/* Section : Confidentialité */}
                     <div style={styles.column}>
-                        <a href="/privacy-policy" style={styles.link}>Confidentialité</a>
+                        <a href="/privacy-policy" style={styles.link}>{t("footer.privacy")}</a>
                     </div>
 
                     {/* Section : Contact */}
                     <div style={styles.column}>
-                        <a href="/contact" style={styles.link}>Contact</a>
+                        <a href="/contact" style={styles.link}>{t("footer.contact")}</a>
                     </div>
                 </div>
             )}
@@ -80,7 +84,7 @@ const Footer = () => {
 
             {/* Bas de page */}
             <div style={styles.footerBottom}>
-                <p style={styles.bottomText}>Tous droits réservés © 2024</p>
+                <p style={styles.bottomText}>{t("footer.copyRight")}</p>
             </div>
         </footer>
     );

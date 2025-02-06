@@ -33,7 +33,7 @@ function HomePage() {
     };
 
     // Contenus des onglets (version mobile)
-    const tabTitles = ["Sorties récentes", "Jeux populaires", "Avis récents"];
+    const tabTitles = [t("home.recent_releases"), t("home.popular_games"), t("home.recent_reviews")];
     const tabContents = [
         <GameList key="recent" games={recentGames}/>,
         <GameList key="popular" games={popularGames}/>,
@@ -55,7 +55,7 @@ function HomePage() {
                 </Grid>
             ) : (
                 <Typography variant="body1">
-                    Aucun avis disponible pour le moment.
+                    {t("home.no_reviews_available")}
                 </Typography>
             )}
         </Box>,
@@ -89,7 +89,7 @@ function HomePage() {
             setRecentGames(recent.length ? recent : recentGames);
             setPopularGames(popular.length ? popular : popularGames);
         } catch (err) {
-            setError("Impossible de charger les jeux. Veuillez réessayer plus tard.");
+            setError(t("error.loadingGames"));
         } finally {
             setLoading(false);
         }
@@ -104,12 +104,12 @@ function HomePage() {
             }
             const data = await response.json();
             if (!data.data || !Array.isArray(data.data)) {
-                setError("Format des données inattendu pour les avis.");
+                setError(t("error.unexpectedDataFormat"));
                 return;
             }
             setRecentComments(data.data);
         } catch (error) {
-            setError("Impossible de charger les avis récents. Veuillez réessayer plus tard.");
+            setError(t("error.loadingComments"));
         }
     };
 
@@ -165,7 +165,7 @@ function HomePage() {
                         display: "inline",
                     }}
                 >
-                    Accueil &gt;
+                    {t("pageName.home")} &gt;
                 </Typography>
             </Box>
 
@@ -175,13 +175,14 @@ function HomePage() {
             ) : (
                 <>
                     <Box sx={{marginTop: "2em"}}>
-                        <GameList title="Sorties récentes" games={recentGames}/>
-                    </Box>
-                    <Box>
-                        <GameList title="Jeux populaires" games={popularGames}/>
+                        <GameList title={t("home.recent_releases")} games={recentGames}/>
                     </Box>
 
-                    <SectionTitle title="Avis récents"/>
+                    <Box>
+                        <GameList title={t("home.popular_games")} games={popularGames}/>
+                    </Box>
+
+                    <SectionTitle title={t("home.recent_reviews")}/>
                     <Box
                         sx={{
                             textAlign: "center",
