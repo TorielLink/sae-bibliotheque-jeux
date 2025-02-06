@@ -45,6 +45,7 @@ class APIRequests {
             }
 
             const data = await response.json();
+            //traduire en francais
             return data
         } catch (error) {
             console.error(`Error fetching data from ${endpoint}:`, error.message);
@@ -120,9 +121,7 @@ class APIRequests {
     }
 
     async getData(endpoint, queryBody) {
-        const data = await this.fetchAPI(endpoint, queryBody);
-
-        return data;
+        return await this.fetchAPI(endpoint, queryBody);
     }
 
     async makeRequests(requests) {
@@ -367,7 +366,7 @@ class APIRequests {
 
         const gameGenresData = await this.getData(
             "genres",
-            `fields id,name,slug; where id = (${gameGenres.join(",")});limit ${gameGenres.length};`
+            `fields id,name; where id = (${gameGenres.join(",")});limit ${gameGenres.length};`
         )
 
         return {
