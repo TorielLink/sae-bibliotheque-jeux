@@ -366,7 +366,7 @@ class APIRequests {
 
         const gameGenresData = await this.getData(
             "genres",
-            `fields id,name,slug; where id = (${gameGenres.join(",")});limit ${gameGenres.length};`
+            `fields id,name; where id = (${gameGenres.join(",")});limit ${gameGenres.length};`
         )
 
         return {

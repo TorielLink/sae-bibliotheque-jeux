@@ -1,5 +1,4 @@
 const APIRequests = require('./APIRequests.js');
-const {logger} = require("sequelize/lib/utils/logger");
 const {TranslateRequests} = require("./TranslateRequests.js")
 
 class DataRetriever extends APIRequests {
@@ -117,7 +116,7 @@ class DataRetriever extends APIRequests {
                 similarGames: similar_games,
                 standaloneExpansions: standalone_expansions,
                 parentGame: parentGame
-            }, 'en', 'fr', ["summary", "storyline"]); //TODO : faire que la langue cible soit variable
+            }, 'en', 'fr', ["summary", "storyline", "genres"]); //TODO : faire que la langue cible soit variable
         } catch (error) {
             console.error(`Failed to retrieve game info for ID ${id}:`, error);
             throw error;
@@ -227,7 +226,7 @@ class DataRetriever extends APIRequests {
         let genresMap = new Map()
         const coversMap = coverGenresData.coverMap || new Map()
         const genres = coverGenresData.genres?.map(el => genresMap.set(el.id, el)) || []
-        let result = games.map(el => {
+        let result = await Promise.all(games.map(async (el) => {
             let game = {...el}
 
             game.aggregated_rating = !game.aggregated_rating ? 0 : (game.aggregated_rating / 10).toFixed(1)
@@ -237,28 +236,30 @@ class DataRetriever extends APIRequests {
                 : null
             delete game.first_release_date
 
-            game.cover = game.cover == undefined
+            game.cover = game.cover === undefined
                 ? undefined
                 : (coversMap.get(game.cover)?.url || undefined);
 
             let genres = []
-            if (game.genres != undefined) {
+            if (game.genres !== undefined) {
                 el.genres.forEach(genreId => {
                     const genre = genresMap.get(genreId);
                     if (genre) genres.push(genre.name);
                 })
             }
-            game.genres = genres
 
+            game.genres = await Promise.all(genres.map(async (genre) => {
+                return await DataRetriever.translater.translateText(genres, 'en', 'fr')
+            }))
+            game.genres = game.genres[0]
             return game
-        })
+        }))
 
-        let sortedResult = result
+        return result
             .filter(el => el.cover !== undefined)
             .map(el => {
                 return el;
             })
-        return sortedResult
     }
 
     async getCatalogByDate(limit = DataRetriever.#DEFAULT_LIMIT, offset = DataRetriever.#DEFAULT_OFFSET) {

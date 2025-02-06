@@ -44,13 +44,31 @@ class TranslateRequests {
             throw new Error("Les données IGDB doivent être un tableau d'objets.");
         if (!sourceLang || !targetLang)
             throw new Error("Les paramètres 'sourceLang' et 'targetLang' sont requis.");
-
         try {
             const translatedData = {...data};
 
             for (const field of fieldsToTranslate)
-                if (translatedData[field])
-                    translatedData[field] = await this.translateText(translatedData[field], sourceLang, targetLang);
+                if (translatedData[field]) {
+                    if (Array.isArray(translatedData[field])) {
+                        const trad = await Promise.all(translatedData[field].map(async (item) => {
+                            if (typeof item === 'string') {
+                                return await this.translateText(item, sourceLang, targetLang)
+                            } else if (typeof item === 'object' && item !== null) {
+                                let translatedItem = {...item};
+                                for (const key in translatedItem) {
+                                    if (typeof translatedItem[key] === 'string') {
+                                        translatedItem[key] = await this.translateText(translatedItem[key], sourceLang, targetLang)
+                                    }
+                                }
+                                return translatedItem
+                            }
+                        }))
+                        translatedData[field] = trad
+                    } else {
+                        translatedData[field] = await this.translateText(translatedData[field], sourceLang, targetLang);
+                    }
+
+                }
 
             return translatedData;
         } catch (error) {
