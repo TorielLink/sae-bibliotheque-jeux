@@ -20,7 +20,8 @@ function NewCollectionForm({
                                closeCollectionForm,
                                createCollection,
                                createCollectionAndChange,
-                               cancelCollectionCreation
+                               cancelCollectionCreation,
+                               collections
                            }) {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -44,7 +45,9 @@ function NewCollectionForm({
 
     useEffect(() => {
         fetchData()
-    }, []);
+        setName("")
+        setDescription("")
+    }, [collections]);
 
     const [name, setName] = useState("")
     const handleNameChange = (event) => {

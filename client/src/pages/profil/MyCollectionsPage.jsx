@@ -96,7 +96,7 @@ const MyCollectionsPage = () => {
     }
 
     const createCollection = async (newCollection) => {
-        if (!newCollection.name || !newCollection.description.isEmpty) {
+        if (newCollection.name === "" || newCollection.description === "") {
             if (!confirm('Certains champs sont vide. Voulez vraiment créer la collection ?')) {
                 return
             }
@@ -194,6 +194,7 @@ const MyCollectionsPage = () => {
                             createCollection={createCollection}
                             createCollectionAndChange={createCollectionAndChange}
                             cancelCollectionCreation={cancelCollectionCreation}
+                            collections={collections}
                         />
                     </div>
                 </div>
