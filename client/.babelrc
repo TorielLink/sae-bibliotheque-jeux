@@ -1,0 +1,11 @@
+{
+  "presets": ["react-app"],
+  "plugins": [
+    ["i18next-extract", {
+      "locales": ["fr", "en", "de", "es"],
+      "keyAsDefaultValue": ["fr"],
+      "outputPath": "./src/locales/{{locale}}.json",
+      "discardOldKeys": true
+    }]
+  ]
+}

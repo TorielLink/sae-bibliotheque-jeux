@@ -1,4 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
@@ -14,6 +15,7 @@ import ResponsiveCommentCard from "../components/ResponsiveCommentCard";
 import {AuthContext} from "../components/AuthContext";
 
 function HomePage() {
+    const { t } = useTranslation();
     const [recentGames, setRecentGames] = useState([]);
     const [popularGames, setPopularGames] = useState([]);
     const [loading, setLoading] = useState(false);
