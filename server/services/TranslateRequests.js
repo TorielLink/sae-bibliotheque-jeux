@@ -1,6 +1,5 @@
 class TranslateRequests {
-    // TODO: Changer l'URL de l'API quand on l'aura auto-hébergée
-    constructor(apiUrl = "https://libretranslate.com", apiKey = "") {
+    constructor(apiUrl = "http://localhost:5000", apiKey = "") {
         this.apiUrl = apiUrl;
         this.apiKey = apiKey;
     }
