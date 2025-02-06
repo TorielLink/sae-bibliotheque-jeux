@@ -1,5 +1,6 @@
 const APIRequests = require('./APIRequests.js');
 const {logger} = require("sequelize/lib/utils/logger");
+const {translateIGDBData} = require("TranslateRequests")
 
 class DataRetriever extends APIRequests {
     static #DEFAULT_OFFSET = 0
@@ -89,8 +90,7 @@ class DataRetriever extends APIRequests {
             const [bundles, collections, dlcs, expansions, remakes,
                 remasters, similar_games, standalone_expansions, franchises, parentGame] = await this.#getRelatedContent(game, apiData);
 
-
-            return {
+            return translateIGDBData({
                 id: game.id,
                 name: game.name,
                 summary: game.summary,
@@ -116,7 +116,7 @@ class DataRetriever extends APIRequests {
                 similarGames: similar_games,
                 standaloneExpansions: standalone_expansions,
                 parentGame: parentGame
-            };
+            }, 'en', 'fr', ["summary", "storyline", "genres",]); //TODO : faire que la langue cible soit variable
         } catch (error) {
             console.error(`Failed to retrieve game info for ID ${id}:`, error);
             throw error;
