@@ -45,6 +45,7 @@ class APIRequests {
             }
 
             const data = await response.json();
+            //traduire en francais
             return data
         } catch (error) {
             console.error(`Error fetching data from ${endpoint}:`, error.message);

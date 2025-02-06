@@ -40,23 +40,18 @@ class TranslateRequests {
     }
 
     async translateIGDBData(data, sourceLang, targetLang, fieldsToTranslate = []) {
-        if (!data || !Array.isArray(data))
+        if (!data || typeof data !== 'object')
             throw new Error("Les données IGDB doivent être un tableau d'objets.");
         if (!sourceLang || !targetLang)
             throw new Error("Les paramètres 'sourceLang' et 'targetLang' sont requis.");
 
         try {
-            const translatedData = [];
+            const translatedData = {...data};
 
-            for (const item of data) {
-                const translatedItem = { ...item };
+            for (const field of fieldsToTranslate)
+                if (translatedData[field])
+                    translatedData[field] = await this.translateText(translatedData[field], sourceLang, targetLang);
 
-                for (const field of fieldsToTranslate)
-                    if (translatedItem[field])
-                        translatedItem[field] = await this.translateText(translatedItem[field], sourceLang, targetLang);
-
-                translatedData.push(translatedItem);
-            }
             return translatedData;
         } catch (error) {
             console.error("Erreur lors de la traduction des données IGDB :", error.message);
@@ -65,4 +60,4 @@ class TranslateRequests {
     }
 }
 
-module.exports = { TranslateRequests };
+module.exports = {TranslateRequests};
