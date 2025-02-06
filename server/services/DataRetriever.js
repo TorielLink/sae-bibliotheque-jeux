@@ -116,7 +116,7 @@ class DataRetriever extends APIRequests {
                 similarGames: similar_games,
                 standaloneExpansions: standalone_expansions,
                 parentGame: parentGame
-            }, 'en', 'fr', ["summary", "storyline", "genres"]); //TODO : faire que la langue cible soit variable
+            }, 'en', 'fr', ["summary", "storyline"]); //TODO : faire que la langue cible soit variable
         } catch (error) {
             console.error(`Failed to retrieve game info for ID ${id}:`, error);
             throw error;
@@ -248,10 +248,7 @@ class DataRetriever extends APIRequests {
                 })
             }
 
-            game.genres = await Promise.all(genres.map(async (genre) => {
-                return await DataRetriever.translater.translateText(genres, 'en', 'fr')
-            }))
-            game.genres = game.genres[0]
+            game.genres = genres
             return game
         }))
 
