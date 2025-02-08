@@ -27,17 +27,15 @@ const listContentRoutes = require('./routes/listContentRoutes');
 
 // Configuration CORS
 const configureCors = () => {
-    const allowedOrigins = []; // On définira dynamiquement les origines autorisées
+    const allowedOrigins = ['*']; // Autorise toutes les origines temporairement
 
-    // Générer la liste des origines dans la plage
     for (let port = 5173; port <= 5177; port++) {
         allowedOrigins.push(`http://localhost:${port}`);
     }
 
     return cors({
         origin: (origin, callback) => {
-            // Si l'origine est dans la liste, on l'autorise
-            if (!origin || allowedOrigins.includes(origin)) {
+            if (!origin || allowedOrigins.includes(origin) || origin === '*') {
                 callback(null, true);
             } else {
                 callback(new Error('Origine non autorisée par CORS'));
@@ -47,6 +45,7 @@ const configureCors = () => {
         credentials: true,
     });
 };
+
 app.use(configureCors());
 
 // Middleware pour parser les données JSON et URL-encodées
