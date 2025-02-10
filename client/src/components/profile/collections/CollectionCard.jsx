@@ -1,14 +1,13 @@
 import React, {useState, useEffect} from "react"
-import {Icon, Box, IconButton} from "@mui/material"
+import {Icon, Box, IconButton, Link as MuiLink} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import {Delete, Lock, LockOpen} from "@mui/icons-material";
-import {useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 
 function CollectionCard({collectionData, deleteCollection}) {
     const theme = useTheme()
     const styles = getStyles(theme, collectionData)
-    const navigate = useNavigate()
 
     const [covers, setCovers] = useState([])
 
@@ -35,15 +34,10 @@ function CollectionCard({collectionData, deleteCollection}) {
         deleteCollection(collectionData.game_collection_id)
     }
 
-    const handleNavigation = () => {
-        navigate(`/collection/${collectionData.game_collection_id}`)
-    }
-
     return (
         <Box style={styles.container}
              onMouseEnter={() => setIsCardHovered(true)}
              onMouseLeave={() => setIsCardHovered(false)}
-             onClick={handleNavigation}
              sx={{
                  '&:hover': {
                      transform: 'scale(1.05)',
@@ -66,48 +60,54 @@ function CollectionCard({collectionData, deleteCollection}) {
                 }}>
                 <Delete fontSize="large"/>
             </IconButton>
-            <div>
-                <div style={styles.coversContainer}>
-
-                    {
-                        [...covers.slice(0, 5), ...new Array(Math.max(0, 5 - covers.length)).fill(null)].map((item, index) => (
-                            <div
-                                key={index}
-                                style={{
-                                    zIndex: -index,
-                                    marginLeft: index === 0 ? '0' : '-3rem',
-                                }}
-                            >
+            <MuiLink component={Link} to={`/collection/${collectionData.game_collection_id}`} sx={{
+                all: "unset",
+                textDecoration: "none",
+                color: "inherit",
+                cursor: "pointer",
+            }}>
+                <div>
+                    <div style={styles.coversContainer}>
+                        {
+                            [...covers.slice(0, 5), ...new Array(Math.max(0, 5 - covers.length)).fill(null)].map((item, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        zIndex: -index,
+                                        marginLeft: index === 0 ? '0' : '-3rem',
+                                    }}
+                                >
+                                    {
+                                        item ? <img style={styles.cover} src={item}/>
+                                            : <div style={{
+                                                ...styles.placeholder,
+                                                transform: index % 2 === 0 ? 'rotate(180deg)' : 'none'
+                                            }}/>
+                                    }
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+                <div style={styles.informations}>
+                    <div style={styles.informations.top}>
+                        <p style={styles.label}>{collectionData.name}</p>
+                        {
+                            <Icon style={styles.icon}>
                                 {
-                                    item ? <img style={styles.cover} src={item}/>
-                                        : <div style={{
-                                            ...styles.placeholder,
-                                            transform: index % 2 === 0 ? 'rotate(180deg)' : 'none'
-                                        }}/>
-                                }
-                            </div>
-                        ))
-                    }
-                </div>
-            </div>
-            <div style={styles.informations}>
-                <div style={styles.informations.top}>
-                    <p style={styles.label}>{collectionData.name}</p>
-                    {
-                        <Icon style={styles.icon}>
-                            {
-                                collectionData.privacy_setting_id === 1 ? (
+                                    collectionData.privacy_setting_id === 1 ? (
 
-                                    <Lock style={styles.icon.inside}/>
-                                ) : (
-                                    <LockOpen style={styles.icon.inside}/>
-                                )
-                            }
-                        </Icon>
-                    }
+                                        <Lock style={styles.icon.inside}/>
+                                    ) : (
+                                        <LockOpen style={styles.icon.inside}/>
+                                    )
+                                }
+                            </Icon>
+                        }
+                    </div>
+                    <p style={styles.gamesNumber}>{collectionData.collection_content.length} jeux</p>
                 </div>
-                <p style={styles.gamesNumber}>{collectionData.collection_content.length} jeux</p>
-            </div>
+            </MuiLink>
         </Box>
     )
 }

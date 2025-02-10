@@ -1,9 +1,9 @@
 import React, {useContext, useState, useEffect} from 'react';
 import {AuthContext} from '../../components/AuthContext.jsx';
 import {
-    Box,
+    Box, Breadcrumbs,
     CircularProgress,
-    Grid2,
+    Grid2, Link as MuiLink,
     Typography,
     useMediaQuery
 } from "@mui/material";
@@ -11,11 +11,14 @@ import {useTheme} from "@mui/material/styles";
 import CollectionCard from "../../components/profile/collections/CollectionCard.jsx";
 import NewCollectionForm from "../../components/profile/collections/NewCollectionForm.jsx";
 import SortingOptions from "../../components/SortingOptions.jsx";
+import {NavigateNext} from "@mui/icons-material";
+import {Link, useNavigate} from "react-router-dom";
 
 const MyCollectionsPage = () => {
     const {user} = useContext(AuthContext)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const navigate = useNavigate()
 
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -53,7 +56,7 @@ const MyCollectionsPage = () => {
                 throw new Error(`Failed to create collection : ${response.statusText}`)
             }
 
-            await response.json()
+            return (await response.json()).data
         } catch (error) {
             console.error('Error create new collection :', error)
         }
@@ -101,14 +104,14 @@ const MyCollectionsPage = () => {
                 return
             }
         }
-        await saveCollectionCreation(newCollection)
+        const collection = await saveCollectionCreation(newCollection)
         setUpdateCollections(!updateCollections)
-        closeCollectionForm()
+        return collection
     }
 
     const createCollectionAndChange = async (newCollection) => {
-        await createCollection(newCollection)
-        // redirect to collection page
+        const result = await createCollection(newCollection)
+        navigate(`/collection/${result.game_collection_id}/edit`)
     }
 
     const cancelCollectionCreation = () => {
@@ -173,9 +176,17 @@ const MyCollectionsPage = () => {
                 flex: '1',
             }}
         >
-            <Typography variant="subtitle2" style={styles.breadcrumb}>
-                Profil &gt; Collections
-            </Typography>
+            <Breadcrumbs
+                separator={<NavigateNext/>}
+                style={styles.breadcrumbs}
+            >
+                <MuiLink component={Link} to="/profile" underline="hover" style={styles.breadcrumb}>
+                    Profil
+                </MuiLink>
+                <MuiLink component={Link} to="/collections" underline="hover" style={styles.breadcrumb}>
+                    Collections
+                </MuiLink>
+            </Breadcrumbs>
 
             <div style={styles.container}>
                 <div style={styles.options}>
@@ -254,11 +265,15 @@ const MyCollectionsPage = () => {
 
 const getStyles = (theme, isMobile) => {
     return {
-        breadcrumb: {
+
+        breadcrumbs: {
+            fontFamily: theme.typography.fontFamily,
             color: theme.palette.colors.red,
-            padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
-            font: 'Inter',
-            fontSize: isMobile ? "0.9em" : "1em",
+            margin: "2em 0 1em 2em",
+        },
+        breadcrumb: {
+            fontFamily: theme.typography.fontFamily,
+            color: theme.palette.colors.red,
         },
         error: {
             textAlign: 'center',

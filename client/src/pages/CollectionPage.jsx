@@ -1,12 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import {Box, CircularProgress, Grid2, Icon, IconButton, Typography, useMediaQuery} from "@mui/material";
+import {
+    Box, Breadcrumbs,
+    CircularProgress,
+    Grid2,
+    Icon,
+    IconButton,
+    Link as MuiLink,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {
     ArrowForward,
     EditNote,
     Lock,
-    LockOpen,
+    LockOpen, NavigateNext,
 } from "@mui/icons-material";
 import GameCard from "../components/GameCard.jsx";
 
@@ -42,6 +51,40 @@ function CollectionPage() {
         fetchData()
     }, [])
 
+    const navigationButtons = (
+        <div style={styles.buttons}>
+            <IconButton
+                disableTouchRipple
+                onClick={() => navigate(`/collections`)}
+                style={styles.button}
+                sx={{
+                    '&:hover': {
+                        transform: 'scale(1.05)',
+                    },
+                    '&:active': {
+                        transform: 'scale(1)',
+                    },
+                }}>
+                <p>Mes collections</p>
+                <ArrowForward fontSize="large"/>
+            </IconButton>
+            <IconButton
+                disableTouchRipple
+                onClick={() => navigate(`/collection/${id}/edit`)}
+                style={styles.button}
+                sx={{
+                    '&:hover': {
+                        transform: 'scale(1.05)',
+                    },
+                    '&:active': {
+                        transform: 'scale(1)',
+                    },
+                }}>
+                <p>Modifier la collection</p>
+                <EditNote fontSize="large"/>
+            </IconButton>
+        </div>
+    )
 
     return (
         <Box
@@ -51,9 +94,20 @@ function CollectionPage() {
                 flex: '1',
             }}
         >
-            <Typography variant="subtitle2" style={styles.breadcrumb}>
-                Profil &gt; Collections &gt; {collection?.name}
-            </Typography>
+            <Breadcrumbs
+                separator={<NavigateNext/>}
+                style={styles.breadcrumbs}
+            >
+                <MuiLink component={Link} to="/profile" underline="hover" style={styles.breadcrumb}>
+                    Profil
+                </MuiLink>
+                <MuiLink component={Link} to="/collections" underline="hover" style={styles.breadcrumb}>
+                    Collections
+                </MuiLink>
+                <MuiLink component={Link} to={`/collection/${id}`} underline="hover" style={styles.breadcrumb}>
+                    {collection?.name}
+                </MuiLink>
+            </Breadcrumbs>
             {
                 loading ? (
                     <Box
@@ -80,40 +134,7 @@ function CollectionPage() {
                 ) : (
                     <div style={styles.container}>
                         {
-                            isMobile && (
-                                <div style={styles.buttons}>
-                                    <IconButton
-                                        disableTouchRipple
-                                        onClick={() => navigate(`/collections`)}
-                                        style={styles.button}
-                                        sx={{
-                                            '&:hover': {
-                                                transform: 'scale(1.05)',
-                                            },
-                                            '&:active': {
-                                                transform: 'scale(1)',
-                                            },
-                                        }}>
-                                        <p>Mes collections</p>
-                                        <ArrowForward fontSize="large"/>
-                                    </IconButton>
-                                    <IconButton
-                                        disableTouchRipple
-                                        onClick={() => navigate(`/collections`)}
-                                        style={styles.button}
-                                        sx={{
-                                            '&:hover': {
-                                                transform: 'scale(1.05)',
-                                            },
-                                            '&:active': {
-                                                transform: 'scale(1)',
-                                            },
-                                        }}>
-                                        <p>Modifier la collection</p>
-                                        <EditNote fontSize="large"/>
-                                    </IconButton>
-                                </div>
-                            )
+                            isMobile && navigationButtons
                         }
                         <div style={styles.topInformations}>
                             <div style={styles.titleAndPrivacy}>
@@ -138,40 +159,7 @@ function CollectionPage() {
                                 </div>
                             </div>
                             {
-                                !isMobile && (
-                                    <div style={styles.buttons}>
-                                        <IconButton
-                                            disableTouchRipple
-                                            onClick={() => navigate(`/collections`)}
-                                            style={styles.button}
-                                            sx={{
-                                                '&:hover': {
-                                                    transform: 'scale(1.05)',
-                                                },
-                                                '&:active': {
-                                                    transform: 'scale(1)',
-                                                },
-                                            }}>
-                                            <p>Mes collections</p>
-                                            <ArrowForward fontSize="large"/>
-                                        </IconButton>
-                                        <IconButton
-                                            disableTouchRipple
-                                            onClick={() => navigate(`/collections`)}
-                                            style={styles.button}
-                                            sx={{
-                                                '&:hover': {
-                                                    transform: 'scale(1.05)',
-                                                },
-                                                '&:active': {
-                                                    transform: 'scale(1)',
-                                                },
-                                            }}>
-                                            <p>Modifier la collection</p>
-                                            <EditNote fontSize="large"/>
-                                        </IconButton>
-                                    </div>
-                                )
+                                !isMobile && navigationButtons
                             }
                         </div>
                         <p style={styles.description}>
@@ -218,11 +206,14 @@ const getStyles = (theme, isMobile) => {
     }
 
     return {
-        breadcrumb: {
+        breadcrumbs: {
+            fontFamily: theme.typography.fontFamily,
             color: theme.palette.colors.red,
-            padding: isMobile ? "0.75em 0 0 0.75em" : "1.5em 0 0 1.5em",
-            font: 'Inter',
-            fontSize: isMobile ? "0.9em" : "1em",
+            margin: "2em 0 1em 2em",
+        },
+        breadcrumb: {
+            fontFamily: theme.typography.fontFamily,
+            color: theme.palette.colors.red,
         },
         container: {
             paddingBlock: '2.5rem',
