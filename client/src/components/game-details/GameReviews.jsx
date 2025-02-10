@@ -16,28 +16,32 @@ const GameReviews = ({gameId, gameName}) => {
     const fetchReviews = async () => {
         try {
             const response = await fetch(`http://localhost:8080/game-reviews/game/${gameId}`);
-
             if (response.status === 404) {
                 setReviews([]);
                 setError(null);
                 return;
             }
-
             if (!response.ok) {
-                throw new Error(
-                    `Erreur lors du chargement des avis : ${response.statusText}`
-                );
+                throw new Error(`Erreur lors du chargement des avis : ${response.statusText}`);
             }
-
             const data = await response.json();
-            setReviews(data.data || []);
+            const enrichedData = data.data.map((review) => ({
+                ...review,
+                game: {
+                    ...review.game,
+                    cover: review.game.cover || "/assets/default-cover.jpg",
+                },
+            }));
+            setReviews(enrichedData || []);
             setError(null);
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
+
         }
     };
+
 
     useEffect(() => {
         fetchReviews();
@@ -45,8 +49,9 @@ const GameReviews = ({gameId, gameName}) => {
 
     const handleCommentAdded = async () => {
         setIsAddingComment(false);
-        await fetchReviews();
+        setTimeout(fetchReviews, 500); // Attendre 500ms avant de recharger les avis
     };
+
 
     const handleCommentDeleted = (commentId) => {
         setReviews((prevReviews) => prevReviews.filter((review) => review.id !== commentId));
@@ -70,18 +75,12 @@ const GameReviews = ({gameId, gameName}) => {
                     onCancel={() => setIsAddingComment(false)}
                 />
             )}
-
-            {/* Affichage de l'erreur si échec réseau ou code HTTP != 200/404 */}
             {error && (
                 <p style={{color: "red", fontSize: "1.2em", marginTop: "20px", textAlign: "center"}}>
                     Erreur : {error}
                 </p>
             )}
 
-            {/*
-        Tant que loading = true, on affiche le spinner (CircularProgress).
-        Sinon, si pas d'erreur => on vérifie reviews.length
-      */}
             {loading ? (
                 <div style={styles.loadingContainer}>
                     <CircularProgress/>

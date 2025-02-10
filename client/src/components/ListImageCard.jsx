@@ -5,14 +5,13 @@ import StarIcon from "@mui/icons-material/Star";
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 
 function ListImageCard({id, image, title, rating, genres = [], platform}) {
-    const navigate = useNavigate(); // Initialiser useNavigate
+    const navigate = useNavigate();
 
     const handleCardClick = () => {
         console.log("Navigating to details with ID:", id);
-        navigate(`/details/${id}`); // Naviguer vers la page de détails
+        navigate(`/details/${id}`);
     };
 
-    // Assurer que genres est un tableau
     const safeGenres = Array.isArray(genres) ? genres : [];
 
     return (
@@ -114,7 +113,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                                         overflow: "hidden",
                                     }}
                                 >
-                                    {genre} {/* Affichez directement le genre si c'est une chaîne */}
+                                    {genre}
                                 </Box>
                             ))
                         ) : (
@@ -176,29 +175,8 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                     />
                 </Box>
 
-                {/* Logo Steam en bas à droite */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        bottom: "10px",
-                        right: "10px",
-                        width: "1.5em",
-                        height: "1.5em",
-                    }}
-                >
-                    {/*TODO : Remplacer l'image par le logo de la plateforme */}
-                    <Box
-                        component="img"
-                        src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"
-                        alt="Steam"
-                        sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                        }}
-                    />
-                </Box>
             </Box>
+
         </Card>
     );
 }

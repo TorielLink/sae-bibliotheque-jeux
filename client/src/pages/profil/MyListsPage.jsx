@@ -30,7 +30,7 @@ const MyListsPage = () => {
     const {user} = useContext(AuthContext);
     const userId = user?.id;
 
-    const [selectedFilter, setSelectedFilter] = useState('playing'); // Filtre initial
+    const [selectedFilter, setSelectedFilter] = useState('playing');
     const [viewMode, setViewMode] = useState('grid');
     const [gamesData, setGamesData] = useState({
         finish: [],
@@ -40,7 +40,7 @@ const MyListsPage = () => {
         paused: [],
         stopped: [],
     });
-    const [loading, setLoading] = useState(true); // Initialiser à true pour charger dès le début
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const theme = useTheme();
@@ -107,24 +107,32 @@ const MyListsPage = () => {
                     });
 
                     if (response.status === 404) {
-                        console.warn(`Aucun jeu trouvé pour le filtre "${filter.id}".`);
+                        console.warn(`No games found for filter "${filter.id}".`);
                         newGamesData[filter.id] = [];
                         setGamesData({...newGamesData});
                         continue;
                     }
 
                     if (!response.ok) {
-                        throw new Error(`Erreur pour le filtre "${filter.id}": ${response.status} ${response.statusText}`);
+                        throw new Error(`Error for filter "${filter.id}": ${response.status} ${response.statusText}`);
                     }
 
                     const result = await response.json();
-                    console.log(`API Response for filter "${filter.id}":`, result);
-                    newGamesData[filter.id] = result.data || [];
-                    setGamesData({...newGamesData}); // Mise à jour progressive
+
+                    newGamesData[filter.id] = (result.data || []).map((game) => ({
+                        ...game,
+                        genres: Array.isArray(game.genres) && game.genres.length > 0
+                            ? game.genres
+                            : ['Non spécifié'],
+                    }));
+
+
+                    setGamesData({...newGamesData});
+
                 }
             } catch (err) {
                 setError(err.message);
-                console.error('Erreur lors de la récupération des jeux:', err);
+                console.error('Error while fetching games:', err);
             } finally {
                 setLoading(false);
             }
@@ -132,7 +140,8 @@ const MyListsPage = () => {
 
         fetchAllGames();
         console.log('jeu envoyé', gamesData);
-    }, [userId]); // Dépendance uniquement sur userId pour charger une fois
+
+    }, [userId]);
 
     return (
         <Box style={{padding: '0.125em', overflowX: 'hidden', overflowY: 'auto', flexGrow: 1,}}>
@@ -395,7 +404,7 @@ const MyListsPage = () => {
                                                                                 padding: '5px',
                                                                             }}
                                                                         >
-                                                                            {formatPlayTime(game.totalTimePlayed)}
+                                                                            {formatPlayTime(game.averageRating)}
                                                                         </TableCell>
                                                                         <TableCell
                                                                             sx={{
@@ -485,23 +494,30 @@ const MyListsPage = () => {
                                                                                 flexWrap: 'wrap',
                                                                             }}
                                                                         >
-                                                                            {game.genres?.map((genre, index) => (
-                                                                                <Box
-                                                                                    key={index}
-                                                                                    sx={{
-                                                                                        background: theme.palette.colors.red,
-                                                                                        boxShadow: '0px 0px 2px #000000',
-                                                                                        borderRadius: '5px',
-                                                                                        padding: '3px 6px',
-                                                                                        color: theme.palette.text.contrast,
-                                                                                        fontSize: '0.75em',
-                                                                                        fontWeight: 'bold',
-                                                                                        margin: '1px',
-                                                                                    }}
-                                                                                >
-                                                                                    {genre.name}
-                                                                                </Box>
-                                                                            )) || 'Non spécifié'}
+                                                                            {game.genres?.length > 0 ? (
+                                                                                game.genres.map((genre, index) => (
+                                                                                    <Box
+                                                                                        key={index}
+                                                                                        sx={{
+                                                                                            backgroundColor: '#FFD700', // Couleur personnalisée pour chaque genre
+                                                                                            color: '#000', // Couleur du texte
+                                                                                            padding: '4px 8px',
+                                                                                            borderRadius: '5px',
+                                                                                            margin: '2px',
+                                                                                            fontSize: '0.8em', // Taille de texte lisible
+                                                                                            fontWeight: 'bold',
+                                                                                            display: 'inline-block', // S'assure que chaque genre est affiché séparément
+                                                                                        }}
+                                                                                    >
+                                                                                        {genre}
+                                                                                    </Box>
+                                                                                ))
+                                                                            ) : (
+                                                                                <Typography sx={{color: '#888'}}>Non
+                                                                                    spécifié</Typography>
+                                                                            )}
+
+
                                                                         </TableCell>
                                                                         <TableCell
                                                                             sx={{
@@ -537,24 +553,32 @@ const MyListsPage = () => {
                                                                                 flexWrap: 'wrap',
                                                                             }}
                                                                         >
-                                                                            {game.genres?.map((genre, index) => (
-                                                                                <Box
-                                                                                    key={index}
-                                                                                    sx={{
-                                                                                        background: theme.palette.colors.red,
-                                                                                        boxShadow: '0px 0px 2px #000000',
-                                                                                        borderRadius: '5px',
-                                                                                        padding: '3px 6px',
-                                                                                        color: theme.palette.text.contrast,
-                                                                                        fontSize: '0.75em',
-                                                                                        fontWeight: 'bold',
-                                                                                        margin: '1px',
-                                                                                    }}
-                                                                                >
-                                                                                    {genre.name}
-                                                                                </Box>
-                                                                            )) || 'Non spécifié'}
+                                                                            {game.genres?.length > 0 ? (
+                                                                                game.genres.map((genre, index) => (
+                                                                                    <Box
+                                                                                        key={index}
+                                                                                        sx={{
+                                                                                            background: theme.palette.colors.red,
+                                                                                            boxShadow: '0px 0px 2px #000000',
+                                                                                            borderRadius: '5px',
+                                                                                            padding: '3px 6px',
+                                                                                            color: theme.palette.text.contrast,
+                                                                                            fontSize: '0.75em',
+                                                                                            fontWeight: 'bold',
+                                                                                            margin: '1px',
+                                                                                        }}
+                                                                                    >
+                                                                                        {genre} {/* Affiche uniquement le genre correspondant */}
+                                                                                    </Box>
+                                                                                ))
+                                                                            ) : (
+                                                                                <Typography sx={{
+                                                                                    color: '#888',
+                                                                                    fontStyle: 'italic'
+                                                                                }}>Non spécifié</Typography>
+                                                                            )}
                                                                         </TableCell>
+
                                                                         <TableCell
                                                                             sx={{
                                                                                 borderRight: '1px solid #000',
