@@ -13,7 +13,6 @@ import {
 import {useTheme} from "@mui/material/styles";
 import HorizontalSelector from "../../game-details/game-logs/log-details-content/HorizontalSelector.jsx";
 import {AddBox, Lock, LockOpen} from "@mui/icons-material";
-import {Link} from "react-router-dom";
 
 function NewCollectionForm({
                                isCollectionFormOpen,

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {
     Box, Breadcrumbs,
-    CircularProgress,
+    CircularProgress, Divider,
     Grid2,
     Icon,
     IconButton,
@@ -31,14 +31,30 @@ function CollectionPage() {
     const {id} = useParams()
     const [collection, setCollection] = useState({})
 
+    const editCollection = () => {
+        localStorage.setItem(`collection_${id}`, JSON.stringify(collection))
+        navigate(`/collection/${id}/edit`)
+    }
+
+    const navigateToCollections = () => {
+        localStorage.removeItem(`collection_${id}`)
+        navigate(`/collections`)
+    }
+
     const fetchData = async () => {
         try {
             setLoading(true)
-            const response = await fetch(`http://localhost:8080/game-collections/collection/${id}`)
-            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+            const storedCollection = localStorage.getItem(`collection_${id}`)
+            const collection = storedCollection ? JSON.parse(storedCollection) : null
+            if (collection) {
+                setCollection(collection)
+            } else {
+                const response = await fetch(`http://localhost:8080/game-collections/collection/${id}`)
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
-            const data = await response.json()
-            setCollection(data.data)
+                const data = await response.json()
+                setCollection(data.data)
+            }
         } catch (err) {
             console.error('Erreur lors de la récupération des données :', err)
             setError("Erreur lors de la récupération des données.")
@@ -55,7 +71,7 @@ function CollectionPage() {
         <div style={styles.buttons}>
             <IconButton
                 disableTouchRipple
-                onClick={() => navigate(`/collections`)}
+                onClick={navigateToCollections}
                 style={styles.button}
                 sx={{
                     '&:hover': {
@@ -70,7 +86,7 @@ function CollectionPage() {
             </IconButton>
             <IconButton
                 disableTouchRipple
-                onClick={() => navigate(`/collection/${id}/edit`)}
+                onClick={editCollection}
                 style={styles.button}
                 sx={{
                     '&:hover': {
@@ -170,7 +186,10 @@ function CollectionPage() {
                             <p style={styles.size}>
                                 {collection.collection_content.length} jeux
                             </p>
-                            <hr/>
+                            <Divider flexItem sx={{
+                                borderColor: theme.palette.text.primary,
+                                borderBottomWidth: '0.1rem'
+                            }}/>
                             <Grid2 container spacing={'2rem'} justifyContent="center" marginTop={'2rem'}>
                                 {collection.collection_content.map((game, index) => {
                                     return (
@@ -186,8 +205,6 @@ function CollectionPage() {
                                     )
                                 })}
                             </Grid2>
-                            {
-                            }
                         </div>
                     </div>
                 )}
