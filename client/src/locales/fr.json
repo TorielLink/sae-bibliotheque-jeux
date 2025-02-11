@@ -1,34 +1,33 @@
 {
-  "pageName": {
-    "home": "Accueil"
-  },
-  "home": {
-    "recent_releases": "Sorties récentes",
-    "popular_games": "Jeux populaires",
-    "recent_reviews": "Avis récents",
-    "no_reviews_available": "Aucun avis disponible pour le moment"
+  "error": {
+    "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
+    "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
+    "unexpectedDataFormat": "Format des données inattendu pour les avis."
   },
   "footer": {
-    "aboutUs": "À propos de nous",
-    "team": "L'équipe",
-    "teamShort": "Équipe",
-    "institution": "L'établissement",
     "aboutProject": "À propos du projet",
+    "aboutUs": "À propos de nous",
+    "contact": "Contact",
+    "copyRight": "Tous droits réservés © 2024",
+    "email": "Adresse mail",
+    "githubRepo": "Dépôt GitHub",
+    "institution": "L'établissement",
+    "mentorship": "L'encadrement",
+    "privacy": "Confidentialité",
+    "privacyPolicy": "Politique & confidentialité",
     "project": "Le projet",
     "projectShort": "Projet",
-    "mentorship": "L'encadrement",
-    "githubRepo": "Dépôt GitHub",
-    "privacy": "Confidentialité",
-    "termsConditions": "Termes & conditions",
-    "privacyPolicy": "Politique & confidentialité",
-    "contact": "Contact",
-    "email": "Adresse mail",
-    "copyRight": "Tous droits réservés © 2024"
+    "team": "L'équipe",
+    "teamShort": "Équipe",
+    "termsConditions": "Termes & conditions"
   },
-
-     "error": {
-    "unexpectedDataFormat": "Format des données inattendu pour les avis.",
-    "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
-    "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard."
+  "home": {
+    "no_reviews_available": "Aucun avis disponible pour le moment",
+    "popular_games": "Jeux populaires",
+    "recent_releases": "Sorties récentes",
+    "recent_reviews": "Avis récents"
+  },
+  "pageName": {
+    "home": "Accueil"
   }
 }

@@ -9,7 +9,7 @@
     "build": "node translate.js && vite build",
     "lint": "eslint .",
     "preview": "npm run extract && node translate.js && vite preview",
-    "extract": "babel src --out-dir src --extensions \".js,.jsx\""
+    "extract": "set NODE_ENV=development&& babel src --extensions \".jsx\""
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -19,6 +19,7 @@
     "@svgr/webpack": "^8.1.0",
     "@uiw/react-md-editor": "^4.0.5",
     "axios": "^1.7.7",
+    "babel-preset-react-app": "^10.0.1",
     "i18next": "^24.2.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -31,11 +32,13 @@
     "vite-plugin-svgr": "^4.3.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.26.4",
     "@eslint/js": "^9.14.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "babel-plugin-i18next-extract": "^1.0.0",
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "eslint": "^9.14.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",

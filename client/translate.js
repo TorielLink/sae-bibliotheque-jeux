@@ -1,8 +1,12 @@
-const fs = require("fs");
-const path = require("path");
-const { TranslateRequests } = require("../server/services/TranslateRequests.js");
+import fs from "fs";
+import path from "path";
+import {fileURLToPath} from "url";
+import {TranslateRequests} from "../server/services/TranslateRequests.js";
 
-const LOCALES_DIR = path.join(__dirname, "locales");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const LOCALES_DIR = path.join(__dirname, "src/locales");
 const LANGUAGES = ["fr", "en", "de", "es"];
 const SOURCE_LANG = "fr";
 
@@ -39,7 +43,6 @@ const translateFiles = async () => {
         saveJSON(targetFile, targetData);
     }
 };
-
 
 translateFiles().then(() => {
     console.log("🎉 Traduction terminée ! Lancement de React...");

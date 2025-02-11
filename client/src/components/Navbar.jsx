@@ -8,7 +8,7 @@ import {AuthContext} from './AuthContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SearchBar from './SearchBar';
-import UserMenu from "./UserMenu.jsx";
+// import UserMenu from "./UserMenu.jsx";
 
 function Navbar() {
     const theme = useTheme();
@@ -195,7 +195,8 @@ function Navbar() {
                             Se connecter
                         </Button>
                     ) : (
-                        <UserMenu/> // Affiche le menu utilisateur si connecté
+                        <></>
+                        // <UserMenu/> // Affiche le menu utilisateur si connecté
                     )}
 
                     {/* Bouton de bascule de thème */}

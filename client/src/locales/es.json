@@ -1,0 +1,33 @@
+{
+  "error": {
+    "loadingComments": "",
+    "loadingGames": "",
+    "unexpectedDataFormat": ""
+  },
+  "footer": {
+    "aboutProject": "",
+    "aboutUs": "",
+    "contact": "",
+    "copyRight": "",
+    "email": "",
+    "githubRepo": "",
+    "institution": "",
+    "mentorship": "",
+    "privacy": "",
+    "privacyPolicy": "",
+    "project": "",
+    "projectShort": "",
+    "team": "",
+    "teamShort": "",
+    "termsConditions": ""
+  },
+  "home": {
+    "no_reviews_available": "",
+    "popular_games": "",
+    "recent_releases": "",
+    "recent_reviews": ""
+  },
+  "pageName": {
+    "home": ""
+  }
+}
