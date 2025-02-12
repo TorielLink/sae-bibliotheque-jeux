@@ -7,11 +7,11 @@ import {
     Typography,
     useMediaQuery,
     TextField,
-    Icon, Button, Divider, Grid2, Alert, Snackbar
+    Icon, Button, Divider, Grid2, Alert, Snackbar, IconButton
 } from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {useNavigate, useParams} from "react-router-dom";
-import {Lock, LockOpen, NavigateNext} from "@mui/icons-material";
+import {Delete, Lock, LockOpen, NavigateNext} from "@mui/icons-material";
 import {Link} from 'react-router-dom';
 import HorizontalSelector from "../components/game-details/game-logs/log-details-content/HorizontalSelector.jsx";
 import GameSearch from "../components/profile/collections/GameSearch.jsx";
@@ -45,7 +45,13 @@ function CollectionEditPage() {
         try {
             setLoading(true)
             const storedCollection = localStorage.getItem(`collection_${id}`)
-            const collection = storedCollection ? JSON.parse(storedCollection) : null
+            let collection = storedCollection ? JSON.parse(storedCollection) : null
+            if (!collection) {
+                const response = await fetch(`http://localhost:8080/game-collections/collection/${id}`)
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+                const data = await response.json()
+                collection = data.data
+            }
             setCollection(collection)
 
             const response = await fetch(`http://localhost:8080/privacy-settings`)
@@ -127,6 +133,10 @@ function CollectionEditPage() {
         setCollectionContent([...collectionContent, game])
     }
 
+    const removeGame = (gameId) => {
+        setCollectionContent([...collectionContent.filter(game => game.id !== gameId)])
+    }
+
     const cancelEdit = () => {
         navigate(`/collection/${id}`)
     }
@@ -181,6 +191,30 @@ function CollectionEditPage() {
         {label: collection?.name, to: `/collection/${id}`},
         {label: 'Modifier', to: `/collection/${id}/edit`},
     ]
+
+    async function saveCollectionDeletion() {
+        try {
+            const response = await fetch(`http://localhost:8080/game-collections/delete/${id}`, {
+                method: 'DELETE'
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete collection : ${response.statusText}`)
+            }
+
+            await response.json()
+        } catch (error) {
+            console.error('Error create new collection :', error)
+        }
+    }
+
+    const deleteCollection = async () => {
+        if (confirm('Voulez-vous vraiment supprime cette collection ?')) {
+            await saveCollectionDeletion()
+            localStorage.removeItem(`collection_${id}`)
+            navigate("/collections")
+        }
+    }
 
     return (
         <Box
@@ -248,54 +282,75 @@ function CollectionEditPage() {
                 ) : (
                     <div style={styles.container}>
                         <Box style={styles.informationsContainer}>
-                            <div style={styles.horizontalContainer}>
-                                <TextField
-                                    id="name"
-                                    style={styles.name}
-                                    value={name}
-                                    onChange={handleNameChange}
-                                    placeholder="Nom"
-                                    disabled={savingEdit}
-                                    slotProps={{
-                                        htmlInput: {
-                                            maxLength: 100,
-                                        },
-                                    }}
-                                    sx={{
-                                        '& .MuiOutlinedInput-notchedOutline': {
-                                            border: 'none',
-                                        },
-                                        '& .Mui-focused': {
-                                            borderRadius: '0.5rem',
-                                            background: theme.palette.background.paper,
-                                        },
-                                    }}
-                                />
-                                <div style={styles.privacy}>
-                                    {
-                                        <Icon style={styles.icon}>
-                                            {
-                                                privacy === 1 ? (
-                                                    <Lock style={styles.icon.inside}/>
-                                                ) : (
-                                                    <LockOpen style={styles.icon.inside}/>
-                                                )
-                                            }
-                                        </Icon>
-                                    }
-                                    <HorizontalSelector label={"Visibilité"}
-                                                        items={privacySettings}
-                                                        itemId={"privacy_setting_id"}
-                                                        selectedItem={privacy}
-                                                        setSelectedItem={handlePrivacySettingChange}
-                                                        isIndex={true}
-                                                        defaultValue={1}
-                                                        size={"small"}
-                                                        value={"name"}
-                                                        background={"paper"}
-                                                        disabled={savingEdit}
+                            <div style={{
+                                ...styles.horizontalContainer,
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                            }}>
+                                <div style={styles.horizontalContainer}>
+                                    <TextField
+                                        id="name"
+                                        style={styles.name}
+                                        value={name}
+                                        onChange={handleNameChange}
+                                        placeholder="Nom"
+                                        disabled={savingEdit}
+                                        slotProps={{
+                                            htmlInput: {
+                                                maxLength: 100,
+                                            },
+                                        }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                border: 'none',
+                                            },
+                                            '& .Mui-focused': {
+                                                borderRadius: '0.5rem',
+                                                background: theme.palette.background.paper,
+                                            },
+                                        }}
                                     />
+                                    <div style={styles.privacy}>
+                                        {
+                                            <Icon style={styles.icon}>
+                                                {
+                                                    privacy === 1 ? (
+                                                        <Lock style={styles.icon.inside}/>
+                                                    ) : (
+                                                        <LockOpen style={styles.icon.inside}/>
+                                                    )
+                                                }
+                                            </Icon>
+                                        }
+                                        <HorizontalSelector label={"Visibilité"}
+                                                            items={privacySettings}
+                                                            itemId={"privacy_setting_id"}
+                                                            selectedItem={privacy}
+                                                            setSelectedItem={handlePrivacySettingChange}
+                                                            isIndex={true}
+                                                            defaultValue={1}
+                                                            size={"small"}
+                                                            value={"name"}
+                                                            background={"paper"}
+                                                            disabled={savingEdit}
+                                        />
+                                    </div>
                                 </div>
+
+                                <IconButton
+                                    disableTouchRipple
+                                    onClick={deleteCollection}
+                                    style={styles.deleteButton}
+                                    sx={{
+                                        '&:hover': {
+                                            transform: 'scale(1.1)',
+                                        },
+                                        '&:active': {
+                                            transform: 'scale(1)',
+                                        },
+                                    }}>
+                                    <Delete fontSize="large"/>
+                                </IconButton>
                             </div>
 
                             <TextField
@@ -380,11 +435,12 @@ function CollectionEditPage() {
                             </p>
                             <Divider sx={{...styles.divider}} flexItem/>
                             <Grid2 container spacing={'2rem'} justifyContent="center" marginTop={'2rem'}>
-                                {collectionContent.map((game, index) => {
+                                {collectionContent.map((game) => {
                                     return (
-                                        <Box key={index}>
+                                        <Box key={game.id}>
                                             <CollectionGameCard
                                                 gameData={game}
+                                                removeGame={removeGame}
                                             />
                                         </Box>
                                     )
@@ -518,6 +574,12 @@ const getStyles = (theme, isMobile) => {
         gamesContainer: {
             paddingBlock: '1rem',
             paddingInline: isMobile ? '1rem' : '2rem',
+        },
+        deleteButton: {
+            borderRadius: '0.5rem',
+            color: theme.palette.background.paper,
+            background: theme.palette.colors.red,
+            transition: 'transform 0.1s',
         },
     }
 }

@@ -110,7 +110,7 @@ const MyCollectionsPage = () => {
         return collection
     }
 
-    const createCollectionAndChange = async (newCollection) => {
+    const createCollectionAndEdit = async (newCollection) => {
         const result = await createCollection(newCollection)
         navigate(`/collection/${result.game_collection_id}/edit`)
     }
@@ -201,7 +201,7 @@ const MyCollectionsPage = () => {
                             openCollectionForm={openCollectionForm}
                             closeCollectionForm={closeCollectionForm}
                             createCollection={createCollection}
-                            createCollectionAndChange={createCollectionAndChange}
+                            createCollectionAndEdit={createCollectionAndEdit}
                             cancelCollectionCreation={cancelCollectionCreation}
                             collections={collections}
                         />

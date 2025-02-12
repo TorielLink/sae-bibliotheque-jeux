@@ -12,7 +12,7 @@ import {
 import {useTheme} from "@mui/material/styles";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {
-    ArrowForward,
+    ArrowForward, Delete,
     EditNote,
     Lock,
     LockOpen, NavigateNext,

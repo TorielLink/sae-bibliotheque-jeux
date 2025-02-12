@@ -13,13 +13,14 @@ import {
 import {useTheme} from "@mui/material/styles";
 import HorizontalSelector from "../../game-details/game-logs/log-details-content/HorizontalSelector.jsx";
 import {AddBox, Lock, LockOpen} from "@mui/icons-material";
+import {useNavigate} from "react-router-dom";
 
 function NewCollectionForm({
                                isCollectionFormOpen,
                                openCollectionForm,
                                closeCollectionForm,
                                createCollection,
-                               createCollectionAndChange,
+                               createCollectionAndEdit,
                                cancelCollectionCreation,
                                collections
                            }) {
@@ -27,6 +28,7 @@ function NewCollectionForm({
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile)
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
 
     const [privacySettings, setPrivacySettings] = useState()
 
@@ -73,8 +75,8 @@ function NewCollectionForm({
         closeCollectionForm()
     }
 
-    const handleCreateCollectionAndChange = async () => {
-        return await createCollectionAndChange({
+    const handleCreateCollectionAndEdit = async () => {
+        return await createCollectionAndEdit({
             name: name,
             description: description,
             privacy: privacy
@@ -201,7 +203,7 @@ function NewCollectionForm({
                     </DialogContent>
 
                     <DialogActions style={styles.dialogActions}>
-                        <Button style={styles.submitButton} onClick={handleCreateCollectionAndChange} sx={{
+                        <Button style={styles.submitButton} onClick={handleCreateCollectionAndEdit} sx={{
                             '&:hover': {
                                 transform: 'scale(1.025)',
                             },

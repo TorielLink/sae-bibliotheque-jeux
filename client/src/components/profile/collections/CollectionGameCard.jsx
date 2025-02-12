@@ -5,7 +5,7 @@ import {useTheme} from "@mui/material/styles";
 import GameCard from "../../GameCard.jsx";
 import {Delete, Remove, RemoveCircle} from "@mui/icons-material";
 
-function CollectionGameCard({gameData}) {
+function CollectionGameCard({gameData, removeGame}) {
     const {user, token} = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -14,37 +14,6 @@ function CollectionGameCard({gameData}) {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile)
     const [game, setGame] = useState(gameData)
-
-   /* const fetchGameData = async () => {
-        setLoading(true)
-        try {
-            if (gameData) {
-                setGame(gameData)
-            } else {
-                const response = await fetch('http://localhost:8080/games/specific', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        gameIds: [gameId],
-                    }),
-                })
-
-                const data = await response.json()
-                setGame(data[0])
-            }
-        } catch (error) {
-            console.error('Erreur lors de la récupération  :', error.message)
-            setError("Erreur de chargement")
-        } finally {
-            setLoading(false)
-        }
-    }
-    useEffect(() => {
-        fetchGameData()
-    }, [])
-    */
 
     return (
         <Box>
@@ -77,11 +46,11 @@ function CollectionGameCard({gameData}) {
                     }}>
                         <IconButton
                             disableRipple
-                            // onClick={(e) => handleDeleteCollection(e)}
+                            onClick={() => removeGame(game.id)}
                             style={styles.deleteButton}
                             sx={{
-                                height: '3rem',
-                                width: '3rem',
+                                height: '2.5rem',
+                                width: '2.5rem',
                                 padding: '0',
                                 '&:hover': {
                                     transform: 'scale(1.05)',
