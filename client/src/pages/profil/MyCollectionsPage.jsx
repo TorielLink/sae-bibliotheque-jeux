@@ -13,6 +13,7 @@ import NewCollectionForm from "../../components/profile/collections/NewCollectio
 import SortingOptions from "../../components/SortingOptions.jsx";
 import {NavigateNext} from "@mui/icons-material";
 import {Link, useNavigate} from "react-router-dom";
+import CustomBreadcrumbs from "../../components/Breadcrumbs.jsx";
 
 const MyCollectionsPage = () => {
     const {user} = useContext(AuthContext)
@@ -168,6 +169,11 @@ const MyCollectionsPage = () => {
         sortCollections(collections, sortingOption, sortingOrder)
     }, [sortingOption, sortingOrder])
 
+    const breadcrumbsLinks = [
+        {label: 'Profil', to: '/profile'},
+        {label: 'Collections', to: '/collections'},
+    ]
+
     return (
         <Box
             sx={{
@@ -176,17 +182,9 @@ const MyCollectionsPage = () => {
                 flex: '1',
             }}
         >
-            <Breadcrumbs
-                separator={<NavigateNext/>}
-                style={styles.breadcrumbs}
-            >
-                <MuiLink component={Link} to="/profile" underline="hover" style={styles.breadcrumb}>
-                    Profil
-                </MuiLink>
-                <MuiLink component={Link} to="/collections" underline="hover" style={styles.breadcrumb}>
-                    Collections
-                </MuiLink>
-            </Breadcrumbs>
+            <CustomBreadcrumbs
+                links={breadcrumbsLinks}
+            />
 
             <div style={styles.container}>
                 <div style={styles.options}>

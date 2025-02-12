@@ -271,11 +271,13 @@ class DataRetriever extends APIRequests {
         const paginationOption = `limit ${limit};offset ${offset};`;
         return await this.#getGameList(popuaritySortingOption, paginationOption)
     }
-  async getGameList(gameIds) {
+
+    async getGameList(gameIds) {
         const sortingOption = `where id=(${gameIds.join(',')});`
         const paginationOption = `limit ${gameIds.length};`;
         return await this.#getGameList(sortingOption, paginationOption)
     }
+
     async getCatalogByGenres(genres = [], limit = DataRetriever.#DEFAULT_LIMIT, offset = DataRetriever.#DEFAULT_OFFSET) {
         const sortingOption = genres.length !== 0 ? `where genres=(${genres.join(',')});` : '';
         const paginationOption = `limit ${limit};offset ${offset};`;

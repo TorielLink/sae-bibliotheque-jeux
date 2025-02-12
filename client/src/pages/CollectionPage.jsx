@@ -18,6 +18,7 @@ import {
     LockOpen, NavigateNext,
 } from "@mui/icons-material";
 import GameCard from "../components/GameCard.jsx";
+import CustomBreadcrumbs from "../components/Breadcrumbs.jsx";
 
 function CollectionPage() {
     const navigate = useNavigate()
@@ -101,7 +102,11 @@ function CollectionPage() {
             </IconButton>
         </div>
     )
-
+    const breadcrumbsLinks = [
+        {label: 'Profil', to: '/profile'},
+        {label: 'Collections', to: '/collections'},
+        {label: collection?.name, to: `/collection/${id}`},
+    ]
     return (
         <Box
             sx={{
@@ -110,20 +115,9 @@ function CollectionPage() {
                 flex: '1',
             }}
         >
-            <Breadcrumbs
-                separator={<NavigateNext/>}
-                style={styles.breadcrumbs}
-            >
-                <MuiLink component={Link} to="/profile" underline="hover" style={styles.breadcrumb}>
-                    Profil
-                </MuiLink>
-                <MuiLink component={Link} to="/collections" underline="hover" style={styles.breadcrumb}>
-                    Collections
-                </MuiLink>
-                <MuiLink component={Link} to={`/collection/${id}`} underline="hover" style={styles.breadcrumb}>
-                    {collection?.name}
-                </MuiLink>
-            </Breadcrumbs>
+            <CustomBreadcrumbs
+                links={breadcrumbsLinks}
+            />
             {
                 loading ? (
                     <Box

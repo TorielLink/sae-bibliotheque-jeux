@@ -3,6 +3,7 @@ import {
     Box,
     TextField,
     List,
+    ListItem,
     CircularProgress,
     Typography
 } from '@mui/material'
@@ -17,6 +18,7 @@ function GameSearch({
                         searchHeight,
                         placeholder,
                         resultsHeight,
+                        disabled
                     }) {
     const [loading, setLoading] = useState(false)
     const theme = useTheme()
@@ -54,7 +56,6 @@ function GameSearch({
     }
 
     const handleSuggestionClick = (gameId) => {
-        console.log(gameId)
         onSelect(gameId)
         setSearchValue('')
         setDisplaySuggestions(false)
@@ -91,6 +92,7 @@ function GameSearch({
                     value={searchValue}
                     fullWidth
                     onChange={handleInputChange}
+                    disabled={disabled}
                     sx={{
                         input: {
                             fontSize: fontSize,

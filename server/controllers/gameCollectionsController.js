@@ -127,11 +127,12 @@ controller.updateCollection = async (req, res) => {
                 attributes: ['igdb_game_id']
             }
         })
+
         if (!collection) {
             return res.status(404).json({message: 'Game collection not found'})
         }
 
-        await collection.update({name, description, privacy})
+        await collection.update({name, description, privacy_setting_id: privacy})
 
         const addGamesResponse = await fetch(`http://localhost:8080/collection-content/add-games/${gameCollectionId}`, {
             method: 'POST',

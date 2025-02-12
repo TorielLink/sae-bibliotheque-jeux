@@ -7,7 +7,7 @@ import {
     Typography,
     useMediaQuery,
     TextField,
-    Icon, Button, Divider, Grid2
+    Icon, Button, Divider, Grid2, Alert, Snackbar
 } from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {useNavigate, useParams} from "react-router-dom";
@@ -16,9 +16,13 @@ import {Link} from 'react-router-dom';
 import HorizontalSelector from "../components/game-details/game-logs/log-details-content/HorizontalSelector.jsx";
 import GameSearch from "../components/profile/collections/GameSearch.jsx";
 import GameCard from "../components/GameCard.jsx";
+import CollectionGameCard from "../components/profile/collections/CollectionGameCard.jsx";
+import {getPropertyNameNode} from "eslint-plugin-react/lib/util/ast.js";
+import CustomBreadcrumbs from "../components/Breadcrumbs.jsx";
 
 function CollectionEditPage() {
     const [loading, setLoading] = useState(false)
+    const [newGameLoading, setNewGameLoading] = useState(false)
     const [error, setError] = useState(null)
 
     const theme = useTheme()
@@ -43,16 +47,34 @@ function CollectionEditPage() {
             const storedCollection = localStorage.getItem(`collection_${id}`)
             const collection = storedCollection ? JSON.parse(storedCollection) : null
             setCollection(collection)
+
             const response = await fetch(`http://localhost:8080/privacy-settings`)
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
             const data = await response.json()
             setPrivacySettings(data.data)
-
         } catch (err) {
             console.error('Erreur lors de la récupération des données :', err)
             setError("Erreur lors de la récupération des données.")
         } finally {
             setLoading(false)
+        }
+    }
+
+    const fetchGameData = async (gameId) => {
+        try {
+            const response = await fetch('http://localhost:8080/games/specific', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    gameIds: [gameId],
+                }),
+            })
+            const data = await response.json()
+            return data[0]
+        } catch (error) {
+            console.error('Erreur lors de la récupération  :', error.message)
         }
     }
 
@@ -78,20 +100,87 @@ function CollectionEditPage() {
 
     const [collectionContent, setCollectionContent] = useState([])
 
-    const addGame = (gameId) => {
-        console.log(`Jeu sélectionné : ${gameId}`)
-        // navigate(`/details/${game.id}`)
-        // setSelectedGame(game)
+    useEffect(() => {
+        setNewGameLoading(false)
+    }, [collectionContent])
+
+    const [state, setState] = React.useState({
+        open: false,
+        message: "",
+        vertical: 'bottom',
+        horizontal: 'center',
+    });
+    const {vertical, horizontal, open, message} = state
+
+    const addGame = async (gameId) => {
+        if (collectionContent.find(game => game.id === gameId)) {
+            setState({
+                ...state,
+                open: true,
+                message: "Le jeux est déjà dans la collection."
+            })
+            return
+        }
+
+        setNewGameLoading(true)
+        const game = await fetchGameData(gameId)
+        setCollectionContent([...collectionContent, game])
     }
 
     const cancelEdit = () => {
         navigate(`/collection/${id}`)
     }
 
-    const saveEdit = () => {
+    const saveData = async (newCollection) => {
+        try {
+            const response = await fetch(`http://localhost:8080/game-collections/update/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newCollection),
+            })
+            const data = await response.json()
+            return data.data
+        } catch (error) {
+            console.error('Erreur lors de la récupération  :', error.message)
+        }
+    }
 
+    const [savingEdit, setSavingEdit] = useState(false)
+    const saveEdit = async () => {
+        const newCollection = {
+            name: name,
+            description: description,
+            privacy: privacy,
+            newGames: collectionContent
+        }
+        if (!(newCollection.name === collection.name &&
+            newCollection.description === collection.description &&
+            newCollection.privacy === collection.privacy_setting_id &&
+            newCollection.newGames === collection.collection_content)
+        ) {
+            setSavingEdit(true)
+            newCollection.newGames = collectionContent.map(game => game.id)
+            const updatedCollection = await saveData(newCollection)
+            localStorage.removeItem(`collection_${id}`)
+            setSavingEdit(false)
+        }
         navigate(`/collection/${id}`)
     }
+
+    const handleAlertClose = () => {
+        setState({
+            ...state, open: false
+        })
+    }
+
+    const breadcrumbsLinks = [
+        {label: 'Profil', to: '/profile'},
+        {label: 'Collections', to: '/collections'},
+        {label: collection?.name, to: `/collection/${id}`},
+        {label: 'Modifier', to: `/collection/${id}/edit`},
+    ]
 
     return (
         <Box
@@ -101,23 +190,38 @@ function CollectionEditPage() {
                 flex: '1',
             }}
         >
-            <Breadcrumbs
-                separator={<NavigateNext/>}
-                style={styles.breadcrumbs}
+            <div style={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100vw',
+                haight: '100vh',
+                cusor: 'waiting !important',
+                zIndex: '9999',
+                display: savingEdit ? 'block' : 'none'
+            }}>
+
+            </div>
+            <Snackbar
+                anchorOrigin={{vertical, horizontal}}
+                open={open}
+                autoHideDuration={3000}
+                onClose={handleAlertClose}
+                key={vertical + horizontal}
             >
-                <MuiLink component={Link} to="/profile" underline="hover" style={styles.breadcrumb}>
-                    Profil
-                </MuiLink>
-                <MuiLink component={Link} to="/collections" underline="hover" style={styles.breadcrumb}>
-                    Collections
-                </MuiLink>
-                <MuiLink component={Link} to={`/collection/${id}`} underline="hover" style={styles.breadcrumb}>
-                    {collection?.name}
-                </MuiLink>
-                <MuiLink component={Link} to={`/collection/${id}/edit`} underline="hover" style={styles.breadcrumb}>
-                    Modifier
-                </MuiLink>
-            </Breadcrumbs>
+                <Alert
+                    onClose={handleAlertClose}
+                    severity="error"
+                    variant="filled"
+                    sx={{width: '100%'}}
+                >
+                    {message}
+                </Alert>
+            </Snackbar>
+            <CustomBreadcrumbs
+                links={breadcrumbsLinks}
+                disabled={savingEdit}
+            />
             {
                 loading ? (
                     <Box
@@ -143,7 +247,7 @@ function CollectionEditPage() {
                     </Box>
                 ) : (
                     <div style={styles.container}>
-                        <div style={styles.informationsContainer}>
+                        <Box style={styles.informationsContainer}>
                             <div style={styles.horizontalContainer}>
                                 <TextField
                                     id="name"
@@ -151,6 +255,7 @@ function CollectionEditPage() {
                                     value={name}
                                     onChange={handleNameChange}
                                     placeholder="Nom"
+                                    disabled={savingEdit}
                                     slotProps={{
                                         htmlInput: {
                                             maxLength: 100,
@@ -188,6 +293,7 @@ function CollectionEditPage() {
                                                         size={"small"}
                                                         value={"name"}
                                                         background={"paper"}
+                                                        disabled={savingEdit}
                                     />
                                 </div>
                             </div>
@@ -200,6 +306,7 @@ function CollectionEditPage() {
                                 value={description}
                                 onChange={handleDescriptionChange}
                                 placeholder="Description"
+                                disabled={savingEdit}
                                 slotProps={{
                                     htmlInput: {
                                         maxLength: 100,
@@ -228,11 +335,13 @@ function CollectionEditPage() {
                                         searchHeight="auto"
                                         placeholder="Ajouter un jeu"
                                         resultsHeight="20rem"
+                                        disabled={savingEdit}
                                     />
                                 </div>
                                 <div style={styles.actionButtons}>
                                     <Button
                                         onClick={cancelEdit}
+                                        disabled={savingEdit || newGameLoading}
                                         sx={{
                                             ...styles.cancelButton,
                                             '&:hover': {
@@ -244,6 +353,7 @@ function CollectionEditPage() {
                                     </Button>
                                     <Button
                                         onClick={saveEdit}
+                                        disabled={savingEdit || newGameLoading}
                                         sx={{
                                             ...styles.saveButton,
                                             '&:hover': {
@@ -252,10 +362,18 @@ function CollectionEditPage() {
                                         }}
                                     >
                                         Valider les modifications
+                                        {savingEdit && (
+                                            <CircularProgress
+                                                size={'1.5rem'}
+                                                sx={{
+                                                    marginLeft: '1rem',
+                                                }}
+                                            />
+                                        )}
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </Box>
                         <div style={styles.gamesContainer}>
                             <p>
                                 {collectionContent.length} jeux
@@ -265,16 +383,25 @@ function CollectionEditPage() {
                                 {collectionContent.map((game, index) => {
                                     return (
                                         <Box key={index}>
-                                            <GameCard
-                                                id={game.id}
-                                                title={game.name}
-                                                categories={game.genres}
-                                                image={game.cover}
-                                                rating={game.aggregated_rating}
+                                            <CollectionGameCard
+                                                gameData={game}
                                             />
                                         </Box>
                                     )
                                 })}
+                                {newGameLoading && (
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            width: "13em",
+                                            height: "20em",
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <CircularProgress/>
+                                    </Box>
+                                )}
                             </Grid2>
                         </div>
 

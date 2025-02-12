@@ -14,7 +14,7 @@ controller.addGamesToCollection = async (req, res) => {
             },
         })
 
-        const currentGames = ((await collectionResponse.json()).data.collection_content).map(game => game.igdb_game_id)
+        const currentGames = (await collectionResponse.json()).data.collection_content.map(game => game.id)
         gamesIds = gamesIds.filter(id => !currentGames.includes(id))
 
         if (gamesIds.length > 0) {
@@ -70,9 +70,8 @@ controller.removeGamesFromCollection = async (req, res) => {
             },
         })
 
-        const currentGames = ((await collectionResponse.json()).data.collection_content).map(game => game.igdb_game_id)
+        const currentGames = ((await collectionResponse.json()).data.collection_content).map(game => game.id)
         const gamesToRemove = currentGames.filter(id => !gamesIds.includes(id))
-
 
         if (gamesToRemove.length > 0) {
             await collectionContent.destroy({
