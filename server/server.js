@@ -1,8 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path'); // Import du module path
+const compression = require('compression');
+const helmet = require('helmet');
+const path = require('path');
+const http = require('http');
 require('dotenv').config();
+
 const verifyToken = require('./middleware/auth');
+
+const FRONTEND_URL = process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_BUILD_URL
+    : process.env.FRONTEND_PREVIEW_URL;
+
+console.log(`Mode: ${process.env.NODE_ENV} | Frontend: ${FRONTEND_URL}`);
 
 // Importation des routes
 const searchRoutes = require('./routes/searchRoute');
@@ -16,26 +26,23 @@ const gameRatingsRoutes = require('./routes/gameRatingsRoutes');
 const gameStatusRoutes = require('./routes/gameStatusRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
 const userListsRoutes = require('./routes/userListsRoutes');
-const {swaggerUi, swaggerDocs} = require('./middleware/swagger'); // Importez la configuration
+const { swaggerUi, swaggerDocs } = require('./middleware/swagger'); // Documentation API
 const gamesRoutes = require('./routes/gamesRoutes');
-const privacySettingsRoutes = require('./routes/privacySettingsRoutes')
-
-// Création de l'application Express
-const app = express();
+const privacySettingsRoutes = require('./routes/privacySettingsRoutes');
 const gameListRoutes = require('./routes/gameListsRoutes');
 const listContentRoutes = require('./routes/listContentRoutes');
 
-// Configuration CORS
-const configureCors = () => {
-    const allowedOrigins = ['*']; // Autorise toutes les origines temporairement
+const app = express();
 
-    for (let port = 5173; port <= 5177; port++) {
-        allowedOrigins.push(`http://localhost:${port}`);
-    }
+const configureCors = () => {
+    const allowedOrigins = [
+        process.env.FRONTEND_PREVIEW_URL,
+        process.env.FRONTEND_BUILD_URL
+    ];
 
     return cors({
         origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin) || origin === '*') {
+            if (!origin || allowedOrigins.includes(origin)) {
                 callback(null, true);
             } else {
                 callback(new Error('Origine non autorisée par CORS'));
@@ -48,15 +55,22 @@ const configureCors = () => {
 
 app.use(configureCors());
 
-// Middleware pour parser les données JSON et URL-encodées
+app.use(compression());
+
+app.use(helmet());
+
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+    maxAge: '7d',
+    immutable: true
+}));
 
 // Gestion des routes
 app.use('/games', gamesRoutes);
 app.use('/search', searchRoutes);
 app.use('/users', usersRoutes);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/status', statusRoutes);
 app.use('/game-platforms', gamePlatformsRoutes);
 app.use('/game-lists', gameListRoutes);
@@ -71,22 +85,48 @@ app.use('/friends', friendsRoutes);
 app.use('/user-lists', userListsRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Gestion des erreurs pour les routes non définies
 app.use((req, res) => {
-    res.status(404).json({message: 'Ressource non trouvée.'});
+    res.status(404).json({ message: 'Ressource non trouvée.' });
 });
 
-// Gestionnaire global des erreurs
 app.use((err, req, res, next) => {
     console.error('Erreur du serveur :', err.stack);
-    res.status(500).json({message: 'Erreur interne du serveur.', error: err.message});
+    res.status(500).json({ message: 'Erreur interne du serveur.', error: err.message });
 });
 
-// Démarrage du serveur
 const startServer = () => {
     const PORT = process.env.PORT_APP || 8080;
-    app.listen(PORT, () => {
-        console.log(`Le serveur fonctionne sur le port ${PORT}`);
+    const NODE_ENV = process.env.NODE_ENV || 'development';
+
+    console.log(`🚀 Serveur lancé en mode ${NODE_ENV} sur le port ${PORT}`);
+    console.log(`🔗 Frontend accessible à ${FRONTEND_URL}`);
+
+    const server = http.createServer(app);
+
+    server.listen(PORT, () => {
+        console.log(`✅ Serveur opérationnel sur http://localhost:${PORT}`);
+    });
+
+
+    server.on('error', (err) => {
+        console.error('❌ Erreur du serveur:', err.message);
+    });
+
+    // Gestion des fermetures propres
+    process.on('SIGTERM', () => {
+        console.log('🔴 Fermeture du serveur...');
+        server.close(() => {
+            console.log('✅ Serveur arrêté proprement.');
+            process.exit(0);
+        });
+    });
+
+    process.on('SIGINT', () => {
+        console.log('🛑 Interruption détectée, arrêt du serveur...');
+        server.close(() => {
+            console.log('✅ Serveur arrêté proprement.');
+            process.exit(0);
+        });
     });
 };
 
