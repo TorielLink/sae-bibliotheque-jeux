@@ -500,46 +500,52 @@ controller.getReviewsByUserId = async (req, res) => {
         const userId = req.params.id;
 
         if (!userId) {
-            return res.status(400).json({message: 'ID utilisateur manquant.'});
+            return res.status(400).json({ message: 'ID utilisateur manquant.' });
         }
 
-        // Récupérer les critiques de l'utilisateur
+        // Récupérer les critiques de l'utilisateur avec les relations correctes
         const reviews = await gameReviews.findAll({
-            where: {user_id: userId},
+            where: { user_id: userId },
             include: [
                 {
                     model: users,
                     as: 'user',
-                    attributes: ['username', 'profile_picture'], // Inclure les informations utilisateur
+                    attributes: ['username', 'profile_picture'],
+                    include: [
+                        {
+                            model: gameRatings,
+                            as: 'user_ratings', // Récupérer les notes via l'utilisateur
+                            attributes: ['rating_value', 'igdb_game_id'],
+                        },
+                    ],
                 },
             ],
         });
 
         if (!reviews || reviews.length === 0) {
-            return res.status(404).json({message: 'Aucune critique trouvée pour cet utilisateur.'});
+            return res.status(404).json({ message: 'Aucune critique trouvée pour cet utilisateur.' });
         }
 
-        // Récupérer les détails des jeux (titre, cover) via API IGDB ou cache
-        const gameDataMap = new Map();
+        // Récupérer les jeux en une seule requête pour optimiser les performances
+        const igdbGameIds = [...new Set(reviews.map(r => r.igdb_game_id))];
 
-        for (const review of reviews) {
-            const igdbGameId = review.igdb_game_id;
-
-            if (!gameDataMap.has(igdbGameId)) {
-                const gameData = await getGameData(igdbGameId); // Récupérer les données de jeu
-                gameDataMap.set(igdbGameId, {
-                    name: gameData.name || 'Titre inconnu',
-                    cover: gameData.cover?.url || '/placeholder-image.png',
-                });
-            }
+        let gameDataMap = new Map();
+        if (igdbGameIds.length > 0) {
+            const gameDataList = await getGameData(igdbGameIds);
+            gameDataMap = new Map(gameDataList.map(game => [game.id, game]));
         }
 
-        // Transformer les critiques avec les détails enrichis
+        // Transformation des critiques avec les détails du jeu et la note
         const reviewsWithDetails = reviews.map((review) => {
             const gameData = gameDataMap.get(review.igdb_game_id) || {
                 name: 'Titre inconnu',
-                cover: '/placeholder-image.png',
+                cover: 'https://placehold.co/200x300',
             };
+
+            // Vérifier si une note existe pour ce jeu et cet utilisateur
+            const userRating = review.user?.user_ratings?.find(
+                (rating) => Number(rating.igdb_game_id) === Number(review.igdb_game_id)
+            );
 
             return {
                 id: review.id,
@@ -555,6 +561,7 @@ controller.getReviewsByUserId = async (req, res) => {
                     title: gameData.name,
                     cover: gameData.cover,
                 },
+                rating: userRating?.rating_value || null, // Associer la note de l'utilisateur au jeu
             };
         });
 
@@ -562,9 +569,9 @@ controller.getReviewsByUserId = async (req, res) => {
             message: 'Critiques récupérées avec succès',
             data: reviewsWithDetails,
         });
-    } catch (err) {
-        console.error('Erreur lors de la récupération des critiques :', err);
-        return res.status(500).json({message: 'Erreur serveur', error: err.message});
+    } catch (error) {
+        console.error('Erreur lors de la récupération des critiques par utilisateur :', error);
+        return res.status(500).json({ message: 'Erreur serveur', error: error.message });
     }
 };
 
