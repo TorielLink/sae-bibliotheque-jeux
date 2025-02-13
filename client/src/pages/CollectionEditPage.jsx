@@ -329,9 +329,8 @@ function CollectionEditPage() {
                                                             setSelectedItem={handlePrivacySettingChange}
                                                             isIndex={true}
                                                             defaultValue={1}
-                                                            size={"small"}
                                                             value={"name"}
-                                                            background={"paper"}
+                                                            background={"default"}
                                                             disabled={savingEdit}
                                         />
                                     </div>
@@ -431,7 +430,7 @@ function CollectionEditPage() {
                         </Box>
                         <div style={styles.gamesContainer}>
                             <p>
-                                {collectionContent.length} jeux
+                                {collectionContent.length} {collectionContent.length > 1 ? 'jeux' : 'jeu'}
                             </p>
                             <Divider sx={{...styles.divider}} flexItem/>
                             <Grid2 container spacing={'2rem'} justifyContent="center" marginTop={'2rem'}>

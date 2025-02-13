@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
     Box,
     TextField,
@@ -58,21 +58,33 @@ function GameSearch({
     const handleSuggestionClick = (gameId) => {
         onSelect(gameId)
         setSearchValue('')
+        setSuggestions([])
         setDisplaySuggestions(false)
     }
 
-    return (
+    useEffect(() => {
+        console.log(document.activeElement)
+    }, [document.activeElement])
 
+    return (
         <Box
-            tabIndex={0}
+            onFocus={() => setDisplaySuggestions(true)}
+            onBlur={() => {
+                setTimeout(() => {
+                    if (
+                        document.activeElement !== document.getElementById("search-results") &&
+                        document.activeElement !== document.getElementById("search-input")
+                    ) {
+                        setDisplaySuggestions(false)
+                    }
+                }, 200)
+            }}
             sx={{
                 position: 'relative',
                 width: searchWidth,
                 height: searchHeight,
                 zIndex: 10,
             }}
-            onFocus={() => setDisplaySuggestions(true)}
-            onBlur={() => setDisplaySuggestions(false)}
         >
             <Box
                 sx={{
@@ -124,6 +136,7 @@ function GameSearch({
             </Box>
             {displaySuggestions && suggestions.length > 0 && (
                 <List
+                    id="search-results"
                     sx={{
                         position: 'absolute',
                         top: '100%',
@@ -133,7 +146,6 @@ function GameSearch({
                         background: theme.palette.background.paper,
                         overflowY: 'auto',
                         boxShadow: `0 0 0.2rem ${theme.palette.text.primary}`,
-                        zIndex: 10,
                         borderRadius: '0.5rem',
                         marginTop: '0.5rem',
                     }}

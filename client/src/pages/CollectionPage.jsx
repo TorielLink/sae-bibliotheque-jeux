@@ -178,7 +178,7 @@ function CollectionPage() {
 
                         <div style={styles.gamesContainer}>
                             <p style={styles.size}>
-                                {collection.collection_content.length} jeux
+                                {collection.collection_content.length} {collection.collection_content.length > 1 ? 'jeux' : 'jeu'}
                             </p>
                             <Divider flexItem sx={{
                                 borderColor: theme.palette.text.primary,
