@@ -149,6 +149,7 @@ function GameLogDetails({
                         />
 
                         <Tooltip title={"Ajouter un journal"} placement="top" arrow enterDelay={500}>
+                            <span>
                             <IconButton
                                 disableTouchRipple
                                 onClick={handleCreateLog}
@@ -165,8 +166,10 @@ function GameLogDetails({
                                 }}>
                                 <AddBox fontSize="large"/>
                             </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title={"Supprimer le journal"} placement="top" arrow enterDelay={500}>
+                        <span>
                             <IconButton
                                 disableTouchRipple
                                 onClick={handleDeleteLog}
@@ -184,6 +187,7 @@ function GameLogDetails({
                                 }}>
                                 <Delete fontSize="large"/>
                             </IconButton>
+                        </span>
                         </Tooltip>
                     </div>
 
@@ -226,11 +230,13 @@ function GameLogDetails({
                                     <FormLabel id="manual-label" style={styles.playtime.label}>Manuel</FormLabel>
                                     <Tooltip title={"Entrer le temps de jeu manuellement"} placement="top" arrow
                                              enterDelay={500}>
+                                    <span>
                                         <Radio
                                             aria-labelledby="manual-label"
                                             value={0}
                                             disableTouchRipple
                                         />
+                                    </span>
                                     </Tooltip>
                                 </div>
                                 <div style={styles.playtime.radio}>
@@ -238,11 +244,13 @@ function GameLogDetails({
                                                style={styles.playtime.label}>Sessions</FormLabel>
                                     <Tooltip title={"Calculer le temps de jeu automatiquement depuis les sessions"}
                                              placement="top" arrow>
+                                    <span>
                                         <Radio
                                             aria-labelledby="sessions-label"
                                             value={1}
                                             disableTouchRipple
                                         />
+                                    </span>
                                     </Tooltip>
                                 </div>
                             </div>
