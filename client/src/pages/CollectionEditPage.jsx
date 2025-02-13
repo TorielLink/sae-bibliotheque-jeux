@@ -1,24 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'
 import {
     Box,
-    Breadcrumbs,
-    Link as MuiLink,
     CircularProgress,
     Typography,
     useMediaQuery,
     TextField,
     Icon, Button, Divider, Grid2, Alert, Snackbar, IconButton
-} from "@mui/material";
-import {useTheme} from "@mui/material/styles";
-import {useNavigate, useParams} from "react-router-dom";
-import {Delete, Lock, LockOpen, NavigateNext} from "@mui/icons-material";
-import {Link} from 'react-router-dom';
-import HorizontalSelector from "../components/game-details/game-logs/log-details-content/HorizontalSelector.jsx";
-import GameSearch from "../components/profile/collections/GameSearch.jsx";
-import GameCard from "../components/GameCard.jsx";
-import CollectionGameCard from "../components/profile/collections/CollectionGameCard.jsx";
-import {getPropertyNameNode} from "eslint-plugin-react/lib/util/ast.js";
-import CustomBreadcrumbs from "../components/Breadcrumbs.jsx";
+} from "@mui/material"
+import {useTheme} from "@mui/material/styles"
+import {useNavigate, useParams} from "react-router-dom"
+import {Delete, Lock, LockOpen} from "@mui/icons-material"
+import HorizontalSelector from "../components/game-details/game-logs/log-details-content/HorizontalSelector.jsx"
+import GameSearch from "../components/profile/collections/GameSearch.jsx"
+import CollectionGameCard from "../components/profile/collections/CollectionGameCard.jsx"
+import CustomBreadcrumbs from "../components/Breadcrumbs.jsx"
 
 function CollectionEditPage() {
     const [loading, setLoading] = useState(false)
@@ -115,7 +110,7 @@ function CollectionEditPage() {
         message: "",
         vertical: 'bottom',
         horizontal: 'center',
-    });
+    })
     const {vertical, horizontal, open, message} = state
 
     const addGame = async (gameId) => {
@@ -172,7 +167,7 @@ function CollectionEditPage() {
         ) {
             setSavingEdit(true)
             newCollection.newGames = collectionContent.map(game => game.id)
-            const updatedCollection = await saveData(newCollection)
+            await saveData(newCollection)
             localStorage.removeItem(`collection_${id}`)
             setSavingEdit(false)
         }

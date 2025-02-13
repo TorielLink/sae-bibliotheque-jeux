@@ -1,19 +1,18 @@
-import React, {useContext, useState, useEffect} from 'react';
-import {AuthContext} from '../../components/AuthContext.jsx';
+import React, {useContext, useState, useEffect} from 'react'
+import {AuthContext} from '../../components/AuthContext.jsx'
 import {
-    Box, Breadcrumbs,
+    Box,
     CircularProgress,
-    Grid2, Link as MuiLink,
+    Grid2,
     Typography,
     useMediaQuery
-} from "@mui/material";
-import {useTheme} from "@mui/material/styles";
-import CollectionCard from "../../components/profile/collections/CollectionCard.jsx";
-import NewCollectionForm from "../../components/profile/collections/NewCollectionForm.jsx";
-import SortingOptions from "../../components/SortingOptions.jsx";
-import {NavigateNext} from "@mui/icons-material";
-import {Link, useNavigate} from "react-router-dom";
-import CustomBreadcrumbs from "../../components/Breadcrumbs.jsx";
+} from "@mui/material"
+import {useTheme} from "@mui/material/styles"
+import CollectionCard from "../../components/profile/collections/CollectionCard.jsx"
+import NewCollectionForm from "../../components/profile/collections/NewCollectionForm.jsx"
+import SortingOptions from "../../components/SortingOptions.jsx"
+import {useNavigate} from "react-router-dom"
+import CustomBreadcrumbs from "../../components/Breadcrumbs.jsx"
 
 const MyCollectionsPage = () => {
     const {user} = useContext(AuthContext)
@@ -87,9 +86,9 @@ const MyCollectionsPage = () => {
             console.error('Erreur lors de la récupération des journaux :', e)
             setLoading(false)
         }
-    }, [updateCollections]);
+    }, [updateCollections])
 
-    const [isCollectionFormOpen, setCollectionFormOpen] = useState(false);
+    const [isCollectionFormOpen, setCollectionFormOpen] = useState(false)
 
     const openCollectionForm = () => {
         setCollectionFormOpen(true)
@@ -127,7 +126,7 @@ const MyCollectionsPage = () => {
     }
 
     function sortCollections(currentCollections, sortingOption, sortingOrder) {
-        const selectedOption = sortingOptions[sortingOption];
+        const selectedOption = sortingOptions[sortingOption]
         const sortedCollections = [...currentCollections].sort((a, b) => {
             const aValue = selectedOption?.secondaryId
                 ? a[selectedOption.mainId][selectedOption.secondaryId]
@@ -333,4 +332,4 @@ const getStyles = (theme, isMobile) => {
     }
 }
 
-export default MyCollectionsPage;
+export default MyCollectionsPage

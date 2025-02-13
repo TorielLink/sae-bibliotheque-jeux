@@ -1,24 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'
 import {
-    Box, Breadcrumbs,
+    Box, 
     CircularProgress, Divider,
     Grid2,
     Icon,
     IconButton,
-    Link as MuiLink,
     Typography,
     useMediaQuery
-} from "@mui/material";
-import {useTheme} from "@mui/material/styles";
-import {Link, useNavigate, useParams} from "react-router-dom";
+} from "@mui/material"
+import {useTheme} from "@mui/material/styles"
+import {useNavigate, useParams} from "react-router-dom"
 import {
-    ArrowForward, Delete,
+    ArrowForward,
     EditNote,
     Lock,
-    LockOpen, NavigateNext,
-} from "@mui/icons-material";
-import GameCard from "../components/GameCard.jsx";
-import CustomBreadcrumbs from "../components/Breadcrumbs.jsx";
+    LockOpen,
+} from "@mui/icons-material"
+import GameCard from "../components/GameCard.jsx"
+import CustomBreadcrumbs from "../components/Breadcrumbs.jsx"
 
 function CollectionPage() {
     const navigate = useNavigate()
@@ -298,4 +297,4 @@ const getStyles = (theme, isMobile) => {
     }
 }
 
-export default CollectionPage;
+export default CollectionPage

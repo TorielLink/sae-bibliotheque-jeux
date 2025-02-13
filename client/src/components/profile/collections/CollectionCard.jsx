@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react"
 import {Icon, Box, IconButton, Link as MuiLink} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
-import {Delete, Lock, LockOpen} from "@mui/icons-material";
-import {Link} from "react-router-dom";
+import {Delete, Lock, LockOpen} from "@mui/icons-material"
+import {Link} from "react-router-dom"
 
 
 function CollectionCard({collectionData, deleteCollection}) {
@@ -16,7 +16,7 @@ function CollectionCard({collectionData, deleteCollection}) {
             return content.cover
         })
         setCovers(coversList)
-    }, [collectionData]);
+    }, [collectionData])
 
     /*
     L'affichage des cover peut être bugé, rajouter si c'est le cas :
@@ -27,7 +27,7 @@ function CollectionCard({collectionData, deleteCollection}) {
     }, [covers])
     */
 
-    const [isCardHovered, setIsCardHovered] = useState(false);
+    const [isCardHovered, setIsCardHovered] = useState(false)
 
     const handleDeleteCollection = (e) => {
         e.stopPropagation()

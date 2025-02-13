@@ -8,7 +8,6 @@ import {
     Typography
 } from '@mui/material'
 import {useTheme} from '@mui/material/styles'
-import useMediaQuery from "@mui/material/useMediaQuery"
 
 function GameSearch({
                         onSelect,
@@ -22,8 +21,6 @@ function GameSearch({
                     }) {
     const [loading, setLoading] = useState(false)
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
     const [searchValue, setSearchValue] = useState()
     const [suggestions, setSuggestions] = useState([])
     const [displaySuggestions, setDisplaySuggestions] = useState(true)

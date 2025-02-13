@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'
 import {
     Button,
     Dialog,
@@ -9,11 +9,10 @@ import {
     IconButton,
     TextField,
     useMediaQuery
-} from "@mui/material";
-import {useTheme} from "@mui/material/styles";
-import HorizontalSelector from "../../game-details/game-logs/log-details-content/HorizontalSelector.jsx";
-import {AddBox, Lock, LockOpen} from "@mui/icons-material";
-import {useNavigate} from "react-router-dom";
+} from "@mui/material"
+import {useTheme} from "@mui/material/styles"
+import HorizontalSelector from "../../game-details/game-logs/log-details-content/HorizontalSelector.jsx"
+import {AddBox, Lock, LockOpen} from "@mui/icons-material"
 
 function NewCollectionForm({
                                isCollectionFormOpen,
@@ -28,7 +27,6 @@ function NewCollectionForm({
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile)
     const [loading, setLoading] = useState(true)
-    const navigate = useNavigate()
 
     const [privacySettings, setPrivacySettings] = useState()
 
@@ -49,7 +47,7 @@ function NewCollectionForm({
         fetchData()
         setName("")
         setDescription("")
-    }, [collections]);
+    }, [collections])
 
     const [name, setName] = useState("")
     const handleNameChange = (event) => {
