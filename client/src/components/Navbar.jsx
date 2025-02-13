@@ -8,7 +8,7 @@ import {AuthContext} from './AuthContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SearchBar from './SearchBar';
-import UserMenu from "./UserMenu.jsx";
+import UserMenu from "./userMenu.jsx";
 
 function Navbar() {
     const theme = useTheme();
