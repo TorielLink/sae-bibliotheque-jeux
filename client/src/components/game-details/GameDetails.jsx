@@ -48,6 +48,16 @@ const GameDetails = ({
         setStatusModalOpen(false);
     };
 
+    const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
+
+    const openCollectionModal = () => {
+        setIsCollectionModalOpen(true);
+    };
+
+    const closeCollectionModal = () => {
+        setIsCollectionModalOpen(false);
+    };
+
     const [isAddingComment, setIsAddingComment] = useState(false);
     const handleCommentAdded = async () => {
         setIsAddingComment(false);
@@ -129,6 +139,42 @@ const GameDetails = ({
                                 Ajouter un journal
                             </button>*/}
                             <button
+                                style={{...styles.quickActionButton, ...styles.collectionButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.purple;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.purple;
+                                }}
+                                onClick={openCollectionModal}
+                            >
+                                Ajouter à une collection
+                            </button>
+                            <Dialog
+                                sx={{
+                                    '& .MuiPaper-root': {
+                                        borderRadius: '1rem',
+                                    },
+                                }}
+                                open={isCollectionModalOpen}
+                                onClose={closeCollectionModal}
+                                aria-labelledby="add-collection-dialog-title"
+                                aria-describedby="add-collection-dialog-description"
+                            >
+                                <DialogTitle id="add-collection-dialog-title" fontWeight="bold">Ajouter à une collection</DialogTitle>
+                                <DialogContent>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button style={styles.closeButton} onClick={closeCollectionModal}>
+                                        Fermer
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                            <button
                                 style={{...styles.quickActionButton, ...styles.statusButton}}
                                 onMouseEnter={(e) => {
                                     e.target.style.backgroundColor = theme.palette.colors.red;
@@ -156,7 +202,8 @@ const GameDetails = ({
                                 aria-labelledby="change-list-dialog-title"
                                 aria-describedby="change-list-dialog-description"
                             >
-                                <DialogTitle id="change-list-dialog-title" fontWeight="bold">Changer de liste</DialogTitle>
+                                <DialogTitle id="change-list-dialog-title" fontWeight="bold">Changer de
+                                    liste</DialogTitle>
                                 <DialogContent>
                                     <ButtonSelector
                                         disabled={false}
@@ -482,12 +529,15 @@ const getStyles = (theme, isMobile) => ({
     statusButton: {
         border: '1px solid' + theme.palette.colors.red,
     },
+    collectionButton: {
+        border: '1px solid' + theme.palette.colors.purple,
+    },
     closeButton: {
         background: theme.palette.colors.red,
         fontSize: 'large',
         color: theme.palette.text.primary,
         padding: '0.5rem 1rem',
-        borderRadius: '1rem',
+        borderRadius: '0.5rem',
     },
     dialogTitle: {
         borderBottom: `solid 0.1rem ${theme.palette.text.primary}`,
