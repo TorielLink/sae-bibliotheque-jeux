@@ -12,7 +12,7 @@ import {
 } from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import HorizontalSelector from "../../game-details/game-logs/log-details-content/HorizontalSelector.jsx"
-import {AddBox, Lock, LockOpen} from "@mui/icons-material"
+import {AddBox, EditNote, Lock, LockOpen} from "@mui/icons-material"
 
 function NewCollectionForm({
                                isCollectionFormOpen,
@@ -84,25 +84,29 @@ function NewCollectionForm({
     return (
         !loading && (
             <div>
+                {/*<IconButton
+                    disableTouchRipple
+                    onClick={editCollection}
+                    sx={{
+                        ...styles.editCollectionButton,
+                        '&:hover': {
+                            ...styles.editCollectionButton.hover
+                        }
+                    }}
+                >
+                    <p>Modifier la collection</p>
+                    <EditNote fontSize="large"/>
+                </IconButton>*/}
                 <IconButton
                     disableTouchRipple
                     onClick={openCollectionForm}
                     sx={{
-                        boxShadow: `0 0 0.5rem ${theme.palette.colors.black}`,
-                        borderRadius: '0.5rem',
-                        background: theme.palette.background.paper,
-                        color: theme.palette.text.primary,
-                        fontSize: '1rem',
-                        padding: '0 1rem',
-                        margin: '0',
-                        gap: '0.5rem',
+                        ...styles.openDialogButton,
                         '&:hover': {
-                            transform: 'scale(1.05)',
-                        },
-                        '&:active': {
-                            transform: 'scale(1)',
-                        },
-                    }}>
+                            ...styles.openDialogButton.hover
+                        }
+                    }}
+                >
                     <AddBox fontSize="large"/>
                     <p>Créer une collection</p>
                 </IconButton>
@@ -248,6 +252,17 @@ const getStyles = (theme, isMobile) => {
         borderRadius: '0.5rem',
     }
 
+    const actionButton = {
+        padding: '0 1rem',
+        borderRadius: '1rem',
+        fontSize: '1rem',
+        color: theme.palette.text.primary,
+        background: theme.palette.background.default,
+        transition: 'background-color 0.3s, transform 0.2s',
+        boxShadow: `0 0 0.25rem ${theme.palette.transparentColors['black-50']}`,
+        border: '0.2rem solid',
+    }
+
     return {
         container: {
             display: 'flex',
@@ -255,6 +270,15 @@ const getStyles = (theme, isMobile) => {
             alignItems: 'flex-start',
             gap: '1rem',
             padding: '1rem',
+        },
+        openDialogButton: {
+            ...actionButton,
+            borderColor: theme.palette.colors.green,
+            hover: {
+                backgroundColor: theme.palette.colors.green,
+                color: theme.palette.text.contrast,
+                borderColor: 'transparent',
+            }
         },
         dialogTitle: {
             boxShadow: `0 0 0.2rem ${theme.palette.colors.black}`,

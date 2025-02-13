@@ -105,19 +105,19 @@ function CollectionEditPage() {
         setNewGameLoading(false)
     }, [collectionContent])
 
-    const [state, setState] = React.useState({
-        open: false,
-        message: "",
+    const [alertState, setAlertState] = useState({
+        alertOpen: false,
+        alertMessage: "",
         vertical: 'bottom',
         horizontal: 'center',
     })
-    const {vertical, horizontal, open, message} = state
+    const {vertical, horizontal, alertOpen, alertMessage} = alertState
 
     const addGame = async (gameId) => {
         if (collectionContent.find(game => game.id === gameId)) {
-            setState({
-                ...state,
-                open: true,
+            setAlertState({
+                ...alertState,
+                alertOpen: true,
                 message: "Le jeux est déjà dans la collection."
             })
             return
@@ -175,8 +175,8 @@ function CollectionEditPage() {
     }
 
     const handleAlertClose = () => {
-        setState({
-            ...state, open: false
+        setAlertState({
+            ...alertState, alertOpen: false
         })
     }
 
@@ -219,21 +219,9 @@ function CollectionEditPage() {
                 flex: '1',
             }}
         >
-            <div style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '100vw',
-                haight: '100vh',
-                cusor: 'waiting !important',
-                zIndex: '9999',
-                display: savingEdit ? 'block' : 'none'
-            }}>
-
-            </div>
             <Snackbar
                 anchorOrigin={{vertical, horizontal}}
-                open={open}
+                open={alertOpen}
                 autoHideDuration={3000}
                 onClose={handleAlertClose}
                 key={vertical + horizontal}
@@ -244,9 +232,10 @@ function CollectionEditPage() {
                     variant="filled"
                     sx={{width: '100%'}}
                 >
-                    {message}
+                    {alertMessage}
                 </Alert>
             </Snackbar>
+
             <CustomBreadcrumbs
                 links={breadcrumbsLinks}
                 disabled={savingEdit}
@@ -475,7 +464,7 @@ const getStyles = (theme, isMobile) => {
 
     const actionButton = {
         padding: ' 1rem',
-        borderRadius: '0.5rem',
+        borderRadius: '1rem',
         color: theme.palette.text.primary,
         background: theme.palette.background.default,
         transition: 'background-color 0.3s, transform 0.2s',

@@ -35,29 +35,6 @@ controller.addGamesToCollection = async (req, res) => {
     }
 }
 
-controller.addGameToCollections = async (req, res) => {
-    try {
-        const {gameId} = req.params
-        let {collectionsIds} = req.body
-
-        if (collectionsIds.length > 0) {
-            const collectionsToAdd = collectionsIds.map(collectionId => ({
-                game_collection_id: collectionId,
-                igdb_game_id: gameId
-            }))
-            await collectionContent.bulkCreate(collectionsToAdd)
-        } else {
-            res.status(200).json({message: 'There are no collections.'})
-            return
-        }
-
-        res.status(201).json({message: `Game added to the collections : ${collectionsIds}.`})
-    } catch (error) {
-        console.error('Error adding game to collections :', error)
-        res.status(500).json({message: 'Error adding game to collections', error: error.message})
-    }
-}
-
 controller.removeGamesFromCollection = async (req, res) => {
     try {
         const {gameCollectionId} = req.params
@@ -85,6 +62,54 @@ controller.removeGamesFromCollection = async (req, res) => {
             return
         }
         res.status(201).json({message: `Games removed from the collection : ${gamesToRemove}.`})
+    } catch (error) {
+        console.error('Error removing games from the collection:', error)
+        res.status(500).json({message: 'Error removing games from the collection', error: error.message})
+    }
+}
+
+controller.updateCollectionsForGame = async (req, res) => {
+    try {
+        const {gameId} = req.params
+        let {collectionsIds} = req.body
+
+
+        const content = await collectionContent.findAll({
+            where: {
+                igdb_game_id: gameId,
+            },
+        }).then((results) => results.map((r) => r.get({plain: true})))
+
+        const collections = content.map(item => item.game_collection_id)
+        const collectionsToAdd = collectionsIds.filter(id => !collections.includes(id))
+        const collectionsToRemove = collections.filter(id => !collectionsIds.includes(id))
+
+        let addResponse = ""
+        if (collectionsToAdd.length > 0) {
+            const valuesToAdd = collectionsToAdd.map(collectionId => ({
+                igdb_game_id: gameId,
+                game_collection_id: collectionId,
+            }))
+            await collectionContent.bulkCreate(valuesToAdd)
+            addResponse = `Game added to collections : ${collectionsToAdd}.`
+        } else {
+            addResponse = 'There are no collections to add the game to.'
+        }
+
+        let removeResponse = ""
+        if (collectionsToRemove.length > 0) {
+            await collectionContent.destroy({
+                where: {
+                    igdb_game_id: gameId,
+                    game_collection_id: collectionsToRemove,
+                }
+            })
+            removeResponse = `Game removed from collections : ${collectionsToRemove}.`
+        } else {
+            removeResponse = 'There are no collections to remove the game from.'
+        }
+
+        res.status(200).json({message: `${addResponse} ${removeResponse}`})
     } catch (error) {
         console.error('Error removing games from the collection:', error)
         res.status(500).json({message: 'Error removing games from the collection', error: error.message})

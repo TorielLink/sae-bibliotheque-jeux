@@ -262,7 +262,6 @@ const MyCollectionsPage = () => {
 
 const getStyles = (theme, isMobile) => {
     return {
-
         breadcrumbs: {
             fontFamily: theme.typography.fontFamily,
             color: theme.palette.colors.red,

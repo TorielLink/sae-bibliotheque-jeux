@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Box, IconButton} from "@mui/material"
 import {useTheme} from "@mui/material/styles"
 import GameCard from "../../GameCard.jsx"
-import {Remove} from "@mui/icons-material"
+import {Delete} from "@mui/icons-material"
 
 function CollectionGameCard({gameData, removeGame}) {
     const theme = useTheme()
@@ -22,7 +22,7 @@ function CollectionGameCard({gameData, removeGame}) {
                         sx={{
                             height: '2.5rem',
                             width: '2.5rem',
-                            padding: '0',
+                            padding: '0.2rem',
                             '&:hover': {
                                 transform: 'scale(1.05)',
                             },
@@ -30,7 +30,7 @@ function CollectionGameCard({gameData, removeGame}) {
                                 transform: 'scale(1)',
                             },
                         }}>
-                        <Remove fontSize="large" sx={{
+                        <Delete fontSize="large" sx={{
                             width: '100%',
                             height: '100%',
                         }}/>

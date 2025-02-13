@@ -11,7 +11,7 @@ import {
     Typography,
     Button,
     Dialog,
-    DialogTitle, DialogContent, DialogActions
+    DialogTitle, DialogContent, DialogActions, Snackbar, Alert
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {AuthContext} from "../AuthContext.jsx";
@@ -20,6 +20,7 @@ import GameList from "../GameList.jsx";
 import GameCard from "../GameCard.jsx";
 import ButtonSelector from "./game-logs/log-details-content/ButtonSelector.jsx";
 import AddComment from "../AddComment.jsx";
+import AddToCollectionForm from "../profile/collections/AddToCollectionForm.jsx";
 
 
 /**TODO :
@@ -63,6 +64,53 @@ const GameDetails = ({
         setIsAddingComment(false);
         await fetchReviews();
     };
+
+    const [alertState, setAlertState] = useState({
+        alertOpen: false,
+        alertMessage: "",
+        vertical: 'bottom',
+        horizontal: 'center',
+        alertSeverity: 'info'
+    })
+
+    const {vertical, horizontal, alertOpen, alertMessage, alertSeverity} = alertState
+
+    const handleAlertClose = () => {
+        setAlertState({
+            ...alertState, alertOpen: false
+        })
+    }
+    const addToCollections = async (selectedCollections) => {
+        try {
+            const response = await fetch(`http://localhost:8080/collection-content/update-collections/game/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({collectionsIds: selectedCollections}),
+            })
+
+            if (response.status % 300 < 1 && response.status !== 300) {
+                setAlertState({
+                    ...alertState,
+                    alertOpen: true,
+                    alertMessage: "Mise à jour des collections effectuée.",
+                    alertSeverity: "success",
+                })
+
+            } else {
+                setAlertState({
+                    ...alertState,
+                    alertOpen: true,
+                    alertMessage: "Erreur de la mise à jour.",
+                    alertSeverity: "error",
+                })
+            }
+            console.log((await response.json()).message)
+        } catch (error) {
+            console.error('Erreur lors de la récupération  :', error.message)
+        }
+    }
 
     return (
         <div style={styles.container}>
@@ -152,28 +200,34 @@ const GameDetails = ({
                                 }}
                                 onClick={openCollectionModal}
                             >
-                                Ajouter à une collection
+                                Collections
                             </button>
-                            <Dialog
-                                sx={{
-                                    '& .MuiPaper-root': {
-                                        borderRadius: '1rem',
-                                    },
-                                }}
+
+                            <AddToCollectionForm
+                                gameId={id}
                                 open={isCollectionModalOpen}
                                 onClose={closeCollectionModal}
-                                aria-labelledby="add-collection-dialog-title"
-                                aria-describedby="add-collection-dialog-description"
+                                alertState={alertState}
+                                setAlertState={setAlertState}
+                            />
+
+                            <Snackbar
+                                anchorOrigin={{vertical, horizontal}}
+                                open={alertOpen}
+                                autoHideDuration={3000}
+                                onClose={handleAlertClose}
+                                key={vertical + horizontal}
                             >
-                                <DialogTitle id="add-collection-dialog-title" fontWeight="bold">Ajouter à une collection</DialogTitle>
-                                <DialogContent>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button style={styles.closeButton} onClick={closeCollectionModal}>
-                                        Fermer
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
+                                <Alert
+                                    onClose={handleAlertClose}
+                                    severity={alertSeverity}
+                                    variant="filled"
+                                    sx={{width: '100%'}}
+                                >
+                                    {alertMessage}
+                                </Alert>
+                            </Snackbar>
+
                             <button
                                 style={{...styles.quickActionButton, ...styles.statusButton}}
                                 onMouseEnter={(e) => {
@@ -188,7 +242,7 @@ const GameDetails = ({
                                 }}
                                 onClick={openStatusModal}
                             >
-                                Changer de liste
+                                Statut
                             </button>
                             <Dialog
                                 sx={{

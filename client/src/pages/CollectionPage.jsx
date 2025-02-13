@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {
-    Box, 
+    Box,
     CircularProgress, Divider,
     Grid2,
     Icon,
@@ -72,30 +72,26 @@ function CollectionPage() {
             <IconButton
                 disableTouchRipple
                 onClick={navigateToCollections}
-                style={styles.button}
                 sx={{
+                    ...styles.myCollectionsButton,
                     '&:hover': {
-                        transform: 'scale(1.05)',
-                    },
-                    '&:active': {
-                        transform: 'scale(1)',
-                    },
-                }}>
+                        ...styles.myCollectionsButton.hover
+                    }
+                }}
+            >
                 <p>Mes collections</p>
                 <ArrowForward fontSize="large"/>
             </IconButton>
             <IconButton
                 disableTouchRipple
                 onClick={editCollection}
-                style={styles.button}
                 sx={{
+                    ...styles.editCollectionButton,
                     '&:hover': {
-                        transform: 'scale(1.05)',
-                    },
-                    '&:active': {
-                        transform: 'scale(1)',
-                    },
-                }}>
+                        ...styles.editCollectionButton.hover
+                    }
+                }}
+            >
                 <p>Modifier la collection</p>
                 <EditNote fontSize="large"/>
             </IconButton>
@@ -106,6 +102,7 @@ function CollectionPage() {
         {label: 'Collections', to: '/collections'},
         {label: collection?.name, to: `/collection/${id}`},
     ]
+
     return (
         <Box
             sx={{
@@ -215,6 +212,17 @@ const getStyles = (theme, isMobile) => {
         fontSize: '1.5rem'
     }
 
+    const actionButton = {
+        padding: '0 1rem',
+        borderRadius: '1rem',
+        fontSize: '1rem',
+        color: theme.palette.text.primary,
+        background: theme.palette.background.default,
+        transition: 'background-color 0.3s, transform 0.2s',
+        boxShadow: `0 0 0.25rem ${theme.palette.transparentColors['black-50']}`,
+        border: '0.2rem solid',
+    }
+
     return {
         breadcrumbs: {
             fontFamily: theme.typography.fontFamily,
@@ -286,6 +294,28 @@ const getStyles = (theme, isMobile) => {
             padding: '0 1rem',
             margin: '0',
             gap: '0.5rem',
+        },
+        myCollectionsButton: {
+            ...actionButton,
+            borderColor:
+            theme.palette.colors.blue,
+            hover:
+                {
+                    backgroundColor: theme.palette.colors.blue,
+                    color:
+                    theme.palette.text.contrast,
+                    borderColor:
+                        'transparent',
+                }
+        },
+        editCollectionButton: {
+            ...actionButton,
+            borderColor: theme.palette.colors.green,
+            hover: {
+                backgroundColor: theme.palette.colors.green,
+                color: theme.palette.text.contrast,
+                borderColor: 'transparent',
+            }
         },
         description: {
             ...label,
