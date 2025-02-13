@@ -23,8 +23,18 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
     const [comment, setComment] = useState("");
     const [platform, setPlatform] = useState("");
     const [visibility, setVisibility] = useState("Privé");
-    const [message, setMessage] = useState(null); // Message state for error/success
+    const [message, setMessage] = useState(null);
     const {token} = useContext(AuthContext);
+
+    const platforms = [
+        {id: 1, name: "PlayStation", shortName: "PS"},
+        {id: 2, name: "Xbox", shortName: "XB"},
+        {id: 3, name: "Nintendo Switch", shortName: "NS"},
+        {id: 4, name: "Steam", shortName: "Steam"},
+        {id: 5, name: "GOG", shortName: "GOG"},
+        {id: 6, name: "Epic Games Store", shortName: "EGS"},
+        {id: 7, name: "Microsoft Store", shortName: "MS"},
+    ];
 
     const handleClick = (value) => setCurrentValue(value);
     const handleMouseOver = (value) => setHoverValue(value);
@@ -41,12 +51,18 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
         try {
             const privacySettingId = visibility === "Public" ? 2 : 1;
 
+            const selectedPlatform = platforms.find(p => p.id === parseInt(platform));
+            if (!selectedPlatform) {
+                setMessage({type: "error", text: "Plateforme invalide."});
+                return;
+            }
+
             const body = {
                 igdb_game_id: gameId,
                 content: comment,
                 privacy_setting_id: privacySettingId,
-                spoiler: false, // Always set to false
-                platform_id: platform,
+                spoiler: false,
+                platform_id: selectedPlatform.id,
             };
 
             if (currentValue > 0) {
@@ -62,23 +78,36 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
                 body: JSON.stringify(body),
             });
 
-            const data = await response.json();
+            let data = null;
+            let message = "Une erreur est survenue.";
 
-            if (!response.ok) {
-                throw new Error(data.message || "Une erreur est survenue.");
+            try {
+                const text = await response.text();
+                data = text ? JSON.parse(text) : {};
+
+                if (response.ok) {
+                    message = "Votre avis a été ajouté avec succès !";
+                } else {
+                    throw new Error(data.message || message);
+                }
+            } catch (jsonError) {
+                console.error("Erreur lors du parsing JSON", jsonError);
             }
 
-            onCommentAdded(data);
-            setMessage({type: "success", text: "Votre avis a été ajouté avec succès !"});
+            if (data) {
+                onCommentAdded(data);
+            }
+
+            setMessage({type: "success", text: message});
             resetForm();
-            if (onCancel) onCancel(); // Close the modal
+            if (onCancel) onCancel();
         } catch (error) {
             setMessage({type: "error", text: error.message});
         }
     };
 
     const handleCancel = () => {
-        if (onCancel) onCancel(); // Close the modal
+        if (onCancel) onCancel();
         resetForm();
     };
 
@@ -105,6 +134,7 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
                     </div>
                 )}
                 <form onSubmit={handleSubmit}>
+                    
                     <div style={styles.gameNameBlock}>
                         <strong>Nom du jeu :</strong> {gameName || "Non spécifié"}
                     </div>
@@ -194,6 +224,12 @@ const styles = {
         zIndex: 1000,
     },
 
+    loadingContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: "20px",
+    },
     modalContent: {
         backgroundColor: "#fff",
         padding: 30,
@@ -319,7 +355,7 @@ const styles = {
         textAlign: "center",
     },
     message: {
-        fontSize: "1.5em", // Plus grand que le texte normal
+        fontSize: "1.5em",
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: "20px",
