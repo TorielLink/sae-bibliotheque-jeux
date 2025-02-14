@@ -32,23 +32,21 @@ const MyLogsPage = () => {
 
     async function fetchData() {
         try {
-            setLoading(true)
-            let response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`)
-            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+            setLoading(true);
+            let response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-logs/user/${user.id}`);
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
 
-            let data = await response.json()
-            const tempLogs = data.data
+            let data = await response.json();
+            const tempLogs = data.data;
             if (tempLogs.length !== 0) {
-
-                const logIds = []
-                const gameIds = []
+                const logIds = [];
+                const gameIds = [];
                 tempLogs.forEach((log) => {
-                    gameIds.push(log.igdb_game_id)
-                    logIds.push(log.game_log_id)
-                })
+                    gameIds.push(log.igdb_game_id);
+                    logIds.push(log.game_log_id);
+                });
 
-
-                response = await fetch('http://localhost:8080/games/specific', {
+                response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/games/specific`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -56,12 +54,12 @@ const MyLogsPage = () => {
                     body: JSON.stringify({
                         gameIds: gameIds,
                     }),
-                })
+                });
 
-                data = await response.json()
-                const games = data
+                data = await response.json();
+                const games = data;
 
-                response = await fetch('http://localhost:8080/game-sessions/logs', {
+                response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-sessions/logs`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -69,15 +67,15 @@ const MyLogsPage = () => {
                     body: JSON.stringify({
                         logIds: logIds,
                     }),
-                })
+                });
 
-                data = await response.json()
-                const sessions = data.data
-                sortLogs(enhanceLogs(tempLogs, games, sessions), 0, false)
+                data = await response.json();
+                const sessions = data.data;
+                sortLogs(enhanceLogs(tempLogs, games, sessions), 0, false);
             }
-            setLoading(false)
+            setLoading(false);
         } catch (e) {
-            setError(e)
+            setError(e);
         }
     }
 

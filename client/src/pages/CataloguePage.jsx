@@ -55,12 +55,12 @@ const CataloguePage = () => {
     });
     console.log("Nom des catégories :", categoryNameFR);
 
-    // récupérer les jeux
+  // récupérer les jeux via une requête POST
     const fetchGameByGenres = async (body) => {
         try {
-            const response = await fetch(`http://localhost:8080/games/by-genres`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/games/by-genres`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body),
             });
             if (!response.ok) throw new Error(`Erreur API : ${response.statusText}`);

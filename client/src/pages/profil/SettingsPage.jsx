@@ -266,7 +266,7 @@ const SettingsPage = () => {
                     {/* Ajout de l'Avatar et du Pseudo de l'utilisateur */}
                     <Stack direction="row" spacing={2} alignItems="center" sx={{mb: 2}}>
                         <Avatar
-                            src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                            src={user?.profile_picture ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_picture}` : 'https://via.placeholder.com/150'}
                             alt="Photo de profil"
                             sx={{width: 60, height: 60}}
                         />
@@ -329,7 +329,7 @@ const SettingsPage = () => {
                                     Photo de profil actuelle :
                                 </Typography>
                                 <Avatar
-                                    src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                                    src={user?.profile_picture ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_picture}` : 'https://via.placeholder.com/150'}
                                     alt="Ancienne photo de profil"
                                     sx={{width: 50, height: 50}}
                                 />

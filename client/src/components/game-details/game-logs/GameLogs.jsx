@@ -45,11 +45,22 @@ function GameLogs({game}) {
 
     useEffect(() => {
         console.log('Game changed')
-        fetchData(`http://localhost:8080/game-status/user/${user.id}/game/${game.id}`, handleStatusChange, "game_status_id")
-        fetchData(`http://localhost:8080/game-logs/user/${user.id}/game/${game.id}`, handleLogsChange)
-        handleCurrentLogChange(null)
-        fetchData(`http://localhost:8080/privacy-settings`, setPrivacySettings)
-    }, [game])
+        fetchData(
+            `${import.meta.env.VITE_BACKEND_URL}/game-status/user/${user.id}/game/${game.id}`,
+            handleStatusChange,
+            "game_status_id"
+        );
+        fetchData(
+            `${import.meta.env.VITE_BACKEND_URL}/game-logs/user/${user.id}/game/${game.id}`,
+            handleLogsChange
+        );
+        handleCurrentLogChange(null);
+        fetchData(
+            `${import.meta.env.VITE_BACKEND_URL}/privacy-settings`,
+            setPrivacySettings
+        );
+    }, [game]);
+
 
     const [currentStatus, setCurrentStatus] = useState(0)
     const handleStatusChange = (status) => {
@@ -67,7 +78,7 @@ function GameLogs({game}) {
 
     const saveStatusChange = async (userId, gameId, body) => {
         try {
-            const response = await fetch(`http://localhost:8080/game-status/update/${userId}/${gameId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-status/update/${userId}/${gameId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,7 +112,7 @@ function GameLogs({game}) {
         } else {
             setCurrentPrivacySetting(log.privacy_setting_id)
             setCurrentPlatform(log.platform_id)
-            fetchData(`http://localhost:8080/game-sessions/log/${log.game_log_id}`, setSessions).then(() => {
+            fetchData(`${import.meta.env.VITE_BACKEND_URL}/game-sessions/log/${log.game_log_id}`, setSessions).then(() => {
                 handleCurrentSessionChange(-1)
             })
         }
@@ -148,7 +159,7 @@ function GameLogs({game}) {
 
     const saveLogChanges = async (logId, updatedData) => {
         try {
-            const response = await fetch(`http://localhost:8080/game-logs/update/${logId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-logs/update/${logId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -286,7 +297,7 @@ function GameLogs({game}) {
 
     const saveSessionChanges = async (sessionId, updatedData) => {
         try {
-            const response = await fetch(`http://localhost:8080/game-sessions/update/${sessionId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-sessions/update/${sessionId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -306,7 +317,7 @@ function GameLogs({game}) {
 
     const createNewSession = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/game-sessions/create/${currentLog.game_log_id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-sessions/create/${currentLog.game_log_id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -331,7 +342,7 @@ function GameLogs({game}) {
 
     const deleteSession = async (sessionId) => {
         try {
-            const response = await fetch(`http://localhost:8080/game-sessions/delete/${sessionId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-sessions/delete/${sessionId}`, {
                 method: 'DELETE',
             })
 

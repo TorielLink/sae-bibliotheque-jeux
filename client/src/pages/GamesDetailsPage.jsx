@@ -20,23 +20,26 @@ export default function GamesDetailsPage() {
     const styles = getStyles(theme, isMobile);
 
     useEffect(() => {
-        const fetchGameData = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`http://localhost:8080/games/${id}`);
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
-
-                const data = await response.json();
-                setGameData(data);
-            } catch (err) {
-                console.error('Erreur lors de la récupération des données du jeu :', err);
-                setError('Impossible de charger les données du jeu.');
-            } finally {
-                setLoading(false);
+    const fetchGameData = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/games/${id}`);
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
             }
-        };
-        fetchGameData();
-    }, [id]);
+            const data = await response.json();
+            setGameData(data);
+        } catch (err) {
+            console.error('Erreur lors de la récupération des données du jeu :', err);
+            setError('Impossible de charger les données du jeu.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchGameData();
+}, [id]);
+
 
     if (loading) return (
         <Box

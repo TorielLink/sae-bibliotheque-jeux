@@ -20,7 +20,7 @@ const MyReviewsPage = () => {
             }
 
             try {
-                const response = await fetch(`http://localhost:8080/game-reviews/user/${userId}/reviews`, {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews/user/${userId}/reviews`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ const MyReviewsPage = () => {
 
     return (
         <Box sx={{padding: '2em'}}>
-            
+
             {/* Affichage des avis comme sur HomePage */}
             <Box
                 sx={{
