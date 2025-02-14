@@ -9,7 +9,8 @@
     "build": "node translate.js && vite build",
     "lint": "eslint .",
     "preview": "npm run extract && node translate.js && vite preview",
-    "extract": "set NODE_ENV=development&& babel src --extensions \".jsx\""
+    "extract": "set NODE_ENV=development&& babel src --extensions \".jsx\"",
+    "clo" : "vite"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",

@@ -1,10 +1,13 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {AppBar, Toolbar, IconButton, Typography, Button, Box} from '@mui/material';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import {useTheme} from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {ThemeContext} from '../theme/ThemeContext';
 import {AuthContext} from './AuthContext';
+import LanguageIcon from '@mui/icons-material/Language';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SearchBar from './SearchBar';
@@ -28,6 +31,7 @@ function Navbar() {
     const [searchText, setSearchText] = useState('');
     const [, setSelectedGame] = useState(null);
     const [logoUrl, setLogoUrl] = useState('/images/light-logo.png')
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
 
     useEffect(() => {
@@ -67,6 +71,19 @@ function Navbar() {
         navigate(`/details/${game.id}`);
         setSelectedGame(game);
         setSearchActive(false);
+    };
+
+    const handleClickLanguage = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseLanguage = () => {
+        setAnchorEl(null);
+    };
+
+    const changeLanguage = (lng) => {
+        changeLanguage(lng);
+        handleCloseLanguage();
     };
 
     return (
@@ -199,6 +216,23 @@ function Navbar() {
                         // <UserMenu/> // Affiche le menu utilisateur si connecté
                     )}
 
+                    {/* Bouton de bascule de langue */}
+                    <IconButton
+                        onClick={handleClickLanguage}
+                        color="inherit"
+                        sx={{
+                            padding: isMobile ? '0px' : '8px',
+                            ml: isMobile ? '6px' : '8px',
+                        }}
+                    >
+                        <LanguageIcon
+                            sx={{
+                                fontSize: isMobile ? '20px' : '32px',
+                                color: theme.palette.text.primary,
+                            }}
+                        />
+                    </IconButton>
+
                     {/* Bouton de bascule de thème */}
                     <IconButton
                         onClick={toggleTheme}
@@ -230,6 +264,16 @@ function Navbar() {
                             />
                         )}
                     </IconButton>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleCloseLanguage}
+                    >
+                        <MenuItem onClick={() => changeLanguage('en')}>English</MenuItem>
+                        <MenuItem onClick={() => changeLanguage('fr')}>Français</MenuItem>
+                        <MenuItem onClick={() => changeLanguage('de')}>Deutsch</MenuItem>
+                        <MenuItem onClick={() => changeLanguage('es')}>Español</MenuItem>
+                    </Menu>
                 </Box>
             </Toolbar>
         </AppBar>

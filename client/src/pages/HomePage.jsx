@@ -1,18 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
-import {
-    Box,
-    Typography,
-    CircularProgress,
-    useMediaQuery,
-    Grid,
-} from "@mui/material";
+import {Box, Typography, CircularProgress, useMediaQuery, Grid,} from "@mui/material";
 import GameList from "../components/GameList.jsx";
 import {useTheme} from "@mui/material/styles";
 import SectionTitle from "../components/SectionTitle.jsx";
 import MobileTabs from "../components/MobileTabs.jsx";
 import ResponsiveCommentCard from "../components/ResponsiveCommentCard";
 import {AuthContext} from "../components/AuthContext";
+import '../i18n';
 
 function HomePage() {
     const { t } = useTranslation();
