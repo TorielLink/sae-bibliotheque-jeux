@@ -2,9 +2,9 @@ import React, {useEffect, useState, useMemo} from "react";
 import {FaStar} from "react-icons/fa";
 import {Grid, Typography, CircularProgress, useMediaQuery} from "@mui/material";
 import ResponsiveCommentCard from "../components/ResponsiveCommentCard";
-import {baseTheme as theme} from "../theme/themes.js";
 import {useTheme} from "@mui/material/styles";
-
+import { useTranslation } from 'react-i18next';
+import '../i18n';
 
 export default function ReviewsPage() {
     const [comments, setComments] = useState([]);
@@ -34,7 +34,7 @@ export default function ReviewsPage() {
                 setComments(data.data || []);
             } catch (err) {
                 console.error("Erreur lors de la récupération des avis :", err.message);
-                setError("Impossible de charger les avis. Veuillez réessayer.");
+                setError(t("error.loadingReviews"));
             } finally {
                 setLoading(false);
             }
@@ -77,7 +77,7 @@ export default function ReviewsPage() {
     return (
         <div style={{padding: "20px"}}>
             <Typography variant="subtitle2" style={styles.breadcrumb}>
-                Accueil &gt; Avis
+                {t("pageName.home")} &gt; Avis
             </Typography>
             {/* Barre de filtre (étoiles) */}
             <div style={styles.filterContainer}>
@@ -139,7 +139,7 @@ export default function ReviewsPage() {
                 </Grid>
             ) : (
                 <Typography style={styles.noResultsText}>
-                    Aucun avis trouvé
+                    {t("review.noReviewsFound")}
                 </Typography>
             )}
         </div>

@@ -1,6 +1,7 @@
 {
   "error": {
     "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
+    "loadingReviews": "Impossible de charger les avis. Veuillez réessayer.",
     "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
     "loadingGameData": "Impossible de charger les données du jeu.",
     "unexpectedDataFormat": "Format des données inattendu pour les avis.",
@@ -40,6 +41,9 @@
   "login": {
     "signupSuccess": "Inscription réussie",
     "signupError": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "review": {
+    "noReviewsFound": "Aucun avis trouvé"
   },
   "pageName": {
     "home": "Accueil"
