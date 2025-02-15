@@ -1,14 +1,14 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {AuthContext} from '../components/AuthContext.jsx';
 import {useNavigate} from 'react-router-dom';
-
-import LoginBg from "../components/LoginBg"
-
-import LoginBox from "../components/LoginSignup/LoginBox"
-import SignupBox from "../components/LoginSignup/SignupBox"
+import LoginBg from "../components/LoginBg";
+import LoginBox from "../components/LoginSignup/LoginBox";
+import SignupBox from "../components/LoginSignup/SignupBox";
+import { useTranslation } from 'react-i18next';
+import '../i18n';
 
 function LoginPage() {
-
+    const { t } = useTranslation();
     const [showSignup, setShowSignup] = useState(false); // Gérer l'affichage du formulaire d'inscription
     const [credentials, setCredentials] = useState({username: '', password: ''}); // Champs de connexion
     const [signupData, setSignupData] = useState({
@@ -46,7 +46,7 @@ function LoginPage() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setLoginError(errorData.message || 'Erreur de connexion.');
+                setLoginError(errorData.message || t("error.loginError"));
                 console.log('Erreur de connexion :', errorData);
                 return;
             }
@@ -58,7 +58,7 @@ function LoginPage() {
             navigate('/'); // Redirection après connexion
         } catch (error) {
             console.error('Erreur lors de la connexion :', error);
-            setLoginError('Erreur réseau. Veuillez réessayer.');
+            setLoginError(t("error.networkError"));
         }
     };
 
@@ -104,7 +104,7 @@ function LoginPage() {
             }
 
             const result = await response.json();
-            alert('Inscription réussie : ' + result.message);
+            alert(t("login.signupSuccess") + ':' + result.message);
 
             // Réinitialiser le formulaire après une inscription réussie
             setSignupData({
@@ -117,7 +117,7 @@ function LoginPage() {
             setShowSignup(false); // Revenir à l'écran de connexion
         } catch (error) {
             console.error('Erreur lors de l’inscription :', error);
-            setSignupError('Une erreur est survenue. Veuillez réessayer.');
+            setSignupError(t("login.signupError"));
         }
     };
 

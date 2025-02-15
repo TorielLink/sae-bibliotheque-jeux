@@ -3,7 +3,9 @@
     "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
     "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
     "loadingGameData": "Impossible de charger les données du jeu.",
-    "unexpectedDataFormat": "Format des données inattendu pour les avis."
+    "unexpectedDataFormat": "Format des données inattendu pour les avis.",
+    "loginError": "Erreur de connexion.",
+    "networkError": "Erreur réseau. Veuillez réessayer."
   },
   "footer": {
     "aboutProject": "À propos du projet",
@@ -34,6 +36,10 @@
     "logs": "Journaux",
     "medias": "Médias",
     "notSpecified": "Non précisé"
+  },
+  "login": {
+    "signupSuccess": "Inscription réussie",
+    "signupError": "Une erreur est survenue. Veuillez réessayer."
   },
   "pageName": {
     "home": "Accueil"
