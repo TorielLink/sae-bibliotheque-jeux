@@ -2,6 +2,7 @@
   "error": {
     "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
     "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
+    "loadingGameData": "Impossible de charger les données du jeu.",
     "unexpectedDataFormat": "Format des données inattendu pour les avis."
   },
   "footer": {
@@ -26,6 +27,13 @@
     "popular_games": "Jeux populaires",
     "recent_releases": "Sorties récentes",
     "recent_reviews": "Avis récents"
+  },
+  "details": {
+    "informations": "Détails",
+    "reviews": "Avis",
+    "logs": "Journaux",
+    "medias": "Médias",
+    "notSpecified": "Non précisé"
   },
   "pageName": {
     "home": "Accueil"

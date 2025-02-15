@@ -2,14 +2,17 @@ import React, {useState, useEffect} from 'react';
 import {useParams} from "react-router-dom"; // pour récupérer les paramètres de l'URL
 import GameDetails from "../components/game-details/GameDetails.jsx";
 import GameReviews from "../components/game-details/GameReviews.jsx";
+import GameLogs from '../components/game-details/game-logs/GameLogs.jsx';
 import GameMedias from "../components/game-details/GameMedias.jsx";
 import {Box, CircularProgress, Typography, useMediaQuery} from "@mui/material";
 import GameMobileQuickActions from "../components/game-details/GameMobileQuickActions.jsx";
 import {useTheme} from "@mui/material/styles";
 import MobileTabs from "../components/MobileTabs.jsx";
-import GameLogs from '../components/game-details/game-logs/GameLogs.jsx';
+import { useTranslation } from 'react-i18next';
+import '../i18n';
 
 export default function GamesDetailsPage() {
+    const { t } = useTranslation();
     const {id} = useParams();
     const [gameData, setGameData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -30,7 +33,7 @@ export default function GamesDetailsPage() {
                 setGameData(data);
             } catch (err) {
                 console.error('Erreur lors de la récupération des données du jeu :', err);
-                setError('Impossible de charger les données du jeu.');
+                setError(t("error.loadingGameData"));
             } finally {
                 setLoading(false);
             }
@@ -52,13 +55,15 @@ export default function GamesDetailsPage() {
     )
     if (error) return <div>{error}</div>;
 
-    const tabTitles = ["Détails", "Avis", "Journaux", "Médias"];
+    const tabTitles = [t("details.informations"), t("details.reviews"), t("details.logs"),
+        t("details.medias")];
+
     const tabContents = [
         <GameDetails
             name={gameData.name}
             description={gameData.summary}
             releaseDate={gameData.releaseDate}
-            ageRating={gameData.ageRating || "Non précisé"}
+            ageRating={gameData.ageRating || t("details.notSpecified")}
             rating={gameData.criticsAggregatedRating}
             detailedSynopsis={gameData.storyline}
             platforms={gameData.platforms}
@@ -75,19 +80,14 @@ export default function GamesDetailsPage() {
         />,
         // Pass gameName along with gameId to GameReviews
         <GameReviews gameId={id} gameName={gameData.name}/>,
-        <GameLogs
-            game={gameData}
-        />,
-        <GameMedias
-            videos={gameData.videos}
-            screenshots={gameData.screenshots}
-        />,
+        <GameLogs game={gameData}/>,
+        <GameMedias videos={gameData.videos} screenshots={gameData.screenshots}/>,
     ];
 
     return (
         <>
             <Typography variant="subtitle2" style={styles.breadcrumb}>
-                Accueil &gt; {gameData.name}
+                {t("pageName.home")} &gt; {gameData.name}
             </Typography>
 
             {isMobile ? (
