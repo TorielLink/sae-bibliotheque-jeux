@@ -1,12 +1,19 @@
 {
+  "details": {
+    "informations": "Détails",
+    "logs": "Journaux",
+    "medias": "Médias",
+    "notSpecified": "Non précisé",
+    "reviews": "Avis"
+  },
   "error": {
     "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
-    "loadingReviews": "Impossible de charger les avis. Veuillez réessayer.",
-    "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
     "loadingGameData": "Impossible de charger les données du jeu.",
-    "unexpectedDataFormat": "Format des données inattendu pour les avis.",
+    "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
+    "loadingReviews": "Impossible de charger les avis. Veuillez réessayer.",
     "loginError": "Erreur de connexion.",
-    "networkError": "Erreur réseau. Veuillez réessayer."
+    "networkError": "Erreur réseau. Veuillez réessayer.",
+    "unexpectedDataFormat": "Format des données inattendu pour les avis."
   },
   "footer": {
     "aboutProject": "À propos du projet",
@@ -31,21 +38,14 @@
     "recent_releases": "Sorties récentes",
     "recent_reviews": "Avis récents"
   },
-  "details": {
-    "informations": "Détails",
-    "reviews": "Avis",
-    "logs": "Journaux",
-    "medias": "Médias",
-    "notSpecified": "Non précisé"
-  },
   "login": {
-    "signupSuccess": "Inscription réussie",
-    "signupError": "Une erreur est survenue. Veuillez réessayer."
-  },
-  "review": {
-    "noReviewsFound": "Aucun avis trouvé"
+    "signupError": "Une erreur est survenue. Veuillez réessayer.",
+    "signupSuccess": "Inscription réussie"
   },
   "pageName": {
     "home": "Accueil"
+  },
+  "review": {
+    "noReviewsFound": "Aucun avis trouvé"
   }
 }

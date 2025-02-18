@@ -1,7 +1,18 @@
 {
+  "details": {
+    "informations": "",
+    "logs": "",
+    "medias": "",
+    "notSpecified": "",
+    "reviews": ""
+  },
   "error": {
     "loadingComments": "",
+    "loadingGameData": "",
     "loadingGames": "",
+    "loadingReviews": "",
+    "loginError": "",
+    "networkError": "",
     "unexpectedDataFormat": ""
   },
   "footer": {
@@ -27,7 +38,14 @@
     "recent_releases": "",
     "recent_reviews": ""
   },
+  "login": {
+    "signupError": "",
+    "signupSuccess": ""
+  },
   "pageName": {
     "home": ""
+  },
+  "review": {
+    "noReviewsFound": ""
   }
 }

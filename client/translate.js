@@ -31,14 +31,18 @@ const translateFiles = async () => {
         const targetFile = path.join(LOCALES_DIR, `${targetLang}.json`);
         const targetData = loadJSON(targetFile);
 
-        for (const key in sourceData)
-            if (!targetData[key] || targetData[key] === "TODO")
-                try {
-                    const translatedText = await translator.translateText(sourceData[key], SOURCE_LANG, targetLang);
-                    targetData[key] = translatedText || sourceData[key]; // Si la traduction échoue, on garde la valeur originale
-                } catch (error) {
-                    console.error(`Erreur pour '${key}' (${SOURCE_LANG} → ${targetLang}) :`, error.message);
+        for (const category in sourceData) {
+            for (const key in sourceData[category]) {
+                if (!targetData[key] || targetData[key] === "") {
+                    try {
+                        const translatedText = await translator.translateText(sourceData[key], SOURCE_LANG, targetLang);
+                        targetData[key] = translatedText || sourceData[key]; // Si la traduction échoue, on garde la valeur originale
+                    } catch (error) {
+                        console.error(`Erreur pour '${key}' (${SOURCE_LANG} → ${targetLang}) :`, error.message);
+                    }
                 }
+            }
+        }
 
         saveJSON(targetFile, targetData);
     }
