@@ -35,8 +35,9 @@ const translateFiles = async () => {
             for (const key in sourceData[category]) {
                 if (!targetData[key] || targetData[key] === "") {
                     try {
-                        const translatedText = await translator.translateText(sourceData[key], SOURCE_LANG, targetLang);
-                        targetData[key] = translatedText || sourceData[key]; // Si la traduction échoue, on garde la valeur originale
+                        // console.log(sourceData[category][key])
+                        const translatedText = await translator.translateText(sourceData[category][key], SOURCE_LANG, targetLang);
+                        targetData[category][key] = translatedText || sourceData[category][key]; // Si la traduction échoue, on garde la valeur originale
                     } catch (error) {
                         console.error(`Erreur pour '${key}' (${SOURCE_LANG} → ${targetLang}) :`, error.message);
                     }
