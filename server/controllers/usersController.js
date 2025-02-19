@@ -17,33 +17,34 @@ const controller = {};
 
 // 🔹 Connexion d'un utilisateur
 controller.login = async (req, res) => {
-    const { username, password } = req.body;
+    const { mail, password } = req.body;  // Changer "username" par "mail"
 
     try {
-        // Vérifiez si l'utilisateur existe et n'est pas supprimé
+        // Vérification si l'utilisateur existe avec l'email
         const user = await users.findOne({
             where: {
-                username,
+                mail,  // Cherche l'utilisateur par email
                 isDeleted: false
             }
         });
 
         if (!user) {
-            return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect." });
+            return res.status(401).json({ message: "Email ou mot de passe incorrect." });
         }
 
-        // 🔐 Vérification du mot de passe haché
+        // Vérification du mot de passe haché
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect." });
+            return res.status(401).json({ message: "Email ou mot de passe incorrect." });
         }
 
         // Génération du token JWT
         const token = jwt.sign(
-            { user_id: user.user_id, username: user.username },
+            { user_id: user.user_id, username: user.username },  // Vous pouvez toujours conserver le nom d'utilisateur dans le token
             SECRET
         );
 
+        // Réponse avec token et utilisateur
         res.status(200).json({
             token,
             user: {
@@ -53,7 +54,6 @@ controller.login = async (req, res) => {
                 profile_picture: user.profile_picture,
             }
         });
-
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
         res.status(500).json({ message: 'Erreur serveur.', error: error.message });

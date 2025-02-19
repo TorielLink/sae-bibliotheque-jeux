@@ -36,34 +36,36 @@ function LoginPage() {
     };
 
     // Soumission du formulaire de connexion
-    const handleLoginSubmit = async (e) => {
-        e.preventDefault();
-        setLoginError('');
-        setLoading(true);
+const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+    setLoading(true);
 
-        try {
+    try {
+        const response = await fetch(`${backendUrl}/users/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mail: credentials.username,  // Ici, "username" est en fait l'email maintenant
+                password: credentials.password
+            }),
+        });
 
-            const response = await fetch(`${backendUrl}/users/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                setLoginError(errorData.message || 'Erreur de connexion.');
-                return;
-            }
-
-            const data = await response.json();
-            login(data.token, data.user);
-            navigate('/');
-        } catch (error) {
-            setLoginError('Erreur réseau. Vérifiez votre connexion.');
-        } finally {
-            setLoading(false);
+        if (!response.ok) {
+            const errorData = await response.json();
+            setLoginError(errorData.message || 'Erreur de connexion.');
+            return;
         }
-    };
+
+        const data = await response.json();
+        login(data.token, data.user);
+        navigate('/');
+    } catch (error) {
+        setLoginError('Erreur réseau. Vérifiez votre connexion.');
+    } finally {
+        setLoading(false);
+    }
+};
 
     // Gestion des changements dans les champs d'inscription
     const handleSignupChange = (e) => {

@@ -39,16 +39,18 @@ function LoginBox({
           </Alert>
         )}
 
-        <TextField style={{paddingBottom:15}}
-          id="username-input"
-          label="Username"
-          autoComplete="current-password"
-          type="text"
-          name="username"
-          value={credentials.username}
-          onChange={handleLoginChange}
-          required
-        />
+        <TextField
+    style={{paddingBottom:15}}
+    id="email-input"
+    label="E-mail"
+    autoComplete="current-password"
+    type="email"  // On utilise ici un type "email"
+    name="username"  // Ce champ représente l'email
+    value={credentials.username}
+    onChange={handleLoginChange}
+    required
+/>
+
         <TextField style={{paddingBottom:15}}
           id="password-input-1"
           label="Mot de passe"
