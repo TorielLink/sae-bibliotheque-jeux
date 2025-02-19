@@ -127,21 +127,28 @@ controller.update = async (req, res) => {
         }
 
         // Vérifier si le username ou le mail sont déjà utilisés par un autre utilisateur
-        if (username || mail) {
-            const existingUser = await users.findOne({
-                where: {
-                    [Op.or]: [{ username }, { mail }]
-                }
-            });
+        if (username || (mail !== undefined && mail !== "")) {
+    const conditions = [];
+    if (username) conditions.push({ username });
+    if (mail !== undefined && mail !== "") conditions.push({ mail });
 
-            if (existingUser && existingUser.user_id !== user.user_id) {
-                console.log("UPDATE USER: Username ou email déjà utilisé");
-                return res.status(400).json({
-                    message: 'Nom d’utilisateur ou adresse e-mail déjà utilisé.',
-                    data: { username, mail }
-                });
+    if (conditions.length > 0) {
+        const existingUser = await users.findOne({
+            where: {
+                [Op.or]: conditions
             }
+        });
+
+        if (existingUser && existingUser.user_id !== user.user_id) {
+            console.log("UPDATE USER: Username ou email déjà utilisé");
+            return res.status(400).json({
+                message: 'Nom d’utilisateur ou adresse e-mail déjà utilisé.',
+                data: { username, mail }
+            });
         }
+    }
+}
+
 
         // Gestion de la photo de profil
         let profilePicturePath = user.profile_picture;

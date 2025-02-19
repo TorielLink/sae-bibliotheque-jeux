@@ -81,46 +81,49 @@ const SettingsPage = () => {
     };
 
     // Fonction de mise à jour de l'utilisateur
-    const updateUser = async (updates, isFormData = false) => {
-        if (!token || !userId) {
-            console.error('Token ou ID utilisateur manquant.');
+const updateUser = async (updates, isFormData = false) => {
+    const sanitizedUpdates = Object.fromEntries(
+        Object.entries(updates).filter(([_, v]) => v !== undefined)
+    );
+
+    console.log("🔍 Avant envoi de la requête: userId =", userId, " updates =", sanitizedUpdates);
+
+    const options = isFormData
+        ? {
+            method: 'PUT',
+            headers: {'Authorization': `Bearer ${token}`},
+            body: sanitizedUpdates
+        }
+        : {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(sanitizedUpdates)
+        };
+
+    try {
+        const response = await fetch(`${API_URL}/${userId}`, options);
+        const data = await response.json();
+        if (!response.ok) {
+            console.error('Erreur lors de la mise à jour:', data);
             return null;
         }
 
-        const options = isFormData
-            ? {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: updates
-            }
-            : {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(updates)
-            };
+        // ✅ Conserver l'ID utilisateur lors de la mise à jour
+        setUser((prevUser) => ({
+            ...prevUser,
+            ...data.data,
+            id: prevUser.id // ✅ Toujours conserver l'ID !
+        }));
 
-        try {
-            const response = await fetch(`${API_URL}/${userId}`, options);
-            const data = await response.json();
-
-            if (!response.ok) {
-                console.error('Erreur lors de la mise à jour:', data);
-                return null;
-            }
-
-            setUser(data.data);
-
-            return data;
-        } catch (error) {
-            console.error('Erreur lors de la requête de mise à jour:', error);
-            return null;
-        }
-    };
+        return data;
+    } catch (error) {
+        console.error('Erreur lors de la requête de mise à jour:', error);
+        return null;
+    }
+};
 
     const handleUpdatePseudo = async () => {
         if (newPseudo !== user?.username && newPseudo.trim() !== '') {
@@ -266,7 +269,7 @@ const SettingsPage = () => {
                     {/* Ajout de l'Avatar et du Pseudo de l'utilisateur */}
                     <Stack direction="row" spacing={2} alignItems="center" sx={{mb: 2}}>
                         <Avatar
-                            src={user?.profile_picture ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                            src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
                             alt="Photo de profil"
                             sx={{width: 60, height: 60}}
                         />
@@ -329,7 +332,7 @@ const SettingsPage = () => {
                                     Photo de profil actuelle :
                                 </Typography>
                                 <Avatar
-                                    src={user?.profile_picture ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                                    src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
                                     alt="Ancienne photo de profil"
                                     sx={{width: 50, height: 50}}
                                 />
