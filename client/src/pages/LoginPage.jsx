@@ -21,8 +21,12 @@ function LoginPage() {
 
     const [loginError, setLoginError] = useState('');
     const [signupError, setSignupError] = useState('');
+    const [loading, setLoading] = useState(false);
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080"; // 🔥 Vérifie que l'URL est bien définie
+    console.log("🔗 URL du backend :", backendUrl);
 
     // Gestion des changements dans les champs de connexion
     const handleLoginChange = (e) => {
@@ -35,9 +39,12 @@ function LoginPage() {
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         setLoginError('');
+        setLoading(true);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
+            console.log("🛂 Tentative de connexion avec :", credentials);
+
+            const response = await fetch(`${backendUrl}/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(credentials),
@@ -46,17 +53,19 @@ function LoginPage() {
             if (!response.ok) {
                 const errorData = await response.json();
                 setLoginError(errorData.message || 'Erreur de connexion.');
-                console.error('Erreur de connexion :', errorData);
+                console.error('❌ Erreur de connexion :', errorData);
                 return;
             }
 
             const data = await response.json();
-            console.log('Connexion réussie :', data);
+            console.log('✅ Connexion réussie :', data);
             login(data.token, data.user);
             navigate('/'); // Redirection après connexion
         } catch (error) {
-            console.error('Erreur lors de la connexion :', error);
-            setLoginError('Erreur réseau. Veuillez réessayer.');
+            console.error('❌ Erreur lors de la connexion :', error);
+            setLoginError('Erreur réseau. Vérifiez votre connexion.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -73,18 +82,22 @@ function LoginPage() {
     // Soumission du formulaire d'inscription
     const handleSignupSubmit = async (e) => {
         e.preventDefault();
+        setSignupError('');
+        setLoading(true);
 
         const formData = new FormData();
         formData.append('username', signupData.username);
         formData.append('mail', signupData.mail);
         formData.append('password', signupData.password);
-        formData.append('privacy_settings', signupData.privacy_setting_id);
+        formData.append('privacy_setting_id', signupData.privacy_setting_id); // 🔥 Correction du nom
         if (signupData.profilePicture) {
             formData.append('profile_picture', signupData.profilePicture);
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users`, {
+            console.log("📤 Tentative d'inscription avec :", signupData);
+
+            const response = await fetch(`${backendUrl}/users`, {
                 method: 'POST',
                 body: formData,
             });
@@ -92,11 +105,12 @@ function LoginPage() {
             if (!response.ok) {
                 const errorData = await response.json();
                 setSignupError(errorData.message || 'Erreur lors de l’inscription.');
-                console.error('Erreur d’inscription :', errorData);
+                console.error('❌ Erreur d’inscription :', errorData);
                 return;
             }
 
             const result = await response.json();
+            console.log('✅ Inscription réussie :', result);
             alert('Inscription réussie : ' + result.message);
 
             // Réinitialiser le formulaire après inscription
@@ -109,8 +123,10 @@ function LoginPage() {
             });
             setShowSignup(false);
         } catch (error) {
-            console.error('Erreur lors de l’inscription :', error);
-            setSignupError('Une erreur est survenue. Veuillez réessayer.');
+            console.error('❌ Erreur lors de l’inscription :', error);
+            setSignupError('Une erreur réseau est survenue. Vérifiez votre connexion.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -126,6 +142,7 @@ function LoginPage() {
                         setShowSignup={setShowSignup}
                         handleSignupChange={handleSignupChange}
                         handleSignupSubmit={handleSignupSubmit}
+                        loading={loading}
                     />
                     : <LoginBox
                         credentials={credentials}
@@ -134,6 +151,7 @@ function LoginPage() {
                         setShowSignup={setShowSignup}
                         handleLoginChange={handleLoginChange}
                         handleLoginSubmit={handleLoginSubmit}
+                        loading={loading}
                     />
                 }
             </div>
