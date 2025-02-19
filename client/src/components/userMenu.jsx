@@ -8,6 +8,8 @@ const UserMenu = () => {
     const {isAuthenticated, user, logout} = useContext(AuthContext);
     const {theme} = useContext(ThemeContext);
     const [anchorEl, setAnchorEl] = useState(null);
+console.log("🔍 Backend URL:", import.meta.env.VITE_BACKEND_URL);
+console.log("🔍 Chemin image profil:", user.profile_picture);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -30,6 +32,7 @@ const UserMenu = () => {
     };
 
     if (!isAuthenticated) return null;
+console.log("🔍 URL complète de l'image :", `http://localhost:8080${user.profile_picture}`);
 
     return (
         <>

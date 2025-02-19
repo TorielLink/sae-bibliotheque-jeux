@@ -192,7 +192,6 @@ controller.addReview = async (req, res) => {
             });
         }
 
-        console.log("Données reçues :", req.body);
 
         // Vérifier si une critique existe déjà pour cet utilisateur et ce jeu
         const existingReview = await gameReview.findOne({where: {user_id, igdb_game_id}});
@@ -222,9 +221,6 @@ controller.addReview = async (req, res) => {
             spoiler: spoiler || false,
             date_published: new Date(),
         });
-
-        console.log("Critique créée :", review);
-
         // Vérifier si une note existe déjà
         const existingRating = await gameRatings.findOne({where: {user_id, igdb_game_id}});
         if (!existingRating && rating_value !== undefined) {
@@ -234,9 +230,6 @@ controller.addReview = async (req, res) => {
                 rating_value,
                 privacy_setting_id,
             });
-            console.log("Note ajoutée :", rating_value);
-        } else {
-            console.log("Une note existe déjà, non ajoutée.");
         }
 
         // Vérifier si un log existe déjà pour la plateforme
@@ -250,13 +243,11 @@ controller.addReview = async (req, res) => {
                 privacy_setting_id,
                 time_played: 0,
             });
-            console.log("Nouveau log de plateforme créé :", existingLog);
         } else {
             await existingLog.update({
                 platform_id,
                 privacy_setting_id,
             });
-            console.log("Log de plateforme existant mis à jour :", existingLog);
         }
 
         // Retourner une réponse de succès
@@ -445,9 +436,6 @@ controller.getReviewsByGameId = async (req, res) => {
             console.warn(`Données du jeu introuvables ou incomplètes pour l'ID: ${gameId}`);
             gameData = { name: 'Titre inconnu', cover: 'https://placehold.co/200x300' };
         }
-
-        console.log(`Données du jeu récupérées :`, gameData);
-
         // Transformation des critiques avec les détails du jeu
         const reviewsWithDetails = reviews.map((review) => {
             const userLogs = review.user?.user_game_logs || [];

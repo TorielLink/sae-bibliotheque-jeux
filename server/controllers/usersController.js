@@ -54,6 +54,8 @@ controller.login = async (req, res) => {
                 profile_picture: user.profile_picture,
             }
         });
+        console.log("🔍 Profil utilisateur renvoyé:", user.profile_picture);
+
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
         res.status(500).json({ message: 'Erreur serveur.', error: error.message });
@@ -112,9 +114,6 @@ controller.create = async (req, res) => {
 
 // 🔹 Mise à jour d'un utilisateur
 controller.update = async (req, res) => {
-    console.log("UPDATE USER: req.body", req.body);
-    console.log("UPDATE USER: req.file", req.file);
-
     try {
         const { id } = req.params;
         const { username, mail, password, isDeleted, privacy_setting_id } = req.body;
@@ -122,7 +121,6 @@ controller.update = async (req, res) => {
         // Vérification de l'existence de l'utilisateur
         const user = await users.findOne({ where: { user_id: id } });
         if (!user) {
-            console.log("UPDATE USER: Utilisateur introuvable, id =", id);
             return res.status(404).json({ message: "Utilisateur introuvable." });
         }
 
@@ -140,7 +138,6 @@ controller.update = async (req, res) => {
         });
 
         if (existingUser && existingUser.user_id !== user.user_id) {
-            console.log("UPDATE USER: Username ou email déjà utilisé");
             return res.status(400).json({
                 message: 'Nom d’utilisateur ou adresse e-mail déjà utilisé.',
                 data: { username, mail }
@@ -154,7 +151,6 @@ controller.update = async (req, res) => {
         let profilePicturePath = user.profile_picture;
         if (req.file) {
             profilePicturePath = `/uploads/profile_pictures/${req.file.filename}`;
-            console.log("UPDATE USER: Nouvelle image sauvegardée à:", profilePicturePath);
         }
 
         // 🔐 Hachage du mot de passe si modifié
@@ -175,9 +171,6 @@ controller.update = async (req, res) => {
 
         // Mettre à jour l'utilisateur avec les données fournies
         await user.update(updateData);
-
-        console.log("UPDATE USER: Mise à jour réussie pour l'utilisateur", user.user_id);
-
         res.status(200).json({ message: 'Utilisateur mis à jour avec succès', data: updateData });
     } catch (error) {
         console.error('UPDATE USER: Erreur lors de la mise à jour de l’utilisateur :', error);
