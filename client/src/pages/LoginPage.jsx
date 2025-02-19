@@ -6,11 +6,11 @@ import LoginBg from "../components/LoginBg";
 import LoginBox from "../components/LoginSignup/LoginBox";
 import SignupBox from "../components/LoginSignup/SignupBox";
 
-const MemoizedLoginBg = React.memo(LoginBg); // Optimisation du rendu du fond
+const MemoizedLoginBg = React.memo(LoginBg);
 
 function LoginPage() {
     const [showSignup, setShowSignup] = useState(false);
-    const [credentials, setCredentials] = useState({ username: '', password: '' }); // Champs de connexion
+    const [credentials, setCredentials] = useState({ username: '', password: '' });
     const [signupData, setSignupData] = useState({
         username: '',
         mail: '',
@@ -25,7 +25,7 @@ function LoginPage() {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080"; // 🔥 Vérifie que l'URL est bien définie
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     console.log("🔗 URL du backend :", backendUrl);
 
     // Gestion des changements dans les champs de connexion
@@ -42,7 +42,6 @@ function LoginPage() {
         setLoading(true);
 
         try {
-            console.log("🛂 Tentative de connexion avec :", credentials);
 
             const response = await fetch(`${backendUrl}/users/login`, {
                 method: 'POST',
@@ -53,16 +52,13 @@ function LoginPage() {
             if (!response.ok) {
                 const errorData = await response.json();
                 setLoginError(errorData.message || 'Erreur de connexion.');
-                console.error('❌ Erreur de connexion :', errorData);
                 return;
             }
 
             const data = await response.json();
-            console.log('✅ Connexion réussie :', data);
             login(data.token, data.user);
-            navigate('/'); // Redirection après connexion
+            navigate('/');
         } catch (error) {
-            console.error('❌ Erreur lors de la connexion :', error);
             setLoginError('Erreur réseau. Vérifiez votre connexion.');
         } finally {
             setLoading(false);
@@ -89,7 +85,7 @@ function LoginPage() {
         formData.append('username', signupData.username);
         formData.append('mail', signupData.mail);
         formData.append('password', signupData.password);
-        formData.append('privacy_setting_id', signupData.privacy_setting_id); // 🔥 Correction du nom
+        formData.append('privacy_setting_id', signupData.privacy_setting_id);
         if (signupData.profilePicture) {
             formData.append('profile_picture', signupData.profilePicture);
         }
@@ -105,12 +101,10 @@ function LoginPage() {
             if (!response.ok) {
                 const errorData = await response.json();
                 setSignupError(errorData.message || 'Erreur lors de l’inscription.');
-                console.error('❌ Erreur d’inscription :', errorData);
                 return;
             }
 
             const result = await response.json();
-            console.log('✅ Inscription réussie :', result);
             alert('Inscription réussie : ' + result.message);
 
             // Réinitialiser le formulaire après inscription
@@ -123,7 +117,6 @@ function LoginPage() {
             });
             setShowSignup(false);
         } catch (error) {
-            console.error('❌ Erreur lors de l’inscription :', error);
             setSignupError('Une erreur réseau est survenue. Vérifiez votre connexion.');
         } finally {
             setLoading(false);
@@ -132,7 +125,7 @@ function LoginPage() {
 
     return (
         <>
-            <MemoizedLoginBg /> {/* Empêche le rechargement inutile du fond */}
+            <MemoizedLoginBg />
             <div>
                 {showSignup
                     ? <SignupBox
