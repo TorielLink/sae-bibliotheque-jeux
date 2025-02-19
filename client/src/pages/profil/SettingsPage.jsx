@@ -82,48 +82,60 @@ const SettingsPage = () => {
 
     // Fonction de mise à jour de l'utilisateur
 const updateUser = async (updates, isFormData = false) => {
-    const sanitizedUpdates = Object.fromEntries(
-        Object.entries(updates).filter(([_, v]) => v !== undefined)
-    );
+  // 1) Si c'est du FormData, on ne fait pas de "clean"
+  if (isFormData) {
+    return fetch(`${API_URL}/${userId}`, {
+      method: 'PUT',
+      headers: {
+        // IMPORTANT: pas de 'Content-Type' explicite ici,
+        // fetch le mettra automatiquement en multipart/form-data
+        'Authorization': `Bearer ${token}`
+      },
+      body: updates // c'est ton FormData intact
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw data;
+      // Mise à jour du context utilisateur
+      setUser((prev) => ({
+        ...prev,
+        ...data.data,
+        id: prev.id
+      }));
+      return data;
+    }).catch((err) => {
+      console.error("Erreur upload FormData:", err);
+      return null;
+    });
+  }
 
-    console.log("🔍 Avant envoi de la requête: userId =", userId, " updates =", sanitizedUpdates);
+  // 2) Sinon, c'est un simple objet JSON
+  const sanitizedUpdates = Object.fromEntries(
+    Object.entries(updates).filter(([_, v]) => v !== undefined)
+  );
 
-    const options = isFormData
-        ? {
-            method: 'PUT',
-            headers: {'Authorization': `Bearer ${token}`},
-            body: sanitizedUpdates
-        }
-        : {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(sanitizedUpdates)
-        };
-
-    try {
-        const response = await fetch(`${API_URL}/${userId}`, options);
-        const data = await response.json();
-        if (!response.ok) {
-            console.error('Erreur lors de la mise à jour:', data);
-            return null;
-        }
-
-        // ✅ Conserver l'ID utilisateur lors de la mise à jour
-        setUser((prevUser) => ({
-            ...prevUser,
-            ...data.data,
-            id: prevUser.id // ✅ Toujours conserver l'ID !
-        }));
-
-        return data;
-    } catch (error) {
-        console.error('Erreur lors de la requête de mise à jour:', error);
-        return null;
-    }
+  return fetch(`${API_URL}/${userId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(sanitizedUpdates)
+  }).then(async (res) => {
+    const data = await res.json();
+    if (!res.ok) throw data;
+    // Mise à jour du context utilisateur
+    setUser((prev) => ({
+      ...prev,
+      ...data.data,
+      id: prev.id
+    }));
+    return data;
+  }).catch((err) => {
+    console.error("Erreur upload JSON:", err);
+    return null;
+  });
 };
+
 
     const handleUpdatePseudo = async () => {
         if (newPseudo !== user?.username && newPseudo.trim() !== '') {

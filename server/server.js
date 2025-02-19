@@ -52,22 +52,42 @@ const configureCors = () => {
         credentials: true,
     });
 };
-
 app.use(configureCors());
 
 app.use(compression());
-
-app.use(helmet());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-    maxAge: '7d',
-    immutable: true
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        // Permet l'envoi de formulaires ou requêtes fetch vers le backend
+        connectSrc: ["'self'", "http://localhost:8080"],
+        formAction: ["'self'", "http://localhost:8080"],
+        // Autorise les images depuis le backend + base64
+        imgSrc: ["'self'", "http://localhost:8080", "data:"],
+        // Si besoin, autorise styles/scripts externes
+        // styleSrc: ["'self'", ...],
+        // scriptSrc: ["'self'", ...],
+      },
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, 'uploads'), {
+    maxAge: '7d',
+    immutable: true,
+  })
+);
+
+// ---------------------
 // Gestion des routes
+// ---------------------
 app.use('/games', gamesRoutes);
 app.use('/search', searchRoutes);
 app.use('/users', usersRoutes);
@@ -85,49 +105,52 @@ app.use('/friends', friendsRoutes);
 app.use('/user-lists', userListsRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Middleware pour les routes non trouvées
 app.use((req, res) => {
-    res.status(404).json({ message: 'Ressource non trouvée.' });
+  res.status(404).json({ message: 'Ressource non trouvée.' });
 });
 
+// Middleware global d'erreur
 app.use((err, req, res, next) => {
-    console.error('Erreur du serveur :', err.stack);
-    res.status(500).json({ message: 'Erreur interne du serveur.', error: err.message });
+  console.error('Erreur du serveur :', err.stack);
+  res.status(500).json({ message: 'Erreur interne du serveur.', error: err.message });
 });
 
+// ---------------------
+// Démarrage du serveur
+// ---------------------
 const startServer = () => {
-    const PORT = process.env.PORT_APP || 8080;
-    const NODE_ENV = process.env.NODE_ENV || 'development';
+  const PORT = process.env.PORT_APP || 8080;
+  const NODE_ENV = process.env.NODE_ENV || 'development';
 
-    console.log(`🚀 Serveur lancé en mode ${NODE_ENV} sur le port ${PORT}`);
-    console.log(`🔗 Frontend accessible à ${FRONTEND_URL}`);
+  console.log(`🚀 Serveur lancé en mode ${NODE_ENV} sur le port ${PORT}`);
+  console.log(`🔗 Frontend accessible à ${FRONTEND_URL}`);
 
-    const server = http.createServer(app);
+  const server = http.createServer(app);
+  server.listen(PORT, () => {
+    console.log(`✅ Serveur opérationnel sur http://localhost:${PORT}`);
+  });
 
-    server.listen(PORT, () => {
-        console.log(`✅ Serveur opérationnel sur http://localhost:${PORT}`);
+  server.on('error', (err) => {
+    console.error('❌ Erreur du serveur:', err.message);
+  });
+
+  // Gestion des fermetures propres
+  process.on('SIGTERM', () => {
+    console.log('🔴 Fermeture du serveur...');
+    server.close(() => {
+      console.log('✅ Serveur arrêté proprement.');
+      process.exit(0);
     });
+  });
 
-
-    server.on('error', (err) => {
-        console.error('❌ Erreur du serveur:', err.message);
+  process.on('SIGINT', () => {
+    console.log('🛑 Interruption détectée, arrêt du serveur...');
+    server.close(() => {
+      console.log('✅ Serveur arrêté proprement.');
+      process.exit(0);
     });
-
-    // Gestion des fermetures propres
-    process.on('SIGTERM', () => {
-        console.log('🔴 Fermeture du serveur...');
-        server.close(() => {
-            console.log('✅ Serveur arrêté proprement.');
-            process.exit(0);
-        });
-    });
-
-    process.on('SIGINT', () => {
-        console.log('🛑 Interruption détectée, arrêt du serveur...');
-        server.close(() => {
-            console.log('✅ Serveur arrêté proprement.');
-            process.exit(0);
-        });
-    });
+  });
 };
 
 startServer();
