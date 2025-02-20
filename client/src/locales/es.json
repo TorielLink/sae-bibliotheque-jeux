@@ -1,4 +1,16 @@
 {
+  "category": {
+    "all": "",
+    "fighting": "",
+    "platform": "",
+    "rpg": "",
+    "rts": "",
+    "shooter": ""
+  },
+  "contact": {
+    "contactUs": "",
+    "contactUsPlatforms": ""
+  },
   "details": {
     "informations": "Detalles",
     "logs": "Periódicos",
@@ -38,14 +50,65 @@
     "recent_releases": "Productos recientes",
     "recent_reviews": "Opiniones recientes"
   },
+  "institution": {
+    "description": "",
+    "discoverLinkedIn": "",
+    "discoverSite": "",
+    "discoverTeam": "",
+    "name": "",
+    "plus": ""
+  },
   "login": {
     "signupError": "Se produjo un error. Por favor, inténtalo de nuevo.",
     "signupSuccess": "Registro exitoso"
   },
   "pageName": {
-    "home": "Inicio"
+    "catalogue": "",
+    "home": "Inicio",
+    "reviews": ""
+  },
+  "project": {
+    "advancedFeatures": {
+      "description": "",
+      "title": ""
+    },
+    "description": "",
+    "discoverGitHub": "",
+    "discoverMana": "",
+    "goal": {
+      "description": "",
+      "title": ""
+    },
+    "mainFeatures": {
+      "list": {
+        "IGDB": "",
+        "collections": "",
+        "gameLogs": "",
+        "library": ""
+      },
+      "title": ""
+    },
+    "view": {
+      "description": "",
+      "title": ""
+    }
   },
   "review": {
     "noReviewsFound": "No hay opiniones encontradas"
+  },
+  "search": "",
+  "team": {
+    "discoverInst": "",
+    "discoverTeam": "",
+    "roles": {
+      "devAPI&UXUI": "",
+      "devFront&3D": "",
+      "devFront&DB": "",
+      "devFront&UXUI": "",
+      "devFull": ""
+    }
+  },
+  "user": {
+    "logIn": ""
   }
 }

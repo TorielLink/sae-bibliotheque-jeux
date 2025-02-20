@@ -1,4 +1,16 @@
 {
+  "category": {
+    "all": "All",
+    "fighting": "Fight",
+    "platform": "Platform",
+    "rpg": "RPG",
+    "rts": "RTS",
+    "shooter": "Shooter"
+  },
+  "contact": {
+    "contactUs": "",
+    "contactUsPlatforms": ""
+  },
   "details": {
     "informations": "Details",
     "logs": "Newspapers",
@@ -38,28 +50,65 @@
     "recent_releases": "Recent outputs",
     "recent_reviews": "Recent opinions"
   },
+  "institution": {
+    "description": "",
+    "discoverLinkedIn": "",
+    "discoverSite": "",
+    "discoverTeam": "",
+    "name": "",
+    "plus": ""
+  },
   "login": {
     "signupError": "An error occurred. Please try again.",
     "signupSuccess": "Successful registration"
   },
   "pageName": {
-    "home": "Home",
     "catalogue": "Catalogue",
+    "home": "Home",
     "reviews": "Reviews"
+  },
+  "project": {
+    "advancedFeatures": {
+      "description": "",
+      "title": ""
+    },
+    "description": "",
+    "discoverGitHub": "",
+    "discoverMana": "",
+    "goal": {
+      "description": "",
+      "title": ""
+    },
+    "mainFeatures": {
+      "list": {
+        "IGDB": "",
+        "collections": "",
+        "gameLogs": "",
+        "library": ""
+      },
+      "title": ""
+    },
+    "view": {
+      "description": "",
+      "title": ""
+    }
   },
   "review": {
     "noReviewsFound": "No reviews found"
   },
-  "category": {
-    "all": "All",
-    "fighting": "Fight",
-    "shooter": "Shooter",
-    "platform": "Platform",
-    "rts": "RTS",
-    "rpg": "RPG"
+  "search": "Search...",
+  "team": {
+    "discoverInst": "",
+    "discoverTeam": "",
+    "roles": {
+      "devAPI&UXUI": "",
+      "devFront&3D": "",
+      "devFront&DB": "",
+      "devFront&UXUI": "",
+      "devFull": ""
+    }
   },
-  "user" : {
+  "user": {
     "logIn": "Log In"
-  },
-  "search": "Search..."
+  }
 }

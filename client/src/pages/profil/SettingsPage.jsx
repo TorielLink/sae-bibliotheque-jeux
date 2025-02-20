@@ -1,23 +1,8 @@
 // src/pages/SettingsPage.jsx
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../components/AuthContext';
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Alert,
-    Avatar,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Divider,
-    Snackbar,
-    Stack,
-    TextField,
-    Typography,
-    useTheme
-} from '@mui/material';
+import {Accordion, AccordionDetails, AccordionSummary, Alert, Avatar, Box, Button, Card, CardContent, Divider, Snackbar,
+    Stack, TextField, Typography, useTheme} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';

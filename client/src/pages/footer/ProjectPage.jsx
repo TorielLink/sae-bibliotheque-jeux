@@ -1,8 +1,10 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import {useTranslation} from "react-i18next";
 
 const ProjectPage = () => {
+    const {t} = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const styles = getStyles(theme);
@@ -12,58 +14,52 @@ const ProjectPage = () => {
             {isMobile && (
                 <div style={styles.linksContainer}>
                     <a href="/mentorship" style={styles.mobileLink}>
-                        Découvrir l'encadrement
+                        {t("project.discoverMana")}
                     </a>
                     <a href="https://github.com/TorielLink/BibliothequeJeuxIUT" target="_blank"
                        rel="noopener noreferrer" style={styles.mobileLink}>
-                        Voir le dépôt GitHub
+                        {t("project.discoverGitHub")}
                     </a>
                 </div>
             )}
 
-            <h1 style={styles.header}>Le projet</h1>
+            <h1 style={styles.header}>{t("footer.project")}</h1>
             <p style={styles.text}>
-                Découvrez notre vision et les fonctionnalités ambitieuses que nous avons prévues pour cette application
-                de gestion de bibliothèques de jeux vidéo.
+                {t("project.description")}
             </p>
 
             {/* Section : Objectif */}
             <div style={styles.section}>
-                <h2 style={{...styles.subHeader, borderBottom: '2px solid #2FC75A'}}>Objectif</h2>
+                <h2 style={{...styles.subHeader, borderBottom: '2px solid #2FC75A'}}>{t("project.goal.title")}</h2>
                 <p style={styles.text}>
-                    Créer une plateforme innovante qui permet aux joueurs de suivre, gérer et partager leur bibliothèque
-                    de jeux vidéo, inspirée par des plateformes comme <i>Letterboxd</i> et <i>MyDramaList</i> mais
-                    adaptée aux jeux.
+                    {t("project.goal.description")}
                 </p>
             </div>
 
             {/* Section : Fonctionnalités principales */}
             <div style={styles.section}>
-                <h2 style={{...styles.subHeader, borderBottom: '2px solid #9534D5'}}>Fonctionnalités principales</h2>
+                <h2 style={{...styles.subHeader, borderBottom: '2px solid #9534D5'}}>{t("project.mainFeatures.title")}</h2>
                 <ul style={styles.list}>
-                    <li>Récupération des données de jeux via l'API d’IGDB.</li>
-                    <li>Ajout de jeux à une bibliothèque personnelle, avec gestion des statuts (joué, complété,
-                        abandonné, etc.).</li>
-                    <li>Journalisation des sessions de jeu : plateformes, temps de jeu, notes, avis, etc.</li>
-                    <li>Création de listes thématiques et partage avec d'autres utilisateurs.</li>
+                    <li>{t("project.mainFeatures.list.IGDB")}</li>
+                    <li>{t("project.mainFeatures.list.library")}</li>
+                    <li>{t("project.mainFeatures.list.gameLogs")}</li>
+                    <li>{t("project.mainFeatures.list.collections")}</li>
                 </ul>
             </div>
 
             {/* Section : Fonctionnalités avancées */}
             <div style={styles.section}>
-                <h2 style={{...styles.subHeader, borderBottom: '2px solid #36A0FC'}}>Fonctionnalités avancées</h2>
+                <h2 style={{...styles.subHeader, borderBottom: '2px solid #36A0FC'}}>{t("project.advancedFeatures.title")}</h2>
                 <p style={styles.text}>
-                    Nous envisageons d’intégrer les bibliothèques Steam, PSN et Xbox directement via leurs APIs, rendant
-                    l’expérience encore plus fluide et centralisée.
+                    {t("project.advancedFeatures.description")}
                 </p>
             </div>
 
             {/* Section : Vision */}
             <div style={styles.section}>
-                <h2 style={{...styles.subHeader, borderBottom: '2px solid #FE4A49'}}>Vision</h2>
+                <h2 style={{...styles.subHeader, borderBottom: '2px solid #FE4A49'}}>{t("project.view.title")}</h2>
                 <p style={styles.text}>
-                    Notre objectif est de créer une communauté de passionnés, où chaque joueur peut partager ses
-                    expériences, découvrir de nouveaux jeux et organiser son temps de jeu de manière efficace et ludique.
+                    {t("project.view.description")}
                 </p>
             </div>
         </div>

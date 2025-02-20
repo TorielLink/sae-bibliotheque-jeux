@@ -1,14 +1,16 @@
 import React from 'react';
 import {useTheme} from "@mui/material/styles";
+import {useTranslation} from 'react-i18next';
 
 const ContactPage = () => {
+    const {t} = useTranslation();
     const theme = useTheme();
     const styles = getStyles(theme);
     return (
         <div style={styles.page}>
-            <h1 style={styles.header}>Contactez-nous</h1>
+            <h1 style={styles.header}>{t("contact.contactUs")}</h1>
             <p style={styles.text}>
-                Vous pouvez nous contacter via les plateformes suivantes :
+                {t("contact.contactUsPlatforms")}
             </p>
 
             <ul style={styles.linkList}>
@@ -27,7 +29,7 @@ const ContactPage = () => {
                         href="mailto:contact-scrib@example.com"
                         style={styles.link}
                     >
-                        Adresse mail
+                        {t("footer.email")}
                     </a>
                 </li>
                 <li>

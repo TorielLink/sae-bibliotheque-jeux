@@ -1,4 +1,16 @@
 {
+  "category": {
+    "all": "Tous",
+    "fighting": "Combat",
+    "platform": "Plateforme",
+    "rpg": "RPG",
+    "rts": "RTS",
+    "shooter": "Tir"
+  },
+  "contact": {
+    "contactUs": "Contactez-nous",
+    "contactUsPlatforms": "Vous pouvez nous contacter via les plateformes suivantes :"
+  },
   "details": {
     "informations": "Détails",
     "logs": "Journaux",
@@ -38,28 +50,65 @@
     "recent_releases": "Sorties récentes",
     "recent_reviews": "Avis récents"
   },
+  "institution": {
+    "description": "Situé à Paris, l'IUT de Paris - Rives de Seine est une composante de l'Université Paris Cité. Il offre une formation d'excellence dans des domaines variés tels que l'informatique, la gestion, le multimédia, et bien d'autres. L'établissement est reconnu pour ses valeurs d'innovation, de rigueur académique et d'ouverture vers le monde professionnel.",
+    "discoverLinkedIn": "Page LinkedIn de l'IUT",
+    "discoverSite": "Visiter le site officiel",
+    "discoverTeam": "Rencontrez les membres de l'équipe",
+    "name": "L'établissement : IUT de Paris - Rives de Seine",
+    "plus": "Avec ses partenariats solides et un corps enseignant passionné, l'IUT prépare ses étudiants à relever les défis du monde contemporain tout en encourageant la créativité et la collaboration."
+  },
   "login": {
     "signupError": "Une erreur est survenue. Veuillez réessayer.",
     "signupSuccess": "Inscription réussie"
   },
   "pageName": {
-    "home": "Accueil",
     "catalogue": "Catalogue",
+    "home": "Accueil",
     "reviews": "Avis"
+  },
+  "project": {
+    "advancedFeatures": {
+      "description": "Nous envisageons d’intégrer les bibliothèques Steam, PSN et Xbox directement via leurs APIs, rendant l’expérience encore plus fluide et centralisée.",
+      "title": "Fonctionnalités avancées"
+    },
+    "description": "Découvrez notre vision et les fonctionnalités ambitieuses que nous avons prévues pour cette application de gestion de bibliothèques de jeux vidéo.",
+    "discoverGitHub": "Voir le dépôt GitHub",
+    "discoverMana": "Découvrir l'encadrement",
+    "goal": {
+      "description": "Créer une plateforme innovante qui permet aux joueurs de suivre, gérer et partager leur bibliothèque de jeux vidéo, inspirée par des plateformes comme Letterboxd et MyDramaList mais adaptée aux jeux.",
+      "title": "Objectif"
+    },
+    "mainFeatures": {
+      "list": {
+        "IGDB": "Récupération des données de jeux via l'API d’IGDB.",
+        "collections": "Création de collections thématiques et partage avec d'autres utilisateurs.",
+        "gameLogs": "Journalisation des sessions de jeu : plateformes, temps de jeu, notes, avis, etc.",
+        "library": "Ajout de jeux à une bibliothèque personnelle, avec gestion des statuts (joué, complété, abandonné, etc.)."
+      },
+      "title": "Fonctionnalités principales"
+    },
+    "view": {
+      "description": "Notre objectif est de créer une communauté de passionnés, où chaque joueur peut partager ses expériences, découvrir de nouveaux jeux et organiser son temps de jeu de manière efficace et ludique.",
+      "title": "Vision"
+    }
   },
   "review": {
     "noReviewsFound": "Aucun avis trouvé"
   },
-  "category": {
-    "all": "Tous",
-    "fighting": "Combat",
-    "shooter": "Tir",
-    "platform": "Plateforme",
-    "rts": "RTS",
-    "rpg": "RPG"
+  "search": "Rechercher...",
+  "team": {
+    "discoverInst": "Découvrez notre établissement",
+    "discoverTeam": "Découvrez les membres qui contribuent à ce projet.",
+    "roles": {
+      "devAPI&UXUI": "Gestionnaire API et UI/UX Designer",
+      "devFront&3D": "Développeur Frontend et 3D",
+      "devFront&DB": "Développeuse Frontend et Analyste en données",
+      "devFront&UXUI": "Développeuse Frontend et UI/UX Designer",
+      "devFull": "Développeur Fullstack"
+    }
   },
-  "user" : {
+  "user": {
     "logIn": "Se connecter"
-  },
-  "search": "Rechercher..."
+  }
 }
