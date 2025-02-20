@@ -14,7 +14,18 @@ export default defineConfig({
     server: {
         port: 5173,
         proxy: {
+            // Capture toutes les requêtes API
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                secure: false,
+            },
             '/users': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                secure: false,
+            },
+            '/auth': {
                 target: 'http://localhost:8080',
                 changeOrigin: true,
                 secure: false,

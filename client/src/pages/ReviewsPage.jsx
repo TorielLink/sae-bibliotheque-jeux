@@ -21,27 +21,28 @@ export default function ReviewsPage() {
     const userId = 42;
 
     // Récupération des avis depuis l'API
-    useEffect(() => {
-        const fetchComments = async () => {
-            setLoading(true);
-            try {
-                const response = await fetch("http://localhost:8080/game-reviews");
-                if (!response.ok) {
-                    throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-                }
-                const data = await response.json();
-                console.log("Réponse de l'API :", data);
-                setComments(data.data || []);
-            } catch (err) {
-                console.error("Erreur lors de la récupération des avis :", err.message);
-                setError("Impossible de charger les avis. Veuillez réessayer.");
-            } finally {
-                setLoading(false);
+useEffect(() => {
+    const fetchComments = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews`);
+            if (!response.ok) {
+                throw new Error(`Erreur ${response.status}: ${response.statusText}`);
             }
-        };
+            const data = await response.json();
+            console.log("Réponse de l'API :", data);
+            setComments(data.data || []);
+        } catch (err) {
+            console.error("Erreur lors de la récupération des avis :", err.message);
+            setError("Impossible de charger les avis. Veuillez réessayer.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchComments();
-    }, []);
+    fetchComments();
+}, []);
+
 
     // Filtrer localement les avis par note
     const filteredComments = useMemo(() => {

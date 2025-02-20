@@ -1,143 +1,107 @@
-import React, {useRef, useEffect} from 'react'
+import React, { useRef, useEffect } from 'react';
 import * as THREE from "three";
-import {useTheme} from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 
-const scene = new THREE.Scene();
-var shapes = []
-
-var requestID = null;
-
-function add_shape(_color1, _color2, _size, _x, _y) {
-
-    //var _inner = new THREE.Mesh(new THREE.OctahedronGeometry(_size*0.75,0),new THREE.MeshBasicMaterial({color: bg_color}));
-    //var _outer = new THREE.Mesh(new THREE.OctahedronGeometry(_size,0),new THREE.MeshBasicMaterial({color: _color}));
-
-    let innerBoxSize = _size * 0.75
-    var _inner = new THREE.Mesh(new THREE.BoxGeometry(innerBoxSize, innerBoxSize, innerBoxSize), new THREE.MeshBasicMaterial({color: _color2}));
-    var _outer = new THREE.Mesh(new THREE.BoxGeometry(_size, _size, _size), new THREE.MeshBasicMaterial({color: _color1}));
-
-    _inner.position.set(_x, _y, 200)
-    _outer.position.set(_x, _y, 100)
-
-    shapes.push({
-        inner: _inner,
-        outer: _outer,
-        x: _x,
-        y: _y,
-        screen_x: _x,
-        screen_y: _y,
-        rotX: randomRelatif(0.02),
-        rotY: randomRelatif(0.02),
-        rotZ: randomRelatif(0.02),
-        update: function () {
-
-            this.inner.rotation.x += this.rotX
-            this.inner.rotation.y += this.rotY
-            this.inner.rotation.z += this.rotZ
-
-            this.outer.rotation.x += this.rotX
-            this.outer.rotation.y += this.rotY
-            this.outer.rotation.z += this.rotZ
-
-        }
-    })
-
-    scene.add(_inner)
-    scene.add(_outer)
-
-}
-
-function placeShapes() {
-
-    shapes.forEach((shape) => {
-        // shape.inner.position.set(shape.x*window.innerWidth,shape.y*window.innerHeight,200)
-        // shape.outer.position.set(shape.x*window.innerWidth,shape.y*window.innerHeight,100)
-
-        shape.inner.position.set(shape.x * window.innerWidth, shape.y * window.innerHeight, 200)
-        shape.outer.position.set(shape.x * window.innerWidth, shape.y * window.innerHeight, 100)
-
-    });
-}
-
-function onResize() {
-    camera.left = window.innerWidth / 2
-}
-
-//Retourne nombre pseudo-aléatoire entre -n et n
-function randomRelatif(n = 1) {
-    return Math.random() * n * 2 - n
-}
-
-const LoginBg = props => {
-
+const LoginBg = () => {
     const theme = useTheme();
-    const canvasRef = useRef(null)
+    const canvasRef = useRef(null);
+    const rendererRef = useRef(null);
+    const cameraRef = useRef(null);
+    const shapesRef = useRef([]); // ✅ Stocke les formes pour éviter leur recréation
+    const sceneRef = useRef(new THREE.Scene()); // ✅ Garde la même scène
 
-    const colors = [theme.palette.colors.blue,
+    const colors = [
+        theme.palette.colors.blue,
         theme.palette.colors.yellow,
         theme.palette.colors.red,
         theme.palette.colors.green,
-        theme.palette.colors.purple]
-    
-    const draw = ctx => {
+        theme.palette.colors.purple
+    ];
 
-        scene.background = new THREE.Color(theme.palette.background.default);
-        const camera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -1000, 1000);
+    function randomRelatif(n = 1) {
+        return Math.random() * n * 2 - n;
+    }
 
-        const renderer = new THREE.WebGLRenderer({
-            canvas: ctx.canvas,
-        });
-        shapes = []
+    function addShape(color1, color2, size, x, y) {
+        const innerBoxSize = size * 0.75;
+        const inner = new THREE.Mesh(
+            new THREE.BoxGeometry(innerBoxSize, innerBoxSize, innerBoxSize),
+            new THREE.MeshBasicMaterial({ color: color2 })
+        );
+        const outer = new THREE.Mesh(
+            new THREE.BoxGeometry(size, size, size),
+            new THREE.MeshBasicMaterial({ color: color1 })
+        );
 
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        camera.position.setZ(150);
+        inner.position.set(x * window.innerWidth, y * window.innerHeight, 200);
+        outer.position.set(x * window.innerWidth, y * window.innerHeight, 100);
 
-        renderer.render(scene, camera);
+        shapesRef.current.push({ inner, outer, rotX: randomRelatif(0.02), rotY: randomRelatif(0.02), rotZ: randomRelatif(0.02) });
+        sceneRef.current.add(inner);
+        sceneRef.current.add(outer);
+    }
 
-        if (requestID != null) {
-            window.cancelAnimationFrame(requestID);
-        }
+    function generateShapes() {
+        if (shapesRef.current.length > 0) return; // ✅ Empêche de recréer les formes à chaque rendu
 
-        function animate() {
-            requestID = requestAnimationFrame(animate);
-            renderer.render(scene, camera);
+        sceneRef.current.background = new THREE.Color(theme.palette.background.default);
+        const occShape = 0.5;
 
-            shapes.forEach((shape) => shape.update());
-        }
-
-        const occShape = 0.5
-
-        scene.clear()
         for (let sx = 0; sx < window.innerWidth; sx += 200) {
-            for (let sy = 0; sy < innerWidth; sy += 200) {
+            for (let sy = 0; sy < window.innerHeight; sy += 200) { // ✅ Fix de `innerWidth`
                 if (Math.random() > occShape) {
-                    var col = colors[Math.floor(Math.random() * colors.length)];
-                    var size = 50 + Math.random() * 50
-                    var x = (sx + randomRelatif(30) - window.innerWidth / 2) / window.innerWidth
-                    var y = (sy + randomRelatif(30) - window.innerHeight / 2) / window.innerHeight
-                    add_shape(col, theme.palette.background.paper, size, x, y)
-                    //console.log("add shape")
+                    const col = colors[Math.floor(Math.random() * colors.length)];
+                    const size = 50 + Math.random() * 50;
+                    const x = (sx + randomRelatif(30) - window.innerWidth / 2) / window.innerWidth;
+                    const y = (sy + randomRelatif(30) - window.innerHeight / 2) / window.innerHeight;
+                    addShape(col, theme.palette.background.paper, size, x, y);
                 }
             }
         }
-
-        placeShapes()
-
-        animate()
-
     }
 
-    useEffect((props) => {
-        const canvas = canvasRef.current
-        const context = canvas.getContext('webgl2')
+    function animate() {
+        requestAnimationFrame(animate);
+        shapesRef.current.forEach((shape) => {
+            shape.inner.rotation.x += shape.rotX;
+            shape.inner.rotation.y += shape.rotY;
+            shape.inner.rotation.z += shape.rotZ;
+            shape.outer.rotation.x += shape.rotX;
+            shape.outer.rotation.y += shape.rotY;
+            shape.outer.rotation.z += shape.rotZ;
+        });
+        rendererRef.current.render(sceneRef.current, cameraRef.current);
+    }
 
-        //Our draw come here
-        draw(context)
-    }, [draw])
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
 
-    return <canvas id="bg" style={{position: "fixed", top: 0, left: 0,}} ref={canvasRef} {...props}></canvas>
+        const renderer = new THREE.WebGLRenderer({ canvas });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        rendererRef.current = renderer;
 
-}
+        const camera = new THREE.OrthographicCamera(
+            window.innerWidth / -2,
+            window.innerWidth / 2,
+            window.innerHeight / 2,
+            window.innerHeight / -2,
+            -1000,
+            1000
+        );
+        camera.position.setZ(150);
+        cameraRef.current = camera;
 
-export default LoginBg
+        generateShapes(); // ✅ Génère les formes une seule fois
+        animate(); // ✅ Lance l'animation une seule fois
+
+        return () => {
+            renderer.dispose();
+        };
+    }, []); // ✅ Exécute seulement au premier rendu
+
+    return <canvas id="bg" ref={canvasRef} style={{ position: "fixed", top: 0, left: 0 }}></canvas>;
+};
+
+export default LoginBg;

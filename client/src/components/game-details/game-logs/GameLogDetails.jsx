@@ -70,7 +70,7 @@ function GameLogDetails({
 
     const deleteLog = async (logId) => {
         try {
-            const response = await fetch(`http://localhost:8080/game-logs/delete/${logId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-logs/delete/${logId}`, {
                 method: 'DELETE',
             })
 
@@ -94,7 +94,7 @@ function GameLogDetails({
 
     const createLog = async (userId, gameId) => {
         try {
-            const response = await fetch(`http://localhost:8080/game-logs/create/user/${userId}/game/${gameId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-logs/create/user/${userId}/game/${gameId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ function GameLogDetails({
                 disabled={false}
                 selectedItem={currentStatus}
                 setSelectedItem={setCurrentStatus}
-                fetchUrl={`http://localhost:8080/status`}
+                fetchUrl={`${import.meta.env.VITE_BACKEND_URL}/status`}
                 idName={'game_status_id'}
             />
             <hr style={styles.separator}/>
@@ -207,7 +207,7 @@ function GameLogDetails({
                     disabled={!currentLog}
                     selectedItem={currentPlatform}
                     setSelectedItem={setCurrentPlatform}
-                    fetchUrl={'http://localhost:8080/game-platforms'}
+                    fetchUrl={`${import.meta.env.VITE_BACKEND_URL}/game-platforms`}
                     idName={'platform_id'}
                 />
 
