@@ -44,9 +44,6 @@ controller.getGamesWithSessions = async (req, res) => {
         if (!userId || !gameStatusName) {
             return res.status(400).json({message: 'userId et gameStatusName sont requis.'});
         }
-
-        console.log(`Récupération des jeux pour l'utilisateur ID: ${userId} avec le statut: ${gameStatusName}`);
-
         // Fetch game statuses with logs and sessions
         const gameStatuses = await gameStatus.findAll({
             where: {user_id: userId},

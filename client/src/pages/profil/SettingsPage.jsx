@@ -81,46 +81,61 @@ const SettingsPage = () => {
     };
 
     // Fonction de mise à jour de l'utilisateur
-    const updateUser = async (updates, isFormData = false) => {
-        if (!token || !userId) {
-            console.error('Token ou ID utilisateur manquant.');
-            return null;
-        }
+const updateUser = async (updates, isFormData = false) => {
+  // 1) Si c'est du FormData, on ne fait pas de "clean"
+  if (isFormData) {
+    return fetch(`${API_URL}/${userId}`, {
+      method: 'PUT',
+      headers: {
+        // IMPORTANT: pas de 'Content-Type' explicite ici,
+        // fetch le mettra automatiquement en multipart/form-data
+        'Authorization': `Bearer ${token}`
+      },
+      body: updates // c'est ton FormData intact
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw data;
+      // Mise à jour du context utilisateur
+      setUser((prev) => ({
+        ...prev,
+        ...data.data,
+        id: prev.id
+      }));
+      return data;
+    }).catch((err) => {
+      console.error("Erreur upload FormData:", err);
+      return null;
+    });
+  }
 
-        const options = isFormData
-            ? {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: updates
-            }
-            : {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(updates)
-            };
+  // 2) Sinon, c'est un simple objet JSON
+  const sanitizedUpdates = Object.fromEntries(
+    Object.entries(updates).filter(([_, v]) => v !== undefined)
+  );
 
-        try {
-            const response = await fetch(`${API_URL}/${userId}`, options);
-            const data = await response.json();
+  return fetch(`${API_URL}/${userId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(sanitizedUpdates)
+  }).then(async (res) => {
+    const data = await res.json();
+    if (!res.ok) throw data;
+    // Mise à jour du context utilisateur
+    setUser((prev) => ({
+      ...prev,
+      ...data.data,
+      id: prev.id
+    }));
+    return data;
+  }).catch((err) => {
+    console.error("Erreur upload JSON:", err);
+    return null;
+  });
+};
 
-            if (!response.ok) {
-                console.error('Erreur lors de la mise à jour:', data);
-                return null;
-            }
-
-            setUser(data.data);
-
-            return data;
-        } catch (error) {
-            console.error('Erreur lors de la requête de mise à jour:', error);
-            return null;
-        }
-    };
 
     const handleUpdatePseudo = async () => {
         if (newPseudo !== user?.username && newPseudo.trim() !== '') {
@@ -266,7 +281,7 @@ const SettingsPage = () => {
                     {/* Ajout de l'Avatar et du Pseudo de l'utilisateur */}
                     <Stack direction="row" spacing={2} alignItems="center" sx={{mb: 2}}>
                         <Avatar
-                            src={user?.profile_picture ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                            src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
                             alt="Photo de profil"
                             sx={{width: 60, height: 60}}
                         />
@@ -329,7 +344,7 @@ const SettingsPage = () => {
                                     Photo de profil actuelle :
                                 </Typography>
                                 <Avatar
-                                    src={user?.profile_picture ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_picture}` : 'https://via.placeholder.com/150'}
+                                    src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
                                     alt="Ancienne photo de profil"
                                     sx={{width: 50, height: 50}}
                                 />

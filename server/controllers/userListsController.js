@@ -18,7 +18,6 @@ controller.getAllAssociations = async (req, res) => {
                 },
             ],
         });
-        console.log('Associations:', associations);
 
         res.status(200).json({message: 'Associations fetched successfully', data: associations});
     } catch (error) {
