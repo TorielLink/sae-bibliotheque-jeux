@@ -21,7 +21,7 @@ function Navbar() {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
     const navigate = useNavigate();
-    const {i18n} = useTranslation();
+    const {i18n, t} = useTranslation();
     const {language, setLanguage} = useLanguage();
 
     const {isAuthenticated} = useContext(AuthContext); // Pour vérifier l'état de connexion
@@ -90,7 +90,7 @@ function Navbar() {
             i18n.changeLanguage(lng);
             setLanguage(lng);
         }
-        handleClose();
+        handleCloseLanguage();
     };
 
     return (
@@ -167,7 +167,7 @@ function Navbar() {
                                     fontSize: isMobile ? '0.75rem' : '1.1rem',
                                 }}
                             >
-                                Catalogue
+                                {t("pageName.catalogue")}
                             </Typography>
                             <Typography
                                 component={Link}
@@ -180,7 +180,7 @@ function Navbar() {
                                     fontSize: isMobile ? '0.75rem' : '1.1rem',
                                 }}
                             >
-                                Avis
+                                {t("pageName.reviews")}
                             </Typography>
                         </>
                     ) : null}
@@ -216,7 +216,7 @@ function Navbar() {
                                 flexShrink: 0,
                             }}
                         >
-                            Se connecter
+                            {t("user.logIn")}
                         </Button>
                     ) : (
                         <></>

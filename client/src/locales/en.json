@@ -43,9 +43,23 @@
     "signupSuccess": "Successful registration"
   },
   "pageName": {
-    "home": ""
+    "home": "Home",
+    "catalogue": "Catalogue",
+    "reviews": "Reviews"
   },
   "review": {
     "noReviewsFound": "No reviews found"
-  }
+  },
+  "category": {
+    "all": "All",
+    "fighting": "Fight",
+    "shooter": "Shooter",
+    "platform": "Platform",
+    "rts": "RTS",
+    "rpg": "RPG"
+  },
+  "user" : {
+    "logIn": "Log In"
+  },
+  "search": "Search..."
 }

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import '../i18n';
 
 export default function ReviewsPage() {
+    const { t } = useTranslation();
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

@@ -6,8 +6,10 @@ import GameCategory from "../components/GameCategory";
 import GameList from "../components/GameList.jsx";
 
 import {useTheme} from "@mui/material/styles";
+import {useTranslation} from "react-i18next";
 
 const CataloguePage = () => {
+    const { t } = useTranslation();
     const theme = useTheme();
     const styles = getStyles(theme);
 
@@ -26,34 +28,16 @@ const CataloguePage = () => {
     const [rpgGames, setRpgGames] = useState([]);
 
     const catTitle = [
-        {id: 4, name: "Fighting", nameFR: "Combat"},
-        {id: 5, name: "Shooter", nameFR: "Tir"},
-        {id: 8, name: "Platform", nameFR: "Plateforme"},
-        {
-            id: 11,
-            name: "Real Time Strategy (RTS)",
-            nameFR: "Stratégie en temps réel (RTS)",
-        },
-        {id: 12, name: "Role-playing (RPG)", nameFR: "Jeux de rôle (RPG)"},
+        { id: 4, name: "Fighting", key: "category.fighting" },
+        { id: 5, name: "Shooter", key: "category.shooter" },
+        { id: 8, name: "Platform", key: "category.platform" },
+        { id: 11, name: "Real Time Strategy (RTS)", key: "category.rts" },
+        { id: 12, name: "Role-playing (RPG)", key: "category.rpg" }
     ];
 
-    // ID des catégories
-    const categoryID = catTitle.map(function (category) {
-        return category.id;
-    });
-    console.log("ID des catégories :", categoryID);
-
-    // Nom des catégories
-    const categoryName = catTitle.map(function (category) {
-        return category.name;
-    });
-    console.log("Nom des catégories :", categoryName);
-
-    //Nom français des catégories
-    const categoryNameFR = catTitle.map(function (category) {
-        return category.nameFR;
-    });
-    console.log("Nom des catégories :", categoryNameFR);
+    const categoryID = catTitle.map(category => category.id);
+    const categoryName = catTitle.map(category => category.name);
+    const categoryKeys = catTitle.map(category => category.key);
 
     // récupérer les jeux
     const fetchGameByGenres = async (body) => {
@@ -71,20 +55,8 @@ const CataloguePage = () => {
         }
     };
 
-    //mettre les jeux dans des variables
     const filterGamesByGenre = (games) => {
-        console.log("Jeux avant filtrage :", games);
-        setFightingGames(
-            games.filter((game) => game.genres.includes(categoryName[0]))
-        );
-        setShooterGames(
-            games.filter((game) => game.genres.includes(categoryName[1]))
-        );
-        setPlatformGames(
-            games.filter((game) => game.genres.includes(categoryName[2]))
-        );
-        setRtsGames(games.filter((game) => game.genres.includes(categoryName[3])));
-        setRpgGames(games.filter((game) => game.genres.includes(categoryName[4])));
+        return categoryName.map(name => games.filter(game => game.genres.includes(name)));
     };
 
     // exécution API
@@ -96,86 +68,45 @@ const CataloguePage = () => {
                 const gamesData = await fetchGameByGenres(body);
                 console.log("Données reçues API :", gamesData);
 
-                // Une fois les jeux récupérés, filtrez-les par genre
-                filterGamesByGenre(gamesData);
-
-                // Mettez à jour l'état pour tous les jeux
+                const filteredGames = filterGamesByGenre(gamesData);
+                setFightingGames(filteredGames[0]);
+                setShooterGames(filteredGames[1]);
+                setPlatformGames(filteredGames[2]);
+                setRtsGames(filteredGames[3]);
+                setRpgGames(filteredGames[4]);
                 setAllGames(gamesData);
             } catch {
-                setError("Impossible de charger les jeux.");
+                setError(t("error.loadingGames"));
             } finally {
                 setLoading(false);
             }
         };
         fetchGames();
-    }, []); // Vous pouvez ajuster la dépendance ici si nécessaire
+    }, []);
 
-    const AllGames = () => {
-        return (
-            <div>
-                <GameList title={categoryNameFR[0]} games={fightingGames}/>
-                <GameList title={categoryNameFR[1]} games={shooterGames}/>
-                <GameList title={categoryNameFR[2]} games={platformGames}/>
-                <GameList title={categoryNameFR[3]} games={rtsGames}/>
-                <GameList title={categoryNameFR[4]} games={rpgGames}/>
-            </div>
-        );
-    };
+    const AllGames = () => (
+        <div>
+            {catTitle.map((category, index) => (
+                <GameList key={index} title={t(category.key)}
+                          games={[fightingGames, shooterGames, platformGames, rtsGames, rpgGames][index]}/>
+            ))}
+        </div>
+    );
 
-    const fighting = () => {
-        return (
-            <GameCategory
-                style={styles.gameCard}
-                categoryTitle={categoryNameFR[0]}
-                data={fightingGames}
-                podium={true}
-            />
-        );
-    };
+    const GameCategoryComponent = ({index}) => (
+        <GameCategory
+            style={styles.gameCard}
+            categoryTitle={t(catTitle[index].key)}
+            data={[fightingGames, shooterGames, platformGames, rtsGames, rpgGames][index]}
+            podium={true}
+        />
+    );
 
-    const shooting = () => {
-        return (
-            <GameCategory
-                style={styles.gameCard}
-                categoryTitle={categoryNameFR[1]}
-                data={shooterGames}
-                podium={true}
-            />
-        );
-    };
-
-    const platform = () => {
-        return (
-            <GameCategory
-                style={styles.gameCard}
-                categoryTitle={categoryNameFR[2]}
-                data={platformGames}
-                podium={true}
-            />
-        );
-    };
-
-    const rts = () => {
-        return (
-            <GameCategory
-                style={styles.gameCard}
-                categoryTitle={categoryNameFR[3]}
-                data={rtsGames}
-                podium={true}
-            />
-        );
-    };
-
-    const rpg = () => {
-        return (
-            <GameCategory
-                style={styles.gameCard}
-                categoryTitle={categoryNameFR[4]}
-                data={rpgGames}
-                podium={true}
-            />
-        );
-    };
+    const fighting = () => <GameCategoryComponent index={0} />;
+    const shooting = () => <GameCategoryComponent index={1} />;
+    const platform = () => <GameCategoryComponent index={2} />;
+    const rts = () => <GameCategoryComponent index={3} />;
+    const rpg = () => <GameCategoryComponent index={4} />;
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -223,13 +154,13 @@ const CataloguePage = () => {
                 <>
                     <Breadcrumbs separator="›" style={styles.breadcrumb}>
                         <Link underline="hover" href="/" style={styles.txtBreadcrumb}>
-                            Accueil
+                            {t("pageName.home")}
                         </Link>
                         <Link
                             underline="hover"
                             href="/catalogue"
                             style={styles.txtBreadcrumb}>
-                            Catalogue
+                            {t("pageName.catalogue")}
                         </Link>
                     </Breadcrumbs>
 
@@ -240,7 +171,7 @@ const CataloguePage = () => {
                             style={styles.button}
                             onClick={() => setActiveComponent("all")}
                         >
-                            Tout
+                            {t("category.all")}
                         </Button>
 
                         <Button
@@ -248,7 +179,7 @@ const CataloguePage = () => {
                             style={styles.button}
                             onClick={() => setActiveComponent("fighting")}
                         >
-                            Combat
+                            {t("category.fighting")}
                         </Button>
 
                         <Button
@@ -256,7 +187,7 @@ const CataloguePage = () => {
                             style={styles.button}
                             onClick={() => setActiveComponent("shooting")}
                         >
-                            Tir
+                            {t("category.shooter")}
                         </Button>
 
                         <Button
@@ -264,7 +195,7 @@ const CataloguePage = () => {
                             style={styles.button}
                             onClick={() => setActiveComponent("platform")}
                         >
-                            Plateforme
+                            {t("category.platform")}
                         </Button>
 
                         <Button
@@ -272,7 +203,7 @@ const CataloguePage = () => {
                             style={styles.button}
                             onClick={() => setActiveComponent("rts")}
                         >
-                            RTS
+                            {t("category.rts")}
                         </Button>
 
                         <Button
@@ -280,7 +211,7 @@ const CataloguePage = () => {
                             style={styles.button}
                             onClick={() => setActiveComponent("rpg")}
                         >
-                            RPG
+                            {t("category.rpg")}
                         </Button>
                     </Stack>
 
@@ -329,4 +260,5 @@ const getStyles = (theme) => ({
         alignItems: "center",
     },
 });
+
 export default CataloguePage;

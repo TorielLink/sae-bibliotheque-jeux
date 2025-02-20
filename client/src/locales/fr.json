@@ -43,9 +43,23 @@
     "signupSuccess": "Inscription réussie"
   },
   "pageName": {
-    "home": "Accueil"
+    "home": "Accueil",
+    "catalogue": "Catalogue",
+    "reviews": "Avis"
   },
   "review": {
     "noReviewsFound": "Aucun avis trouvé"
-  }
+  },
+  "category": {
+    "all": "Tous",
+    "fighting": "Combat",
+    "shooter": "Tir",
+    "platform": "Plateforme",
+    "rts": "RTS",
+    "rpg": "RPG"
+  },
+  "user" : {
+    "logIn": "Se connecter"
+  },
+  "search": "Rechercher..."
 }
