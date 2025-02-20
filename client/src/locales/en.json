@@ -1,51 +1,51 @@
 {
   "details": {
-    "informations": "",
-    "logs": "",
-    "medias": "",
-    "notSpecified": "",
-    "reviews": ""
+    "informations": "Details",
+    "logs": "Newspapers",
+    "medias": "Media",
+    "notSpecified": "Not specified",
+    "reviews": "Announcements"
   },
   "error": {
-    "loadingComments": "",
-    "loadingGameData": "",
-    "loadingGames": "",
-    "loadingReviews": "",
-    "loginError": "",
-    "networkError": "",
-    "unexpectedDataFormat": ""
+    "loadingComments": "Could not load recent reviews. Please try again later.",
+    "loadingGameData": "Cannot load game data.",
+    "loadingGames": "Could not load the games. Please try again later.",
+    "loadingReviews": "Could not load the notices. Please try again.",
+    "loginError": "Connection error.",
+    "networkError": "Network error. Please try again.",
+    "unexpectedDataFormat": "Unexpected data format for opinions."
   },
   "footer": {
-    "aboutProject": "",
-    "aboutUs": "",
-    "contact": "",
-    "copyRight": "",
-    "email": "",
-    "githubRepo": "",
-    "institution": "",
-    "mentorship": "",
-    "privacy": "",
-    "privacyPolicy": "",
-    "project": "",
-    "projectShort": "",
-    "team": "",
-    "teamShort": "",
-    "termsConditions": ""
+    "aboutProject": "About the project",
+    "aboutUs": "About us",
+    "contact": "Contact",
+    "copyRight": "All rights reserved © 2024",
+    "email": "Email address",
+    "githubRepo": "GitHub Deposit",
+    "institution": "Establishment",
+    "mentorship": "Management",
+    "privacy": "Confidentiality",
+    "privacyPolicy": "& Privacy Policy",
+    "project": "The project",
+    "projectShort": "Project",
+    "team": "Team",
+    "teamShort": "Team",
+    "termsConditions": "Terms & conditions"
   },
   "home": {
-    "no_reviews_available": "",
-    "popular_games": "",
-    "recent_releases": "",
-    "recent_reviews": ""
+    "no_reviews_available": "No reviews available at the moment",
+    "popular_games": "Popular games",
+    "recent_releases": "Recent outputs",
+    "recent_reviews": "Recent opinions"
   },
   "login": {
-    "signupError": "",
-    "signupSuccess": ""
+    "signupError": "An error occurred. Please try again.",
+    "signupSuccess": "Successful registration"
   },
   "pageName": {
     "home": ""
   },
   "review": {
-    "noReviewsFound": ""
+    "noReviewsFound": "No reviews found"
   }
 }

@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import {useTheme} from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
+import {useLanguage} from "../language/LanguageContext.jsx";
 import {ThemeContext} from '../theme/ThemeContext';
 import {AuthContext} from './AuthContext';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -21,6 +22,7 @@ function Navbar() {
     const location = useLocation();
     const navigate = useNavigate();
     const {i18n} = useTranslation();
+    const {language, setLanguage} = useLanguage();
 
     const {isAuthenticated} = useContext(AuthContext); // Pour vérifier l'état de connexion
 
@@ -84,8 +86,10 @@ function Navbar() {
     };
 
     const changeLanguage = (lng) => {
-        if (i18n.language !== lng)
+        if (i18n.language !== lng) {
             i18n.changeLanguage(lng);
+            setLanguage(lng);
+        }
         handleClose();
     };
 

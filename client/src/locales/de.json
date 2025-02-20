@@ -1,51 +1,51 @@
 {
   "details": {
-    "informations": "",
-    "logs": "",
-    "medias": "",
-    "notSpecified": "",
-    "reviews": ""
+    "informations": "Details",
+    "logs": "Zeitungen",
+    "medias": "Medien",
+    "notSpecified": "Nicht spezifiziert",
+    "reviews": "Ankündigungen"
   },
   "error": {
-    "loadingComments": "",
-    "loadingGameData": "",
-    "loadingGames": "",
-    "loadingReviews": "",
-    "loginError": "",
-    "networkError": "",
-    "unexpectedDataFormat": ""
+    "loadingComments": "Konnte die letzten Bewertungen nicht laden. Bitte versuchen Sie es später wieder.",
+    "loadingGameData": "Kann Spieldaten nicht laden.",
+    "loadingGames": "Könnte die Spiele nicht laden. Bitte versuchen Sie es später wieder.",
+    "loadingReviews": "Ich konnte die Mitteilungen nicht laden. Bitte versuchen Sie es noch mal.",
+    "loginError": "Verbindungsfehler.",
+    "networkError": "Netzwerkfehler. Bitte versuchen Sie es noch mal.",
+    "unexpectedDataFormat": "Unerwartetes Datenformat für Meinungen."
   },
   "footer": {
-    "aboutProject": "",
-    "aboutUs": "",
-    "contact": "",
-    "copyRight": "",
-    "email": "",
-    "githubRepo": "",
-    "institution": "",
-    "mentorship": "",
-    "privacy": "",
-    "privacyPolicy": "",
-    "project": "",
-    "projectShort": "",
-    "team": "",
-    "teamShort": "",
-    "termsConditions": ""
+    "aboutProject": "Über das Projekt",
+    "aboutUs": "Über uns",
+    "contact": "Kontakt",
+    "copyRight": "Alle Rechte vorbehalten © 2024",
+    "email": "Kontaktadresse",
+    "githubRepo": "GitHub Kaution",
+    "institution": "Gründung",
+    "mentorship": "Management",
+    "privacy": "Vertraulichkeit",
+    "privacyPolicy": "& Datenschutz",
+    "project": "Das Projekt",
+    "projectShort": "Projekt",
+    "team": "Team",
+    "teamShort": "Team",
+    "termsConditions": "Geschäftsbedingungen"
   },
   "home": {
-    "no_reviews_available": "",
-    "popular_games": "",
-    "recent_releases": "",
-    "recent_reviews": ""
+    "no_reviews_available": "Keine Bewertungen verfügbar im Moment",
+    "popular_games": "Beliebte Spiele",
+    "recent_releases": "Neuere Ausgänge",
+    "recent_reviews": "Neueste Meinungen"
   },
   "login": {
-    "signupError": "",
-    "signupSuccess": ""
+    "signupError": "Es kam ein Fehler auf. Bitte versuchen Sie es noch mal.",
+    "signupSuccess": "Erfolgreiche Registrierung"
   },
   "pageName": {
     "home": ""
   },
   "review": {
-    "noReviewsFound": ""
+    "noReviewsFound": "Keine Bewertungen gefunden"
   }
 }

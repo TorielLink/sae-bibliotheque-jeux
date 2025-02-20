@@ -64,7 +64,7 @@ router.get('/by-popularity', gamesController.getPopularGames);
  *       500:
  *         description: Erreur serveur
  */
-router.get('/:id', gamesController.getGameDetails);
+router.get('/:lang/:id', gamesController.getGameDetails);
 
 /**
  * @swagger

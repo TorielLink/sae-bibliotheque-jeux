@@ -14,8 +14,9 @@ const gamesController = {
     // Contrôleur pour obtenir les détails d'un jeu
     async getGameDetails(req, res) {
         try {
+            const lang = req.params.lang;
             const gameId = req.params.id;
-            const gameData = await dataRetriever.getGameInfo(gameId);
+            const gameData = await dataRetriever.getGameInfo(lang, gameId);
             res.json(gameData);
         } catch (error) {
             console.error('Erreur lors de la récupération des détails du jeu :', error);

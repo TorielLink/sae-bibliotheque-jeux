@@ -72,7 +72,7 @@ class DataRetriever extends APIRequests {
         ];
     }
 
-    async getGameInfo(id) {
+    async getGameInfo(lang, id) {
         try {
             const gameData = await this.getGameData(DataRetriever.#gamePageFields, `where id=${id};`);
 
@@ -116,7 +116,7 @@ class DataRetriever extends APIRequests {
                 similarGames: similar_games,
                 standaloneExpansions: standalone_expansions,
                 parentGame: parentGame
-            }, 'en', 'fr', ["summary", "storyline"]); //TODO : faire que la langue cible soit variable
+            }, 'en', lang, ["summary", "storyline"]);
         } catch (error) {
             console.error(`Failed to retrieve game info for ID ${id}:`, error);
             throw error;

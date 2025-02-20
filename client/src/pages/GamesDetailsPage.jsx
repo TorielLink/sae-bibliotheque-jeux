@@ -10,6 +10,7 @@ import {useTheme} from "@mui/material/styles";
 import MobileTabs from "../components/MobileTabs.jsx";
 import { useTranslation } from 'react-i18next';
 import '../i18n';
+import {useLanguage} from "../language/LanguageContext.jsx";
 
 export default function GamesDetailsPage() {
     const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function GamesDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const {language} = useLanguage();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
     const styles = getStyles(theme, isMobile);
@@ -26,7 +28,7 @@ export default function GamesDetailsPage() {
         const fetchGameData = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://localhost:8080/games/${id}`);
+                const response = await fetch(`http://localhost:8080/games/${language}/${id}`);
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
 
                 const data = await response.json();
@@ -39,7 +41,7 @@ export default function GamesDetailsPage() {
             }
         };
         fetchGameData();
-    }, [id]);
+    }, [id, language]);
 
     if (loading) return (
         <Box
