@@ -118,7 +118,9 @@
     }
   },
   "review": {
-    "noReviewsFound": "Aucun avis trouvé"
+    "noReviewsFound": "Aucun avis trouvé",
+    "all": "Tous"
+
   },
   "search": "Rechercher...",
   "team": {

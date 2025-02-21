@@ -4,7 +4,6 @@ import {Grid, Typography, CircularProgress, useMediaQuery} from "@mui/material";
 import ResponsiveCommentCard from "../components/ResponsiveCommentCard";
 import {useTheme} from "@mui/material/styles";
 import { useTranslation } from 'react-i18next';
-import '../i18n';
 
 export default function ReviewsPage() {
     const { t } = useTranslation();
@@ -31,7 +30,7 @@ export default function ReviewsPage() {
                     throw new Error(`Erreur ${response.status}: ${response.statusText}`);
                 }
                 const data = await response.json();
-                console.log("Réponse de l'API :", data);
+
                 setComments(data.data || []);
             } catch (err) {
                 console.error("Erreur lors de la récupération des avis :", err.message);
@@ -78,7 +77,7 @@ export default function ReviewsPage() {
     return (
         <div style={{padding: "20px"}}>
             <Typography variant="subtitle2" style={styles.breadcrumb}>
-                {t("pageName.home")} &gt; Avis
+                {t("pageName.home")} &gt; {t("pageName.reviews")}
             </Typography>
             {/* Barre de filtre (étoiles) */}
             <div style={styles.filterContainer}>
@@ -118,7 +117,7 @@ export default function ReviewsPage() {
                     }}
                     onClick={() => setFilterStars(null)}
                 >
-                    Tous
+                    {t("review.all")}
                 </button>
             </div>
 
