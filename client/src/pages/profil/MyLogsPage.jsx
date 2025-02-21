@@ -15,9 +15,12 @@ import {useTheme} from "@mui/material/styles";
 import {VerticalAlignBottom, VerticalAlignTop} from "@mui/icons-material";
 import LogCard from "../../components/game-details/game-logs/LogCard.jsx";
 import SortingOptions from "../../components/SortingOptions.jsx";
+import {useTranslation} from "react-i18next";
 
 const MyLogsPage = () => {
     const {user} = useContext(AuthContext)
+    const {t} = useTranslation();
+
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
@@ -147,11 +150,11 @@ const MyLogsPage = () => {
     }, [])
 
     const sortingOptions = [
-        {label: "Denière session", defaultOrder: false, mainId: "latest_session_date"},
-        {label: "Nombre de session", defaultOrder: false, mainId: "sessions", secondaryId: "length"},
-        {label: "Temps de jeu", defaultOrder: false, mainId: "time_played"},
-        {label: "Jeu", defaultOrder: true, mainId: "game_name"},
-        {label: "Plateforme", defaultOrder: true, mainId: "platform", secondaryId: 'platform_id'},
+        {label: t("logsPage.sortingOption.lastSession"), defaultOrder: false, mainId: "latest_session_date"},
+        {label: t("logsPage.sortingOption.numberOfSession"), defaultOrder: false, mainId: "sessions", secondaryId: "length"},
+        {label:  t("logsPage.sortingOption.timePlay"), defaultOrder: false, mainId: "time_played"},
+        {label:  t("logsPage.sortingOption.game"), defaultOrder: true, mainId: "game_name"},
+        {label:  t("logsPage.sortingOption.platform"), defaultOrder: true, mainId: "platform", secondaryId: 'platform_id'},
     ]
 
     const [sortingOption, setSortingOption] = useState(0)
@@ -193,12 +196,12 @@ const MyLogsPage = () => {
                     alignItems: 'center',
                 }}
             >
-                <Typography color="error" style={styles.error}>Erreur</Typography>
+                <Typography color="error" style={styles.error}>{t("logsPage.error")}</Typography>
             </Box>
         ) : (
             <>
                 <Typography variant="subtitle2" style={styles.breadcrumb}>
-                    Profil &gt; Journaux
+                    {t("logsPage.profil")} &gt; {t("logsPage.logs")}
                 </Typography>
 
                 <div style={styles.container}>
@@ -213,9 +216,9 @@ const MyLogsPage = () => {
                     <div style={styles.logsContainer}>
                         {
                             logs.length === 0 ? (
-                                <Typography style={styles.noLogs}>Vous n'avez aucun journal. Allez sur la page d'un jeu
-                                    afin
-                                    d'en créer un.</Typography>
+                                <Typography style={styles.noLogs}>
+                                    {t("logsPage.noLogs")}
+                                </Typography>
                             ) : (
                                 <Grid2 container spacing={'2rem'} justifyContent="center">
                                     {logs.map((item, index) => {

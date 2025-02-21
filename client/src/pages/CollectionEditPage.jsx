@@ -14,11 +14,13 @@ import HorizontalSelector from "../components/game-details/game-logs/log-details
 import GameSearch from "../components/profile/collections/GameSearch.jsx"
 import CollectionGameCard from "../components/profile/collections/CollectionGameCard.jsx"
 import CustomBreadcrumbs from "../components/Breadcrumbs.jsx"
+import {useTranslation} from "react-i18next";
 
 function CollectionEditPage() {
     const [loading, setLoading] = useState(false)
     const [newGameLoading, setNewGameLoading] = useState(false)
     const [error, setError] = useState(null)
+    const {t} = useTranslation();
 
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -55,7 +57,7 @@ function CollectionEditPage() {
             setPrivacySettings(data.data)
         } catch (err) {
             console.error('Erreur lors de la récupération des données :', err)
-            setError("Erreur lors de la récupération des données.")
+            setError(t("error.errorData"))
         } finally {
             setLoading(false)
         }
@@ -118,7 +120,7 @@ function CollectionEditPage() {
             setAlertState({
                 ...alertState,
                 alertOpen: true,
-                message: "Le jeux est déjà dans la collection."
+                message: t("collectionEditPage.alreadyExistGame")
             })
             return
         }
@@ -204,7 +206,7 @@ function CollectionEditPage() {
     }
 
     const deleteCollection = async () => {
-        if (confirm('Voulez-vous vraiment supprime cette collection ?')) {
+        if (confirm(t("collectionEditPage.confirmDelete"))) {
             await saveCollectionDeletion()
             localStorage.removeItem(`collection_${id}`)
             navigate("/collections")
@@ -261,7 +263,7 @@ function CollectionEditPage() {
                             alignItems: 'center',
                         }}
                     >
-                        <Typography color="error" style={styles.error}>Erreur</Typography>
+                        <Typography color="error" style={styles.error}>{t("collectionEditPage.error")}</Typography>
                     </Box>
                 ) : (
                     <div style={styles.container}>
@@ -343,7 +345,7 @@ function CollectionEditPage() {
                                 minRows="3"
                                 value={description}
                                 onChange={handleDescriptionChange}
-                                placeholder="Description"
+                                placeholder={t("collectionEditPage.description")}
                                 disabled={savingEdit}
                                 slotProps={{
                                     htmlInput: {
@@ -371,7 +373,7 @@ function CollectionEditPage() {
                                         textPadding="1rem"
                                         searchWidth="30rem"
                                         searchHeight="auto"
-                                        placeholder="Ajouter un jeu"
+                                        placeholder={t("collectionEditPage.addGame")}
                                         resultsHeight="20rem"
                                         disabled={savingEdit}
                                     />
@@ -387,7 +389,7 @@ function CollectionEditPage() {
                                             }
                                         }}
                                     >
-                                        Annuler les modifications
+                                        {t("collectionEditPage.cancel")}
                                     </Button>
                                     <Button
                                         onClick={saveEdit}
@@ -399,7 +401,7 @@ function CollectionEditPage() {
                                             }
                                         }}
                                     >
-                                        Valider les modifications
+                                        {t("collectionEditPage.confirm")}
                                         {savingEdit && (
                                             <CircularProgress
                                                 size={'1.5rem'}

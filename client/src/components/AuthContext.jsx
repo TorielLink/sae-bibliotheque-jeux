@@ -45,9 +45,9 @@ export const AuthProvider = ({ children }) => {
     setUser((prevUser) => {
         if (!prevUser) return newData;
         return {
-            ...prevUser,   // ✅ Conserve les anciennes valeurs
-            ...newData,     // ✅ Met à jour uniquement les champs modifiés
-            id: prevUser.id // ✅ S'assure que `userId` ne soit jamais perdu
+            ...prevUser,   // Conserve les anciennes valeurs
+            ...newData,     // Met à jour uniquement les champs modifiés
+            id: prevUser.id // S'assure que `userId` ne soit jamais perdu
         };
     });
 
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         const updatedUser = {
             ...prevUser,
             ...newData,
-            id: prevUser?.id,  // ✅ Conserve l'ID existant
+            id: prevUser?.id,  // Conserve l'ID existant
         };
         localStorage.setItem('user', JSON.stringify(updatedUser));
         return updatedUser;

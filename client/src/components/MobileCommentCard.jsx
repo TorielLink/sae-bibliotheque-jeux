@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import {FaStar} from "react-icons/fa";
 import {CommentsContext} from "./CommentsContext";
+import {useTranslation} from 'react-i18next';
 
 /* --------------------- Fonctions auxiliaires --------------------- */
 
@@ -191,6 +192,7 @@ export default function MobileCommentCard({
                                               currentUserId,
                                               onCommentDeleted,
                                           }) {
+      const {t} = useTranslation();
     const {deleteComment} = useContext(CommentsContext);
     const theme = useTheme();
 

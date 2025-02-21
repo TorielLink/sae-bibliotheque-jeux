@@ -3,8 +3,10 @@ import {Box, Card, CardMedia, Typography, useMediaQuery} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import {useTheme} from "@mui/material/styles";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from 'react-i18next';
 
 function GameCardTitle({id, image, title, rating}) {
+    const {t} = useTranslation();
     const theme = useTheme();
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -46,7 +48,7 @@ function GameCardTitle({id, image, title, rating}) {
                 <CardMedia
                     component="img"
                     image={image || "/placeholder-image.png"} // Image par défaut
-                    alt={title || "Image non disponible"}
+                    alt={title || t("game.cover.noCoverAvailable")}
                     sx={{
                         objectFit: "cover",
                         width: "100%",
@@ -112,7 +114,7 @@ function GameCardTitle({id, image, title, rating}) {
                             textOverflow: "ellipsis",
                         }}
                     >
-                        {title || "Titre non disponible"}
+                        {title || t("game.title.noTitleAvailable")}
                     </Typography>
                 </Box>
             </Box>

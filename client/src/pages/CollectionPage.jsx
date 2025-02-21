@@ -18,6 +18,7 @@ import {
 } from "@mui/icons-material"
 import GameCard from "../components/GameCard.jsx"
 import CustomBreadcrumbs from "../components/Breadcrumbs.jsx"
+import {useTranslation} from "react-i18next";
 
 function CollectionPage() {
     const navigate = useNavigate()
@@ -30,6 +31,7 @@ function CollectionPage() {
 
     const {id} = useParams()
     const [collection, setCollection] = useState({})
+    const {t} = useTranslation();
 
     const editCollection = () => {
         localStorage.setItem(`collection_${id}`, JSON.stringify(collection))
@@ -57,7 +59,7 @@ function CollectionPage() {
             }
         } catch (err) {
             console.error('Erreur lors de la récupération des données :', err)
-            setError("Erreur lors de la récupération des données.")
+            setError(t("collectionPage.errorData"))
         } finally {
             setLoading(false)
         }
@@ -79,7 +81,7 @@ function CollectionPage() {
                     }
                 }}
             >
-                <p>Mes collections</p>
+                <p>{t("collectionPage.myCollections")}</p>
                 <ArrowForward fontSize="large"/>
             </IconButton>
             <IconButton
@@ -92,7 +94,7 @@ function CollectionPage() {
                     }
                 }}
             >
-                <p>Modifier la collection</p>
+                <p>{t("collectionPage.modifyCollection")}</p>
                 <EditNote fontSize="large"/>
             </IconButton>
         </div>

@@ -7,8 +7,10 @@ import { alpha } from "@mui/material/styles";
 
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import {useTranslation} from 'react-i18next';
 
 const GameCardCategory = ({ id, image, title, note, tags }) => {
+  const {t} = useTranslation();
   const theme = useTheme();
   const styles = getStyles(theme);
   const navigate = useNavigate();
@@ -27,7 +29,7 @@ const GameCardCategory = ({ id, image, title, note, tags }) => {
       <img src={image} alt={title} style={styles.poster} />
 
       <div style={styles.infos}>
-        <h3 style={styles.title}>{title || "Titre non disponible"}</h3>
+        <h3 style={styles.title}>{title || t("game.title.noTitleAvailable")}</h3>
         <div style={styles.tags}>
           {tags.length > 0 ? (
             tags.map((tag, index) => (
@@ -36,16 +38,16 @@ const GameCardCategory = ({ id, image, title, note, tags }) => {
               </Stack>
             ))
           ) : (
-            <p>Aucun tag disponible</p>
+            <p>{t("game.tags.noTagAvailable")}</p>
           )}
         </div>
         <div style={styles.notes}>
-          <p style={styles.note}>Note : {note || ""} </p>
+          <p style={styles.note}>{t("review.comments.category.rating")} : {note || ""} </p>
           <StarIcon style={styles.star} />
         </div>
 
         <Button style={styles.button} onClick={gamesDetailsClick}>
-          Découvrir
+          {t("actions.discover")}
         </Button>
       </div>
     </section>

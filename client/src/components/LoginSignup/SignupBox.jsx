@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Paper from "@mui/material/Paper";
 
+import {useTranslation} from 'react-i18next';
 import {useTheme} from "@mui/material/styles";
 
 function SignupBox({
@@ -15,6 +16,7 @@ function SignupBox({
   handleSignupSubmit,
 }) {
 
+  const {t} = useTranslation();
   const theme = useTheme();
 
   return (
@@ -49,7 +51,7 @@ function SignupBox({
           type="text"
           name="username"
           id="username-input"
-          label="Username"
+          label={t("login.username")}
           value={signupData.username}
           onChange={handleSignupChange}
           required
@@ -58,7 +60,7 @@ function SignupBox({
           type="password"
           name="password"
           id="password-input"
-          label="Mot de passe"
+          label={t("login.password")}
           value={signupData.password}
           onChange={handleSignupChange}
           autoComplete="new-password"
@@ -67,12 +69,13 @@ function SignupBox({
         <TextField style={{paddingBottom:15,}}
           type="password"
           id="confirmpasswrd-input"
-          label="Confirmer Mot de passe"
+          label={t("login.passwordConfirm")}
           autoComplete="new-password"
         />
         <TextField style={{paddingBottom:15,}}
           type="file"
           name="profilePicture"
+          label={t("login.profilePicture")}
           accept="image/*"
           onChange={handleSignupChange}
         />
@@ -81,14 +84,15 @@ function SignupBox({
               width:'100%',
               backgroundColor: theme.palette.colors.purple,
               color: theme.palette.background.default,}} onClick={handleSignupSubmit}>
-          S'inscrire
+
+            {t("login.toSignup")}
         </Button>
-        <p style={{paddingTop:10,paddingBottom:10,}}>Déja inscrit?</p>
+        <p style={{paddingTop:10,paddingBottom:10,}}>{t("login.alreadyHaveAccount")}</p>
           <Button variant="contained" style={{
               width:'100%',
               backgroundColor: theme.palette.colors.yellow,
               color: theme.palette.background.default,}} onClick={() => setShowSignup(false)}>
-            Se connecter
+              {t("login.toLogin")}
           </Button>
       </form>
     </Paper>

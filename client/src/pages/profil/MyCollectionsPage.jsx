@@ -13,8 +13,10 @@ import NewCollectionForm from "../../components/profile/collections/NewCollectio
 import SortingOptions from "../../components/SortingOptions.jsx"
 import {useNavigate} from "react-router-dom"
 import CustomBreadcrumbs from "../../components/Breadcrumbs.jsx"
+import {useTranslation} from "react-i18next";
 
 const MyCollectionsPage = () => {
+    const {t} = useTranslation();
     const {user} = useContext(AuthContext)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -100,7 +102,7 @@ const MyCollectionsPage = () => {
 
     const createCollection = async (newCollection) => {
         if (newCollection.name === "" || newCollection.description === "") {
-            if (!confirm('Certains champs sont vide. Voulez vraiment créer la collection ?')) {
+            if (!confirm(t("collection.emptyFields"))) {
                 return
             }
         }
@@ -119,7 +121,7 @@ const MyCollectionsPage = () => {
     }
 
     const deleteCollection = async (game_collection_id) => {
-        if (confirm('Voulez-vous vraiment supprime cette collection ?')) {
+        if (confirm(t("collection.confirmDelete"))) {
             await saveCollectionDeletion(game_collection_id)
             setUpdateCollections(!updateCollections)
         }
@@ -145,9 +147,9 @@ const MyCollectionsPage = () => {
     }
 
     const sortingOptions = [
-        {label: "Nom", defaultOrder: true, mainId: "name"},
-        {label: "Nombre de jeux", defaultOrder: false, mainId: "collection_content", secondaryId: "length"},
-        {label: "Visibilité", defaultOrder: true, mainId: "privacy_setting_id"},
+        {label: t("collection.sort.name"), defaultOrder: true, mainId: "name"},
+        {label: t("collection.sort.numberOfGame"), defaultOrder: false, mainId: "collection_content", secondaryId: "length"},
+        {label: t("collection.sort.visibility"), defaultOrder: true, mainId: "privacy_setting_id"},
     ]
 
     const [sortingOption, setSortingOption] = useState(0)
@@ -169,8 +171,8 @@ const MyCollectionsPage = () => {
     }, [sortingOption, sortingOrder])
 
     const breadcrumbsLinks = [
-        {label: 'Profil', to: '/profile'},
-        {label: 'Collections', to: '/collections'},
+        {label: t("collection.links.profil"), to: '/profile'},
+        {label: t("collection.links.collection"), to: '/collections'},
     ]
 
     return (
@@ -228,14 +230,14 @@ const MyCollectionsPage = () => {
                                 alignItems: 'center',
                             }}
                         >
-                            <Typography color="error" style={styles.error}>Erreur</Typography>
+                            <Typography color="error" style={styles.error}>{t("collection.error")}</Typography>
                         </Box>
                     ) : (
                         <div style={styles.collectionsContainer}>
                             {
                                 collections?.length === 0 ? (
                                     <Typography style={styles.noCollections}>
-                                        Vous n'avez aucune collection.
+                                        {t("collection.noCollections")}
                                     </Typography>
                                 ) : (
                                     <Grid2 container spacing={'2rem'} justifyContent="center">

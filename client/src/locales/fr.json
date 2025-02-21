@@ -5,7 +5,12 @@
     "platform": "Plateforme",
     "rpg": "RPG",
     "rts": "RTS",
-    "shooter": "Tir"
+    "shooter": "Tir",
+    "error": {
+      "noGameInCategory": "Aucun jeu trouvé pour"
+    },
+    "total": "Total",
+    "wGame": "jeux"
   },
   "contact": {
     "contactUs": "Contactez-nous",
@@ -20,12 +25,18 @@
   },
   "error": {
     "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
-    "loadingGameData": "loadingGameData",
+    "loadingGameData": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
     "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
     "loadingReviews": "Impossible de charger les avis. Veuillez réessayer.",
     "loginError": "Erreur de connexion.",
     "networkError": "Erreur réseau. Veuillez réessayer.",
-    "unexpectedDataFormat": "Format des données inattendu pour les avis."
+    "unexpectedDataFormat": "Format des données inattendu pour les avis.",
+    "emptyFields": "Veuillez remplir tous les champs obligatoires.",
+    "invalidPlatform": "Plateforme invalide.",
+    "unidentifiedUser" : "Utilisateur non identifié.",
+    "tryAgainLater": "Veuillez réessayer plus tard.",
+    "unavailableImage": "Image non disponible.",
+    "unavailableTitle": "Titre non disponible."
   },
   "footer": {
     "aboutProject": "À propos du projet",
@@ -59,8 +70,15 @@
     "plus": "Avec ses partenariats solides et un corps enseignant passionné, l'IUT prépare ses étudiants à relever les défis du monde contemporain tout en encourageant la créativité et la collaboration."
   },
   "login": {
+    "toLogin": "Se Connecter",
+    "toSignup": "Créer un compte",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "passwordConfirm": "Confirmer le Mot de passe",
+    "profilePicture" : "Photo de Profil",
     "signupError": "Une erreur est survenue. Veuillez réessayer.",
-    "signupSuccess": "Inscription réussie"
+    "signupSuccess": "Inscription réussie",
+    "alreadyHaveAccount": "Déja inscrit?"
   },
   "mentorship": {
     "description": "Ce projet bénéficie de l'accompagnement d'un mentor expérimenté et du soutien d'investisseurs engagés.",
@@ -119,8 +137,21 @@
   },
   "review": {
     "noReviewsFound": "Aucun avis trouvé",
-    "all": "Tous"
-
+    "noReviewsFoundForUser": "Aucun avis trouvé pour cet utilisateur.",
+    "userReviews" : "Avis utilisateur:",
+    "all": "Tous",
+    "comments": {
+      "error": "Une erreur est survenue.",
+      "success": "Votre avis a été ajouté avec succès !",
+      "selectPlatform": "Sélectionnez une plateforme",
+      "visibility": "Visibilité",
+      "private": "Privé",
+      "public": "Public",
+      "myReview": "Mon avis..."
+    },
+    "category": {
+      "rating": "Note"
+    }
   },
   "search": "Rechercher...",
   "team": {
@@ -144,5 +175,117 @@
   },
   "user": {
     "logIn": "Se connecter"
+  },
+  "collection":{
+    "emptyFields" : "Certains champs sont vide. Voulez vraiment créer la collection ?",
+    "confirmDelete": "Voulez-vous vraiment supprime cette collection ?",
+    "sort": {
+      "name": "Nom",
+      "numberOfGame" : "Nombre de jeux",
+      "visibility": "Visibilité"
+    },
+    "links": {
+      "profil": "Profil",
+      "collection": "Collection"
+    },
+    "error": "Erreur",
+    "noCollections": "Vous n'avez aucune collection."
+  },
+  "listPage": {
+    "tableHeaders": {
+      "gameName" : "Nom du jeu",
+      "numberOfSession" : "Nombre de sessions",
+      "timePlay": "Temps joué",
+      "platform": "Plateforme",
+      "myRating": "Ma note",
+      "genre": "Genres",
+      "realeseDate" :"Date de sortie",
+      "averageRating": "Note moyenne",
+      "lastSession": "Dernière session"
+    },
+    "listGame": "Liste des jeux",
+    "noGamesforFilter": "Aucun jeu trouvé pour ce filtre.",
+    "notSpecified": "Non spécifié"
+  },
+  "game": {
+    "notSpecified": "Non spécifié",
+    "notAvailable": "Non disponible",
+    "tags": {
+      "noTagAvailable": "Aucun tag disponible"
+    },
+    "genre": {
+      "noGenreAvailable": "Aucun genre disponible"
+    },
+    "title": {
+      "noTitleAvailable": "Titre non disponible",
+      "unknwownGame": "Jeu inconnu"
+    },
+    "cover": {
+      "noCoverAvailable": "Image non disponible"
+    }
+  },
+  "logsPage": {
+    "sortingOption": {
+      "lastSession": "Dernière session",
+    "numberOfSession": "Nombre de session",
+    "timePlay": "Temps de jeu",
+    "game": "Jeu",
+    "platform": "Plateforme"
+    },
+    "error": "Erreur",
+    "profil": "Profil",
+    "logs" :"Journaux",
+    "noLogs": "Vous n'avez aucun journal. Allez sur la page d'un jeu afin  d'en créer un."
+  },
+  "actions": {
+    "add": "Ajouter",
+    "cancel": "Annuler",
+    "discover": "Découvrir"
+  },
+  "settingsPage": {
+    "majSpeudo": "Votre pseudo a été mis à jour avec succès.",
+    "errorMaj": "Erreur lors de la mise à jour du pseudo.",
+    "noModifFind" : "Aucune modification de pseudo détectée.",
+    "noPicturesSelect": "Aucune nouvelle photo sélectionnée.",
+    "majPicture": "Votre photo de profil a été mise à jour avec succès.",
+    "errorMajPicture": "Erreur lors de la mise à jour de la photo de profil.",
+    "successPassword": "Votre mot de passe a été mis à jour avec succès.",
+    "errorPassword": "Erreur lors de la mise à jour du mot de passe.",
+    "errorEntry": "Erreur : veuillez vérifier vos entrées.",
+    "settingsAccount": "Paramètres du compte",
+    "modifySpeudo": "Modifier votre pseudo",
+    "actualSpeudo": "Pseudo actuel : ",
+    "register": "Enregistrer le pseudo",
+    "profilPicture": "Photo de profil",
+    "actualPicture": "Photo de profil actuelle :",
+    "newPictureOpt": "Nouvelle photo (optionnel) :",
+    "dropPicture": "Déposez l'image ici...",
+    "sliderPicture": " Glissez-déposez une image ou cliquez pour sélectionner",
+    "savePicture": "Enregistrer la photo",
+    "modifyPassword": "Modifier votre mot de passe",
+    "majPassword":"Mettre à jour le mot de passe",
+    "confirmDelete": "'Êtes-vous sûr de vouloir supprimer votre compte ?",
+    "deleteAccount": "Compte supprimé.",
+    "errorDelete": "Erreur lors de la suppression du compte.",
+    "confirmPassword": "Confirmer le mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "oldPassword": "Ancien mot de passe",
+    "deleteAccountButton": "Supprimer le compte"
+  },
+  "collectionEditPage": {
+"errorData": "Erreur lors de la récupération des données.",
+    "alreadyExistGame": "Le jeux est déjà dans la collection.",
+    "confirmDelete": "Voulez-vous vraiment supprime cette collection ?",
+    "error": "Erreur",
+    "description": "Description",
+    "addGame": "Ajouter un jeu",
+    "cancel": "Annuler les modifications",
+    "confirm": " Valider les modifications"
+  },
+  "collectionPage": {
+"errorData": "Erreur lors de la récupération des données.",
+    "myCollections": "Mes collections",
+    "modifyCollection": "Modifier la collection"
   }
+
 }

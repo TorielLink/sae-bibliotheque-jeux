@@ -3,6 +3,7 @@ import React from "react";
 import {Box, Card} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
+import {useTranslation} from "react-i18next";
 
 function ListImageCard({id, image, title, rating, genres = [], platform}) {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
     };
 
     const safeGenres = Array.isArray(genres) ? genres : [];
+      const {t} = useTranslation();
 
     return (
         <Card
@@ -38,7 +40,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
             <Box
                 component="img"
                 src={image}
-                alt={title || "Image non disponible"}
+                alt={title || t("game.title.noTitleAvailable")}
                 sx={{
                     width: "120px",
                     height: "100%",
@@ -84,7 +86,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                                 marginRight: "0.3em",
                             }}
                         />
-                        {title || "Jeu inconnu"}
+                        {title || t("game.title.unknwownGame")}
                     </Box>
 
                     {/* Genres */}
@@ -128,7 +130,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                                     textAlign: "center",
                                 }}
                             >
-                                Aucun genre disponible
+                                {t("game.genre.noGenreAvailable")}
                             </Box>
                         )}
 
@@ -146,7 +148,7 @@ function ListImageCard({id, image, title, rating, genres = [], platform}) {
                         color: "#333",
                     }}
                 >
-                    <span>Plateforme : {platform || "Non spécifiée"}</span>
+                    <span>{t("listPage.tableHeaders.platform")} : {platform || t("game.notSpecified")}</span>
                 </Box>
 
                 {/* Note en haut à droite */}

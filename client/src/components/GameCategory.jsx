@@ -1,25 +1,21 @@
 import React from "react";
 import GameCardCategory from "../components/GameCardCategory";
-
-import { useTheme } from "@mui/material/styles";
 import PodiumCategory from "./PodiumCategory";
 
+import { useTheme } from "@mui/material/styles";
+import {useTranslation} from 'react-i18next';
+
 const GameCategory = ({ categoryTitle, data, podium }) => {
+  const {t} = useTranslation();
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  // séparer les données pour le podium et la liste
   const podiumGames = data.slice(0, 3);
   const listGames = data.length > 3 ? data.slice(3) : [];
-
-  // déboggage
-  console.log("listGames:", listGames);
-  console.log("data:", data);
-
-  const nbjeux = data.length;
+  const numGames = data.length;
 
   if (data.length === 0) {
-    return <p>Aucun jeu trouvé pour "{categoryTitle}".</p>;
+    return <p>{t("category.error.noGameInCategory")} "{categoryTitle}".</p>;
   }
 
   return (
@@ -33,7 +29,7 @@ const GameCategory = ({ categoryTitle, data, podium }) => {
               data = {podiumGames}
             />
           </div>
-          <p style={styles.count}>Total : {nbjeux}</p>
+          <p style={styles.count}>t("category.total") : {numGames}</p>
           <div style={styles.list}>
             {listGames.map((game) => (
               <div key={game.id} style={styles.card}>
@@ -50,7 +46,7 @@ const GameCategory = ({ categoryTitle, data, podium }) => {
         </div>
       ) : (
         <div>
-        <p style={styles.count}>{nbjeux} jeux</p>
+        <p style={styles.count}>{numGames + " " + t("category.wGame")}</p>
         <div style={styles.list}>
           {data.map((game) => (
             <div key={game.id} style={styles.card}>
@@ -66,8 +62,6 @@ const GameCategory = ({ categoryTitle, data, podium }) => {
         </div>
       </div>
       )}
-      
-      
     </section>
   );
 };

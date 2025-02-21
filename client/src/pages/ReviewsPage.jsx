@@ -33,7 +33,6 @@ export default function ReviewsPage() {
 
                 setComments(data.data || []);
             } catch (err) {
-                console.error("Erreur lors de la récupération des avis :", err.message);
                 setError(t("error.loadingReviews"));
             } finally {
                 setLoading(false);

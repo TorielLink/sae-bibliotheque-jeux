@@ -3,8 +3,9 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Paper from "@mui/material/Paper";
-import Alert from '@mui/material/Alert'; // ✅ Ajout d'Alert pour les erreurs
+import Alert from '@mui/material/Alert';
 
+import {useTranslation} from 'react-i18next';
 import {useTheme} from "@mui/material/styles";
 
 function LoginBox({
@@ -15,6 +16,7 @@ function LoginBox({
   loginError,
 }) {
 
+  const {t} = useTranslation();
   const theme = useTheme();
 
   return (
@@ -53,7 +55,7 @@ function LoginBox({
 
         <TextField style={{paddingBottom:15}}
           id="password-input-1"
-          label="Mot de passe"
+          label={t("login.password")}
           autoComplete="current-password"
           type="password"
           name="password"
@@ -66,7 +68,7 @@ function LoginBox({
           backgroundColor: theme.palette.colors.green,
           color: theme.palette.background.default,
         }}>
-          Se Connecter
+            {t("login.toLogin")}
         </Button>
 
         <p style={{paddingTop:10,paddingBottom:10,}}>Vous n'avez pas de compte?</p>
@@ -75,7 +77,7 @@ function LoginBox({
           backgroundColor: theme.palette.colors.blue,
           color: theme.palette.background.default,
         }} onClick={() => setShowSignup(true)}>
-          Créer un compte
+            {t("login.toSignup")}
         </Button>
       </form>
     </Paper>

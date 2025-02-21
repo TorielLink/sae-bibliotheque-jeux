@@ -2,8 +2,10 @@ import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../components/AuthContext.jsx';
 import ResponsiveCommentCard from '../../components/ResponsiveCommentCard';
 import {Grid, CircularProgress, Typography, Box} from '@mui/material';
+import {useTranslation} from "react-i18next";
 
 const MyReviewsPage = () => {
+    const {t} = useTranslation();
     const {user} = useContext(AuthContext);
     const userId = user?.id;
     const [reviews, setReviews] = useState([]);
@@ -14,7 +16,7 @@ const MyReviewsPage = () => {
     useEffect(() => {
         const fetchUserReviews = async () => {
             if (!userId) {
-                setError('Utilisateur non identifié.');
+                setError(t("error.unidentifiedUser"));
                 setLoading(false);
                 return;
             }
@@ -33,11 +35,11 @@ const MyReviewsPage = () => {
                 }
 
                 const data = await response.json();
-                console.log('Avis utilisateur:', data);
+                console.log(t('review.userReviews'), data);
                 setReviews(data?.data || []); // Mise à jour des avis
             } catch (err) {
-                console.error('Erreur lors de la récupération des avis:', err);
-                setError('Erreur lors de la récupération des avis. Veuillez réessayer plus tard.');
+                console.error(t("error.loadingReviews"), err);
+                setError(t("error.loadingReviews")+" "+t("error.tryAgainLater") );
             } finally {
                 setLoading(false); // Désactiver le chargement
             }
@@ -78,7 +80,7 @@ const MyReviewsPage = () => {
     if (reviews.length === 0) {
         return (
             <Typography align="center" variant="h6" style={{marginTop: '20px'}}>
-                Aucun avis trouvé.
+                {t("review.noReviewsFound")}
             </Typography>
         );
     }
@@ -111,7 +113,7 @@ const MyReviewsPage = () => {
                     </Grid>
                 ) : (
                     <Typography variant="body1">
-                        Aucun avis trouvé pour cet utilisateur.
+                        {t("review.noReviewsFoundForUser")}
                     </Typography>
                 )}
             </Box>

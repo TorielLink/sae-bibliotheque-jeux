@@ -3,8 +3,10 @@ import {Accordion, AccordionDetails, AccordionSummary, Box, Rating, Typography} 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useTheme} from '@mui/material/styles';
 import {useNavigate} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
 
 const GameAccordion = ({game, selectedFilter}) => {
+    const {t} = useTranslation();
     const [expanded, setExpanded] = useState(false);
     const navigate = useNavigate(); // Pour la navigation vers la page de détails
 
@@ -62,17 +64,19 @@ const GameAccordion = ({game, selectedFilter}) => {
                     {selectedFilter === 'finish' && (
                         <>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Nombre de sessions:</strong> {game.sessionCount || 'Non spécifié'}
+                                <strong>{t("listPage.tableHeaders.numberOfSession")} :</strong>
+                                {game.sessionCount || t("game.notSpecified")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Temps
-                                    joué:</strong> {game.totalTimePlayed ? formatPlayTime(game.totalTimePlayed) : 'Non disponible'}
+                                <strong>{t("listPage.tableHeaders.timePlay")} :</strong>
+                                {game.totalTimePlayed ? formatPlayTime(game.totalTimePlayed) : t("game.notAvailable")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Plateforme:</strong> {game.platform || 'Non spécifiée'}
+                                <strong>{t("listPage.tableHeaders.plateform")} :</strong>
+                                {game.platform || t("game.notSpecified")}
                             </Typography>
                             <Box sx={{display: 'flex', alignItems: 'center'}}>
-                                <strong>Ma note:</strong>
+                                <strong>{t("listPage.tableHeaders.myRating")} :</strong>
                                 <Rating
                                     value={game.userRating || 0}
                                     precision={0.5}
@@ -86,20 +90,23 @@ const GameAccordion = ({game, selectedFilter}) => {
                     {selectedFilter === 'playing' && (
                         <>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Dernière session:</strong> {game.lastSessionDate || 'Non spécifiée'}
+                                <strong>{t("listPage.tableHeaders.lastSession")} :</strong>
+                                {game.lastSessionDate || t("game.notSpecified")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Nombre de sessions:</strong> {game.sessionCount || 'Non spécifié'}
+                                <strong>{t("listPage.tableHeaders.numberOfSession")} :</strong>
+                                {game.sessionCount || t("game.notSpecified")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Temps
-                                    joué:</strong> {game.totalTimePlayed ? formatPlayTime(game.totalTimePlayed) : 'Non disponible'}
+                                <strong>{t("listPage.tableHeaders.timePlay")} :</strong>
+                                {game.totalTimePlayed ? formatPlayTime(game.totalTimePlayed) : t("game.notAvailable")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Plateforme:</strong> {game.platform || 'Non spécifiée'}
+                                <strong>{t("listPage.tableHeaders.platform")} :</strong>
+                                {game.platform || t("game.notSpecified")}
                             </Typography>
                             <Box sx={{display: 'flex', alignItems: 'center'}}>
-                                <strong>Ma note:</strong>
+                                <strong>{t("listPage.tableHeaders.myRating")} :</strong>
                                 <Rating
                                     value={game.userRating || 0}
                                     precision={0.5}
@@ -109,16 +116,20 @@ const GameAccordion = ({game, selectedFilter}) => {
                             </Box>
                         </>
                     )}
+
                     {selectedFilter === 'library' && (
                         <>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Genres:</strong> {game.genres ? game.genres.map((genre) => genre.name).join(', ') : 'Non spécifié'}
+                                <strong>{t("listPage.tableHeaders.genre")} :</strong>
+                                {game.genres ? game.genres.map((genre) => genre.name).join(', ') : t("game.notSpecified")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Plateforme:</strong> {game.platform || 'Non spécifiée'}
+                                <strong>{t("listPage.tableHeaders.platform")} :</strong>
+                                {game.platform || t("game.notSpecified")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Note moyenne:</strong> {game.averageRating || 'Non disponible'}
+                                <strong>{t("listPage.tableHeaders.averageRating")} :</strong>
+                                {game.averageRating || t("game.notAvailable")}
                             </Typography>
                         </>
                     )}
@@ -126,13 +137,16 @@ const GameAccordion = ({game, selectedFilter}) => {
                     {selectedFilter === 'wishlist' && (
                         <>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Genres:</strong> {game.genres ? game.genres.map((genre) => genre.name).join(', ') : 'Non spécifié'}
+                                <strong>{t("listPage.tableHeaders.genre")} :</strong>
+                                {game.genres ? game.genres.map((genre) => genre.name).join(', ') : t("game.notSpecified")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Date de sortie:</strong> {game.releaseDate || 'Non spécifiée'}
+                                <strong>{t("listPage.tableHeaders.numberOfSession")} :</strong>
+                                {game.releaseDate || t("game.notSpecified")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Note moyenne:</strong> {game.averageRating || 'Non disponible'}
+                                <strong>{t("listPage.tableHeaders.averageRating")} :</strong>
+                                {game.averageRating || t("game.notAvailable")}
                             </Typography>
                         </>
                     )}
@@ -140,20 +154,23 @@ const GameAccordion = ({game, selectedFilter}) => {
                     {(selectedFilter === 'paused' || selectedFilter === 'stopped') && (
                         <>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Dernière session:</strong> {game.lastSessionDate || 'Non spécifiée'}
+                                <strong>{t("listPage.tableHeaders.lastSession")} :</strong>
+                                {game.lastSessionDate || 'Non spécifiée'}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Nombre de sessions:</strong> {game.sessions || 'Non spécifié'}
+                                <strong>{t("listPage.tableHeaders.numberOfSession")} :</strong>
+                                {game.sessions || 'Non spécifié'}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Temps
-                                    joué:</strong> {game.timePlayed ? formatPlayTime(game.timePlayed) : 'Non disponible'}
+                                <strong>{t("listPage.tableHeaders.timePlay")} :</strong>
+                                {game.timePlayed ? formatPlayTime(game.timePlayed) : t("game.notAvailable")}
                             </Typography>
                             <Typography variant="body1" sx={{marginBottom: '10px'}}>
-                                <strong>Plateforme:</strong> {game.platform || 'Non spécifiée'}
+                                <strong>{t("listPage.tableHeaders.platform")} :</strong>
+                                {game.platform || 'Non spécifiée'}
                             </Typography>
                             <Box sx={{display: 'flex', alignItems: 'center'}}>
-                                <strong>Ma note:</strong>
+                                <strong>{t("listPage.tableHeaders.myRating")} :</strong>
                                 <Rating
                                     value={game.userRating || 0}
                                     precision={0.5}

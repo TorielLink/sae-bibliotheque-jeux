@@ -25,10 +25,14 @@ import ListImageCard from '../../components/ListImageCard.jsx';
 import StarRating from '../../components/StarRating.jsx';
 import FilterBarList from '../../components/FilterBarList.jsx';
 import GameAccordion from '../../components/GameAccordion.jsx';
+import {t} from "i18next";
+import {useTranslation} from "react-i18next";
 
 const MyListsPage = () => {
     const {user} = useContext(AuthContext);
     const userId = user?.id;
+    const {t} = useTranslation();
+
 
     const [selectedFilter, setSelectedFilter] = useState('playing');
     const [viewMode, setViewMode] = useState('grid');
@@ -67,12 +71,12 @@ const MyListsPage = () => {
 
 
     const tableHeaders = {
-        finish: ['Nom du jeu', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
-        playing: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
-        library: ['Nom du jeu', 'Genres', 'Plateforme', 'Note moyenne'],
-        wishlist: ['Nom du jeu', 'Genres', 'Date de sortie', 'Note moyenne'],
-        paused: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
-        stopped: ['Nom du jeu', 'Dernière session', 'Nombre de sessions', 'Temps joué', 'Plateforme', 'Ma note'],
+        finish: [t("listPage.tableHeaders.gameName"), t("listPage.tableHeaders.numberOfSession"),t("listPage.tableHeaders.timePlay"), t("listPage.tableHeaders.platform"), t("listPage.tableHeaders.myRating")],
+        playing: [t("listPage.tableHeaders.gameName"), 'Dernière session', t("listPage.tableHeaders.numberOfSession"), t("listPage.tableHeaders.timePlay"), t("listPage.tableHeaders.platform"),t("listPage.tableHeaders.myRating")],
+        library: [t("listPage.tableHeaders.gameName"),t("listPage.tableHeaders.genre"), t("listPage.tableHeaders.platform"), t("listPage.tableHeaders.averageRating")],
+        wishlist: [t("listPage.tableHeaders.gameName"), t("listPage.tableHeaders.genre"), t("listPage.tableHeaders.realeseDate"),  t("listPage.tableHeaders.averageRating")],
+        paused: [t("listPage.tableHeaders.gameName"), t("listPage.tableHeaders.lastSession"),t("listPage.tableHeaders.numberOfSession"), t("listPage.tableHeaders.timePlay"), t("listPage.tableHeaders.platform"),t("listPage.tableHeaders.myRating")],
+        stopped: [t("listPage.tableHeaders.gameName"), t("listPage.tableHeaders.lastSession"),t("listPage.tableHeaders.numberOfSession"), t("listPage.tableHeaders.timePlay"), t("listPage.tableHeaders.platform"), t("listPage.tableHeaders.myRating")],
     };
 
     const handleFilterChange = (filter) => {
@@ -122,7 +126,7 @@ const MyListsPage = () => {
                         ...game,
                         genres: Array.isArray(game.genres) && game.genres.length > 0
                             ? game.genres
-                            : ['Non spécifié'],
+                            : [t("listPage.notSpecified")],
                     }));
 
 
@@ -136,10 +140,7 @@ const MyListsPage = () => {
                 setLoading(false);
             }
         };
-
         fetchAllGames();
-        console.log('jeu envoyé', gamesData);
-
     }, [userId]);
 
     return (
@@ -155,7 +156,7 @@ const MyListsPage = () => {
                 }}
             >
                 <Typography variant="body1" sx={{color: theme.palette.colors?.red, marginRight: '0.5em'}}>
-                    Listes de jeux
+                    {t("listPage.listGame")}
                 </Typography>
                 <Typography variant="body1" sx={{color: theme.palette.colors?.red || '#FF0000'}}>
                     &gt; {filters.find((f) => f.id === selectedFilter)?.label || ''}
@@ -191,7 +192,7 @@ const MyListsPage = () => {
                             display: 'flex',
                             justifyContent: 'flex-start',
                             alignItems: 'center',
-                            height: '100%', // Assure une hauteur fixe
+                            height: '100%',
                         }}
                     >
                         <Box
@@ -284,7 +285,7 @@ const MyListsPage = () => {
                     // Affichage des jeux ou message s'il n'y en a pas
                     <>
                         {gamesData[selectedFilter]?.length === 0 ? (
-                            <Typography>Aucun jeu trouvé pour ce filtre.</Typography>
+                            <Typography>{t("listPage.noGamesforFilter")}</Typography>
                         ) : (
                             <>
                                 {isMobile ? (
@@ -498,22 +499,23 @@ const MyListsPage = () => {
                                                                                     <Box
                                                                                         key={index}
                                                                                         sx={{
-                                                                                            backgroundColor: '#FFD700', // Couleur personnalisée pour chaque genre
-                                                                                            color: '#000', // Couleur du texte
+                                                                                            backgroundColor: '#FFD700',
+                                                                                            color: '#000',
                                                                                             padding: '4px 8px',
                                                                                             borderRadius: '5px',
                                                                                             margin: '2px',
-                                                                                            fontSize: '0.8em', // Taille de texte lisible
+                                                                                            fontSize: '0.8em',
                                                                                             fontWeight: 'bold',
-                                                                                            display: 'inline-block', // S'assure que chaque genre est affiché séparément
+                                                                                            display: 'inline-block',
                                                                                         }}
                                                                                     >
                                                                                         {genre}
                                                                                     </Box>
                                                                                 ))
                                                                             ) : (
-                                                                                <Typography sx={{color: '#888'}}>Non
-                                                                                    spécifié</Typography>
+                                                                                <Typography sx={{color: '#888'}}>
+                                                                                    {t("listPage.notSpecified")}
+                                                                                </Typography>
                                                                             )}
 
 
@@ -567,14 +569,14 @@ const MyListsPage = () => {
                                                                                             margin: '1px',
                                                                                         }}
                                                                                     >
-                                                                                        {genre} {/* Affiche uniquement le genre correspondant */}
+                                                                                        {genre}
                                                                                     </Box>
                                                                                 ))
                                                                             ) : (
                                                                                 <Typography sx={{
                                                                                     color: '#888',
                                                                                     fontStyle: 'italic'
-                                                                                }}>Non spécifié</Typography>
+                                                                                }}>{t("listPage.notSpecified")}</Typography>
                                                                             )}
                                                                         </TableCell>
 

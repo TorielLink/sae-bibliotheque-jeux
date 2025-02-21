@@ -7,13 +7,14 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import {useDropzone} from 'react-dropzone';
+import {useTranslation} from "react-i18next";
 
 const API_URL = '/users';
 
 const SettingsPage = () => {
     const {user, token, setUser, logout} = useContext(AuthContext);
     const userId = user?.id;
-
+    const {t} = useTranslation();
     // États pseudo
     const [newPseudo, setNewPseudo] = useState(user?.username || '');
     const [pseudoMessage, setPseudoMessage] = useState('');
@@ -67,13 +68,10 @@ const SettingsPage = () => {
 
     // Fonction de mise à jour de l'utilisateur
 const updateUser = async (updates, isFormData = false) => {
-  // 1) Si c'est du FormData, on ne fait pas de "clean"
   if (isFormData) {
     return fetch(`${API_URL}/${userId}`, {
       method: 'PUT',
       headers: {
-        // IMPORTANT: pas de 'Content-Type' explicite ici,
-        // fetch le mettra automatiquement en multipart/form-data
         'Authorization': `Bearer ${token}`
       },
       body: updates // c'est ton FormData intact
@@ -128,21 +126,21 @@ const updateUser = async (updates, isFormData = false) => {
             if (result) {
                 setSnackbar({
                     open: true,
-                    message: 'Votre pseudo a été mis à jour avec succès.',
+                    message: t("settingsPage.majSpeudo"),
                     severity: 'success',
                 });
                 setExpandedAccordion(false);
             } else {
                 setSnackbar({
                     open: true,
-                    message: 'Erreur lors de la mise à jour du pseudo.',
+                    message: t("settingsPage.errorMaj"),
                     severity: 'error',
                 });
             }
         } else {
             setSnackbar({
                 open: true,
-                message: 'Aucune modification de pseudo détectée.',
+                message: t("settingsPage.noModifFind"),
                 severity: 'info',
             });
         }
@@ -153,7 +151,7 @@ const updateUser = async (updates, isFormData = false) => {
         if (!profilePictureFile) {
             setSnackbar({
                 open: true,
-                message: 'Aucune nouvelle photo sélectionnée.',
+                message: t("settingsPage.noPicturesSelect"),
                 severity: 'info',
             });
             return;
@@ -166,14 +164,14 @@ const updateUser = async (updates, isFormData = false) => {
         if (result) {
             setSnackbar({
                 open: true,
-                message: 'Votre photo de profil a été mise à jour avec succès.',
+                message: t("settingsPage.majPicture"),
                 severity: 'success',
             });
             setExpandedAccordion(false);
         } else {
             setSnackbar({
                 open: true,
-                message: 'Erreur lors de la mise à jour de la photo de profil.',
+                message: t("settingsPage.errorMajPicture"),
                 severity: 'error',
             });
         }
@@ -185,7 +183,7 @@ const updateUser = async (updates, isFormData = false) => {
             if (result) {
                 setSnackbar({
                     open: true,
-                    message: 'Votre mot de passe a été mis à jour avec succès.',
+                    message: t("settingsPage.successPassword"),
                     severity: 'success',
                 });
                 setOldPassword('');
@@ -195,14 +193,14 @@ const updateUser = async (updates, isFormData = false) => {
             } else {
                 setSnackbar({
                     open: true,
-                    message: 'Erreur lors de la mise à jour du mot de passe.',
+                    message: t("settingsPage.errorPassword"),
                     severity: 'error',
                 });
             }
         } else {
             setSnackbar({
                 open: true,
-                message: 'Erreur : veuillez vérifier vos entrées.',
+                message:t("settingsPage.errorEntry"),
                 severity: 'error',
             });
         }
@@ -260,7 +258,7 @@ const updateUser = async (updates, isFormData = false) => {
                 <CardContent sx={{p: 0}}>
                     <Typography variant="h4" component="h1" gutterBottom fontWeight="bold"
                                 fontSize={{xs: '1.2rem', sm: '1.5rem'}}>
-                        Paramètres du Compte
+                        {t("settingsPage.settingsAccount")}
                     </Typography>
 
                     {/* Ajout de l'Avatar et du Pseudo de l'utilisateur */}
@@ -285,13 +283,13 @@ const updateUser = async (updates, isFormData = false) => {
                         <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                             <Stack direction="row" alignItems="center" spacing={1}>
                                 <PersonIcon color="primary"/>
-                                <Typography variant="h6">Modifier le pseudo</Typography>
+                                <Typography variant="h6">{t("settingsPage.modifySpeudo")}</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Stack spacing={1.5}>
                                 <Typography variant="body2" color="text.secondary" sx={{fontSize: '0.8rem'}}>
-                                    Pseudo actuel : <strong>{user?.username}</strong>
+                                    {t("settingsPage.actualSpeudo")} <strong>{user?.username}</strong>
                                 </Typography>
                                 <TextField
                                     type="text"
@@ -304,7 +302,7 @@ const updateUser = async (updates, isFormData = false) => {
                                     inputProps={{style: {fontSize: '0.8rem'}}}
                                 />
                                 <Button variant="contained" onClick={handleUpdatePseudo} size="small">
-                                    Enregistrer le pseudo
+                                    {t("settingsPage.register")}
                                 </Button>
                             </Stack>
                         </AccordionDetails>
@@ -320,13 +318,13 @@ const updateUser = async (updates, isFormData = false) => {
                         <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                             <Stack direction="row" alignItems="center" spacing={1}>
                                 <PersonIcon color="primary"/>
-                                <Typography variant="h6">Photo de profil</Typography>
+                                <Typography variant="h6">{t("settingsPage.profilPicture")}</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Stack spacing={1.5}>
                                 <Typography variant="body2" color="text.secondary" sx={{fontSize: '0.8rem'}}>
-                                    Photo de profil actuelle :
+                                    {t("settingsPage.actualPicture")}
                                 </Typography>
                                 <Avatar
                                     src={user?.profile_picture ? `http://localhost:8080${user.profile_picture}` : 'https://via.placeholder.com/150'}
@@ -335,7 +333,7 @@ const updateUser = async (updates, isFormData = false) => {
                                 />
 
                                 <Typography variant="body2" color="text.secondary" sx={{fontSize: '0.8rem'}}>
-                                    Nouvelle photo (optionnel) :
+                                  {t("settingsPage.newPictureOpt")}
                                 </Typography>
                                 <Box
                                     {...getRootProps()}
@@ -355,11 +353,11 @@ const updateUser = async (updates, isFormData = false) => {
                                     {isDragActive ? (
                                         <Typography variant="body2" color="var(--primary-color)"
                                                     sx={{fontSize: '0.75rem'}}>
-                                            Déposez l'image ici...
+                                            {t("settingsPage.dropPicture")}
                                         </Typography>
                                     ) : (
                                         <Typography variant="body2" sx={{fontSize: '0.75rem'}}>
-                                            Glissez-déposez une image ou cliquez pour sélectionner
+                                           {t("settingsPage.sliderPicture")}
                                         </Typography>
                                     )}
                                 </Box>
@@ -374,7 +372,7 @@ const updateUser = async (updates, isFormData = false) => {
                                 )}
 
                                 <Button variant="contained" onClick={handleUpdateProfilePicture} size="small">
-                                    Enregistrer la photo
+                                  {t("settingsPage.savePicture")}
                                 </Button>
                             </Stack>
                         </AccordionDetails>
@@ -390,14 +388,14 @@ const updateUser = async (updates, isFormData = false) => {
                         <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                             <Stack direction="row" alignItems="center" spacing={1}>
                                 <LockIcon color="primary"/>
-                                <Typography variant="h6">Modifier le mot de passe</Typography>
+                                <Typography variant="h6">{t("settingsPage.modifyPassword")}</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Stack spacing={1.5}>
                                 <TextField
                                     type="password"
-                                    label="Ancien mot de passe"
+                                    label={t("settingsPage.oldPassword")}
                                     variant="outlined"
                                     value={oldPassword}
                                     onChange={(e) => setOldPassword(e.target.value)}
@@ -407,7 +405,7 @@ const updateUser = async (updates, isFormData = false) => {
                                 />
                                 <TextField
                                     type="password"
-                                    label="Nouveau mot de passe"
+                                    label={t("settingsPage.newPassword")}
                                     variant="outlined"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
@@ -417,7 +415,7 @@ const updateUser = async (updates, isFormData = false) => {
                                 />
                                 <TextField
                                     type="password"
-                                    label="Confirmer le nouveau mot de passe"
+                                    label={t("settingsPage.confirmPassword")}
                                     variant="outlined"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -431,7 +429,8 @@ const updateUser = async (updates, isFormData = false) => {
                                     disabled={!isPasswordValid}
                                     size="small"
                                 >
-                                    Mettre à jour le mot de passe
+                                    {t("settingsPage.majPassword")}
+
                                 </Button>
                             </Stack>
                         </AccordionDetails>
@@ -445,7 +444,7 @@ const updateUser = async (updates, isFormData = false) => {
                             variant="contained"
                             color="error"
                             onClick={async () => {
-                                const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer votre compte ?');
+                                const confirmDelete = window.confirm(t("settingsPage.confirmDelete"));
                                 if (confirmDelete) {
                                     try {
                                         console.log('Suppression du compte utilisateur ID:', userId);
@@ -457,20 +456,20 @@ const updateUser = async (updates, isFormData = false) => {
                                         });
                                         const data = await response.json();
                                         if (response.ok) {
-                                            alert('Compte supprimé.');
+                                            alert(t("settingsPage.deleteAccount"));
                                             logout();
                                         } else {
-                                            alert(`Erreur lors de la suppression du compte: ${data.message}`);
+                                            alert(`t("settingsPage.errorDelete") ${data.message}`);
                                         }
                                     } catch (error) {
                                         console.error('Erreur lors de la suppression du compte:', error);
-                                        alert('Erreur lors de la suppression du compte.');
+                                        alert(t("settingsPage.errorDelete"));
                                     }
                                 }
                             }}
                             size="small"
                         >
-                            Supprimer mon compte
+                            {t("settingsPage.deleteAccountButton")}
                         </Button>
                     </Stack>
                 </CardContent>

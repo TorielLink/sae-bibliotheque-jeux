@@ -1,6 +1,7 @@
 import React, {useState, useContext} from "react";
 import {FaStar} from "react-icons/fa";
 import {AuthContext} from "./AuthContext";
+import {useTranslation} from 'react-i18next';
 
 const colors = {
     orange: "#FFBA5A",
@@ -18,6 +19,7 @@ const platforms = [
 ];
 
 function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
+    const {t} = useTranslation();
     const [currentValue, setCurrentValue] = useState(0);
     const [hoverValue, setHoverValue] = useState(undefined);
     const [comment, setComment] = useState("");
@@ -44,7 +46,7 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
         e.preventDefault();
 
         if (!comment.trim() || !platform) {
-            setMessage({type: "error", text: "Veuillez remplir tous les champs obligatoires."});
+            setMessage({type: "error", text: t("error.emptyFields")});
             return;
         }
 
@@ -53,7 +55,7 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
 
             const selectedPlatform = platforms.find(p => p.id === parseInt(platform));
             if (!selectedPlatform) {
-                setMessage({type: "error", text: "Plateforme invalide."});
+                setMessage({type: "error", text: t("error.invalidPlatform")});
                 return;
             }
 
@@ -79,14 +81,14 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
             });
 
             let data = null;
-            let message = "Une erreur est survenue.";
+            let message = t("review.comments.error");
 
             try {
                 const text = await response.text();
                 data = text ? JSON.parse(text) : {};
 
                 if (response.ok) {
-                    message = "Votre avis a été ajouté avec succès !";
+                    message = t("review.comments.success");
                 } else {
                     throw new Error(data.message || message);
                 }
@@ -136,7 +138,7 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
                 <form onSubmit={handleSubmit}>
 
                     <div style={styles.gameNameBlock}>
-                        <strong>Nom du jeu :</strong> {gameName || "Non spécifié"}
+                        <strong>{t("listPage.tableHeaders.gameName")} :</strong> {gameName || t("game.notSpecified")}
                     </div>
 
                     <div style={styles.starsBlock}>
@@ -159,13 +161,13 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
                     <div style={styles.selectContainer}>
                         <div style={styles.inlineSelects}>
                             <div>
-                                <label style={styles.label}>Plateforme</label>
+                                <label style={styles.label}>{t("category.platform")}</label>
                                 <select
                                     value={platform}
                                     onChange={(e) => setPlatform(e.target.value)}
                                     style={styles.select}
                                 >
-                                    <option value="">Sélectionnez une plateforme</option>
+                                    <option value="">{t("review.comments.selectPlatform")}</option>
                                     {platforms.map((p) => (
                                         <option key={p.id} value={p.id}>
                                             {p.name}
@@ -174,22 +176,22 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
                                 </select>
                             </div>
                             <div>
-                                <label style={styles.label}>Visibilité</label>
+                                <label style={styles.label}>{t("review.comments.visibility")}</label>
                                 <select
                                     value={visibility}
                                     onChange={(e) => setVisibility(e.target.value)}
                                     style={styles.select}
                                 >
-                                    <option value="Privé">Privé</option>
-                                    <option value="Public">Public</option>
+                                    <option value="Privé">{t("review.comments.private")}</option>
+                                    <option value="Public">{t("review.comments.public")}</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <label style={styles.label}>Avis</label>
+                    <label style={styles.label}>{t("pageName.reviews")}</label>
                     <textarea
-                        placeholder="Mon avis..."
+                        placeholder={t("review.comments.myReview")}
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         style={styles.textarea}
@@ -197,10 +199,10 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
 
                     <div style={styles.actions}>
                         <button type="button" onClick={handleCancel} style={styles.cancelButton}>
-                            Annuler
+                            {t("actions.cancel")}
                         </button>
                         <button type="submit" style={styles.submitButton}>
-                            Ajouter
+                            {t("actions.add")}
                         </button>
                     </div>
                 </form>
