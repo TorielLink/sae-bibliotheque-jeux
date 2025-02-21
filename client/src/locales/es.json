@@ -12,15 +12,15 @@
     "contactUsPlatforms": ""
   },
   "details": {
-    "informations": "Detalles",
-    "logs": "Periódicos",
-    "medias": "Media",
-    "notSpecified": "No especificado",
-    "reviews": "Anuncios"
+    "informations": "",
+    "logs": "",
+    "medias": "",
+    "notSpecified": "",
+    "reviews": ""
   },
   "error": {
     "loadingComments": "No podía cargar revisiones recientes. Por favor, intente de nuevo más tarde.",
-    "loadingGameData": "No puede cargar datos del juego.",
+    "loadingGameData": "",
     "loadingGames": "No podía cargar los juegos. Por favor, intente de nuevo más tarde.",
     "loadingReviews": "No podía cargar los avisos. Por favor, inténtalo de nuevo.",
     "loginError": "Error de conexión.",

@@ -12,15 +12,15 @@
     "contactUsPlatforms": ""
   },
   "details": {
-    "informations": "Details",
-    "logs": "Zeitungen",
-    "medias": "Medien",
-    "notSpecified": "Nicht spezifiziert",
-    "reviews": "Ankündigungen"
+    "informations": "",
+    "logs": "",
+    "medias": "",
+    "notSpecified": "",
+    "reviews": ""
   },
   "error": {
     "loadingComments": "Konnte die letzten Bewertungen nicht laden. Bitte versuchen Sie es später wieder.",
-    "loadingGameData": "Kann Spieldaten nicht laden.",
+    "loadingGameData": "",
     "loadingGames": "Könnte die Spiele nicht laden. Bitte versuchen Sie es später wieder.",
     "loadingReviews": "Ich konnte die Mitteilungen nicht laden. Bitte versuchen Sie es noch mal.",
     "loginError": "Verbindungsfehler.",

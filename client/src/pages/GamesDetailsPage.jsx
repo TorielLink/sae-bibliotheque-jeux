@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react';
 import {useParams} from "react-router-dom"; // pour récupérer les paramètres de l'URL
 import GameDetails from "../components/game-details/GameDetails.jsx";
 import GameReviews from "../components/game-details/GameReviews.jsx";
-import GameLogs from '../components/game-details/game-logs/GameLogs.jsx';
 import GameMedias from "../components/game-details/GameMedias.jsx";
 import {Box, CircularProgress, Typography, useMediaQuery} from "@mui/material";
 import GameMobileQuickActions from "../components/game-details/GameMobileQuickActions.jsx";

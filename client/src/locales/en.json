@@ -12,15 +12,15 @@
     "contactUsPlatforms": ""
   },
   "details": {
-    "informations": "Details",
-    "logs": "Newspapers",
-    "medias": "Media",
-    "notSpecified": "Not specified",
-    "reviews": "Announcements"
+    "informations": "",
+    "logs": "",
+    "medias": "",
+    "notSpecified": "",
+    "reviews": ""
   },
   "error": {
     "loadingComments": "Could not load recent reviews. Please try again later.",
-    "loadingGameData": "Cannot load game data.",
+    "loadingGameData": "",
     "loadingGames": "Could not load the games. Please try again later.",
     "loadingReviews": "Could not load the notices. Please try again.",
     "loginError": "Connection error.",

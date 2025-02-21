@@ -13,7 +13,7 @@ console.log("🔍 Chemin image profil:", user.profile_picture);
 
     useEffect(() => {
         if (isAuthenticated) {
-            console.log('Informations utilisateur récupérées :', user); // il faudra le supprimé
+            console.log('Informations utilisateur récupérées :', user);
         }
     }, [isAuthenticated, user]);
 

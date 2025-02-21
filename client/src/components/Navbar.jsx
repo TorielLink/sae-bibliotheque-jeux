@@ -13,7 +13,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SearchBar from './SearchBar';
-// import UserMenu from "./UserMenu.jsx";
+import UserMenu from "./userMenu.jsx";
 
 function Navbar() {
     const theme = useTheme();
@@ -219,8 +219,8 @@ function Navbar() {
                             {t("user.logIn")}
                         </Button>
                     ) : (
-                        <></>
-                        // <UserMenu/> // Affiche le menu utilisateur si connecté
+
+                         <UserMenu/>
                     )}
 
                     {/* Bouton de bascule de langue */}

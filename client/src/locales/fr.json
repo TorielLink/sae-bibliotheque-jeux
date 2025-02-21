@@ -12,15 +12,15 @@
     "contactUsPlatforms": "Vous pouvez nous contacter via les plateformes suivantes :"
   },
   "details": {
-    "informations": "Détails",
-    "logs": "Journaux",
-    "medias": "Médias",
-    "notSpecified": "Non précisé",
-    "reviews": "Avis"
+    "informations": "informations",
+    "logs": "logs",
+    "medias": "medias",
+    "notSpecified": "notSpecified",
+    "reviews": "reviews"
   },
   "error": {
     "loadingComments": "Impossible de charger les avis récents. Veuillez réessayer plus tard.",
-    "loadingGameData": "Impossible de charger les données du jeu.",
+    "loadingGameData": "loadingGameData",
     "loadingGames": "Impossible de charger les jeux. Veuillez réessayer plus tard.",
     "loadingReviews": "Impossible de charger les avis. Veuillez réessayer.",
     "loginError": "Erreur de connexion.",
@@ -133,30 +133,10 @@
     }
   },
   "terms": {
-    "intro": {
-      "title": "1. Introduction",
-      "content": "Bienvenue sur notre plateforme. En accédant ou en utilisant notre service, vous acceptez les termes et conditions suivants."
-    },
-    "usage": {
-      "title": "2. Utilisation de la plateforme",
-      "content": "Vous vous engagez à utiliser notre plateforme conformément aux lois et réglementations en vigueur. Toute utilisation abusive ou illégale est interdite."
-    },
-    "intellectualProperty": {
-      "title": "3. Propriété intellectuelle",
-      "content": "Tous les contenus présents sur ce site (textes, images, logos, etc.) sont protégés par les lois relatives à la propriété intellectuelle. Vous ne pouvez pas les utiliser sans notre autorisation écrite préalable."
-    },
-    "liability": {
-      "title": "4. Limitation de responsabilité",
-      "content": "Nous ne sommes pas responsables des dommages directs ou indirects pouvant découler de l'utilisation de notre plateforme."
-    },
-    "modifications": {
-      "title": "5. Modifications",
-      "content": "Nous nous réservons le droit de modifier ces termes et conditions à tout moment. Les modifications seront effectives dès leur publication sur cette page."
-    },
     "contact": {
-      "title": "6. Contact",
       "content": "Pour toute question concernant ces termes et conditions, veuillez nous contacter à",
-      "email": "contact-scrib@example.com"
+      "email": "contact-scrib@example.com",
+      "title": "6. Contact"
     },
     "discoverPrivacy": "Voir la politique de confidentialité"
   },
