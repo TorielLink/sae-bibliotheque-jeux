@@ -32,8 +32,6 @@ console.log("🔍 Chemin image profil:", user.profile_picture);
     };
 
     if (!isAuthenticated) return null;
-console.log("🔍 URL complète de l'image :", `http://localhost:8080${user.profile_picture}`);
-
     return (
         <>
             {/* Avatar utilisateur */}

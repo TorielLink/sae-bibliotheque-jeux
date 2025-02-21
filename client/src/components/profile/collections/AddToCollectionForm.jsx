@@ -25,7 +25,7 @@ function AddToCollectionForm({gameId, open, onClose, alertState, setAlertState})
     const fetchData = async () => {
         try {
             setLoading(true)
-            const response = await fetch(`http://localhost:8080/game-collections/user/${user.id}`)
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-collections/user/${user.id}`)
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
 
             const data = await response.json()
@@ -72,7 +72,7 @@ function AddToCollectionForm({gameId, open, onClose, alertState, setAlertState})
 
     const addToCollections = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/collection-content/update-collections/game/${gameId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/collection-content/update-collections/game/${gameId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

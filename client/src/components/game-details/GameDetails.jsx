@@ -82,7 +82,7 @@ const GameDetails = ({
     }
     const addToCollections = async (selectedCollections) => {
         try {
-            const response = await fetch(`http://localhost:8080/collection-content/update-collections/game/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/collection-content/update-collections/game/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -263,7 +263,7 @@ const GameDetails = ({
                                         disabled={false}
                                         selectedItem={status}
                                         setSelectedItem={changeStatus}
-                                        fetchUrl={`http://localhost:8080/status`}
+                                        fetchUrl={`${import.meta.env.VITE_BACKEND_URL}/status`}
                                         idName={'game_status_id'}
                                     />
                                 </DialogContent>

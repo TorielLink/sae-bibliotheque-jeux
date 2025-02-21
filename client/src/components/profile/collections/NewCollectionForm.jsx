@@ -33,7 +33,7 @@ function NewCollectionForm({
     async function fetchData() {
         try {
             setLoading(true)
-            const response = await fetch(`http://localhost:8080/privacy-settings`)
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/privacy-settings`)
             if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
             const data = await response.json()
             setPrivacySettings(data.data)
