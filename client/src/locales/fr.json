@@ -62,10 +62,34 @@
     "signupError": "Une erreur est survenue. Veuillez réessayer.",
     "signupSuccess": "Inscription réussie"
   },
+  "mentorship": {
+    "description": "Ce projet bénéficie de l'accompagnement d'un mentor expérimenté et du soutien d'investisseurs engagés.",
+    "discoverProject": "Voir le projet",
+    "investors": {
+      "role": {
+        "1": "PDG",
+        "2": "Fondatrice",
+        "3": "Partenaire"
+      },
+      "title": "Nos investisseurs"
+    },
+    "referent": {
+      "description": "Monsieur Fessy joue un rôle clef dans l'encadrement de ce projet. Avec une expertise approfondie en informatique et une passion pour la pédagogie, il fournit des conseils précieux et un soutien académique de qualité.",
+      "role": "Maître de Conférences et Chef du Département Informatique, IUT de Paris",
+      "title": "Notre professeur référent"
+    }
+  },
   "pageName": {
     "catalogue": "Catalogue",
     "home": "Accueil",
     "reviews": "Avis"
+  },
+  "privacy": {
+    "discoverTerms": "Voir les conditions d'utilisation",
+    "rights": {
+      "contact": "Pour exercer vos droits, contactez-nous à ",
+      "email": "privacy-scrib@example.com"
+    }
   },
   "project": {
     "advancedFeatures": {
@@ -107,6 +131,34 @@
       "devFront&UXUI": "Développeuse Frontend et UI/UX Designer",
       "devFull": "Développeur Fullstack"
     }
+  },
+  "terms": {
+    "intro": {
+      "title": "1. Introduction",
+      "content": "Bienvenue sur notre plateforme. En accédant ou en utilisant notre service, vous acceptez les termes et conditions suivants."
+    },
+    "usage": {
+      "title": "2. Utilisation de la plateforme",
+      "content": "Vous vous engagez à utiliser notre plateforme conformément aux lois et réglementations en vigueur. Toute utilisation abusive ou illégale est interdite."
+    },
+    "intellectualProperty": {
+      "title": "3. Propriété intellectuelle",
+      "content": "Tous les contenus présents sur ce site (textes, images, logos, etc.) sont protégés par les lois relatives à la propriété intellectuelle. Vous ne pouvez pas les utiliser sans notre autorisation écrite préalable."
+    },
+    "liability": {
+      "title": "4. Limitation de responsabilité",
+      "content": "Nous ne sommes pas responsables des dommages directs ou indirects pouvant découler de l'utilisation de notre plateforme."
+    },
+    "modifications": {
+      "title": "5. Modifications",
+      "content": "Nous nous réservons le droit de modifier ces termes et conditions à tout moment. Les modifications seront effectives dès leur publication sur cette page."
+    },
+    "contact": {
+      "title": "6. Contact",
+      "content": "Pour toute question concernant ces termes et conditions, veuillez nous contacter à",
+      "email": "contact-scrib@example.com"
+    },
+    "discoverPrivacy": "Voir la politique de confidentialité"
   },
   "user": {
     "logIn": "Se connecter"

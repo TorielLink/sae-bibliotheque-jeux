@@ -62,10 +62,34 @@
     "signupError": "An error occurred. Please try again.",
     "signupSuccess": "Successful registration"
   },
+  "mentorship": {
+    "description": "",
+    "discoverProject": "",
+    "investors": {
+      "role": {
+        "1": "CEO",
+        "2": "Founder",
+        "3": "Partner"
+      },
+      "title": ""
+    },
+    "referent": {
+      "description": "",
+      "role": "",
+      "title": ""
+    }
+  },
   "pageName": {
     "catalogue": "Catalogue",
     "home": "Home",
     "reviews": "Reviews"
+  },
+  "privacy": {
+    "discoverTerms": "",
+    "rights": {
+      "contact": "",
+      "email": ""
+    }
   },
   "project": {
     "advancedFeatures": {
@@ -107,6 +131,14 @@
       "devFront&UXUI": "",
       "devFull": ""
     }
+  },
+  "terms": {
+    "contact": {
+      "content": "",
+      "email": "",
+      "title": ""
+    },
+    "discoverPrivacy": ""
   },
   "user": {
     "logIn": "Log In"

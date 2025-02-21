@@ -1,8 +1,10 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import {useTranslation} from 'react-i18next';
 
 const PrivacyPolicy = () => {
+    const {t} = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const styles = getStyles(theme);
@@ -12,82 +14,37 @@ const PrivacyPolicy = () => {
             {isMobile && (
                 <div style={styles.linkContainer}>
                     <a href="/terms" style={styles.mobileLink}>
-                        Voir les conditions d'utilisation
+                        {t("privacy.discoverTerms")}
                     </a>
                 </div>
             )}
 
-            <h1 style={styles.header}>Politique & confidentialité</h1>
-            <section style={styles.section}>
-                <h2 style={styles.subHeader}>1. Introduction</h2>
-                <p style={styles.text}>
-                    La protection de vos données personnelles est une priorité pour nous. Cette page détaille comment nous collectons, utilisons et protégeons vos informations.
-                </p>
-            </section>
+            <h1 style={styles.header}>{t("footer.privacyPolicy")}</h1>
+            {["intro", "data", "usage", "sharing", "security", "rights", "modifications"].map((section, index) => (
+                <section key={index} style={styles.section}>
+                    <h2 style={styles.subHeader}>{t(`privacy.${section}.title`)}</h2>
+                    <p style={styles.text}>{t(`privacy.${section}.content`)}</p>
 
-            <section style={styles.section}>
-                <h2 style={styles.subHeader}>2. Données collectées</h2>
-                <p style={styles.text}>
-                    Nous collectons les données suivantes lorsque vous utilisez notre plateforme :
-                </p>
-                <ul style={styles.list}>
-                    <li>Informations personnelles : nom, e-mail, etc.</li>
-                    <li>Données d’utilisation : pages consultées, temps passé sur le site, etc.</li>
-                    <li>Informations techniques : adresse IP, type de navigateur, etc.</li>
-                </ul>
-            </section>
+                    {["data", "usage", "sharing", "rights"].includes(section) && (
+                        <ul style={styles.list}>
+                            {(typeof t(`privacy.${section}.list`, { returnObjects: true }) === 'object')
+                                ? Object.entries(t(`privacy.${section}.list`, { returnObjects: true })).map(([key, value], idx) => (
+                                    <li key={idx}>{value}</li>
+                                ))
+                                : null}
+                        </ul>
+                    )}
 
-            <section style={styles.section}>
-                <h2 style={styles.subHeader}>3. Utilisation des données</h2>
-                <p style={styles.text}>
-                    Les données collectées sont utilisées pour :
-                </p>
-                <ul style={styles.list}>
-                    <li>Améliorer votre expérience utilisateur.</li>
-                    <li>Envoyer des communications pertinentes.</li>
-                    <li>Analyser et optimiser les performances de la plateforme.</li>
-                </ul>
-            </section>
-
-            <section style={styles.section}>
-                <h2 style={styles.subHeader}>4. Partage des données</h2>
-                <p style={styles.text}>
-                    Vos données ne sont jamais vendues à des tiers. Cependant, elles peuvent être partagées avec :
-                </p>
-                <ul style={styles.list}>
-                    <li>Fournisseurs de services tiers (hébergement, analyse de données).</li>
-                    <li>Autorités légales, si requis par la loi.</li>
-                </ul>
-            </section>
-
-            <section style={styles.section}>
-                <h2 style={styles.subHeader}>5. Sécurité</h2>
-                <p style={styles.text}>
-                    Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données contre les accès non autorisés, la perte ou l’altération.
-                </p>
-            </section>
-
-            <section style={styles.section}>
-                <h2 style={styles.subHeader}>6. Vos droits</h2>
-                <p style={styles.text}>
-                    Conformément au RGPD (ou toute législation locale), vous avez les droits suivants :
-                </p>
-                <ul style={styles.list}>
-                    <li>Accéder à vos données personnelles.</li>
-                    <li>Demander la modification ou la suppression de vos données.</li>
-                    <li>Vous opposer à l’utilisation de vos données à des fins spécifiques.</li>
-                </ul>
-                <p style={styles.text}>
-                    Pour exercer vos droits, contactez-nous à <a href="mailto:privacy-scrib@example.com" style={styles.link}>privacy-scrib@example.com</a>.
-                </p>
-            </section>
-
-            <section style={styles.section}>
-                <h2 style={styles.subHeader}>7. Modifications</h2>
-                <p style={styles.text}>
-                    Cette politique de confidentialité peut être mise à jour périodiquement. Nous vous encourageons à consulter cette page régulièrement pour rester informé des changements.
-                </p>
-            </section>
+                    {section === "rights" && (
+                        <p style={styles.text}>
+                            {t("privacy.rights.contact")}
+                            <a href="mailto:privacy-scrib@example.com" style={styles.link}>
+                                {t("privacy.rights.email")}
+                            </a>
+                        </p>
+                    )}
+                </section>
+            ))}
         </div>
     );
 };

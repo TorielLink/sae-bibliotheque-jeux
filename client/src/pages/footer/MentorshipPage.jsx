@@ -1,8 +1,10 @@
 import React from 'react';
-import { useTheme } from '@mui/material/styles';
+import {useTheme} from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import {useTranslation} from 'react-i18next';
 
 const MentorshipPage = () => {
+    const {t} = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const styles = getStyles(theme);
@@ -12,21 +14,21 @@ const MentorshipPage = () => {
             {isMobile && (
                 <div style={styles.linksContainer}>
                     <a href="/project" style={styles.mobileLink}>
-                        Voir le projet
+                        {t("mentorship.discoverProject")}
                     </a>
                 </div>
             )}
 
-            <h1 style={styles.header}>L'encadrement</h1>
+            <h1 style={styles.header}>{t("footer.mentorship")}</h1>
             <p style={styles.text}>
-                Ce projet bénéficie de l'accompagnement d'un mentor expérimenté et du soutien d'investisseurs engagés.
+                {t("mentorship.description")}
             </p>
 
             {/* Section : Mentor */}
             <div style={styles.section}>
                 <h2 style={{...styles.subHeader, borderBottom: '2px solid ' + theme.palette.colors.red}}>
-                    Notre professeur référent</h2>
-                <div style={{ ...styles.mentor, flexDirection: isMobile ? 'column' : 'row' }}>
+                    {t("mentorship.referent.title")}</h2>
+                <div style={{...styles.mentor, flexDirection: isMobile ? 'column' : 'row'}}>
                     <img
                         src="https://via.placeholder.com/150"
                         alt="Jérôme FESSY"
@@ -35,13 +37,10 @@ const MentorshipPage = () => {
                     <div>
                         <h3 style={styles.mentorOrInvestorName}>Jérôme FESSY</h3>
                         <p style={styles.mentorOrInvestorRole}>
-                            Maître de Conférences et Chef du Département Informatique, IUT de
-                            Paris
+                            {t("mentorship.referent.role")}
                         </p>
                         <p style={styles.text}>
-                            Monsieur Fessy joue un rôle clef dans l'encadrement de ce projet. Avec une expertise
-                            approfondie en informatique et une passion pour la pédagogie, il fournit des conseils
-                            précieux et un soutien académique de qualité.
+                            {t("mentorship.referent.description")}
                         </p>
                     </div>
                 </div>
@@ -50,7 +49,7 @@ const MentorshipPage = () => {
             {/* Section : Investisseurs */}
             <div style={styles.section}>
                 <h2 style={{...styles.subHeader, borderBottom: '2px solid ' + theme.palette.colors.yellow}}>
-                    Nos investisseurs</h2>
+                    {t("mentorship.investors.title")}</h2>
                 <div style={styles.investors}>
                     <div style={styles.investorCard}>
                         <img
@@ -59,7 +58,7 @@ const MentorshipPage = () => {
                             style={styles.mentorOrInvestorImage}
                         />
                         <h4 style={styles.mentorOrInvestorName}>Alex Dupont</h4>
-                        <p style={styles.mentorOrInvestorRole}>CEO, StartupTech</p>
+                        <p style={styles.mentorOrInvestorRole}>{t("mentorship.investors.role.1")}, StartupTech</p>
                     </div>
                     <div style={styles.investorCard}>
                         <img
@@ -68,7 +67,7 @@ const MentorshipPage = () => {
                             style={styles.mentorOrInvestorImage}
                         />
                         <h4 style={styles.mentorOrInvestorName}>Marie Leblanc</h4>
-                        <p style={styles.mentorOrInvestorRole}>Fondatrice, InnovInvest</p>
+                        <p style={styles.mentorOrInvestorRole}>{t("mentorship.investors.role.2")}, InnovInvest</p>
                     </div>
                     <div style={styles.investorCard}>
                         <img
@@ -77,7 +76,7 @@ const MentorshipPage = () => {
                             style={styles.mentorOrInvestorImage}
                         />
                         <h4 style={styles.mentorOrInvestorName}>Julien Moreau</h4>
-                        <p style={styles.mentorOrInvestorRole}>Partner, Future Ventures</p>
+                        <p style={styles.mentorOrInvestorRole}>{t("mentorship.investors.role.3")}, Future Ventures</p>
                     </div>
                 </div>
             </div>

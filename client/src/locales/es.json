@@ -62,10 +62,34 @@
     "signupError": "Se produjo un error. Por favor, inténtalo de nuevo.",
     "signupSuccess": "Registro exitoso"
   },
+  "mentorship": {
+    "description": "",
+    "discoverProject": "",
+    "investors": {
+      "role": {
+        "1": "",
+        "2": "",
+        "3": ""
+      },
+      "title": ""
+    },
+    "referent": {
+      "description": "",
+      "role": "",
+      "title": ""
+    }
+  },
   "pageName": {
     "catalogue": "",
     "home": "Inicio",
     "reviews": ""
+  },
+  "privacy": {
+    "discoverTerms": "",
+    "rights": {
+      "contact": "",
+      "email": ""
+    }
   },
   "project": {
     "advancedFeatures": {
@@ -107,6 +131,14 @@
       "devFront&UXUI": "",
       "devFull": ""
     }
+  },
+  "terms": {
+    "contact": {
+      "content": "",
+      "email": "",
+      "title": ""
+    },
+    "discoverPrivacy": ""
   },
   "user": {
     "logIn": ""
