@@ -26,7 +26,7 @@ export default function ReviewsPage() {
         const fetchComments = async () => {
             setLoading(true);
             try {
-                const response = await fetch("http://localhost:8080/game-reviews");
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews`);
                 if (!response.ok) {
                     throw new Error(`Erreur ${response.status}: ${response.statusText}`);
                 }
@@ -41,8 +41,8 @@ export default function ReviewsPage() {
             }
         };
 
-        fetchComments();
-    }, []);
+    fetchComments();
+}, []);
 
     // Filtrer localement les avis par note
     const filteredComments = useMemo(() => {

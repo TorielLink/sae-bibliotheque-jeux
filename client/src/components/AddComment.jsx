@@ -69,7 +69,7 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
                 body.rating_value = currentValue;
             }
 
-            const response = await fetch("http://localhost:8080/game-reviews", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -134,7 +134,7 @@ function AddComment({gameId, gameName, onCommentAdded, onCancel}) {
                     </div>
                 )}
                 <form onSubmit={handleSubmit}>
-                    
+
                     <div style={styles.gameNameBlock}>
                         <strong>Nom du jeu :</strong> {gameName || "Non spécifié"}
                     </div>

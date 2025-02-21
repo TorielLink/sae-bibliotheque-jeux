@@ -24,30 +24,28 @@ const usersModel = require('../models/users.js');
 const privacySettingsModel = require('../models/privacySettings.js');
 const statusModel = require('../models/status.js');
 const gamePlatformsModel = require('../models/gamePlatforms.js');
-const gameListModel = require('../models/gameLists.js');
-const listContentModel = require('../models/listContent.js');
+const gameCollectionsModel = require('../models/gameCollection.js');
+const collectionContentModel = require('../models/collectionContent.js');
 const gameLogsModel = require('../models/gameLogs.js');
 const gameSessionModel = require('../models/gameSessions.js');
 const gameReviewModel = require('../models/gameReviews.js');
 const gameRatingsModel = require('../models/gameRatings.js');
 const gameStatusModel = require('../models/gameStatus.js');
 const friendsModel = require('../models/friends.js');
-const userListsModel = require('../models/userLists.js');
 
 // Define models
-const users = usersModel(sequelize, DataTypes);
+const user = usersModel(sequelize, DataTypes);
 const privacySettings = privacySettingsModel(sequelize, DataTypes);
 const status = statusModel(sequelize, DataTypes);
 const gamePlatforms = gamePlatformsModel(sequelize, DataTypes);
-const gameList = gameListModel(sequelize, DataTypes);
-const listContent = listContentModel(sequelize, DataTypes);
+const gameCollection = gameCollectionsModel(sequelize, DataTypes);
+const collectionContent = collectionContentModel(sequelize, DataTypes);
 const gameLogs = gameLogsModel(sequelize, DataTypes);
 const gameSession = gameSessionModel(sequelize, DataTypes);
 const gameReview = gameReviewModel(sequelize, DataTypes);
 const gameRatings = gameRatingsModel(sequelize, DataTypes);
 const gameStatus = gameStatusModel(sequelize, DataTypes);
 const friends = friendsModel(sequelize, DataTypes);
-const userLists = userListsModel(sequelize, DataTypes);
 
 
 // sequelize.sync({force: false}) // Si vous ne voulez pas supprimer les données existantes, mettez force: false
@@ -61,20 +59,20 @@ const userLists = userListsModel(sequelize, DataTypes);
 // Associations
 const associateModels = () => {
     // Privacy Settings → Users (One-to-Many)
-    users.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'default_privacy'});
-    privacySettings.hasMany(users, {foreignKey: 'privacy_setting_id', as: 'users'});
+    user.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'default_privacy'});
+    privacySettings.hasMany(user, {foreignKey: 'privacy_setting_id', as: 'users'});
 
     // Game Reviews → Users (Many-to-One)
-    gameReview.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
-    users.hasMany(gameReview, {foreignKey: 'user_id', as: 'game_reviews'});
+    gameReview.belongsTo(user, {foreignKey: 'user_id', as: 'user'});
+    user.hasMany(gameReview, {foreignKey: 'user_id', as: 'game_reviews'});
 
     // Game Reviews → Privacy Settings (Many-to-One)
     gameReview.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'review_privacy'});
     privacySettings.hasMany(gameReview, {foreignKey: 'privacy_setting_id', as: 'reviews'});
 
     // Game Logs → Users (Many-to-One)
-    gameLogs.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
-    users.hasMany(gameLogs, {foreignKey: 'user_id', as: 'user_game_logs'});
+    gameLogs.belongsTo(user, {foreignKey: 'user_id', as: 'user'});
+    user.hasMany(gameLogs, {foreignKey: 'user_id', as: 'user_game_logs'});
 
     // Game Logs → Game Platforms (Many-to-One)
     gameLogs.belongsTo(gamePlatforms, {foreignKey: 'platform_id', as: 'platform'});
@@ -93,56 +91,44 @@ const associateModels = () => {
     gameLogs.belongsTo(gameReview, {foreignKey: 'igdb_game_id', as: 'game_review'});
 
     // Users ↔ Friends (Many-to-Many)
-    users.belongsToMany(users, {
+    user.belongsToMany(user, {
         through: friends,
         as: 'friendOf',
         foreignKey: 'user_id',
         otherKey: 'user_id_1',
     });
-    users.belongsToMany(users, {
+    user.belongsToMany(user, {
         through: friends,
         as: 'friendsWith',
         foreignKey: 'user_id_1',
         otherKey: 'user_id',
     });
 
-    // Game Lists → List Content (One-to-Many)
-    listContent.belongsTo(gameList, {foreignKey: 'game_list_id', as: 'list'});
-    gameList.hasMany(listContent, {foreignKey: 'game_list_id', as: 'contents'});
 
-    // Users ↔ Game Lists (Many-to-Many)
-    users.belongsToMany(gameList, {
-        through: userLists,
-        as: 'game_lists',
-        foreignKey: 'user_id',
-        otherKey: 'game_list_id',
-    });
-    gameList.belongsToMany(users, {
-        through: userLists,
-        as: 'users',
-        foreignKey: 'game_list_id',
-        otherKey: 'user_id',
-    });
+    // Collections
+    user.hasMany(gameCollection, {foreignKey: 'user_id', as: 'game_collections'})
+    gameCollection.belongsTo(user, {foreignKey: 'user_id', as: 'users'})
+    gameCollection.hasMany(collectionContent, {
+        foreignKey: 'game_collection_id',
+        as: 'collection_content',
+        onDelete: 'CASCADE'
+    })
+    collectionContent.belongsTo(gameCollection, {foreignKey: 'game_collection_id', as: 'game_collection'})
 
-    // Associations entre userLists et users
-    userLists.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
-    users.hasMany(userLists, {foreignKey: 'user_id', as: 'user_lists'});
+    gameCollection.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'privacy'})
+    privacySettings.hasMany(gameCollection, {foreignKey: 'privacy_setting_id', as: 'privacy_game_collection'})
 
     // Game Ratings → Users (Many-to-One)
-    gameRatings.belongsTo(users, {foreignKey: 'user_id', as: 'user'});
-    users.hasMany(gameRatings, {foreignKey: 'user_id', as: 'user_ratings'});
-
-    // Associations entre userLists et gameList
-    userLists.belongsTo(gameList, {foreignKey: 'game_list_id', as: 'game_list'});
-    gameList.hasMany(userLists, {foreignKey: 'game_list_id', as: 'user_lists'});
+    gameRatings.belongsTo(user, {foreignKey: 'user_id', as: 'user'});
+    user.hasMany(gameRatings, {foreignKey: 'user_id', as: 'user_ratings'});
 
     // Game Ratings → Privacy Settings (Many-to-One)
     gameRatings.belongsTo(privacySettings, {foreignKey: 'privacy_setting_id', as: 'rating_privacy'});
     privacySettings.hasMany(gameRatings, {foreignKey: 'privacy_setting_id', as: 'game_ratings'});
 
     // Game Status → Users (Many-to-One)
-    gameStatus.belongsTo(users, {foreignKey: 'user_id', as: 'user_status'});
-    users.hasMany(gameStatus, {foreignKey: 'user_id', as: 'game_statuses'});
+    gameStatus.belongsTo(user, {foreignKey: 'user_id', as: 'user_status'});
+    user.hasMany(gameStatus, {foreignKey: 'user_id', as: 'game_statuses'});
 
     // Game Status → Status (Many-to-One)
     gameStatus.belongsTo(status, {foreignKey: 'game_status_id', as: 'status'});
@@ -162,18 +148,17 @@ associateModels();
 
 module.exports = {
     sequelize,
-    users,
+    users: user,
     privacySettings,
     status,
     gamePlatforms,
-    gameList,
-    listContent,
+    gameCollection,
+    collectionContent,
     gameLogs,
     gameSession,
     gameReview,
     gameRatings,
     gameStatus,
     friends,
-    userLists,
     Sequelize,
 };

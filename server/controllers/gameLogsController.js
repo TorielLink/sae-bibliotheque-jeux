@@ -90,7 +90,6 @@ controller.deleteLog = async (req, res) => {
         const {logId} = req.params
 
         const log = await gameLogs.findByPk(logId)
-        console.log(log)
         if (!log) {
             return res.status(404).json({message: 'Log not found'})
         }

@@ -13,7 +13,7 @@ export function CommentsProvider({children}) {
 
     const addComment = async (rating, text, platform, gameName) => {
         try {
-            const response = await fetch("http://localhost:8080/game-reviews", {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export function CommentsProvider({children}) {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/game-reviews/${commentId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews/${commentId}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`, // Token JWT

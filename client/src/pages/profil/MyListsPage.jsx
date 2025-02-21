@@ -97,7 +97,7 @@ const MyListsPage = () => {
             try {
                 for (const filter of filters) {
                     const gameStatusName = filterStatusMapping[filter.id];
-                    const apiUrl = `http://localhost:8080/game-status/games-by-status?userId=${userId}&gameStatusName=${encodeURIComponent(gameStatusName)}`;
+                    const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/game-status/games-by-status?userId=${userId}&gameStatusName=${encodeURIComponent(gameStatusName)}`;
                     console.log(`Fetching games for filter "${filter.id}" with URL: ${apiUrl}`);
 
                     const response = await fetch(apiUrl, {
@@ -105,7 +105,6 @@ const MyListsPage = () => {
                             'Content-Type': 'application/json',
                         },
                     });
-
                     if (response.status === 404) {
                         console.warn(`No games found for filter "${filter.id}".`);
                         newGamesData[filter.id] = [];

@@ -29,6 +29,7 @@ function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idNa
                 setError('Impossible de charger les données.')
             }
         })()
+        console.log(selectedItem)
     }, [fetchUrl])
 
     if (error) return <div>{error}</div>
@@ -60,6 +61,7 @@ function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idNa
                             return (
                                 <Grid2 key={index}>
                                     <Tooltip title={item.name} placement="top" arrow enterDelay={500}>
+                                <span>
                                         <FormControlLabel
                                             value={item[idName] ?? 0}
                                             style={styles.controlLabel}
@@ -93,6 +95,7 @@ function ButtonSelector({disabled, selectedItem, setSelectedItem, fetchUrl, idNa
                                             }
                                             label=""
                                         />
+                                    </span>
                                     </Tooltip>
                                 </Grid2>
                             )

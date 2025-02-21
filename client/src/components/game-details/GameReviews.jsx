@@ -15,7 +15,7 @@ const GameReviews = ({gameId, gameName}) => {
     // Récupération des avis via l'API
     const fetchReviews = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/game-reviews/game/${gameId}`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews/game/${gameId}`);
             if (response.status === 404) {
                 setReviews([]);
                 setError(null);

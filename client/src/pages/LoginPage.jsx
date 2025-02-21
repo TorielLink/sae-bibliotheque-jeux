@@ -6,11 +6,12 @@ import LoginBox from "../components/LoginSignup/LoginBox";
 import SignupBox from "../components/LoginSignup/SignupBox";
 import { useTranslation } from 'react-i18next';
 import '../i18n';
+const MemoizedLoginBg = React.memo(LoginBg);
 
 function LoginPage() {
     const { t } = useTranslation();
-    const [showSignup, setShowSignup] = useState(false); // Gérer l'affichage du formulaire d'inscription
-    const [credentials, setCredentials] = useState({username: '', password: ''}); // Champs de connexion
+    const [showSignup, setShowSignup] = useState(false);
+    const [credentials, setCredentials] = useState({ username: '', password: '' });
     const [signupData, setSignupData] = useState({
         username: '',
         mail: '',
@@ -19,94 +20,93 @@ function LoginPage() {
         privacy_setting_id: 1,
     });
 
-    // Gérer les modifications des champs d'inscription
-
-    const [loginError, setLoginError] = useState(''); // Erreurs de connexion
-    const [signupError, setSignupError] = useState(''); // Erreurs d'inscription
-    const {login} = useContext(AuthContext); // Utiliser la fonction login depuis le contexte
+    const [loginError, setLoginError] = useState('');
+    const [signupError, setSignupError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    // Gérer les modifications des champs de connexion
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    console.log("🔗 URL du backend :", backendUrl);
+
+    // Gestion des changements dans les champs de connexion
     const handleLoginChange = (e) => {
-        const {name, value} = e.target;
-        setCredentials({...credentials, [name]: value});
-        setLoginError(''); // Réinitialiser les erreurs
+        const { name, value } = e.target;
+        setCredentials(prevState => ({ ...prevState, [name]: value }));
+        setLoginError('');
     };
 
-    const handleLoginSubmit = async (e) => {
-        e.preventDefault();
-        setLoginError('');
+    // Soumission du formulaire de connexion
+const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+    setLoading(true);
 
-        try {
-            const response = await fetch('http://localhost:8080/users/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(credentials),
-            });
+    try {
+        const response = await fetch(`${backendUrl}/users/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mail: credentials.username,  // Ici, "username" est en fait l'email maintenant
+                password: credentials.password
+            }),
+        });
 
             if (!response.ok) {
                 const errorData = await response.json();
                 setLoginError(errorData.message || t("error.loginError"));
-                console.log('Erreur de connexion :', errorData);
                 return;
             }
 
             const data = await response.json();
-            console.log('Connexion réussie :', data); // Log des données reçues
             login(data.token, data.user);
-            console.log("mon token", data.token)
-            navigate('/'); // Redirection après connexion
+            navigate('/');
         } catch (error) {
-            console.error('Erreur lors de la connexion :', error);
             setLoginError(t("error.networkError"));
         }
     };
 
-
-    // Gérer les modifications des champs d'inscription
+    // Gestion des changements dans les champs d'inscription
     const handleSignupChange = (e) => {
-        const {name, value, files} = e.target;
-        if (name === 'profilePicture') {
-            setSignupData({...signupData, profilePicture: files[0]});
-        } else {
-            setSignupData({...signupData, [name]: value});
-        }
-        setSignupError(''); // Réinitialiser les erreurs
+        const { name, value, files } = e.target;
+        setSignupData(prevState => ({
+            ...prevState,
+            [name]: name === 'profilePicture' ? files?.[0] || null : value,
+        }));
+        setSignupError('');
     };
 
-    // Soumettre les données d'inscription
+    // Soumission du formulaire d'inscription
     const handleSignupSubmit = async (e) => {
         e.preventDefault();
+        setSignupError('');
+        setLoading(true);
 
         const formData = new FormData();
         formData.append('username', signupData.username);
         formData.append('mail', signupData.mail);
         formData.append('password', signupData.password);
-        formData.append('privacy_settings', signupData.privacy_setting_id);
+        formData.append('privacy_setting_id', signupData.privacy_setting_id);
         if (signupData.profilePicture) {
             formData.append('profile_picture', signupData.profilePicture);
         }
 
         try {
-            const response = await fetch('http://localhost:8080/users', {
+            const response = await fetch(`${backendUrl}/users`, {
                 method: 'POST',
                 body: formData,
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                if (response.status === 400) {
-                    setSignupError(errorData.message);
-                } else {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                setSignupError(errorData.message || 'Erreur lors de l’inscription.');
                 return;
             }
 
             const result = await response.json();
             alert(t("login.signupSuccess") + ':' + result.message);
 
-            // Réinitialiser le formulaire après une inscription réussie
+            // Réinitialiser le formulaire après inscription
             setSignupData({
                 username: '',
                 mail: '',
@@ -114,52 +114,40 @@ function LoginPage() {
                 profilePicture: null,
                 privacy_setting_id: 1,
             });
-            setShowSignup(false); // Revenir à l'écran de connexion
+            setShowSignup(false);
         } catch (error) {
-            console.error('Erreur lors de l’inscription :', error);
             setSignupError(t("login.signupError"));
+            setLoading(false);
         }
     };
 
-    // useEffect(() => { //Execution du script background3D.jsx
-    //   // Code à exécuter lorsque le composant est monté
-    //   console.log('Composant chargé');
-
-    //   // Exemple : Attacher un script ou une logique
-    //   const script = document.createElement('script');
-    //   script.src = "/src/3Dbackgrounds/background3D.jsx";
-    //   script.async = true;
-    //   script.type = "module";
-    //   document.body.appendChild(script);
-
-    //   // Nettoyage (si nécessaire)
-    //   return () => {
-    //     console.log('Composant démonté');
-    //     document.body.removeChild(script);
-    //   };
-    // }, []);
-
-    const stateVariables = {
-        signupData,
-        setSignupData,
-        signupError,
-        setShowSignup,
-        handleSignupChange,
-        handleSignupSubmit,
-        handleLoginChange,
-        handleLoginSubmit,
-        credentials
-    }
-
     return (
         <>
-            <LoginBg/>
+            <MemoizedLoginBg />
             <div>
-                {showSignup ? <SignupBox {...stateVariables}/> : <LoginBox {...stateVariables} />}
+                {showSignup
+                    ? <SignupBox
+                        signupData={signupData}
+                        setSignupData={setSignupData}
+                        signupError={signupError}
+                        setShowSignup={setShowSignup}
+                        handleSignupChange={handleSignupChange}
+                        handleSignupSubmit={handleSignupSubmit}
+                        loading={loading}
+                    />
+                    : <LoginBox
+                        credentials={credentials}
+                        setCredentials={setCredentials}
+                        loginError={loginError}
+                        setShowSignup={setShowSignup}
+                        handleLoginChange={handleLoginChange}
+                        handleLoginSubmit={handleLoginSubmit}
+                        loading={loading}
+                    />
+                }
             </div>
         </>
     );
-
 }
 
 export default LoginPage;

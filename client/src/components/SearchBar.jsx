@@ -22,7 +22,7 @@ function SearchBar({
                        searchText, setSearchText, handleSearchBack, handleSearchSubmit, isSearchActive, setSearchActive,
                        onGameSelect,
                    }) {
-    const {t} = useTranslation();
+        const {t} = useTranslation();
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const theme = useTheme();
@@ -37,7 +37,7 @@ function SearchBar({
 
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/search?query=${query}`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/search?query=${query}`);
             if (!response.ok) {
                 throw new Error(`Erreur API : ${response.status}`);
             }

@@ -14,6 +14,7 @@ import {
 import {useTheme} from "@mui/material/styles";
 import {VerticalAlignBottom, VerticalAlignTop} from "@mui/icons-material";
 import LogCard from "../../components/game-details/game-logs/LogCard.jsx";
+import SortingOptions from "../../components/SortingOptions.jsx";
 
 const MyLogsPage = () => {
     const {user} = useContext(AuthContext)
@@ -32,23 +33,21 @@ const MyLogsPage = () => {
 
     async function fetchData() {
         try {
-            setLoading(true)
-            let response = await fetch(`http://localhost:8080/game-logs/user/${user.id}`)
-            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`)
+            setLoading(true);
+            let response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-logs/user/${user.id}`);
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
 
-            let data = await response.json()
-            const tempLogs = data.data
+            let data = await response.json();
+            const tempLogs = data.data;
             if (tempLogs.length !== 0) {
-
-                const logIds = []
-                const gameIds = []
+                const logIds = [];
+                const gameIds = [];
                 tempLogs.forEach((log) => {
-                    gameIds.push(log.igdb_game_id)
-                    logIds.push(log.game_log_id)
-                })
+                    gameIds.push(log.igdb_game_id);
+                    logIds.push(log.game_log_id);
+                });
 
-
-                response = await fetch('http://localhost:8080/games/specific', {
+                response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/games/specific`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -56,12 +55,12 @@ const MyLogsPage = () => {
                     body: JSON.stringify({
                         gameIds: gameIds,
                     }),
-                })
+                });
 
-                data = await response.json()
-                const games = data
+                data = await response.json();
+                const games = data;
 
-                response = await fetch('http://localhost:8080/game-sessions/logs', {
+                response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-sessions/logs`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -69,15 +68,15 @@ const MyLogsPage = () => {
                     body: JSON.stringify({
                         logIds: logIds,
                     }),
-                })
+                });
 
-                data = await response.json()
-                const sessions = data.data
-                sortLogs(enhanceLogs(tempLogs, games, sessions), 0, false)
+                data = await response.json();
+                const sessions = data.data;
+                sortLogs(enhanceLogs(tempLogs, games, sessions), 0, false);
             }
-            setLoading(false)
+            setLoading(false);
         } catch (e) {
-            setError(e)
+            setError(e);
         }
     }
 
@@ -203,52 +202,13 @@ const MyLogsPage = () => {
                 </Typography>
 
                 <div style={styles.container}>
-                    <div style={styles.sortingOptions}>
-                        <Typography fontSize={"large"}>Trier par</Typography>
-                        <FormControl style={styles.sortingOptionForm}>
-                            <Select
-                                style={styles.sortingOptionSelector}
-                                id="sort-selector"
-                                value={sortingOption}
-                                size={"small"}
-                                variant="outlined"
-                                onChange={(e) => handleSortingOptionChange(Number(e.target.value))}
-                                sx={{
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none',
-                                    },
-                                }}
-                            >
-                                {
-                                    sortingOptions && sortingOptions.map((item, index) => (
-                                        <MenuItem key={index} value={index}>
-                                            {item.label}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                        <IconButton
-                            disableTouchRipple
-                            onClick={() => handleSortingOrderChange(!sortingOrder)}
-                            style={styles.sortingButton}
-                            sx={{
-                                '&:hover': {
-                                    background: 'none',
-                                    transform: 'scale(1.2)',
-                                },
-                                '&:active': {
-                                    transform: 'scale(1)',
-                                },
-                            }}
-                        >
-                            {sortingOrder ? (
-                                <VerticalAlignBottom fontSize="large"></VerticalAlignBottom>
-                            ) : (
-                                <VerticalAlignTop fontSize="large"></VerticalAlignTop>
-                            )}
-                        </IconButton>
-                    </div>
+                    <SortingOptions
+                        sortingOptions={sortingOptions}
+                        sortingOption={sortingOption}
+                        handleSortingOptionChange={handleSortingOptionChange}
+                        sortingOrder={sortingOrder}
+                        handleSortingOrderChange={handleSortingOrderChange}
+                    />
 
                     <div style={styles.logsContainer}>
                         {

@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('game_lists', {
-        game_list_id: {
+    return sequelize.define('game_collection', {
+        game_collection_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
@@ -12,7 +12,15 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.STRING(100),
             allowNull: true
-        }
+        },
+        privacy_setting_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        user_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
     }, {
         freezeTableName: true,
         timestamps: false

@@ -8,5 +8,9 @@ server/.env
 !server/uploads/profile_pictures/profile_picture-1733920048860-972297989.jpg
 # Ignorer les fichiers PNG (si cela s'applique en dehors de ce dossier)
 *.png
-
+package-lock.json
+package.json
+node_modules/
 server/uploads/profile_pictures/profile_picture-1733753693406-193304891.jpeg
+sonarscan.js
+.scannerwork

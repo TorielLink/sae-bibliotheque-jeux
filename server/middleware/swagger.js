@@ -62,41 +62,36 @@ const swaggerOptions = {
                         },
                     },
                 },
-                // Modèle GameList
-                GameList: {
+                // Modèle GameCollections
+                GameCollections: {
                     type: 'object',
-                    description: 'Représente une liste de jeux.',
+                    description: 'Représente une collection de jeux.',
                     properties: {
-                        game_list_id: {
+                        game_collection_id: {
                             type: 'integer',
-                            description: 'Identifiant unique de la liste de jeux',
+                            description: 'Identifiant unique de la collection de jeux',
                             example: 42,
                         },
                         name: {
                             type: 'string',
-                            description: 'Nom de la liste de jeux',
+                            description: 'Nom de la collection de jeux',
                             example: 'Mes jeux favoris',
                         },
                         description: {
                             type: 'string',
-                            description: 'Description de la liste de jeux',
+                            description: 'Description de la collection de jeux',
                             example: 'Une collection de mes jeux préférés.',
                         },
                     },
                 },
-                // Modèle ListContent
-                ListContent: {
+                // Modèle CollectionContent
+                CollectionContent: {
                     type: 'object',
-                    description: 'Représente le contenu d\'une liste de jeux.',
+                    description: 'Représente le contenu d\'une collection de jeux.',
                     properties: {
-                        list_content_id: {
+                        game_collection_id: {
                             type: 'integer',
-                            description: 'Identifiant unique du contenu de liste',
-                            example: 101,
-                        },
-                        game_list_id: {
-                            type: 'integer',
-                            description: 'ID de la liste de jeux à laquelle appartient ce contenu',
+                            description: 'ID de la collection de jeux à laquelle appartient ce contenu',
                             example: 42,
                         },
                         igdb_game_id: {

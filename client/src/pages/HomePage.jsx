@@ -40,8 +40,8 @@ function HomePage() {
                     {recentComments.map((comment) => (
                         <Grid item xs={12} sm={6} key={comment.id}>
                             <ResponsiveCommentCard
-                                comments={[comment]}         // <-- on ne passe qu'un commentaire
-                                maxComments={1}             // ou 5, mais 1 suffit ici
+                                comments={[comment]}
+                                maxComments={1}
                                 currentUserId={user?.id}
                                 onCommentDeleted={handleCommentDeleted}
                             />
@@ -56,23 +56,20 @@ function HomePage() {
         </Box>,
     ];
 
-    // Fonction pour charger les jeux par filtre
-    const fetchGamesByFilter = async (filter) => {
-        try {
-            const response = await fetch(`http://localhost:8080/games/${filter}`);
-            if (!response.ok) {
-                throw new Error(`Erreur API : ${response.statusText}`);
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error(
-                `Erreur lors de la récupération des jeux (${filter}):`,
-                error
-            );
-            throw error;
+// Fonction pour récupérer les jeux en fonction d'un filtre
+const fetchGamesByFilter = async (filter) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/games/${filter}`);
+        if (!response.ok) {
+            throw new Error(`Erreur API : ${response.statusText}`);
         }
-    };
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Erreur lors de la récupération des jeux (${filter}) :`, error);
+        throw error;
+    }
+};
 
     // Charger les jeux (récents / populaires)
     const fetchAllGames = async () => {
@@ -93,7 +90,7 @@ function HomePage() {
     // Charger les commentaires récents
     const fetchRecentComments = async () => {
         try {
-            const response = await fetch("http://localhost:8080/game-reviews");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/game-reviews`);
             if (!response.ok) {
                 throw new Error(`Erreur API : ${response.statusText}`);
             }
