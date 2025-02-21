@@ -16,7 +16,7 @@ const StarRating = ({rating}) => {
 
     return (
         <div style={{display: 'flex', alignItems: 'center'}}>
-       
+
             {[...Array(filledStars)].map((_, index) => (
                 <StarIcon key={`full-${index}`} style={{color: '#FFD700'}}/>
             ))}
