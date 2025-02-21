@@ -1,14 +1,26 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useTheme} from "@mui/material/styles";
 import {CalendarToday, ChildCare, SportsEsports} from '@mui/icons-material';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
-import {useMediaQuery, Accordion, AccordionSummary, AccordionDetails, Typography} from "@mui/material";
+import {
+    useMediaQuery,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography,
+    Button,
+    Dialog,
+    DialogTitle, DialogContent, DialogActions, Snackbar, Alert
+} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {AuthContext} from "../AuthContext.jsx";
 import GameDetailsNavBar from "./GameDetailsNavBar.jsx";
 import GameList from "../GameList.jsx";
 import GameCard from "../GameCard.jsx";
+import ButtonSelector from "./game-logs/log-details-content/ButtonSelector.jsx";
+import AddComment from "../AddComment.jsx";
+import AddToCollectionForm from "../profile/collections/AddToCollectionForm.jsx";
 
 
 /**TODO :
@@ -17,14 +29,88 @@ import GameCard from "../GameCard.jsx";
  * - Limiter la taille des blocs (overflow: hidden)
  */
 const GameDetails = ({
-                         name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
+                         id, name, description, releaseDate, ageRating, rating, detailedSynopsis, platforms, genres,
                          coverImage, dlcs, expansions, remakes, remasters, standaloneExpansions, franchises,
-                         parentGame, similarGames
+                         parentGame, similarGames,
+                         status, changeStatus
                      }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const {isAuthenticated} = useContext(AuthContext);
     const styles = getStyles(theme, isMobile);
+
+    const [isStatusModalOpen, setStatusModalOpen] = useState(false);
+
+    const openStatusModal = () => {
+        setStatusModalOpen(true);
+    };
+
+    const closeStatusModal = () => {
+        setStatusModalOpen(false);
+    };
+
+    const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
+
+    const openCollectionModal = () => {
+        setIsCollectionModalOpen(true);
+    };
+
+    const closeCollectionModal = () => {
+        setIsCollectionModalOpen(false);
+    };
+
+    const [isAddingComment, setIsAddingComment] = useState(false);
+    const handleCommentAdded = async () => {
+        setIsAddingComment(false);
+        await fetchReviews();
+    };
+
+    const [alertState, setAlertState] = useState({
+        alertOpen: false,
+        alertMessage: "",
+        vertical: 'bottom',
+        horizontal: 'center',
+        alertSeverity: 'info'
+    })
+
+    const {vertical, horizontal, alertOpen, alertMessage, alertSeverity} = alertState
+
+    const handleAlertClose = () => {
+        setAlertState({
+            ...alertState, alertOpen: false
+        })
+    }
+    const addToCollections = async (selectedCollections) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/collection-content/update-collections/game/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({collectionsIds: selectedCollections}),
+            })
+
+            if (response.status % 300 < 1 && response.status !== 300) {
+                setAlertState({
+                    ...alertState,
+                    alertOpen: true,
+                    alertMessage: "Mise à jour des collections effectuée.",
+                    alertSeverity: "success",
+                })
+
+            } else {
+                setAlertState({
+                    ...alertState,
+                    alertOpen: true,
+                    alertMessage: "Erreur de la mise à jour.",
+                    alertSeverity: "error",
+                })
+            }
+            console.log((await response.json()).message)
+        } catch (error) {
+            console.error('Erreur lors de la récupération  :', error.message)
+        }
+    }
 
     return (
         <div style={styles.container}>
@@ -46,7 +132,7 @@ const GameDetails = ({
                     {/* Boutons d'actions rapides */}
                     {!isMobile && isAuthenticated && (
                         <div style={styles.quickActions}>
-                            <button
+                            {/*<button
                                 style={{...styles.quickActionButton, ...styles.reviewButton}}
                                 onMouseEnter={(e) => {
                                     e.target.style.backgroundColor = theme.palette.colors.blue;
@@ -58,10 +144,19 @@ const GameDetails = ({
                                     e.target.style.color = theme.palette.text.primary;
                                     e.target.style.borderColor = theme.palette.colors.blue;
                                 }}
+                                onClick={() => setIsAddingComment(true)}
                             >
                                 Ajouter un avis
                             </button>
-                            <button
+                            {isAddingComment && (
+                                <AddComment
+                                    gameId={id}
+                                    gameName={name}
+                                    onCommentAdded={handleCommentAdded}
+                                    onCancel={() => setIsAddingComment(false)}
+                                />
+                            )}*/}
+                            {/*<button
                                 style={{...styles.quickActionButton, ...styles.noteButton}}
                                 onMouseEnter={(e) => {
                                     e.target.style.backgroundColor = theme.palette.colors.green;
@@ -75,8 +170,8 @@ const GameDetails = ({
                                 }}
                             >
                                 Ajouter une note
-                            </button>
-                            <button
+                            </button>*/}
+                            {/*<button
                                 style={{...styles.quickActionButton, ...styles.logButton}}
                                 onMouseEnter={(e) => {
                                     e.target.style.backgroundColor = theme.palette.colors.yellow;
@@ -90,7 +185,94 @@ const GameDetails = ({
                                 }}
                             >
                                 Ajouter un journal
+                            </button>*/}
+                            <button
+                                style={{...styles.quickActionButton, ...styles.collectionButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.purple;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.purple;
+                                }}
+                                onClick={openCollectionModal}
+                            >
+                                Collections
                             </button>
+
+                            <AddToCollectionForm
+                                gameId={id}
+                                open={isCollectionModalOpen}
+                                onClose={closeCollectionModal}
+                                alertState={alertState}
+                                setAlertState={setAlertState}
+                            />
+
+                            <Snackbar
+                                anchorOrigin={{vertical, horizontal}}
+                                open={alertOpen}
+                                autoHideDuration={3000}
+                                onClose={handleAlertClose}
+                                key={vertical + horizontal}
+                            >
+                                <Alert
+                                    onClose={handleAlertClose}
+                                    severity={alertSeverity}
+                                    variant="filled"
+                                    sx={{width: '100%'}}
+                                >
+                                    {alertMessage}
+                                </Alert>
+                            </Snackbar>
+
+                            <button
+                                style={{...styles.quickActionButton, ...styles.statusButton}}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.colors.red;
+                                    e.target.style.color = theme.palette.text.contrast;
+                                    e.target.style.borderColor = 'transparent';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = theme.palette.background.default;
+                                    e.target.style.color = theme.palette.text.primary;
+                                    e.target.style.borderColor = theme.palette.colors.red;
+                                }}
+                                onClick={openStatusModal}
+                            >
+                                Statut
+                            </button>
+                            <Dialog
+                                sx={{
+                                    '& .MuiPaper-root': {
+                                        borderRadius: '1rem',
+                                        background: theme.palette.colors.yellow,
+                                    },
+                                }}
+                                open={isStatusModalOpen}
+                                onClose={closeStatusModal}
+                                aria-labelledby="change-list-dialog-title"
+                                aria-describedby="change-list-dialog-description"
+                            >
+                                <DialogTitle id="change-list-dialog-title" fontWeight="bold">Changer de
+                                    liste</DialogTitle>
+                                <DialogContent>
+                                    <ButtonSelector
+                                        disabled={false}
+                                        selectedItem={status}
+                                        setSelectedItem={changeStatus}
+                                        fetchUrl={`${import.meta.env.VITE_BACKEND_URL}/status`}
+                                        idName={'game_status_id'}
+                                    />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button style={styles.closeButton} onClick={closeStatusModal}>
+                                        Fermer
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
                         </div>
                     )}
 
@@ -397,6 +579,24 @@ const getStyles = (theme, isMobile) => ({
     },
     logButton: {
         border: '1px solid' + theme.palette.colors.yellow,
+    },
+    statusButton: {
+        border: '1px solid' + theme.palette.colors.red,
+    },
+    collectionButton: {
+        border: '1px solid' + theme.palette.colors.purple,
+    },
+    closeButton: {
+        background: theme.palette.colors.red,
+        fontSize: 'large',
+        color: theme.palette.text.primary,
+        padding: '0.5rem 1rem',
+        borderRadius: '0.5rem',
+    },
+    dialogTitle: {
+        borderBottom: `solid 0.1rem ${theme.palette.text.primary}`,
+        width: 'fit-content',
+        margin: '0.5rem 1rem'
     },
     mainContainer: {
         display: 'flex',

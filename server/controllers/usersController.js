@@ -5,7 +5,7 @@ const {
     gameLogs,
     gameStatus,
     friends,
-    userLists,
+    userCollections,
 } = require('../database/sequelize');
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
@@ -258,7 +258,7 @@ controller.delete = async (req, res) => {
             }),
 
             // Supprimer les listes associées
-            userLists.destroy({
+            userCollections.destroy({
                 where: {user_id: id}
             }),
         ]);

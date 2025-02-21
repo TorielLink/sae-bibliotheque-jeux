@@ -10,6 +10,8 @@ import CataloguePage from './pages/CataloguePage.jsx';
 import ReviewsPage from './pages/ReviewsPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import GameDetailsPage from "./pages/GamesDetailsPage.jsx";
+import CollecionPage from "./pages/CollectionPage.jsx"
+import CollectionEditPage from "./pages/CollectionEditPage.jsx"
 // Pied de page
 import Footer from "./components/Footer.jsx";
 import Team from './pages/footer/TeamPage.jsx';
@@ -26,7 +28,7 @@ import MyStatsPage from './pages/profil/MyStatsPage.jsx';
 import MyListsPage from './pages/profil/MyListsPage.jsx';
 import MyLogsPage from './pages/profil/MyLogsPage.jsx';
 import MyReviewsPage from './pages/profil/MyReviewsPage.jsx';
-import MyCollectionPage from './pages/profil/MyCollectionPage.jsx';
+import MyCollectionsPage from './pages/profil/MyCollectionsPage.jsx';
 import SettingsPage from './pages/profil/SettingsPage.jsx';
 
 
@@ -91,12 +93,23 @@ function App() {
                             </ProtectedRoute>
                         }
                         />
-                        <Route path="/custom-lists" element={
+                        <Route path="/collections" element={
                             <ProtectedRoute>
-                                <MyCollectionPage/>
+                                <MyCollectionsPage/>
                             </ProtectedRoute>
                         }
                         />
+                        <Route path="/collection/:id" element={
+                            <ProtectedRoute>
+                                <CollecionPage/>
+                            </ProtectedRoute>
+                        }/>
+                        <Route path="/collection/:id/edit" element={
+                            <ProtectedRoute>
+                                <CollectionEditPage/>
+                            </ProtectedRoute>
+                        }/>
+
                         <Route path="/settings" element={
                             <ProtectedRoute>
                                 <SettingsPage/>

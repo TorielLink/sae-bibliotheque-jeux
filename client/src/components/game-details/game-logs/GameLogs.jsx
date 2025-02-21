@@ -9,7 +9,7 @@ import GameLogSessions from "./GameLogSessions.jsx"
 import SessionEditor from "./SessionEditor.jsx"
 import GameDetailsNavBar from "../GameDetailsNavBar.jsx"
 
-function GameLogs({game}) {
+function GameLogs({game, status, changeStatus}) {
     const theme = useTheme()
     const styles = getStyles(theme)
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
@@ -392,8 +392,8 @@ function GameLogs({game}) {
                             logs={logs}
                             setLogs={handleLogsChange}
 
-                            currentStatus={currentStatus}
-                            setCurrentStatus={handleStatusChange}
+                            currentStatus={status}
+                            setCurrentStatus={changeStatus}
 
                             currentLog={currentLog}
                             setCurrentLog={handleCurrentLogChange}

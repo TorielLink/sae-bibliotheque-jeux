@@ -359,9 +359,9 @@ class APIRequests {
     }
 
     async getGameGenres(gameGenres) {
-        if (!gameGenres) {
+        if (!gameGenres || gameGenres.length === 0) {
             return {
-                genres: null
+                genres: []
             }
         }
 
